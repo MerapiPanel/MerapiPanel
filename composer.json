@@ -1,0 +1,21 @@
+{
+    "name": "il4mb/mpanel",
+    "description": "Merapi panel package",
+    "type": "project",
+    "require": {
+        "twig/twig": "^3.7",
+        "symfony/asset": "^6.3"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "il4mb\\Mpanel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ilham b",
+            "email": "durianbohong@gmail.com"
+        }
+    ]
+}
