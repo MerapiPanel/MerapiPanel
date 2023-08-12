@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d801bc0479590b959833e508a461e21",
+    "content-hash": "f57f6a9865cafef81363a5a85222c136",
     "packages": [
         {
             "name": "symfony/asset",
@@ -318,7 +318,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=8.1"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
 }

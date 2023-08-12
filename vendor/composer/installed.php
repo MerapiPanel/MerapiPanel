@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'il4mb/mpanel',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '7a96dbe14ab2488c38fb7eff9ff25e13cccb2923',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'il4mb/mpanel' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '7a96dbe14ab2488c38fb7eff9ff25e13cccb2923',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
