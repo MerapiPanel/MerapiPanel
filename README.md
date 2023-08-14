@@ -30,9 +30,18 @@ To get started with Merapi Panel, follow these steps:
 
 1. Installation: If you haven't already, install Merapi Panel using Composer as shown above.
 
-2. Usage: Refer to the documentation for comprehensive usage guidelines, code examples, and customization options.
+2. Usage:
+```php
+// index.php
+use il4mb\Mpanel\Application;
 
-3. Community: Join our community on the discussion board to connect with other developers, share insights, and ask questions.
+required 'vendor/autoload.php';
+
+$app = Application::getinstance();
+$app->run();
+```
+
+4. Community: Join our community on the discussion board to connect with other developers, share insights, and ask questions.
 
 ## Contributing
 We welcome contributions from the community! To contribute to Merapi Panel, follow these steps:
