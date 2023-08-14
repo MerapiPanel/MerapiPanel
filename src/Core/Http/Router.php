@@ -233,7 +233,7 @@ class Router
 
         $pattern = preg_replace('/\//', '\/', $route);
 
-        $pattern = '/^' . preg_replace('/\{([a-zA-Z0-9_\/.]+)\}/', '([a-zA-Z0-9_\/.]+)', $pattern) . '$/';
+        $pattern = '/^' . preg_replace('/\{(.?)\}/', '(.?)', $pattern) . '$/';
 
         // Use preg_match to check if the path matches the pattern
         preg_match($pattern, $path, $matches);
@@ -270,7 +270,7 @@ class Router
 
         $pattern = preg_replace('/\//', '\/', $route);
 
-        $pattern = '/^' . preg_replace('/\{([a-zA-Z0-9_\/.]+)\}/', '([a-zA-Z0-9_\/.]+)', $pattern) . '$/';
+        $pattern = '/^' . preg_replace('/\{(.?)\}/', '(.?)', $pattern) . '$/';
 
         // Use preg_match to check if the path matches the pattern
         preg_match($pattern, $path, $matches);
