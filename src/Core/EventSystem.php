@@ -5,45 +5,8 @@ namespace il4mb\Mpanel\Core;
 class EventSystem
 {
 
-
-    private static $instance;
     protected $listeners = [];
 
-
-
-    /**
-     * Constructor method for the class.
-     * Private constructor to prevent direct instantiation
-     */
-    private function __construct()
-    {
-    }
-
-
-
-    
-    /**
-     * Creates and returns an instance of the class.
-     *
-     * @return self The instance of the class.
-     */
-    public static function getInstance()
-    {
-
-        if (!isset(self::$instance)) 
-        {
-
-            self::$instance = new self();
-
-        }
-
-        return self::$instance;
-
-    }
-
-
-
-    
     /**
      * Registers a listener for a specific event.
      *

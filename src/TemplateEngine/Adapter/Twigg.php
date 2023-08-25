@@ -1,12 +1,12 @@
 <?php
 
-namespace il4mb\Mpanel\TemplateEngine;
+namespace il4mb\Mpanel\TemplateEngine\Adapter;
 
 use Error;
-use il4mb\Mpanel\Core\EventSystem;
+use il4mb\Mpanel\Application;
+use il4mb\Mpanel\TemplateEngine\TemplateEngine;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Twig\Node\Expression\TestExpression;
 
 class Twigg implements TemplateEngine
 {
@@ -17,6 +17,7 @@ class Twigg implements TemplateEngine
     protected $templatePath;
     protected $environmentOptions;
     protected $template;
+    protected $app;
 
 
 
@@ -26,16 +27,17 @@ class Twigg implements TemplateEngine
      * @param string $templatePath The path to the template.
      * @param array $environmentOptions The environment options.
      */
-    public function __construct(string $templatePath, array $environmentOptions = [])
+    public function __construct(Application $app, string $templatePath, array $environmentOptions = [])
     {
 
+        $this->app                = $app;
         $this->environmentOptions = $environmentOptions;
         $this->loader             = new FilesystemLoader($this->templatePath);
         $this->twig               = new Environment($this->loader, $this->environmentOptions);
 
         $this->setTemplatePath($templatePath);
 
-        EventSystem::getInstance()->fire(self::ON_CONSTRUCT, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_CONSTRUCT, [$this]);
 
     }
 
@@ -54,7 +56,7 @@ class Twigg implements TemplateEngine
 
         $this->template = $template;
 
-        EventSystem::getInstance()->fire(self::ON_SET_TEMPLATE, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_SET_TEMPLATE, [$this]);
 
     }
 
@@ -70,7 +72,7 @@ class Twigg implements TemplateEngine
     public function getTemplate(): string
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_TEMPLATE, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_TEMPLATE, [$this]);
 
         return $this->template;
 
@@ -91,7 +93,7 @@ class Twigg implements TemplateEngine
 
         $this->twig = $environment;
 
-        EventSystem::getInstance()->fire(self::ON_SET_ENVIRONMENT, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_SET_ENVIRONMENT, [$this]);
 
     }
 
@@ -107,7 +109,7 @@ class Twigg implements TemplateEngine
     public function getEnvironment(): Environment
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_ENVIRONMENT, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_ENVIRONMENT, [$this]);
 
         return $this->twig;
 
@@ -137,7 +139,7 @@ class Twigg implements TemplateEngine
         $this->loader       = new FilesystemLoader($this->templatePath);
 
         $this->twig->setLoader($this->loader);
-        EventSystem::getInstance()->fire(self::ON_SET_TEMPLATE_PATH, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_SET_TEMPLATE_PATH, [$this]);
 
     }
 
@@ -152,7 +154,7 @@ class Twigg implements TemplateEngine
     public function getTemplatePath(): string
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_TEMPLATE_PATH, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_TEMPLATE_PATH, [$this]);
 
         return $this->templatePath;
     }
@@ -173,7 +175,7 @@ class Twigg implements TemplateEngine
         $this->environmentOptions = $environmentOptions;
         $this->twig               = new Environment($this->loader, $this->environmentOptions);
 
-        EventSystem::getInstance()->fire(self::ON_SET_ENVIRONMENT_OPTIONS, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_SET_ENVIRONMENT_OPTIONS, [$this]);
     }
 
 
@@ -187,7 +189,7 @@ class Twigg implements TemplateEngine
     public function getEnvironmentOptions(): array
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_ENVIRONMENT_OPTIONS, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_ENVIRONMENT_OPTIONS, [$this]);
 
         return $this->environmentOptions;
     }
@@ -223,7 +225,7 @@ class Twigg implements TemplateEngine
         $template = $this->getTemplate();
 
 
-        EventSystem::getInstance()->fire(self::ON_RENDER, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_RENDER, [$this]);
 
         // Check if a custom error template exists with .twig extension
         if ($this->templateExists($template . '.twig')) {
@@ -266,7 +268,7 @@ class Twigg implements TemplateEngine
 
         $this->twig->addGlobal($name, $value);
 
-        EventSystem::getInstance()->fire(self::ON_ADD_GLOBALVAR, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_ADD_GLOBALVAR, [$this]);
 
     }
 
@@ -282,7 +284,7 @@ class Twigg implements TemplateEngine
     public function getGlobals(): array
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_GLOBALVAR, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_GLOBALVAR, [$this]);
 
         return $this->twig->getGlobals();
 
@@ -301,7 +303,7 @@ class Twigg implements TemplateEngine
     public function getFilter(string $name)
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_FILTER, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_FILTER, [$this]);
 
         return $this->twig->getFilter($name);
 
@@ -314,7 +316,7 @@ class Twigg implements TemplateEngine
 
         $this->twig->addFilter($filter);
 
-        EventSystem::getInstance()->fire(self::ON_ADD_FILTER, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_ADD_FILTER, [$this]);
 
     }
 
@@ -328,7 +330,7 @@ class Twigg implements TemplateEngine
     public function getFunction(string $name): \Twig\TwigFunction
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_FUNCTION, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_FUNCTION, [$this]);
 
         return $this->twig->getFunction($name);
 
@@ -349,7 +351,7 @@ class Twigg implements TemplateEngine
 
         $this->twig->addFunction($function);
 
-        EventSystem::getInstance()->fire(self::ON_ADD_FUNCTION, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_ADD_FUNCTION, [$this]);
 
     }
 
@@ -367,7 +369,7 @@ class Twigg implements TemplateEngine
     public function getTest(string $name)
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_TEST, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_GET_TEST, [$this]);
 
         return $this->twig->getTest($name);
 
@@ -388,7 +390,7 @@ class Twigg implements TemplateEngine
 
         $this->twig->addTest($test);
 
-        EventSystem::getInstance()->fire(self::ON_ADD_TEST, [$this]);
+        $this->app->getEventSystem()->fire(self::ON_ADD_TEST, [$this]);
 
     }
 

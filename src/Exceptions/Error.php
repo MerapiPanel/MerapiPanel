@@ -3,6 +3,7 @@
 namespace il4mb\Mpanel\Exceptions;
 
 use Exception;
+use il4mb\Mpanel\Application;
 use il4mb\Mpanel\Core\EventSystem;
 use Throwable;
 
@@ -22,9 +23,6 @@ class Error extends Exception
     {
         // Call the parent class constructor.
         parent::__construct($message, $code, $previous);
-
-        // Trigger the ON_ERROR event.
-        EventSystem::getInstance()->fire(self::ON_ERROR, [$this]);
         
     }
 

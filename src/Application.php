@@ -12,8 +12,9 @@ use il4mb\Mpanel\Core\Http\Router;
 use il4mb\Mpanel\Core\EventSystem;
 use il4mb\Mpanel\Core\File;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
+use il4mb\Mpanel\Exceptions\Error;
 use il4mb\Mpanel\TemplateEngine\TemplateEngine;
-
+use Throwable;
 
 class Application
 {
@@ -46,8 +47,8 @@ class Application
     protected $logger;
     protected TemplateEngine $templateEngine;
     protected PluginManager $pluginManager;
-    private static Application $instance;
     protected Directory $directory;
+    protected EventSystem $eventSystem;
 
 
     /**
@@ -58,38 +59,22 @@ class Application
      *
      * @return void
      */
-    private function __construct()
+    public function __construct()
     {
 
-        $call_from_file        = new File(debug_backtrace()[1]['file']);
-        $this->directory       = $call_from_file->getDirectory();
-
+        $this->eventSystem     = new EventSystem();
         $this->router          = Router::getInstance();
         $this->config          = new Config([]);
         $this->logger          = new Logger();
         $this->pluginManager   = new PluginManager($this);
     }
 
-    
 
-    /**
-     * Returns the instance of the Application class.
-     *
-     * @throws None if instance is not set
-     * @return Application the instance of the Application class
-     */
-    static function getInstance(): Application
+
+    public function getEventSystem(): EventSystem
     {
 
-        if (!isset(self::$instance)) 
-        {
-
-            self::$instance = new Application();
-
-        }
-
-        return self::$instance;
-
+        return $this->eventSystem;
     }
 
 
@@ -103,14 +88,12 @@ class Application
     {
 
         return $this->pluginManager;
-
     }
 
     function get_directory(): Directory
     {
 
         return $this->directory;
-
     }
 
     /**
@@ -122,7 +105,6 @@ class Application
     {
 
         $this->router = $router;
-
     }
 
     /**
@@ -134,7 +116,6 @@ class Application
     {
 
         return $this->router;
-
     }
 
 
@@ -151,8 +132,7 @@ class Application
 
         $this->templateEngine = $templateEngine;
 
-        EventSystem::getInstance()->fire(self::ON_SET_TEMPLATE, [$templateEngine]);
-
+        $this->eventSystem->fire(self::ON_SET_TEMPLATE, [$templateEngine]);
     }
 
     /**
@@ -163,10 +143,9 @@ class Application
     public function getTemplateEngine(): TemplateEngine
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_TEMPLATE, [$this->templateEngine]);
+        $this->eventSystem->fire(self::ON_GET_TEMPLATE, [$this->templateEngine]);
 
         return $this->templateEngine;
-
     }
 
 
@@ -182,8 +161,7 @@ class Application
 
         $this->config = $config;
 
-        EventSystem::getInstance()->fire(self::ON_SET_CONFIG, [$config]);
-
+        $this->eventSystem->fire(self::ON_SET_CONFIG, [$config]);
     }
 
 
@@ -197,10 +175,9 @@ class Application
     public function getConfig(): Config
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_CONFIG, [$this->config]);
+        $this->eventSystem->fire(self::ON_GET_CONFIG, [$this->config]);
 
         return $this->config;
-
     }
 
 
@@ -216,8 +193,7 @@ class Application
 
         $this->database = $database;
 
-        EventSystem::getInstance()->fire(self::ON_SET_DATABASE, [$database]);
-
+        $this->eventSystem->fire(self::ON_SET_DATABASE, [$database]);
     }
 
 
@@ -231,10 +207,9 @@ class Application
     public function getDatabase(): Database
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_DATABASE, [$this->database]);
+        $this->eventSystem->fire(self::ON_GET_DATABASE, [$this->database]);
 
         return $this->database;
-
     }
 
 
@@ -250,8 +225,7 @@ class Application
 
         $this->logger = $logger;
 
-        EventSystem::getInstance()->fire(self::ON_SET_LOGGER, [$logger]);
-
+        $this->eventSystem->fire(self::ON_SET_LOGGER, [$logger]);
     }
 
 
@@ -265,10 +239,9 @@ class Application
     public function getLogger(): Logger
     {
 
-        EventSystem::getInstance()->fire(self::ON_GET_LOGGER, [$this->logger]);
+        $this->eventSystem->fire(self::ON_GET_LOGGER, [$this->logger]);
 
         return $this->logger;
-
     }
 
 
@@ -284,12 +257,11 @@ class Application
     public function get(string $path, mixed $callback): Router
     {
 
-        EventSystem::getInstance()->fire(self::GET_ASSIGNMENT, [$path, $callback]);
+        $this->eventSystem->fire(self::GET_ASSIGNMENT, [$path, $callback]);
 
         $this->router->get($path, $callback);
 
         return $this->router;
-
     }
 
 
@@ -305,12 +277,11 @@ class Application
     public function post(string $path, mixed $callback)
     {
 
-        EventSystem::getInstance()->fire(self::POST_ASSIGNMENT, [$path, $callback]);
+        $this->eventSystem->fire(self::POST_ASSIGNMENT, [$path, $callback]);
 
         $this->router->post($path, $callback);
 
         return $this->router;
-
     }
 
 
@@ -327,12 +298,11 @@ class Application
     public function put(string $path, mixed $callback)
     {
 
-        EventSystem::getInstance()->fire(self::PUT_ASSIGNMENT, [$path, $callback]);
+        $this->eventSystem->fire(self::PUT_ASSIGNMENT, [$path, $callback]);
 
         $this->router->put($path, $callback);
 
         return $this->router;
-
     }
 
 
@@ -348,12 +318,11 @@ class Application
     public function delete(string $path, mixed $callback)
     {
 
-        EventSystem::getInstance()->fire(self::DELETE_ASSIGNMENT, [$path, $callback]);
+        $this->eventSystem->fire(self::DELETE_ASSIGNMENT, [$path, $callback]);
 
         $this->router->delete($path, $callback);
 
         return $this->router;
-
     }
 
 
@@ -364,22 +333,36 @@ class Application
      */
     public function run(): void
     {
+        try {
 
-        // Trigger the BEFORE_REQUEST event
-        EventSystem::getInstance()->fire(self::BEFORE_REQUEST);
+            // Trigger the BEFORE_REQUEST event
+            $this->eventSystem->fire(self::BEFORE_REQUEST);
 
-        // Create a new request
-        $request = new Request();
+            // Create a new request
+            $request = new Request();
 
-        // Run the plugins
-        $this->pluginManager->runPlugins();
+            // Run the plugins
+            $this->pluginManager->runPlugins();
 
-        // Send the response
-        $this->sendResponse($this->router->dispatch($request));
+            // Send the response
+            $this->sendResponse($this->router->dispatch($request));
 
-        // Trigger the AFTER_REQUEST event
-        EventSystem::getInstance()->fire(self::AFTER_REQUEST);
+            // Trigger the AFTER_REQUEST event
+            $this->eventSystem->fire(self::AFTER_REQUEST);
+            
+        } catch (Throwable $e) {
 
+            if ($e instanceof Error) 
+            {
+
+                echo $e->getHtmlView();
+
+            } else {
+
+                $error = new Error($e->getMessage(), $e->getCode());
+                echo  $error->getHtmlView();
+            }
+        }
     }
 
 
@@ -392,38 +375,27 @@ class Application
 
         $response->send();
 
-        if ($response->getHeader("Content-Type") == "text/html") 
-        {
+        if ($response->getHeader("Content-Type") == "text/html") {
 
             $data = json_decode($response->getContent(), true) ?? [];
 
-            if (!json_last_error()) 
-            {
+            if (!json_last_error()) {
 
                 $data = array_merge($data, $this->getConfig()->all());
-
-            } 
-            else 
-            {
+            } else {
 
                 $data = $this->config->all();
-
             }
 
-            if (isset($this->templateEngine) && $this->templateEngine instanceof TemplateEngine) 
-            {
+            if (isset($this->templateEngine) && $this->templateEngine instanceof TemplateEngine) {
 
                 $response->setContent($this->templateEngine->render($data));
-
             }
-
         }
 
-        EventSystem::getInstance()->fire(self::ON_CONTENT_RESPONSE, [$response]);
+        $this->eventSystem->fire(self::ON_CONTENT_RESPONSE, [$response]);
 
         // Send content
         echo $response->getContent();
-
     }
-
 }

@@ -2,6 +2,7 @@
 
 namespace il4mb\Mpanel\TemplateEngine;
 
+use il4mb\Mpanel\Application;
 use Twig\Environment;
 
 interface TemplateEngine
@@ -29,7 +30,7 @@ interface TemplateEngine
 
     
     
-    public function __construct(string $templatePath, array $environmentOptions = []);
+    public function __construct(Application $app, string $templatePath, array $environmentOptions = []);
 
     public function setTemplate(string $template): void;
     public function getTemplate(): string;
