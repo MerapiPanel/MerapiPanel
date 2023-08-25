@@ -3,7 +3,7 @@
         'name' => 'il4mb/mpanel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '7a078e64519d22da3bf97ddea00dd1b5008d61ac',
+        'reference' => '8610cadc3ace14887c501ec0905f6790301c782e',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'il4mb/mpanel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '7a078e64519d22da3bf97ddea00dd1b5008d61ac',
+            'reference' => '8610cadc3ace14887c501ec0905f6790301c782e',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
