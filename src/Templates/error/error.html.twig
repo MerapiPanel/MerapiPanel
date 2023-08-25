@@ -1,12 +1,9 @@
-{# templates/error/error.html.twig #}
+{% extends "/base.html.twig" %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Error</title>
-</head>
-<body>
-    <h1>Error {{ statusCode }}</h1>
-    <p>{{ message }}</p>
-</body>
-</html>
+{% block body %}
+
+<h1>Error
+	{{ error.code }}</h1>
+<p>{{ error.message }}</p>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{
+  "name": "merapi-panel",
+  "version": "1.0.0",
+  "description": "Merapi Panel is a CMS",
+  "main": "index.js",
+  "repository": "https://github.com/il4mb/merapi-panel",
+  "author": "ilham b <durianbohong@gmail.com>",
+  "license": "MIT"
+}

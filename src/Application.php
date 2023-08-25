@@ -12,33 +12,13 @@ use il4mb\Mpanel\Core\EventSystem;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
 use il4mb\Mpanel\Exceptions\Error;
 use il4mb\Mpanel\Core\Modules\ModuleStack;
-use il4mb\Mpanel\TemplateEngine\TemplateEngine;
+use il4mb\Mpanel\Templates\Template;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
 use Throwable;
 
 class Application
 {
-
-
-    const GET_ASSIGNMENT      = 'app_get_assignment';
-    const POST_ASSIGNMENT     = 'app_post_assignment';
-    const PUT_ASSIGNMENT      = 'app_put_assignment';
-    const VIEW_ASSIGNMENT     = 'app_view_assignment';
-    const DELETE_ASSIGNMENT   = 'app_delete_assignment';
-    const ON_SET_TEMPLATE     = 'on_set_template';
-    const ON_GET_TEMPLATE     = 'on_get_template';
-    const ON_SET_CONFIG       = 'on_setconfig';
-    const ON_GET_CONFIG       = 'on_getconfig';
-    const ON_SET_DATABASE     = 'on_setdatabase';
-    const ON_GET_DATABASE     = 'on_getdatabase';
-    const ON_GET_PLUGIN       = 'on_getplugin';
-    const ON_SET_PLUGIN       = 'on_setplugin';
-    const ON_SET_LOGGER       = 'on_setlogger';
-    const ON_GET_LOGGER       = 'on_getlogger';
-    const ON_CONTENT_RESPONSE = 'on_response';
-    const ON_REQUEST          = 'on_request';
-    const BEFORE_REQUEST      = 'before_request';
-    const AFTER_REQUEST       = 'after_request';
-
 
     protected $router;
     protected $database;
@@ -47,6 +27,7 @@ class Application
     protected Directory $directory;
     protected EventSystem $eventSystem;
     protected ModuleStack $moduleManager;
+    protected Template $template;
 
 
     /**
@@ -59,12 +40,53 @@ class Application
      */
     public function __construct()
     {
+        try {
 
-        $this->eventSystem     = new EventSystem();
-        $this->router          = Router::getInstance();
-        $this->logger          = new Logger();
-        $this->pluginManager   = new PluginManager($this);
-        $this->moduleManager   = new ModuleStack();
+            $this->template        = new Template();
+            $this->eventSystem     = new EventSystem();
+            $this->router          = Router::getInstance();
+            $this->logger          = new Logger();
+            $this->pluginManager   = new PluginManager($this);
+            $this->moduleManager   = new ModuleStack();
+
+            $dispatcher = new EventDispatcher("lll", [$this, "dispatch"]);
+
+        
+
+
+        } 
+        catch (Throwable $e) 
+        {
+
+            $this->error_handler($e);
+        }
+    }
+
+
+    function dispatch($event) : void
+    {
+        print_r($event);
+    }
+
+    public function get_template(): Template {
+        return $this->template;
+    }
+
+
+    function error_handler(Throwable $e): void
+    {
+
+        
+        if ($e instanceof Error) {
+
+            echo $e->getHtmlView($this);
+        } else {
+
+            //$error = new Error($e->getMessage(), $e->getCode());
+           // echo  $error->getHtmlView();
+
+           print_r($e);
+        }
     }
 
 
@@ -128,7 +150,6 @@ class Application
 
         $this->database = $database;
 
-        $this->eventSystem->fire(self::ON_SET_DATABASE, [$database]);
     }
 
 
@@ -141,8 +162,6 @@ class Application
      */
     public function getDatabase(): Database
     {
-
-        $this->eventSystem->fire(self::ON_GET_DATABASE, [$this->database]);
 
         return $this->database;
     }
@@ -160,7 +179,6 @@ class Application
 
         $this->logger = $logger;
 
-        $this->eventSystem->fire(self::ON_SET_LOGGER, [$logger]);
     }
 
 
@@ -173,8 +191,6 @@ class Application
      */
     public function getLogger(): Logger
     {
-
-        $this->eventSystem->fire(self::ON_GET_LOGGER, [$this->logger]);
 
         return $this->logger;
     }
@@ -191,8 +207,6 @@ class Application
      */
     public function get(string $path, mixed $callback): Router
     {
-
-        $this->eventSystem->fire(self::GET_ASSIGNMENT, [$path, $callback]);
 
         $this->router->get($path, $callback);
 
@@ -211,8 +225,6 @@ class Application
      */
     public function post(string $path, mixed $callback)
     {
-
-        $this->eventSystem->fire(self::POST_ASSIGNMENT, [$path, $callback]);
 
         $this->router->post($path, $callback);
 
@@ -233,8 +245,6 @@ class Application
     public function put(string $path, mixed $callback)
     {
 
-        $this->eventSystem->fire(self::PUT_ASSIGNMENT, [$path, $callback]);
-
         $this->router->put($path, $callback);
 
         return $this->router;
@@ -253,8 +263,6 @@ class Application
     public function delete(string $path, mixed $callback)
     {
 
-        $this->eventSystem->fire(self::DELETE_ASSIGNMENT, [$path, $callback]);
-
         $this->router->delete($path, $callback);
 
         return $this->router;
@@ -268,10 +276,9 @@ class Application
      */
     public function run(): void
     {
+
         try {
 
-            // Trigger the BEFORE_REQUEST event
-            $this->eventSystem->fire(self::BEFORE_REQUEST);
 
             // Create a new request
             $request = new Request();
@@ -282,23 +289,9 @@ class Application
             // Send the response
             $this->sendResponse($this->router->dispatch($request));
 
-            // Trigger the AFTER_REQUEST event
-            $this->eventSystem->fire(self::AFTER_REQUEST);
-            
-        }
-        catch (Throwable $e) 
-        {
+        } catch (Throwable $e) {
 
-            if ($e instanceof Error) 
-            {
-
-                echo $e->getHtmlView();
-
-            } else {
-
-                $error = new Error($e->getMessage(), $e->getCode());
-                echo  $error->getHtmlView();
-            }
+            $this->error_handler($e);
         }
     }
 
@@ -318,10 +311,10 @@ class Application
 
             if (!json_last_error()) {
 
-              //  $data = array_merge($data, $this->getConfig()->all());
+                //  $data = array_merge($data, $this->getConfig()->all());
             } else {
 
-               // $data = $this->config->all();
+                // $data = $this->config->all();
             }
 
             // if (isset($this->templateEngine) && $this->templateEngine instanceof TemplateEngine) {
@@ -329,8 +322,6 @@ class Application
             //     $response->setContent($this->templateEngine->render($data));
             // }
         }
-
-        $this->eventSystem->fire(self::ON_CONTENT_RESPONSE, [$response]);
 
         // Send content
         echo $response->getContent();

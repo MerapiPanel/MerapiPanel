@@ -4,7 +4,6 @@ namespace il4mb\Mpanel\Exceptions;
 
 use Exception;
 use il4mb\Mpanel\Application;
-use il4mb\Mpanel\Core\EventSystem;
 use Throwable;
 
 class Error extends Exception
@@ -34,18 +33,18 @@ class Error extends Exception
      *
      * @return string The HTML view.
      */
-    public function getHtmlView()
+    public function getHtmlView(Application $app)
     {
+        $error = [
+            'message' => $this->getMessage(),
+            'code' => $this->getCode(),
+            'file' => $this->getFile(),
+            'line' => $this->getLine(),
+            'trace' => $this->getTrace()
+        ];
 
-        // Define the HTML view for the custom exception
-        $view = '<div style="border: 1px solid red; padding: 10px; background-color: #ffebeb; position:fixed; top: 50%; left:50%; transform:translate(-50%, -50%); width: 100%; max-width: 600px;">';
-        $view .= '<h2>Error: ' . $this->getMessage() . '</h2>';
-        $view .= '<p>Code: ' . $this->getCode() . '</p>';
-        $view .= '<p>File: ' . $this->getFile() . '</p>';
-        $view .= '<p>Line: ' . $this->getLine() . '</p>';
-        $view .= '</div>';
-
-        return $view;
+        $app->get_template()->addGlobal('error', $error);
+       return $app->get_template()->render("/error/error.html.twig");
         
     }
 
