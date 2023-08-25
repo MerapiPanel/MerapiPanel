@@ -1,0 +1,6 @@
+services:
+    App\EventListener\CustomExceptionListener:
+        arguments:
+            $twig: '@twig'
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.exception' }

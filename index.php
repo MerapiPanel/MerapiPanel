@@ -1,15 +1,15 @@
 <?php
 
 use il4mb\Mpanel\Application;
-use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 
 require_once __DIR__ . "/vendor/autoload.php";
-/*
+
+
 $app = new Application();
 $app->run();
-*/
+
 
 $translator = new Translator('en'); // Default locale is 'en'
 $translator->addLoader('yaml', new YamlFileLoader());

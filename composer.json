@@ -8,7 +8,11 @@
         "symfony/asset": "^6.3",
         "symfony/webpack-encore-bundle": "^2.0",
         "symfony/translation": "^6.3",
-        "symfony/yaml": "^6.3"
+        "symfony/yaml": "^6.3",
+        "symfony/twig-pack": "^1.0",
+        "symfony/http-kernel": "^6.3",
+        "symfony/event-dispatcher": "^6.3",
+        "symfony/routing": "^6.3"
     },
     "license": "MIT",
     "autoload": {

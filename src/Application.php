@@ -2,7 +2,6 @@
 
 namespace il4mb\Mpanel;
 
-use il4mb\Mpanel\Config\Config;
 use il4mb\Mpanel\Core\Database;
 use il4mb\Mpanel\Core\Directory;
 use il4mb\Mpanel\Core\Http\Request;
@@ -10,9 +9,9 @@ use il4mb\Mpanel\Core\Http\Response;
 use il4mb\Mpanel\Logger\Logger;
 use il4mb\Mpanel\Core\Http\Router;
 use il4mb\Mpanel\Core\EventSystem;
-use il4mb\Mpanel\Core\File;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
 use il4mb\Mpanel\Exceptions\Error;
+use il4mb\Mpanel\Core\Modules\ModuleStack;
 use il4mb\Mpanel\TemplateEngine\TemplateEngine;
 use Throwable;
 
@@ -42,13 +41,12 @@ class Application
 
 
     protected $router;
-    protected $config;
     protected $database;
     protected $logger;
-    protected TemplateEngine $templateEngine;
     protected PluginManager $pluginManager;
     protected Directory $directory;
     protected EventSystem $eventSystem;
+    protected ModuleStack $moduleManager;
 
 
     /**
@@ -64,9 +62,9 @@ class Application
 
         $this->eventSystem     = new EventSystem();
         $this->router          = Router::getInstance();
-        $this->config          = new Config([]);
         $this->logger          = new Logger();
         $this->pluginManager   = new PluginManager($this);
+        $this->moduleManager   = new ModuleStack();
     }
 
 
@@ -117,69 +115,6 @@ class Application
 
         return $this->router;
     }
-
-
-
-
-    /**
-     * Sets the template engine for the class.
-     *
-     * @param TemplateEngine $templateEngine The template engine to be set.
-     * @return void
-     */
-    public function setTemplateEngine(TemplateEngine $templateEngine)
-    {
-
-        $this->templateEngine = $templateEngine;
-
-        $this->eventSystem->fire(self::ON_SET_TEMPLATE, [$templateEngine]);
-    }
-
-    /**
-     * Retrieves the template engine used by this object.
-     *
-     * @return TemplateEngine The template engine instance.
-     */
-    public function getTemplateEngine(): TemplateEngine
-    {
-
-        $this->eventSystem->fire(self::ON_GET_TEMPLATE, [$this->templateEngine]);
-
-        return $this->templateEngine;
-    }
-
-
-
-
-    /**
-     * Set the configuration for the object.
-     *
-     * @param Config $config The configuration object.
-     */
-    public function setConfig(Config $config)
-    {
-
-        $this->config = $config;
-
-        $this->eventSystem->fire(self::ON_SET_CONFIG, [$config]);
-    }
-
-
-
-
-    /**
-     * Retrieves the configuration.
-     *
-     * @return Config The configuration.
-     */
-    public function getConfig(): Config
-    {
-
-        $this->eventSystem->fire(self::ON_GET_CONFIG, [$this->config]);
-
-        return $this->config;
-    }
-
 
 
 
@@ -350,7 +285,9 @@ class Application
             // Trigger the AFTER_REQUEST event
             $this->eventSystem->fire(self::AFTER_REQUEST);
             
-        } catch (Throwable $e) {
+        }
+        catch (Throwable $e) 
+        {
 
             if ($e instanceof Error) 
             {
@@ -381,16 +318,16 @@ class Application
 
             if (!json_last_error()) {
 
-                $data = array_merge($data, $this->getConfig()->all());
+              //  $data = array_merge($data, $this->getConfig()->all());
             } else {
 
-                $data = $this->config->all();
+               // $data = $this->config->all();
             }
 
-            if (isset($this->templateEngine) && $this->templateEngine instanceof TemplateEngine) {
+            // if (isset($this->templateEngine) && $this->templateEngine instanceof TemplateEngine) {
 
-                $response->setContent($this->templateEngine->render($data));
-            }
+            //     $response->setContent($this->templateEngine->render($data));
+            // }
         }
 
         $this->eventSystem->fire(self::ON_CONTENT_RESPONSE, [$response]);
