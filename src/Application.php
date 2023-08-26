@@ -52,11 +52,6 @@ class Application
             $this->pluginManager   = new PluginManager($this);
             $this->moduleManager   = new ModuleStack();
 
-            $dispatcher = new EventDispatcher("lll", [$this, "dispatch"]);
-
-        
-
-
         } 
         catch (Throwable $e) 
         {
@@ -68,7 +63,7 @@ class Application
 
     function dispatch($event) : void
     {
-        print_r($event);
+        //print_r($event);
     }
 
     public function getLocalEngine(): LocaleEngine
@@ -94,7 +89,7 @@ class Application
             //$error = new Error($e->getMessage(), $e->getCode());
            // echo  $error->getHtmlView();
 
-           print_r($e);
+           //print_r($e);
         }
     }
 

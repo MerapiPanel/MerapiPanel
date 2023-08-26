@@ -30,13 +30,13 @@ class ModuleStack {
                $yml = Yaml::parseFile($ymlmod);
 
                $yml['location'] = strpos(PHP_OS, 'WIN') !== false ? str_replace("\\", "/", $filePath) : $filePath;
-               print_r($yml);
+               //print_r($yml);
 
-               echo"<hr>";
+               //echo"<hr>";
             }
         }
 
-        print_r($files);
+        //print_r($files);
     }
 
     

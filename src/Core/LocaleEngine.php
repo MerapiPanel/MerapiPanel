@@ -17,11 +17,19 @@ class LocaleEngine extends Translator
 
         $this->app = $app;
 
+        $locale = locale_get_default();
+        $locale = explode("_", $locale);
+
         parent::__construct('en'); // Default locale is 'en'
 
+        if (isset($locale[1])) {
+            $this->setLocale(strtolower($locale[1]));
+        }
+
         $this->addLoader('yaml', new YamlFileLoader());
+
         $this->addResource('yaml', $app->getDirectory() . '/Locales/locale.en.yaml', 'en');
         $this->addResource('yaml', $app->getDirectory() . '/Locales/locale.fr.yaml', 'fr');
-
+        $this->addResource('yaml', $app->getDirectory() . '/Locales/locale.id.yaml', 'id');
     }
 }
