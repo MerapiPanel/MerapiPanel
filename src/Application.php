@@ -14,8 +14,7 @@ use il4mb\Mpanel\Core\Plugin\PluginManager;
 use il4mb\Mpanel\Exceptions\Error;
 use il4mb\Mpanel\Core\Modules\ModuleStack;
 use il4mb\Mpanel\Core\TemplateEngine;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
+use il4mb\Mpanel\Twig\T_Engine;
 use Throwable;
 
 class Application
@@ -28,7 +27,7 @@ class Application
     protected Directory $directory;
     protected EventSystem $eventSystem;
     protected ModuleStack $moduleManager;
-    protected TemplateEngine $template;
+    protected T_Engine $template;
     protected LocaleEngine $locale;
 
 
@@ -45,7 +44,7 @@ class Application
         try {
 
             $this->locale          = new LocaleEngine($this);
-            $this->template        = new TemplateEngine($this);
+            $this->template        = new T_Engine($this);
             $this->eventSystem     = new EventSystem();
             $this->router          = Router::getInstance();
             $this->logger          = new Logger();
@@ -71,7 +70,7 @@ class Application
         return $this->locale;
     }
 
-    public function get_template(): TemplateEngine
+    public function get_template(): T_Engine
     {
         return $this->template;
     }

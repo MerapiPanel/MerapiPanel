@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Modules;
+namespace il4mb\Mpanel\Modules;
 
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Yaml\Yaml;

@@ -1,0 +1,4 @@
+routers:
+    admin: /admin
+    api: /api
+    web: /
