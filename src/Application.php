@@ -9,10 +9,11 @@ use il4mb\Mpanel\Core\Http\Response;
 use il4mb\Mpanel\Logger\Logger;
 use il4mb\Mpanel\Core\Http\Router;
 use il4mb\Mpanel\Core\EventSystem;
+use il4mb\Mpanel\Core\LocaleEngine;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
 use il4mb\Mpanel\Exceptions\Error;
 use il4mb\Mpanel\Core\Modules\ModuleStack;
-use il4mb\Mpanel\Templates\Template;
+use il4mb\Mpanel\Core\TemplateEngine;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 use Throwable;
@@ -27,7 +28,8 @@ class Application
     protected Directory $directory;
     protected EventSystem $eventSystem;
     protected ModuleStack $moduleManager;
-    protected Template $template;
+    protected TemplateEngine $template;
+    protected LocaleEngine $locale;
 
 
     /**
@@ -42,7 +44,8 @@ class Application
     {
         try {
 
-            $this->template        = new Template();
+            $this->locale          = new LocaleEngine($this);
+            $this->template        = new TemplateEngine($this);
             $this->eventSystem     = new EventSystem();
             $this->router          = Router::getInstance();
             $this->logger          = new Logger();
@@ -68,7 +71,13 @@ class Application
         print_r($event);
     }
 
-    public function get_template(): Template {
+    public function getLocalEngine(): LocaleEngine
+    {
+        return $this->locale;
+    }
+
+    public function get_template(): TemplateEngine
+    {
         return $this->template;
     }
 
@@ -110,10 +119,10 @@ class Application
         return $this->pluginManager;
     }
 
-    function get_directory(): Directory
+    function getDirectory()
     {
 
-        return $this->directory;
+        return __DIR__;
     }
 
     /**

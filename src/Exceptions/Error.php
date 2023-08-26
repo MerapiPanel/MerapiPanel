@@ -44,7 +44,7 @@ class Error extends Exception
         ];
 
         $app->get_template()->addGlobal('error', $error);
-       return $app->get_template()->render("/error/error.html.twig");
+       return $app->get_template()->load("/error/error.html.twig");
         
     }
 
