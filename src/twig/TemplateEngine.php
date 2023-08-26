@@ -15,7 +15,7 @@ class TemplateEngine
     public function __construct(Application $app)
     {
 
-        $loader = new FilesystemLoader($app->getDirectory() . "/Templates");
+        $loader = new FilesystemLoader($app->getDirectory() . "/template");
         $this->twig = new \Twig\Environment($loader, ['cache' => false]);
 
         // Load Symfony's Twig extensions
