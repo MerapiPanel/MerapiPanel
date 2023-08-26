@@ -5,7 +5,8 @@ namespace il4mb\Mpanel\Modules;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Yaml\Yaml;
 
-class ModuleStack {
+class ModuleStack 
+{
 
     protected $config = [
         "location" => __DIR__,
@@ -13,11 +14,12 @@ class ModuleStack {
     ];
 
 
-    public function __construct() {
+    public function __construct() 
+    {
 
         $files = glob($this->config["location"] . "/*/Service.php");
-        foreach ($files as $file) {
-            
+        foreach ($files as $file) 
+        {
 
             $fileSys = new File($file);
 
@@ -25,7 +27,8 @@ class ModuleStack {
             
             $ymlmod = $filePath."/module.yml";
 
-            if (file_exists($ymlmod)) {
+            if (file_exists($ymlmod)) 
+            {
                 
                $yml = Yaml::parseFile($ymlmod);
 
@@ -33,13 +36,10 @@ class ModuleStack {
 
             }
         }
-
     }
 
-    function init_controller() {
+    function init_controller() 
+    {
         
     }
-
-    
-    
 }

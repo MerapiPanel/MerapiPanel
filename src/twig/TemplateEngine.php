@@ -12,42 +12,42 @@ class TemplateEngine
 
     protected $twig;
 
-    public function __construct(Application $app)
+    public function __construct(?Application $app = null)
     {
 
-        $loader = new FilesystemLoader($app->getDirectory() . "/template");
+        $loader = new FilesystemLoader(__DIR__ . "/../template");
         $this->twig = new \Twig\Environment($loader, ['cache' => false]);
 
-        // Load Symfony's Twig extensions
-        // $this->twig->addExtension(new RoutingExtension($router)); // Pass your router instance
-        $this->twig->addExtension(new TranslationExtension($app->getLocalEngine())); // Pass your translator instance
+
+        $this->twig->addExtension(new TranslationExtension($app ? $app->getLocalEngine() : null)); // Pass your translator instance
         $this->twig->addExtension(new FormExtension()); // Form extension doesn't need additional dependencies
+
 
         // Load our own Twig extensions
         $files = glob(__DIR__ . "/extension/*.php");
-        foreach ($files as $file) 
-        {
+        foreach ($files as $file) {
 
             $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = "il4mb\Mpanel\Twig\Extension\\". ucfirst($file_name);
+            $className = "il4mb\Mpanel\Twig\Extension\\" . ucfirst($file_name);
 
-            if(class_exists($className))
+            if (class_exists($className)) 
             {
 
                 $this->twig->addExtension(new $className());
             }
-
         }
     }
 
     function load($template)
     {
+
         return $this->twig->render($template, []);
     }
 
     // Add a method to add global template variables
     public function addGlobal($name, $value)
     {
+
         $this->twig->addGlobal($name, $value);
     }
 

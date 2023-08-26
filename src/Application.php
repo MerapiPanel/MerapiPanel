@@ -4,6 +4,7 @@ namespace il4mb\Mpanel;
 
 use il4mb\Mpanel\Core\Database;
 use il4mb\Mpanel\Core\Directory;
+use il4mb\Mpanel\Exceptions\ErrorHandle;
 use il4mb\Mpanel\Core\Http\Request;
 use il4mb\Mpanel\Core\Http\Response;
 use il4mb\Mpanel\Logger\Logger;
@@ -12,9 +13,20 @@ use il4mb\Mpanel\Core\EventSystem;
 use il4mb\Mpanel\Core\LocaleEngine;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
 use il4mb\Mpanel\Exceptions\Error;
-use il4mb\Mpanel\Core\Modules\ModuleStack;
+use il4mb\Mpanel\Modules\ModuleStack;
 use il4mb\Mpanel\Twig\TemplateEngine;
 use Throwable;
+
+error_reporting(0);
+
+ // Instantiate the custom error handler class
+ $customErrorHandler = new ErrorHandle();
+
+ // Set the class method as the error handler
+// set_error_handler($customErrorHandler->shutdown());
+ // Register the shutdown function
+ register_shutdown_function($customErrorHandler->shutdown());
+
 
 class Application
 {
@@ -40,6 +52,8 @@ class Application
      */
     public function __construct()
     {
+
+       
         try {
 
             $this->locale          = new LocaleEngine($this);
@@ -50,12 +64,12 @@ class Application
             $this->pluginManager   = new PluginManager($this);
             $this->moduleManager   = new ModuleStack();
 
-        } 
-        catch (Throwable $e) 
-        {
+        } catch (Throwable $e) {
 
             $this->error_handler($e);
         }
+
+        
     }
 
 
@@ -64,7 +78,7 @@ class Application
         return $this->locale;
     }
 
-    public function get_template(): TemplateEngine
+    public function getTemplate(): TemplateEngine
     {
         return $this->template;
     }
@@ -73,17 +87,19 @@ class Application
     function error_handler(Throwable $e): void
     {
 
-        
+
         if ($e instanceof Error) {
 
             echo $e->getHtmlView($this);
         } else {
 
-            //$error = new Error($e->getMessage(), $e->getCode());
-           // echo  $error->getHtmlView();
+            $error = new Error($e->getMessage(), $e->getCode());
+            echo  $error->getHtmlView($this);
 
-           //print_r($e);
+            // print_r($e);
         }
+
+        exit;
     }
 
 
@@ -146,7 +162,6 @@ class Application
     {
 
         $this->database = $database;
-
     }
 
 
@@ -175,7 +190,6 @@ class Application
     {
 
         $this->logger = $logger;
-
     }
 
 
@@ -285,7 +299,6 @@ class Application
 
             // Send the response
             $this->sendResponse($this->router->dispatch($request));
-
         } catch (Throwable $e) {
 
             $this->error_handler($e);

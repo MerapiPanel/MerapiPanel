@@ -1,6 +1,13 @@
 {% extends "/base.html.twig" %}
 
-{% block page_title %}Page Error{% endblock %}
+{% block page_title %}
+{% if error.title %}
+{{ error.title | trans}}
+{% else %}
+{{ 'Page error' | trans }}
+{{ error.code }}
+{% endif %}
+{% endblock %}
 
 
 {% block stylesheets %}
@@ -39,7 +46,7 @@
 
 	.container {
 		display: flex;
-		flex-wrap: wrap-reverse;
+		flex-wrap: wrap;
 		max-width: 1200px;
 		margin: 1rem auto;
 	}
@@ -47,6 +54,9 @@
 	.container .col {
 		flex: 50% 1 0;
 		width: 100%;
+		max-width: 600px;
+		position: sticky;
+		top: 55px;
 	}
 
 	.snippet {
@@ -81,6 +91,10 @@
 	.content {
 		padding: 1rem;
 	}
+
+	#more {
+		display: none;
+	}
 </style>
 {% endblock %}
 
@@ -90,10 +104,12 @@
 <nav>
 	<div class="container">
 
-		<span>{{ 'Error' | trans }} {{ 'Debug' | trans }}</span>
+		<span>{{ 'Error' | trans }}
+			{{ 'Debug' | trans }}</span>
 
 		<div style="margin-left: auto;">
-			<?xml version="1.0" encoding="UTF-8"?>
+			<?xml
+				version="1.0" encoding="UTF-8"?>
 			<!-- Created with Inkscape (http://www.inkscape.org/) -->
 			<svg width="50px" height="38px" version="1.1" viewBox="0 0 153.55 105.12" xml:space="preserve"
 				xmlns="http://www.w3.org/2000/svg">
@@ -109,10 +125,6 @@
 <div class="container">
 	<div class="col">
 
-
-		{{ 'Error' | asset_url }}
-
-
 		<div class="content">
 			<article class="snippet">
 				<header>
@@ -124,26 +136,60 @@
 			</article>
 
 
+			{% if error.trace %}
 			<div>
 				<h2>{{'Trace'|trans}}</h2>
 				<ol>
 					{% for err in error.trace %}
 					<li>
-						<h3>{{ err.file }} #{{ err.line }}</h3>
+						<h3>{{ err.file }}
+							#{{ err.line }}</h3>
 						{{ err.function }}
 					</li>
 					{% endfor %}
 				</ol>
 			</div>
+			{% endif %}
 		</div>
 	</div>
 
 	<div class="col ">
 		<div class="content">
-			<h1>{{'Error' | trans}} {{ error.code }}</h1>
-			<p>{{ error.message }}</p>
+			{% if error.title %}
+			<h1>{{ error.title | trans}}</h1>
+			{% else %}
+			<h1>{{'Error' | trans}}
+				{{ error.code }}</h1>
+			{% endif %}
+			<p>{{ error.message | length <= 800 ? error.message : ('<p>'~error.message | slice(0, 800)
+					~ '<span id="dots">...</span><span id="more">' ~ error.message | slice(800, -1)
+						~ '</span></p><button onclick="myFunction()" id="myBtn">Read more</button>' ) | raw }}</p>
 		</div>
 	</div>
 </div>
 
+{% endblock %}
+
+
+{% block javascripts %}
+<script>
+
+
+	function myFunction() {
+		var dots = document.getElementById("dots");
+		var moreText = document.getElementById("more");
+		var btnText = document.getElementById("myBtn");
+
+		if (dots.style.display === "none") {
+			dots.style.display = "inline";
+			btnText.innerHTML = "Read more";
+			moreText.style.display = "none";
+		} else {
+			dots.style.display = "none";
+			btnText.innerHTML = "Read less";
+			moreText.style.display = "inline";
+		}
+	}
+
+</script>
 {% endblock %}

@@ -4,13 +4,14 @@ namespace il4mb\Mpanel\Exceptions;
 
 use Exception;
 use il4mb\Mpanel\Application;
+use il4mb\Mpanel\Twig\TemplateEngine;
 use Throwable;
 
 class Error extends Exception
 {
 
     const ON_ERROR = 'on_error';
-    
+
     /**
      * Class constructor.
      *
@@ -22,7 +23,6 @@ class Error extends Exception
     {
         // Call the parent class constructor.
         parent::__construct($message, $code, $previous);
-        
     }
 
 
@@ -31,9 +31,9 @@ class Error extends Exception
     /**
      * Returns the HTML view for the custom exception.
      *
-     * @return string The HTML view.
+     * @return string The HTML view
      */
-    public function getHtmlView(Application $app)
+    public function getHtmlView(Application|null $app = null)
     {
         $error = [
             'message' => $this->getMessage(),
@@ -41,23 +41,34 @@ class Error extends Exception
             'file' => $this->getFile(),
             'line' => $this->getLine(),
             'trace' => $this->getTrace(),
-            'snippet' => $this->getCodeSnippet($this->getFile(), $this->getLine()),
+            'snippet' => self::getCodeSnippet($this->getFile(), $this->getLine()),
         ];
 
-        $app->get_template()->addGlobal('error', $error);
-       return $app->get_template()->load("/error/error.html.twig");
-        
+        if ($app instanceof Application) {
+            /**
+             * @var Application $app
+             */
+            $template = $app->getTemplate();
+        } else {
+
+            $template = new TemplateEngine();
+        }
+
+        $template->addGlobal('error', $error);
+        return $template->load("/error/error.html.twig");
     }
 
-    function getCodeSnippet($file, $line, $contextLines = 5) {
+    static function getCodeSnippet($file, $line, $contextLines = 5)
+    {
+
         if (!file_exists($file)) {
             return 'File not found: ' . $file;
         }
-    
+
         $lines = file($file);
         $start = max(0, $line - $contextLines);
         $end = min(count($lines), $line + $contextLines);
-    
+
         $snippet = '';
         for ($i = $start; $i < $end; $i++) {
             $lineNumber = $i + 1;
@@ -68,9 +79,7 @@ class Error extends Exception
                 $snippet .= "{$lineNumber}: {$lineContent}\n";
             }
         }
-    
+
         return '<pre>' . $snippet . '</pre>';
     }
-    
-
 }
