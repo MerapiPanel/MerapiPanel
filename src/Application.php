@@ -13,8 +13,7 @@ use il4mb\Mpanel\Core\LocaleEngine;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
 use il4mb\Mpanel\Exceptions\Error;
 use il4mb\Mpanel\Core\Modules\ModuleStack;
-use il4mb\Mpanel\Core\TemplateEngine;
-use il4mb\Mpanel\Twig\T_Engine;
+use il4mb\Mpanel\Twig\TemplateEngine;
 use Throwable;
 
 class Application
@@ -27,7 +26,7 @@ class Application
     protected Directory $directory;
     protected EventSystem $eventSystem;
     protected ModuleStack $moduleManager;
-    protected T_Engine $template;
+    protected TemplateEngine $template;
     protected LocaleEngine $locale;
 
 
@@ -44,7 +43,7 @@ class Application
         try {
 
             $this->locale          = new LocaleEngine($this);
-            $this->template        = new T_Engine($this);
+            $this->template        = new TemplateEngine($this);
             $this->eventSystem     = new EventSystem();
             $this->router          = Router::getInstance();
             $this->logger          = new Logger();
@@ -60,17 +59,12 @@ class Application
     }
 
 
-    function dispatch($event) : void
-    {
-        //print_r($event);
-    }
-
     public function getLocalEngine(): LocaleEngine
     {
         return $this->locale;
     }
 
-    public function get_template(): T_Engine
+    public function get_template(): TemplateEngine
     {
         return $this->template;
     }

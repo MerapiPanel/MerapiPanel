@@ -1,4 +1,17 @@
+databse:
+    host: localhost
+    port: 3306
+    username: root
+    password:
+    database: merapi
+
 routers:
-    admin: /admin
-    api: /api
-    web: /
+    admin:
+        path: /admin
+        methods: GET
+    api:
+        path: /api
+        methods: GET, POST, PATCH, PUT, DELETE
+    web:
+        path: /
+        methods: GET

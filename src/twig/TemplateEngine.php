@@ -3,12 +3,11 @@
 namespace il4mb\Mpanel\Twig;
 
 use il4mb\Mpanel\Application;
-use il4mb\Mpanel\Twig\Extension\Bundle;
 use Twig\Loader\FilesystemLoader;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 
-class T_Engine
+class TemplateEngine
 {
 
     protected $twig;
