@@ -1,0 +1,2 @@
+modules:
+    - { name: Error, description: 'Error module', version: 1.0.0, author: Il4mb }

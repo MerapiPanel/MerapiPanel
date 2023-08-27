@@ -12,8 +12,10 @@ use il4mb\Mpanel\Core\LocaleEngine;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
 use il4mb\Mpanel\Core\Exception\ErrorHandle;
 use il4mb\Mpanel\Core\Logger\Logger;
-use il4mb\Mpanel\Modules\ModuleStack;
+use il4mb\Mpanel\Core\Module\ModuleSystem;
 use il4mb\Mpanel\Core\Twig\TemplateEngine;
+
+use il4mb\Mpanel\Modules\ModuleStack;
 use Throwable;
 
 error_reporting(0);
@@ -26,7 +28,6 @@ const app_config = __DIR__ . "/../config/app.yml";
 $config = new Config(app_config);
 
 
-
 class App
 {
 
@@ -36,7 +37,7 @@ class App
     protected PluginManager $pluginManager;
     protected Directory $directory;
     protected EventSystem $eventSystem;
-    protected ModuleStack $moduleManager;
+    protected ModuleSystem $moduleSystem;
     protected TemplateEngine $template;
     protected LocaleEngine $locale;
 
@@ -52,18 +53,25 @@ class App
     public function __construct()
     {
 
-        try {
+        try 
+        {
 
-            $this->locale          = new LocaleEngine($this);
-            $this->template        = new TemplateEngine($this);
-            $this->eventSystem     = new EventSystem();
-            $this->router          = Router::getInstance();
-            $this->logger          = new Logger();
-            $this->pluginManager   = new PluginManager($this);
-            $this->moduleManager   = new ModuleStack();
-        } catch (Throwable $e) {
-            ErrorHandle::getInstance()->catch_error($e);
+            $this->locale        = new LocaleEngine($this);
+            $this->template      = new TemplateEngine($this);
+            $this->eventSystem   = new EventSystem();
+            $this->router        = Router::getInstance();
+            $this->logger        = new Logger();
+            $this->pluginManager = new PluginManager($this);
+            $this->moduleSystem  = new ModuleSystem();
+
         }
+        catch (Throwable $e) 
+        {
+
+            ErrorHandle::getInstance()->catch_error($e);
+
+        }
+
     }
 
 

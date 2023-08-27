@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 class Config
 {
 
-    protected $config;
+    protected $config = [];
     private $yml;
 
 
@@ -29,9 +29,12 @@ class Config
                 throw new \Exception('Config file does not exist');
             }
 
-            $this->config = Yaml::parse($yml);
+            $value = Yaml::parse($yml);
+
+            if (is_array($value)) {
+                $this->config =  $value;
+            }
             $this->yml = $yml;
-            
         } else {
             $this->config = [];
         }
@@ -40,20 +43,30 @@ class Config
 
     public function get($key)
     {
-        return $this->config[$key]?? null;
+        return $this->config[$key] ?? null;
     }
 
 
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
+
         $this->config[$key] = $value;
 
-        if($this->yml) {
+        if ($this->yml) {
+            file_put_contents($this->yml, Yaml::dump($this->config));
+        }
+    }
+
+    public function save()
+    {
+        if ($this->yml) {
             file_put_contents($this->yml, Yaml::dump($this->config));
         }
     }
 
 
-    function getAll() {
+    function getAll()
+    {
         return $this->config;
     }
 }
