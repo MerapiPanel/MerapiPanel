@@ -2,6 +2,7 @@
 
 namespace il4mb\Mpanel\Core\Http;
 
+use Exception;
 use il4mb\Mpanel\Exceptions\Error;
 use Throwable;
 
@@ -195,7 +196,7 @@ class Router
 
         if (!isset($this->routeStack[$method])) 
         {
-            throw new Error("Unsupported HTTP method: $method", 405);
+            throw new Exception("Unsupported HTTP method: $method", 405);
         }
 
         /**
@@ -217,7 +218,7 @@ class Router
 
         }
 
-        throw new Error("Route not found $path", 404);
+        throw new Exception("Route not found $path", 404);
 
     }
 
