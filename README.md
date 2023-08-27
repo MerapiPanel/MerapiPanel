@@ -37,7 +37,7 @@ use il4mb\Mpanel\Application;
 
 required 'vendor/autoload.php';
 
-$app = Application::getinstance();
+$app = new Application();
 $app->run();
 ```
 

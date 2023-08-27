@@ -3,12 +3,13 @@
 namespace il4mb\Mpanel\Core\Exception;
 
 use il4mb\Mpanel\Core\Twig\TemplateEngine;
-
+use Throwable;
 
 class ErrorHandle
 {
 
     private static ErrorHandle $instace;
+    private bool $locked = false;
 
     final private function __construct()
     {
@@ -23,14 +24,7 @@ class ErrorHandle
         return self::$instace;
     }
 
-    function shutdown(): callable
-    {
-        return function () {
-            echo $this->catch_error();
-        };
-    }
-
-    function catch_error()
+    public function shutdown()
     {
 
         $error = error_get_last();
@@ -63,24 +57,58 @@ class ErrorHandle
         $error = [
             "type" => $errorType,
             "message" => $errorMessage,
+            "code" => "999",
             "file" => $error['file'],
             "line" => $error['line'],
             "stack_trace" => $stackTrace
         ];
 
-        return $this->view($error);
+        $this->view($error);
+    }
+
+    function catch_error(Throwable $e)
+    {
+
+        $error = [
+            "type"        => get_class($e),
+            "code"        => $e->getCode(),
+            "message"     => $e->getMessage(),
+            "file"        => $e->getFile(),
+            "line"        => $e->getLine(),
+            "stack_trace" => []
+        ];
+
+        foreach ($e->getTrace() as $key => $trace) {
+            $error['stack_trace'][] = "#" . $key . " " . $trace['file'] . ':' . $trace['line'];
+        }
+
+        $this->view($error);
     }
 
 
     function view($error)
     {
 
+        if ($this->locked) {
+            return;
+        }
+
+        $this->locked = true;
+
+
         $error['snippet'] = $this->getCodeSnippet($error['file'], $error['line']);
 
         $template = new TemplateEngine();
         $template->addGlobal('error', $error);
 
-        return $template->load("/error/error.html.twig");
+        if($template->templateExists("/error/error$error[code].html.twig")) {
+
+            echo $template->load("/error/error$error[code].html.twig");
+            return;
+
+        }
+
+        echo $template->load("/error/error.html.twig");
     }
 
 
@@ -89,6 +117,7 @@ class ErrorHandle
     {
 
         if (!file_exists($file)) {
+
             return 'File not found: ' . $file;
         }
 

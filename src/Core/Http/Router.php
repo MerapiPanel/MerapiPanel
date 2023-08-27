@@ -2,19 +2,20 @@
 
 namespace il4mb\Mpanel\Core\Http;
 
+use Exception;
 use il4mb\Mpanel\Exceptions\Error;
-use Throwable;
 
 class Router
 {
 
 
-    private $routeStack = [
-        "GET" => [],
-        "POST" => [],
-        "PUT" => [],
+    protected $routeStack = [
+        "GET"    => [],
+        "POST"   => [],
+        "PUT"    => [],
         "DELETE" => []
     ];
+
     protected $adminPrefix = '/panel/admin';
     private static $instance;
 
@@ -26,6 +27,9 @@ class Router
      */
     private function __construct()
     {
+
+
+
     }
 
 
@@ -195,7 +199,7 @@ class Router
 
         if (!isset($this->routeStack[$method])) 
         {
-            throw new Error("Unsupported HTTP method: $method", 405);
+            throw new Exception("Unsupported HTTP method: $method", 405);
         }
 
         /**
@@ -217,7 +221,7 @@ class Router
 
         }
 
-        throw new Error("Route not found $path", 404);
+        throw new Exception("Route not found $path", 404);
 
     }
 

@@ -10,17 +10,16 @@ use il4mb\Mpanel\Core\Http\Router;
 use il4mb\Mpanel\Core\EventSystem;
 use il4mb\Mpanel\Core\LocaleEngine;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
-use il4mb\Mpanel\Core\Exception\Error;
 use il4mb\Mpanel\Core\Exception\ErrorHandle;
 use il4mb\Mpanel\Core\Logger\Logger;
 use il4mb\Mpanel\Modules\ModuleStack;
-use il4mb\Mpanel\Twig\TemplateEngine;
+use il4mb\Mpanel\Core\Twig\TemplateEngine;
 use Throwable;
 
 error_reporting(0);
 
 // Register the shutdown function
-register_shutdown_function(ErrorHandle::getInstance()->shutdown());
+register_shutdown_function([ErrorHandle::getInstance(), 'shutdown']);
 
 const app_config = __DIR__ . "/../config/app.yml";
 
@@ -53,7 +52,6 @@ class App
     public function __construct()
     {
 
-
         try {
 
             $this->locale          = new LocaleEngine($this);
@@ -64,8 +62,7 @@ class App
             $this->pluginManager   = new PluginManager($this);
             $this->moduleManager   = new ModuleStack();
         } catch (Throwable $e) {
-
-            $this->error_handler($e);
+            ErrorHandle::getInstance()->catch_error($e);
         }
     }
 
@@ -79,24 +76,6 @@ class App
     {
         return $this->template;
     }
-
-
-    function error_handler(Throwable $e): void
-    {
-
-
-        if ($e instanceof Error) {
-
-            echo $e->getHtmlView($this);
-        } else {
-
-            // $error = new Error($e->getMessage(), $e->getCode());
-            // echo  $error->getHtmlView($this);
-        }
-
-        exit;
-    }
-
 
 
     public function getEventSystem(): EventSystem
@@ -285,18 +264,15 @@ class App
 
         try {
 
-
             // Create a new request
             $request = new Request();
-
             // Run the plugins
             $this->pluginManager->runPlugins();
-
             // Send the response
             $this->sendResponse($this->router->dispatch($request));
-        } catch (Throwable $e) {
 
-            $this->error_handler($e);
+        } catch (Throwable $e) {
+            ErrorHandle::getInstance()->catch_error($e);
         }
     }
 
