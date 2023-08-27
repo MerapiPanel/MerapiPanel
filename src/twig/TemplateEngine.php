@@ -2,7 +2,8 @@
 
 namespace il4mb\Mpanel\Twig;
 
-use il4mb\Mpanel\Application;
+
+use il4mb\Mpanel\Core\App;
 use Twig\Loader\FilesystemLoader;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Extension\FormExtension;
@@ -12,7 +13,7 @@ class TemplateEngine
 
     protected $twig;
 
-    public function __construct(?Application $app = null)
+    public function __construct(?App $app = null)
     {
 
         $loader = new FilesystemLoader(__DIR__ . "/../template");

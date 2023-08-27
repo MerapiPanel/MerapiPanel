@@ -2,8 +2,6 @@
 
 namespace il4mb\Mpanel\Core;
 
-use Exception;
-use il4mb\Mpanel\Application;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 
@@ -11,9 +9,9 @@ class LocaleEngine extends Translator
 {
 
 
-    protected Application $app;
+    protected App $app;
 
-    public function __construct(Application $app)
+    public function __construct(App $app)
     {
 
         $this->app = $app;

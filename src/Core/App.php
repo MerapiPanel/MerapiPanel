@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel;
+namespace il4mb\Mpanel\Core;
 
 use il4mb\Mpanel\Core\Database;
 use il4mb\Mpanel\Core\Directory;
@@ -19,16 +19,11 @@ use Throwable;
 
 error_reporting(0);
 
- // Instantiate the custom error handler class
- $customErrorHandler = new ErrorHandle();
-
- // Set the class method as the error handler
-// set_error_handler($customErrorHandler->shutdown());
  // Register the shutdown function
- register_shutdown_function($customErrorHandler->shutdown());
+register_shutdown_function(ErrorHandle::getInstance()->shutdown());
 
 
-class Application
+class App
 {
 
     protected $router;
@@ -93,10 +88,8 @@ class Application
             echo $e->getHtmlView($this);
         } else {
 
-            $error = new Error($e->getMessage(), $e->getCode());
-            echo  $error->getHtmlView($this);
-
-            // print_r($e);
+            // $error = new Error($e->getMessage(), $e->getCode());
+            // echo  $error->getHtmlView($this);
         }
 
         exit;

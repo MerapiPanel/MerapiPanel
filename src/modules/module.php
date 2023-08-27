@@ -2,15 +2,36 @@
 
 namespace il4mb\Mpanel\Modules;
 
-abstract class ModuleAbstract {
+use il4mb\Mpanel\Core\Event\EventListenerInterface;
 
-    /**
-     * private constructor to prevent instantiation
-     */
-    private final function __construct(){}
+abstract class ModuleAbstract implements EventListenerInterface {
 
-    public function init() {
+    protected $eventDispatcher;
 
+    public function __construct($eventDispatcher) 
+    {
+
+        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher->addListener('user.registered', $this);
+        $this->eventDispatcher->addListener('order.placed', $this);
+
+    }
+
+
+    public function init() 
+    {
+
+    }
+
+
+   
+
+
+    public function handle($event) 
+    {
+
+
+        
     }
     
 }

@@ -10,8 +10,6 @@ use Throwable;
 class Error extends Exception
 {
 
-    const ON_ERROR = 'on_error';
-
     /**
      * Class constructor.
      *

@@ -3,6 +3,7 @@
 namespace il4mb\Mpanel\Core\Plugin;
 
 use il4mb\Mpanel\Application;
+use il4mb\Mpanel\Core\App;
 use ReflectionClass;
 
 class PluginManager
@@ -11,9 +12,7 @@ class PluginManager
     
     protected array $plugins = [];
     protected array $erros   = [];
-    private Application $app;
-
-
+    private App $app;
 
 
 
@@ -22,7 +21,7 @@ class PluginManager
      *
      * @param Application $app The application object.
      */
-    public function __construct(Application $app)
+    public function __construct(App $app)
     {
 
         $this->app = $app;

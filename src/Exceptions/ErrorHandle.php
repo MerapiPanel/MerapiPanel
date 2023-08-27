@@ -4,8 +4,22 @@ namespace il4mb\Mpanel\Exceptions;
 
 use il4mb\Mpanel\Twig\TemplateEngine;
 
+
 class ErrorHandle
 {
+
+    private static ErrorHandle $instace;
+
+    final private function __construct(){}
+
+    public static function getInstance(): self
+    {
+        if (!isset(self::$instace)) {
+            self::$instace = new self();
+        }
+
+        return self::$instace;
+    }
 
     function shutdown(): callable
     {
@@ -40,7 +54,7 @@ class ErrorHandle
 
 
 
-    function getCodeSnippet($file, $line, $contextLines = 5)
+    function getCodeSnippet($file, $line, $contextLines = 10)
     {
 
         if (!file_exists($file)) {

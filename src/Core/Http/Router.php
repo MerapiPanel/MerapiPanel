@@ -9,7 +9,12 @@ class Router
 {
 
 
-    private $routeStack = [];
+    private $routeStack = [
+        "GET" => [],
+        "POST" => [],
+        "PUT" => [],
+        "DELETE" => []
+    ];
     protected $adminPrefix = '/panel/admin';
     private static $instance;
 
@@ -190,9 +195,7 @@ class Router
 
         if (!isset($this->routeStack[$method])) 
         {
-
             throw new Error("Unsupported HTTP method: $method", 405);
-
         }
 
         /**
