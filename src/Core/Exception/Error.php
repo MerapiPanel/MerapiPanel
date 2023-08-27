@@ -1,10 +1,10 @@
 <?php
 
-namespace il4mb\Mpanel\Exceptions;
+namespace il4mb\Mpanel\Core\Exception;
 
 use Exception;
-use il4mb\Mpanel\Application;
-use il4mb\Mpanel\Twig\TemplateEngine;
+use il4mb\Mpanel\Core\App;
+use il4mb\Mpanel\Core\Twig\TemplateEngine;
 use Throwable;
 
 class Error extends Exception
@@ -31,7 +31,7 @@ class Error extends Exception
      *
      * @return string The HTML view
      */
-    public function getHtmlView(Application|null $app = null)
+    public function getHtmlView(App|null $app = null)
     {
         $error = [
             'message' => $this->getMessage(),
@@ -42,9 +42,9 @@ class Error extends Exception
             'snippet' => self::getCodeSnippet($this->getFile(), $this->getLine()),
         ];
 
-        if ($app instanceof Application) {
+        if ($app instanceof App) {
             /**
-             * @var Application $app
+             * @var App $app
              */
             $template = $app->getTemplate();
         } else {

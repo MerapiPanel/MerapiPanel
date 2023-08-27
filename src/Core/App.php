@@ -4,23 +4,28 @@ namespace il4mb\Mpanel\Core;
 
 use il4mb\Mpanel\Core\Database;
 use il4mb\Mpanel\Core\Directory;
-use il4mb\Mpanel\Exceptions\ErrorHandle;
 use il4mb\Mpanel\Core\Http\Request;
 use il4mb\Mpanel\Core\Http\Response;
-use il4mb\Mpanel\Logger\Logger;
 use il4mb\Mpanel\Core\Http\Router;
 use il4mb\Mpanel\Core\EventSystem;
 use il4mb\Mpanel\Core\LocaleEngine;
 use il4mb\Mpanel\Core\Plugin\PluginManager;
-use il4mb\Mpanel\Exceptions\Error;
+use il4mb\Mpanel\Core\Exception\Error;
+use il4mb\Mpanel\Core\Exception\ErrorHandle;
+use il4mb\Mpanel\Core\Logger\Logger;
 use il4mb\Mpanel\Modules\ModuleStack;
 use il4mb\Mpanel\Twig\TemplateEngine;
 use Throwable;
 
 error_reporting(0);
 
- // Register the shutdown function
+// Register the shutdown function
 register_shutdown_function(ErrorHandle::getInstance()->shutdown());
+
+const app_config = __DIR__ . "/../config/app.yml";
+
+$config = new Config(app_config);
+
 
 
 class App
@@ -48,7 +53,7 @@ class App
     public function __construct()
     {
 
-       
+
         try {
 
             $this->locale          = new LocaleEngine($this);
@@ -58,13 +63,10 @@ class App
             $this->logger          = new Logger();
             $this->pluginManager   = new PluginManager($this);
             $this->moduleManager   = new ModuleStack();
-
         } catch (Throwable $e) {
 
             $this->error_handler($e);
         }
-
-        
     }
 
 

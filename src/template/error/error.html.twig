@@ -1,8 +1,8 @@
 {% extends "/base.html.twig" %}
 
 {% block page_title %}
-{% if error.title %}
-{{ error.title | trans}}
+{% if error.type %}
+{{ error.type | trans}}
 {% else %}
 {{ 'Page error' | trans }}
 {{ error.code }}
@@ -139,15 +139,13 @@
 			</article>
 
 
-			{% if error.trace %}
+			{% if error.stack_trace %}
 			<div>
-				<h2>{{'Trace'|trans}}</h2>
-				<ol>
-					{% for err in error.trace %}
-					<li>
-						<h3>{{ err.file }}
-							#{{ err.line }}</h3>
-						{{ err.function }}
+				<h2>{{'Stack trace'|trans}}</h2>
+				<ol style="list-style: none; margin: 0; padding: 0; margin-left: 0.8rem;">
+					{% for err in error.stack_trace %}
+					<li style="margin-bottom: 0.8rem;">
+						{{ err }}
 					</li>
 					{% endfor %}
 				</ol>
@@ -158,8 +156,8 @@
 
 	<div class="col ">
 		<div class="content">
-			{% if error.title %}
-			<h1>{{ error.title | trans}}</h1>
+			{% if error.type %}
+			<h1>{{ error.type | trans}}</h1>
 			{% else %}
 			<h1>{{'Error' | trans}}
 				{{ error.code }}</h1>

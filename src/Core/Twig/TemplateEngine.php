@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Twig;
+namespace il4mb\Mpanel\Core\Twig;
 
 
 use il4mb\Mpanel\Core\App;
@@ -16,7 +16,7 @@ class TemplateEngine
     public function __construct(?App $app = null)
     {
 
-        $loader = new FilesystemLoader(__DIR__ . "/../template");
+        $loader = new FilesystemLoader(__DIR__ . "/../../template");
         $this->twig = new \Twig\Environment($loader, ['cache' => false]);
 
 
@@ -29,7 +29,7 @@ class TemplateEngine
         foreach ($files as $file) {
 
             $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = "il4mb\Mpanel\Twig\Extension\\" . ucfirst($file_name);
+            $className = "il4mb\\Mpanel\\Core\\Twig\\Extension\\" . ucfirst($file_name);
 
             if (class_exists($className)) 
             {

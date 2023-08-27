@@ -2,7 +2,6 @@
 
 namespace il4mb\Mpanel\Core\Plugin;
 
-use il4mb\Mpanel\Application;
 use il4mb\Mpanel\Core\App;
 use ReflectionClass;
 
