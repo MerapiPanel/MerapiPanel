@@ -2,18 +2,10 @@
 
 namespace il4mb\Mpanel\Core;
 
-use il4mb\Mpanel\Core\Database;
-use il4mb\Mpanel\Core\Directory;
+use Exception;
+use il4mb\Mpanel\Core\Exception\ErrorHandle;
 use il4mb\Mpanel\Core\Http\Request;
 use il4mb\Mpanel\Core\Http\Response;
-use il4mb\Mpanel\Core\Http\Router;
-use il4mb\Mpanel\Core\EventSystem;
-use il4mb\Mpanel\Core\Locale\Engine;
-use il4mb\Mpanel\Core\Plugin\PluginManager;
-use il4mb\Mpanel\Core\Exception\ErrorHandle;
-use il4mb\Mpanel\Core\Logger\Logger;
-use il4mb\Mpanel\Core\Module\ModuleSystem;
-use il4mb\Mpanel\Core\Twig\TemplateEngine;
 use Throwable;
 
 // error_reporting(0);
@@ -22,7 +14,6 @@ use Throwable;
 register_shutdown_function([ErrorHandle::getInstance(), 'shutdown']);
 
 const app_config = __DIR__ . "/../config/app.yml";
-
 $config = new Config(app_config);
 
 class App extends Container
@@ -38,18 +29,11 @@ class App extends Container
      */
     public function __construct()
     {
+       
+        $this->register(Template\Engine::class);
+        $this->register(Http\Router::class);
+        $this->register(Module\System::class);        
 
-        try {
-
-            $this->register(Http\Router::class);
-            $this->register(Module\System::class);
-            $this->register(Locale\Engine::class);
-            $this->register(Template\Engine::class);
-
-        } catch (Throwable $e) {
-
-            ErrorHandle::getInstance()->catch_error($e);
-        }
     }
 
 

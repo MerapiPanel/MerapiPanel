@@ -70,7 +70,7 @@ class ErrorHandle
     {
 
         $error = [
-            "type"        => get_class($e),
+            "type"        => basename(get_class($e)),
             "code"        => $e->getCode(),
             "message"     => $e->getMessage(),
             "file"        => $e->getFile(),
@@ -79,7 +79,7 @@ class ErrorHandle
         ];
 
         foreach ($e->getTrace() as $key => $trace) {
-            $error['stack_trace'][] = "#" . $key . " " . $trace['file'] . ':' . $trace['line'];
+            $error['stack_trace'][] = "#" . $key . " " . (isset($trace['file']) ? $trace['file'] : $trace['function']) . ':' . (isset($trace['line']) ? $trace['line'] : "()");
         }
 
         $this->view($error);
@@ -101,11 +101,10 @@ class ErrorHandle
         $template = new Template\Engine();
         $template->addGlobal('error', $error);
 
-        if($template->templateExists("/error/error$error[code].html.twig")) {
+        if ($template->templateExists("/error/error$error[code].html.twig")) {
 
             echo $template->load("/error/error$error[code].html.twig");
             return;
-
         }
 
         echo $template->load("/error/error.html.twig");

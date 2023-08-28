@@ -10,6 +10,8 @@ use Throwable;
 class Error extends Exception
 {
 
+
+
     /**
      * Class constructor.
      *

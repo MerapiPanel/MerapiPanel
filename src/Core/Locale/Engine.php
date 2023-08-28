@@ -9,13 +9,11 @@ use Symfony\Component\Translation\Translator;
 class Engine extends Translator
 {
 
-
     protected Container $app;
 
-    public function __construct(Container $app)
+    public function __construct()
     {
 
-        $this->app = $app;
 
         $locale = locale_get_default();
         $locale = explode("_", $locale);
@@ -28,9 +26,10 @@ class Engine extends Translator
 
         $this->addLoader('yaml', new YamlFileLoader());
 
-      
-        $this->addResource('yaml', $app->getDirectory() . '/Locales/locale.en.yaml', 'en');
-        $this->addResource('yaml', $app->getDirectory() . '/Locales/locale.fr.yaml', 'fr');
-        $this->addResource('yaml', $app->getDirectory() . '/Locales/locale.id.yaml', 'id');
+        $this->addResource('yaml', __DIR__ . '/../../Locales/locale.en.yaml', 'en');
+        $this->addResource('yaml', __DIR__ . '/../../Locales/locale.fr.yaml', 'fr');
+        $this->addResource('yaml', __DIR__ . '/../../Locales/locale.id.yaml', 'id');
+
     }
+
 }

@@ -2,9 +2,10 @@
 
 namespace il4mb\Mpanel\Core\Module;
 
-use il4mb\Mpanel\Core\Event\EventListenerInterface;
+use il4mb\Mpanel\Core\Container;
+use il4mb\Mpanel\Core\Event\ObjectListener;
 
-abstract class ModuleAbstract implements EventListenerInterface
+abstract class ModuleAbstract extends ObjectListener
 {
 
     protected $attribute;
@@ -13,7 +14,10 @@ abstract class ModuleAbstract implements EventListenerInterface
     public function handle($event)
     {
 
+        
+
+
     }
 
-    abstract function init();
+    abstract function init(Container $container);
 }

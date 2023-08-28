@@ -4,23 +4,24 @@ namespace il4mb\Mpanel\Core\Template;
 
 
 use il4mb\Mpanel\Core\Container;
+use il4mb\Mpanel\Core\Locale\Engine as LocaleEngine;
 use Twig\Loader\FilesystemLoader;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use Symfony\Bridge\Twig\Extension\FormExtension;
 
 class Engine
 {
 
     protected $twig;
+    protected $loader;
+    protected $localeEngine;
 
-    public function __construct(?Container $container = null)
+    public function __construct()
     {
 
-        $loader = new FilesystemLoader(__DIR__ . "/../../template");
-        $this->twig = new \Twig\Environment($loader, ['cache' => false]);
-
-        $this->twig->addExtension(new TranslationExtension($container ? $container("locale", "engine") : null)); // Pass your translator instance
-        $this->twig->addExtension(new FormExtension()); // Form extension doesn't need additional dependencies
+        $this->localeEngine = new LocaleEngine();
+        $this->loader = new FilesystemLoader(__DIR__ . "/../../template");
+        $this->twig = new \Twig\Environment($this->loader, ['cache' => false]);
+        $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
 
 
         // Load our own Twig extensions
@@ -31,11 +32,19 @@ class Engine
             $file_name = pathinfo($file, PATHINFO_FILENAME);
             $className = "il4mb\\Mpanel\\Core\\Template\\Extension\\" . ucfirst($file_name);
 
-            if (class_exists($className)) {
+            if (class_exists($className)) 
+            {
 
                 $this->twig->addExtension(new $className());
             }
         }
+    }
+
+    function setContainer(?Container $container) 
+    {
+
+        $container->register($this->localeEngine);
+
     }
 
     function load($template)

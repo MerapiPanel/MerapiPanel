@@ -3,6 +3,7 @@
 namespace il4mb\Mpanel\Core\Module;
 
 use il4mb\Mpanel\Core\Config;
+use il4mb\Mpanel\Core\Container;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Yaml\Yaml;
 
@@ -12,14 +13,22 @@ final class System
     const CONF_FILE = __DIR__ . "/../../config/module.yml";
     public Config $config;
 
+    protected $container;
     protected $modules = [];
 
 
     public function __construct()
     {
 
-        $this->config = new Config(self::CONF_FILE);
+        $this->config    = new Config(self::CONF_FILE);
         $this->scanModule(__DIR__ . "/../../modules");
+    }
+
+
+    public function setContainer(?Container $container) 
+    {
+        
+        $this->container = $container;
     }
 
 

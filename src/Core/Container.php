@@ -3,52 +3,72 @@
 namespace il4mb\Mpanel\Core;
 
 use Exception;
+use il4mb\Mpanel\Core\Exception\CodeException;
+use il4mb\Mpanel\Core\Exception\ConstructorException;
 use ReflectionClass;
 
 class Container
 {
 
-    public function register(string $class, ...$args)
+    public function register(mixed $class, ...$args)
     {
+
+        if (is_object($class)) {
+
+            $instance = $class;
+            $class    = get_class($class);
+        }
+
+
+
         if (strpos(__NAMESPACE__, $class) === 0) {
 
             throw new Exception("You can`t register " . $class . " instance");
         }
 
-
-        if (class_exists($class)) {
+        try {
 
             $classNames      = array_values(array_filter(explode('\\', strtolower(substr($class, strlen(__NAMESPACE__))))));
-            $reflectionClass = new ReflectionClass($class);
-            $constructor     = $reflectionClass->getConstructor();
 
-            if ($constructor) {
+            if (!isset($instance)) {
 
-                $constructorParams = $constructor->getParameters();
-                $resolvedArgs      = [];
+                if (!class_exists($class)) {
 
-                foreach ($constructorParams as $param) {
+                    throw new Exception("Class $class does not exist");
+                } else {
 
-                    $paramName = $param->getName();
-                    $paramType = $param->getType();
+                    $reflectionClass = new ReflectionClass($class);
+                    $constructor     = $reflectionClass->getConstructor();
 
-                    if (ltrim($paramType, "\?") === Container::class || ltrim($paramType, "\?") === $this::class) {
+                    if ($constructor) {
 
-                        $resolvedArgs[] = $this;
+                        $constructorParams = $constructor->getParameters();
+                        $resolvedArgs      = [];
+
+                        foreach ($constructorParams as $param) {
+
+                            $paramName = $param->getName();
+                            $paramType = $param->getType();
+
+                            if (ltrim($paramType, "\?") === Container::class || ltrim($paramType, "\?") === $this::class) {
+
+                                throw new Exception("Object container can`t be used as argument for constructor\nYou can retrieve container using method getContainer()\nexample: setContainer(?Container \$container) in class $class");
+                            } else {
+
+                                if (isset($args[$paramName])) {
+                                    $resolvedArgs[] = $args[$paramName];
+                                } else {
+                                    throw new Exception("Missing argument '$paramName' for class '$class'");
+                                }
+                            }
+                        }
+
+                        $instance = $reflectionClass->newInstanceArgs($resolvedArgs);
                     } else {
 
-                        if (isset($args[$paramName])) {
-                            $resolvedArgs[] = $args[$paramName];
-                        } else {
-                            throw new Exception("Missing argument '$paramName' for class '$class'");
-                        }
+                        $instance = $reflectionClass->newInstanceWithoutConstructor();
                     }
                 }
-
-                $instance = $reflectionClass->newInstanceArgs($resolvedArgs);
-            } else {
-
-                $instance = $reflectionClass->newInstanceWithoutConstructor();
             }
 
             /**
@@ -61,24 +81,36 @@ class Container
 
                 $stack = [];
                 $nestedArray = &$stack;
-                foreach ($classNames as $value) 
-                {
+                foreach ($classNames as $value) {
 
                     $nestedArray[$value] = [];
 
-                    if ($value == strtolower(basename(get_class($instance)))) 
-                    {
+                    if ($value == strtolower(basename(get_class($instance)))) {
                         $nestedArray[$value] = $instance;
                     }
 
                     $nestedArray = &$nestedArray[$value];
                 }
 
-               // print_r($stack);
                 $this->$index = $stack;
+
+
+                if (method_exists($instance, 'setContainer')) {
+                    $instance->setContainer($this);
+                }
             }
-        } else {
-            throw new Exception("Class $class does not exist");
+        } catch (Exception $e) {
+
+            if (isset($reflectionClass)) {
+
+                $except = new CodeException($e->getMessage(), 0, $e);
+                $except->setFile($reflectionClass->getFileName());
+                $except->setLine($reflectionClass->getConstructor()->getStartLine());
+
+
+                throw $except;
+            }
+            throw $e;
         }
     }
 
@@ -114,26 +146,6 @@ class Container
             }
         }
 
-       // print_r($stack);
-
         return $stack;
-    }
-
-
-    public function __call($name, $arguments)
-    {
-
-        if (property_exists($this, $name)) {
-
-            return $this->$name;
-        }
-
-        throw new Exception("Instance $name does not exist");
-    }
-
-
-    function get_list()
-    {
-        return get_object_vars($this);
     }
 }
