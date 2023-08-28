@@ -1,17 +1,18 @@
 <?php
 
-namespace il4mb\Mpanel\Core;
+namespace il4mb\Mpanel\Core\Locale;
 
+use il4mb\Mpanel\Core\Container;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 
-class LocaleEngine extends Translator
+class Engine extends Translator
 {
 
 
-    protected App $app;
+    protected Container $app;
 
-    public function __construct(App $app)
+    public function __construct(Container $app)
     {
 
         $this->app = $app;

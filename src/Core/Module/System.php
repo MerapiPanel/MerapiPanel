@@ -6,7 +6,7 @@ use il4mb\Mpanel\Core\Config;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Yaml\Yaml;
 
-final class ModuleSystem
+final class System
 {
 
     const CONF_FILE = __DIR__ . "/../../config/module.yml";

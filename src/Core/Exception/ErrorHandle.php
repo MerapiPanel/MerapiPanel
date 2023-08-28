@@ -2,7 +2,7 @@
 
 namespace il4mb\Mpanel\Core\Exception;
 
-use il4mb\Mpanel\Core\Twig\TemplateEngine;
+use il4mb\Mpanel\Core\Template;
 use Throwable;
 
 class ErrorHandle
@@ -98,7 +98,7 @@ class ErrorHandle
 
         $error['snippet'] = $this->getCodeSnippet($error['file'], $error['line']);
 
-        $template = new TemplateEngine();
+        $template = new Template\Engine();
         $template->addGlobal('error', $error);
 
         if($template->templateExists("/error/error$error[code].html.twig")) {

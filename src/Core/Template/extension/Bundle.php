@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Twig\Extension;
+namespace il4mb\Mpanel\Core\Template\Extension;
 
 class Bundle extends \Twig\Extension\AbstractExtension
 {
