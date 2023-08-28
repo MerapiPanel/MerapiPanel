@@ -17,7 +17,7 @@ class Router
     ];
 
     protected $adminPrefix = '/panel/admin';
-    private static $instance;
+    private $instance;
 
 
 
@@ -25,32 +25,10 @@ class Router
      * Constructs a new instance of the class.
      * Private constructor to prevent direct instantiation
      */
-    private function __construct()
+    public function __construct()
     {
 
 
-
-    }
-
-
-    
-
-    /**
-     * Returns an instance of the class.
-     *
-     * @return self The instance of the class.
-     */
-    public static function getInstance()
-    {
-
-        if (!isset(self::$instance)) 
-        {
-
-            self::$instance = new self();
-
-        }
-
-        return self::$instance;
 
     }
 
@@ -81,14 +59,14 @@ class Router
      * @throws None
      * @return Route The route object.
      */
-    public static function get($path, $callback, $isAdmin = false) : Route
+    public function get($path, $callback, $isAdmin = false) : Route
     {
 
-        if ($isAdmin) $path = rtrim(self::getInstance()->adminPrefix, "/") . "/" . ltrim($path, "/");
+        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
 
         $route = new Route(Route::GET, $path, $callback);
 
-        return self::getInstance()->addRoute(Route::GET, $route);
+        return $this->addRoute(Route::GET, $route);
 
     }
 
@@ -103,14 +81,14 @@ class Router
      * @param bool $isAdmin Whether the route is for admin only.
      * @return Route The created route.
      */
-    public static function post($path, $callback, $isAdmin = false): Route
+    public function post($path, $callback, $isAdmin = false): Route
     {
 
-        if ($isAdmin) $path = rtrim(self::getInstance()->adminPrefix, "/") . "/" . ltrim($path, "/");
+        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
 
         $route = new Route(Route::POST, $path, $callback);
 
-        return self::getInstance()->addRoute(Route::POST, $route);
+        return $this->addRoute(Route::POST, $route);
 
     }
 
@@ -125,14 +103,14 @@ class Router
      * @param bool $isAdmin (optional) Whether the route is for admin use only. Defaults to false.
      * @return Route The added route.
      */
-    public static function put($path, $callback, $isAdmin = false): Route
+    public function put($path, $callback, $isAdmin = false): Route
     {
 
-        if ($isAdmin) $path = rtrim(self::getInstance()->adminPrefix, "/") . "/" . ltrim($path, "/");
+        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
 
         $route = new Route(Route::PUT, $path, $callback);
 
-        return self::getInstance()->addRoute(Route::PUT, $route);
+        return $this->addRoute(Route::PUT, $route);
 
     }
 
@@ -148,14 +126,14 @@ class Router
      * @throws \Some_Exception_Class Description of the exception that can be thrown.
      * @return \Route The created route.
      */
-    public static function delete($path, $callback, $isAdmin = false): Route
+    public function delete($path, $callback, $isAdmin = false): Route
     {
 
-        if ($isAdmin) $path = rtrim(self::getInstance()->adminPrefix, "/") . "/" . ltrim($path, "/");
+        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
 
         $route = new Route(Route::DELETE, $path, $callback);
 
-        return self::getInstance()->addRoute(Route::DELETE, $route);
+        return $this->addRoute(Route::DELETE, $route);
         
     }
 

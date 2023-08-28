@@ -14,8 +14,6 @@ use il4mb\Mpanel\Core\Exception\ErrorHandle;
 use il4mb\Mpanel\Core\Logger\Logger;
 use il4mb\Mpanel\Core\Module\ModuleSystem;
 use il4mb\Mpanel\Core\Twig\TemplateEngine;
-
-use il4mb\Mpanel\Modules\ModuleStack;
 use Throwable;
 
 error_reporting(0);
@@ -28,19 +26,17 @@ const app_config = __DIR__ . "/../config/app.yml";
 $config = new Config(app_config);
 
 
-class App
+class App extends Container
 {
 
-    protected $router;
     protected $database;
     protected $logger;
     protected PluginManager $pluginManager;
-    protected Directory $directory;
+    // protected Directory $directory;
     protected EventSystem $eventSystem;
     protected ModuleSystem $moduleSystem;
     protected TemplateEngine $template;
     protected LocaleEngine $locale;
-
 
     /**
      * Constructor function for initializing the class.
@@ -56,10 +52,11 @@ class App
         try 
         {
 
+            $this->register(Router::class);
+
             $this->locale        = new LocaleEngine($this);
             $this->template      = new TemplateEngine($this);
             $this->eventSystem   = new EventSystem();
-            $this->router        = Router::getInstance();
             $this->logger        = new Logger();
             $this->pluginManager = new PluginManager($this);
             $this->moduleSystem  = new ModuleSystem();
@@ -69,7 +66,6 @@ class App
         {
 
             ErrorHandle::getInstance()->catch_error($e);
-
         }
 
     }
@@ -109,28 +105,6 @@ class App
     {
 
         return __DIR__;
-    }
-
-    /**
-     * Set the router object.
-     *
-     * @param Router $router The router object to set.
-     */
-    public function setRouter(Router $router)
-    {
-
-        $this->router = $router;
-    }
-
-    /**
-     * Retrieves the router object.
-     *
-     * @return Router The router object.
-     */
-    public function getRouter()
-    {
-
-        return $this->router;
     }
 
 
@@ -190,80 +164,6 @@ class App
 
 
 
-
-    /**
-     * Get method for the router.
-     *
-     * @param string $path The path to match.
-     * @param callable $callback The callback function.
-     * @return Router The router object.
-     */
-    public function get(string $path, mixed $callback): Router
-    {
-
-        $this->router->get($path, $callback);
-
-        return $this->router;
-    }
-
-
-
-
-    /**
-     * Handles a POST request to a specific path.
-     *
-     * @param string $path The path to handle the POST request.
-     * @param callable $callback The callback function to execute when the POST request is made.
-     * @return Router The router object.
-     */
-    public function post(string $path, mixed $callback)
-    {
-
-        $this->router->post($path, $callback);
-
-        return $this->router;
-    }
-
-
-
-
-
-    /**
-     * Executes a PUT request on the specified path.
-     *
-     * @param string $path The path to execute the PUT request on.
-     * @param callable $callback The callback function to handle the PUT request.
-     * @return Router The Router object.
-     */
-    public function put(string $path, mixed $callback)
-    {
-
-        $this->router->put($path, $callback);
-
-        return $this->router;
-    }
-
-
-
-
-    /**
-     * Deletes a resource at the specified path.
-     *
-     * @param string $path The path of the resource to delete.
-     * @param callable $callback The callback function to execute when the resource is deleted.
-     * @return $this The current instance of the object.
-     */
-    public function delete(string $path, mixed $callback)
-    {
-
-        $this->router->delete($path, $callback);
-
-        return $this->router;
-    }
-
-
-
-
     /**
      * Runs the application.
      */
@@ -277,8 +177,7 @@ class App
             // Run the plugins
             $this->pluginManager->runPlugins();
             // Send the response
-            $this->sendResponse($this->router->dispatch($request));
-
+            $this->sendResponse($this->router()->dispatch($request));
         } catch (Throwable $e) {
             ErrorHandle::getInstance()->catch_error($e);
         }

@@ -6,40 +6,48 @@ use il4mb\Mpanel\Core\Config;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Yaml\Yaml;
 
-class ModuleSystem
+final class ModuleSystem
 {
 
     const CONF_FILE = __DIR__ . "/../../config/module.yml";
     public Config $config;
 
+    protected $modules = [];
+
+
     public function __construct()
     {
 
         $this->config = new Config(self::CONF_FILE);
-        $this->scanModule(__DIR__."/../../modules");
+        $this->scanModule(__DIR__ . "/../../modules");
     }
+
+
 
 
     function scanModule($directory)
     {
 
-        $files = glob($directory . "/**/Service*.php");
-        foreach ($files as $file) 
-        {
+        $mods  = [];
+        $files = glob($directory . "/**/module*.yml");
+        foreach ($files as $file) {
+
 
             $file = new File($file);
             $filePath = pathinfo($file->getRealPath(), PATHINFO_DIRNAME);
-            $ymlmod = $filePath . "/module.yml";
 
-            if (file_exists($ymlmod)) 
-            {
+            $yml = Yaml::parseFile($file);
+            $yml['location'] = strpos(PHP_OS, 'WIN') !== false ? str_replace("\\", "/", $filePath) : $filePath;
 
-                $yml = Yaml::parseFile($ymlmod);
+            $this->modules[] = new ModuleFactory($yml);
 
-                $yml['location'] = strpos(PHP_OS, 'WIN') !== false ? str_replace("\\", "/", $filePath) : $filePath;
-            }
+            $mods[] = basename($filePath);
         }
+
+        $this->config->set("mods", $mods);
     }
+
+
 
     function saveConfig()
     {

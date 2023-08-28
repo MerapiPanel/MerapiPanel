@@ -69,4 +69,15 @@ class Config
     {
         return $this->config;
     }
+
+
+    
+    public static function fromArray($array =[]) : Config
+    {
+        $config = new Config();
+        foreach ($array as $key => $value) {
+            $config->set($key, $value);
+        }
+        return $config;
+    }
 }
