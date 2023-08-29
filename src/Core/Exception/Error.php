@@ -2,84 +2,96 @@
 
 namespace il4mb\Mpanel\Core\Exception;
 
-use Exception;
-use il4mb\Mpanel\Core\App;
-use il4mb\Mpanel\Core\Twig\TemplateEngine;
+use il4mb\Mpanel\Core\Template;
 use Throwable;
 
-class Error extends Exception
+class Error extends ErrorAbstract
 {
 
+    private bool $locked = false;
 
 
-    /**
-     * Class constructor.
-     *
-     * @param string $message The error message.
-     * @param int $code The error code.
-     * @param Throwable|null $previous The previous throwable used for the exception chaining.
-     */
-    public function __construct(string $message, int $code = 0, ?Throwable $previous = null)
+    function shutdown() 
     {
-        // Call the parent class constructor.
-        parent::__construct($message, $code, $previous);
-    }
 
+        $error = error_get_last();
 
-
-
-    /**
-     * Returns the HTML view for the custom exception.
-     *
-     * @return string The HTML view
-     */
-    public function getHtmlView(App|null $app = null)
-    {
-        $error = [
-            'message' => $this->getMessage(),
-            'code' => $this->getCode(),
-            'file' => $this->getFile(),
-            'line' => $this->getLine(),
-            'trace' => $this->getTrace(),
-            'snippet' => self::getCodeSnippet($this->getFile(), $this->getLine()),
-        ];
-
-        if ($app instanceof App) {
-            /**
-             * @var App $app
-             */
-            $template = $app->getTemplate();
-        } else {
-
-            $template = new TemplateEngine();
+        if ($error === null) {
+            return;
         }
 
-        $template->addGlobal('error', $error);
-        return $template->load("/error/error.html.twig");
-    }
+        $errorMessage = $error['message'];
 
-    static function getCodeSnippet($file, $line, $contextLines = 5)
-    {
-
-        if (!file_exists($file)) {
-            return 'File not found: ' . $file;
+        // Extract the error type
+        $errorType = '';
+        if (strpos($errorMessage, ':') !== false) {
+            $errorType = trim(substr($errorMessage, 0, strpos($errorMessage, ':')));
         }
 
-        $lines = file($file);
-        $start = max(0, $line - $contextLines);
-        $end = min(count($lines), $line + $contextLines);
+        // Extract the error message
+        $errorMessage = trim(substr($errorMessage, strpos($errorMessage, ':') + 1));
 
-        $snippet = '';
-        for ($i = $start; $i < $end; $i++) {
-            $lineNumber = $i + 1;
-            $lineContent = htmlspecialchars($lines[$i]);
-            if ($lineNumber === $line) {
-                $snippet .= "<span class='highlight'>{$lineNumber}: {$lineContent}</span>\n";
-            } else {
-                $snippet .= "{$lineNumber}: {$lineContent}\n";
+        // Extract the stack trace
+        $stackTrace = [];
+        if (strpos($errorMessage, 'Stack trace:') !== false) {
+            $stackTraceSection = substr($errorMessage, strpos($errorMessage, 'Stack trace:') + 12);
+            $stackTraceLines = explode("\n", trim($stackTraceSection));
+            foreach ($stackTraceLines as $line) {
+                $stackTrace[] = trim($line);
             }
         }
 
-        return '<pre>' . $snippet . '</pre>';
+        $this->setType($errorType);
+        $this->setMessage($errorMessage);
+        $this->setCode(999);
+        $this->setFile($error['file']);
+        $this->setLine($error['line']);
+        $this->setTrace($stackTrace);
+
+        $this->view();
     }
+
+    function catch_error(Throwable $e)
+    {
+
+        $this->setType(basename(get_class($e)));
+        $this->setMessage($e->getMessage());
+        $this->setCode($e->getCode());
+        $this->setFile($e->getFile());
+        $this->setLine($e->getLine());
+        $this->setTrace($e->getTrace());
+
+        // foreach ($e->getTrace() as $key => $trace) {
+        //     $error['stack_trace'][] = "#" . $key . " " . (isset($trace['file']) ? $trace['file'] : $trace['function']) . ':' . (isset($trace['line']) ? $trace['line'] : "()");
+        // }
+
+        $this->view();
+    }
+
+
+    function view()
+    {
+
+        if ($this->locked) {
+            return;
+        }
+
+        $this->locked = true;
+
+
+        $error = $this->toArray();
+        $error['snippet'] = $this->getSnippet();
+
+        $template = new Template\Engine();
+        $template->addGlobal('error', $error);
+
+        if ($template->templateExists("/error/error$error[code].html.twig")) {
+
+            echo $template->load("/error/error$error[code].html.twig");
+            return;
+        }
+
+        echo $template->load("/error/error.html.twig");
+    }
+
 }
