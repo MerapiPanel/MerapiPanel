@@ -1,3 +1,6 @@
+> **Warning**
+> This repo is under development 
+
 # Merapi Panel: Open Source Blueprint for Web Applications
 Merapi Panel is an open-source blueprint that empowers developers to effortlessly build dynamic, scalable web applications. With its modular architecture, dynamic components, and active community, Merapi Panel provides the tools you need to create, customize, and scale your web projects with confidence.
 
