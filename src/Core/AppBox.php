@@ -7,7 +7,7 @@ use il4mb\Mpanel\Core\Exception\CodeException;
 use il4mb\Mpanel\Core\Exception\ConstructorException;
 use ReflectionClass;
 
-class Container
+class AppBox
 {
 
     public function register(mixed $class, ...$args)
@@ -19,12 +19,12 @@ class Container
             $class    = get_class($class);
         }
 
-
-
         if (strpos(__NAMESPACE__, $class) === 0) {
 
             throw new Exception("You can`t register " . $class . " instance");
         }
+
+
 
         try {
 
@@ -95,8 +95,8 @@ class Container
                 $this->$index = $stack;
 
 
-                if (method_exists($instance, 'setContainer')) {
-                    $instance->setContainer($this);
+                if (method_exists($instance, 'setBox')) {
+                    $instance->setBox($this);
                 }
             }
         } catch (Exception $e) {

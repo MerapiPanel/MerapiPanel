@@ -14,14 +14,10 @@ use il4mb\Mpanel\Core\Http\Request;
 use il4mb\Mpanel\Core\Http\Response;
 use Throwable;
 
-// error_reporting(0);
-
-// Register the shutdown function
-
 const app_config = __DIR__ . "/../config/app.yml";
 $config = new Config(app_config);
 
-class App extends Container
+class App extends AppBox
 {
 
     
@@ -37,10 +33,6 @@ class App extends Container
     {
 
         $this->register(Error::class);
-
-        register_shutdown_function([$this("exception", "error"), "shutdown"]);
-
-
         $this->register(Template\Engine::class);
         $this->register(Http\Router::class);
         $this->register(Module\System::class);

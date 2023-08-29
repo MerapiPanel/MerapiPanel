@@ -46,9 +46,9 @@ class Error extends ErrorAbstract
         $this->setCode(999);
         $this->setFile($error['file']);
         $this->setLine($error['line']);
-        $this->setTrace($stackTrace);
-
+        $this->setStackTrace($stackTrace);
         $this->view();
+
     }
 
     function catch_error(Throwable $e)
@@ -59,11 +59,7 @@ class Error extends ErrorAbstract
         $this->setCode($e->getCode());
         $this->setFile($e->getFile());
         $this->setLine($e->getLine());
-        $this->setTrace($e->getTrace());
-
-        // foreach ($e->getTrace() as $key => $trace) {
-        //     $error['stack_trace'][] = "#" . $key . " " . (isset($trace['file']) ? $trace['file'] : $trace['function']) . ':' . (isset($trace['line']) ? $trace['line'] : "()");
-        // }
+        $this->setStackTrace($e->getTrace());
 
         $this->view();
     }

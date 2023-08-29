@@ -2,7 +2,7 @@
 
 namespace il4mb\Mpanel\Core\Template;
 
-
+use il4mb\Mpanel\Core\AppBox;
 use il4mb\Mpanel\Core\Container;
 use il4mb\Mpanel\Core\Locale\Engine as LocaleEngine;
 use Twig\Loader\FilesystemLoader;
@@ -40,10 +40,10 @@ class Engine
         }
     }
 
-    function setContainer(?Container $container) 
+    function setContainer(?AppBox $box) 
     {
 
-        $container->register($this->localeEngine);
+        $box->register($this->localeEngine);
 
     }
 

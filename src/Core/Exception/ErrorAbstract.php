@@ -3,32 +3,37 @@
 namespace il4mb\Mpanel\Core\Exception;
 
 use Exception;
+use il4mb\Mpanel\Core\AppBox;
 use il4mb\Mpanel\Core\Container;
 
 abstract class ErrorAbstract extends Exception
 {
 
-    protected Container $container;
+    protected AppBox $container;
     protected $type;
     protected $message;
     protected $code;
     protected string $file;
     protected int $line;
-    protected array $trace;
+    protected array $stack_trace;
     protected string $snippet;
 
 
     public function __construct()
     {
+        error_reporting(0);
     }
 
 
-    public function setContainer(Container $container)
+    public function setContainer(AppBox $container)
     {
         $this->container = $container;
+
+        register_shutdown_function([$container("exception", "error"), "shutdown"]);
     }
 
-    public function getContainer() {
+    public function getContainer()
+    {
         return $this->container;
     }
 
@@ -38,7 +43,8 @@ abstract class ErrorAbstract extends Exception
         $this->type = $type;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -57,8 +63,7 @@ abstract class ErrorAbstract extends Exception
     {
         $this->file = $file;
 
-        if(isset($this->line)) 
-        {
+        if (isset($this->line)) {
             $this->snippet = $this->getCodeSnippet($file, $this->line);
         }
     }
@@ -67,26 +72,40 @@ abstract class ErrorAbstract extends Exception
     {
         $this->line = $line;
 
-        if(isset($this->file)) 
-        {
+        if (isset($this->file)) {
             $this->snippet = $this->getCodeSnippet($this->file, $line);
         }
     }
 
-    public function setTrace(array $trace)
+    public function setStackTrace(array $stack_trace)
     {
-        $this->trace = $trace;
+
+        $this->stack_trace = [];
+        foreach ($stack_trace as $key => $trace) {
+            if (gettype($trace) == "string") {
+                $this->stack_trace = $stack_trace;
+                break;
+            }
+            $this->stack_trace[] = "#" . $key . " " . (isset($trace['file']) ? $trace['file'] : $trace['function']) . ':' . (isset($trace['line']) ? $trace['line'] : "()");
+        }
+    }
+
+    function getStackTrace()
+    {
+        return $this->stack_trace;
     }
 
 
-    public function getSnippet() {
+    public function getSnippet()
+    {
 
         return $this->snippet;
     }
 
 
 
-    public function toArray() {
+    public function toArray()
+    {
 
         return [
             'type' => $this->getType(),
@@ -94,7 +113,7 @@ abstract class ErrorAbstract extends Exception
             'code' => $this->getCode(),
             'file' => $this->getFile(),
             'line' => $this->getLine(),
-            'trace' => $this->getTrace()
+            'stack_trace' => $this->getStackTrace()
         ];
     }
 
@@ -103,8 +122,7 @@ abstract class ErrorAbstract extends Exception
     private function getCodeSnippet(string $file, int $line, int $contextLines = 5)
     {
 
-        if (!file_exists($file)) 
-        {
+        if (!file_exists($file)) {
 
             return 'File not found: ' . $file;
         }

@@ -2,6 +2,7 @@
 
 namespace il4mb\Mpanel\Core\Module;
 
+use il4mb\Mpanel\Core\AppBox;
 use il4mb\Mpanel\Core\Config;
 use il4mb\Mpanel\Core\Container;
 use Symfony\Component\HttpFoundation\File\File;
@@ -13,7 +14,7 @@ final class System
     const CONF_FILE = __DIR__ . "/../../config/module.yml";
     public Config $config;
 
-    protected $container;
+    protected $box;
     protected $modules = [];
 
 
@@ -25,10 +26,10 @@ final class System
     }
 
 
-    public function setContainer(?Container $container) 
+    public function setContainer(?AppBox $box) 
     {
         
-        $this->container = $container;
+        $this->box = $box;
     }
 
 

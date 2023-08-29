@@ -2,14 +2,15 @@
 
 namespace il4mb\Mpanel\Core\Locale;
 
-use il4mb\Mpanel\Core\Container;
+use il4mb\Mpanel\Core\App;
+use il4mb\Mpanel\Core\AppBox;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 
 class Engine extends Translator
 {
 
-    protected Container $app;
+    protected AppBox $app;
 
     public function __construct()
     {
