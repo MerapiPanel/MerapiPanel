@@ -9,18 +9,15 @@
 
 namespace il4mb\Mpanel\Core;
 
-use il4mb\Mpanel\Core\Exception\Error;
 use il4mb\Mpanel\Core\Http\Request;
 use il4mb\Mpanel\Core\Http\Response;
 use Throwable;
 
-const app_config = __DIR__ . "/../config/app.yml";
-$config = new Config(app_config);
 
 class App extends AppBox
 {
 
-    
+    const app_config = __DIR__ . "/../config/app.yml";
     /**
      * Constructor function for initializing the class.
      * 
@@ -31,12 +28,10 @@ class App extends AppBox
      */
     public function __construct()
     {
-
-        $this->register(Error::class);
-        $this->register(Template\Engine::class);
-        $this->register(Http\Router::class);
-        $this->register(Module\System::class);
-
+        
+        $this->core_template();
+        $this->core_error();
+        
     }
 
 
@@ -55,13 +50,12 @@ class App extends AppBox
 
         try {
 
-            // Create a new request
-            $request = new Request();
+            $request = $this->core_http_request();
             // Send the response
-            $this->sendResponse($this("http", "router")->dispatch($request));
-
+            $this->sendResponse($this->core_http_router()->dispatch($request));
         } catch (Throwable $e) {
-            $this("exception", "error")->catch_error($e);
+
+            $this->core_error()->catch_error($e);
         }
     }
 

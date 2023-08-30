@@ -1,10 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Exception;
-
+namespace il4mb\Mpanel\Core\Error;
 use Exception;
 use il4mb\Mpanel\Core\AppBox;
-use il4mb\Mpanel\Core\Container;
 
 abstract class ErrorAbstract extends Exception
 {
@@ -21,7 +19,7 @@ abstract class ErrorAbstract extends Exception
 
     public function __construct()
     {
-        error_reporting(0);
+        // error_reporting(0);
     }
 
 

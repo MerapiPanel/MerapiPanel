@@ -1,21 +1,18 @@
 databse:
-
     host: localhost
     port: 3306
     username: root
     password:
     database: merapi
-
 routers:
-
     admin:
         path: /admin
         methods: GET
-
     api:
         path: /api
         methods: GET
-
     web:
         path: /
         methods: GET
+services:
+    - il4mb\Mpanel\Module\Index

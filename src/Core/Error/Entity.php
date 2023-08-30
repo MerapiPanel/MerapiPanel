@@ -1,15 +1,23 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Exception;
+namespace il4mb\Mpanel\Core\Error;
 
+use il4mb\Mpanel\Core\AppBox;
 use il4mb\Mpanel\Core\Template;
 use Throwable;
 
-class Error extends ErrorAbstract
+class Entity extends ErrorAbstract
 {
 
-    private bool $locked = false;
 
+    private bool $locked = false;
+    protected AppBox $box;
+
+
+    function setBox(AppBox $box)
+    {
+        $this->box = $box;
+    }
 
     function shutdown() 
     {
@@ -78,7 +86,7 @@ class Error extends ErrorAbstract
         $error = $this->toArray();
         $error['snippet'] = $this->getSnippet();
 
-        $template = new Template\Engine();
+        $template = $this->box->core_template();
         $template->addGlobal('error', $error);
 
         if ($template->templateExists("/error/error$error[code].html.twig")) {

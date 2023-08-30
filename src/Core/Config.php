@@ -13,7 +13,7 @@ class Config
 {
 
     protected $config = [];
-    private $yml;
+    protected $yml;
 
 
     public function __construct($yml = null)
@@ -29,12 +29,12 @@ class Config
                 throw new \Exception('Config file does not exist');
             }
 
-            $value = Yaml::parse($yml);
+            $yml = realpath($yml);
+            $value = Yaml::parseFile($yml);
 
-            if (is_array($value)) {
-                $this->config =  $value;
-            }
-            $this->yml = $yml;
+            $this->config =  $value;
+            $this->yml    = $yml;
+
         } else {
             $this->config = [];
         }

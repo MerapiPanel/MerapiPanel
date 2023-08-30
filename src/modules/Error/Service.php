@@ -1,18 +1,16 @@
 <?php
 
-namespace il4mb\Mpanel\Modules;
+namespace il4mb\Mpanel\Modules\Error;
 
-use il4mb\Mpanel\Core\Module\ModuleAbstract;
+use il4mb\Mpanel\Core\AppBox;
+
+class Engine {
 
 
-class Error extends ModuleAbstract {
-
-
-    public function init() 
+    public function init(AppBox $box) 
     {
-
-        
        
+        // print_r($box);
     }
 
 }

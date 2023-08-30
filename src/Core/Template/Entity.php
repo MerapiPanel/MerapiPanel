@@ -3,12 +3,11 @@
 namespace il4mb\Mpanel\Core\Template;
 
 use il4mb\Mpanel\Core\AppBox;
-use il4mb\Mpanel\Core\Container;
 use il4mb\Mpanel\Core\Locale\Engine as LocaleEngine;
 use Twig\Loader\FilesystemLoader;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 
-class Engine
+class Entity
 {
 
     protected $twig;
