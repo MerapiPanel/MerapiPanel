@@ -24,8 +24,7 @@ class ModFactory
             throw new \Exception('Module location is not set');
         }
 
-        $this->config = Config::fromArray($yml);
-
+        $this->config    = Config::fromArray($yml);
         $this->className = "il4mb\\Mpanel\\Modules\\" . basename($yml['location']) . "\\Engine";
 
     }

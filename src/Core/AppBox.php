@@ -42,6 +42,7 @@ class AppBox
         $className = "il4mb\\Mpanel";
 
         foreach ($segments as $key) {
+
             if (!isset($nested[$key])) {
                 $nested[$key] = [];
             }
@@ -49,40 +50,38 @@ class AppBox
             $nested = &$nested[$key];
         }
 
-        if(!class_exists($className)) 
-        {
+        if (!class_exists($className)) {
 
             $className .= "\\Entity";
         }
 
-        if (empty($nested) && class_exists($className)) 
-        {
+        if (empty($nested) && class_exists($className)) {
 
-            $classReflection = new ReflectionClass($className);
-            $classParams     = $classReflection->getConstructor()->getParameters();
-            $passedParams    = [];
+            $classReflection  = new ReflectionClass($className);
+            $classConstructor = $classReflection->getConstructor();
+
+            if ($classConstructor !== null) {
+
+                $classParams     = $classConstructor->getParameters();
+                $passedParams    = [];
 
 
-            foreach ($classParams as $param) {
+                foreach ($classParams as $param) {
 
-                $paramType = $param->getType();
+                    $paramType = $param->getType();
 
-                if ($paramType && (
-                    ltrim($paramType, "?") == self::class || 
-                    ltrim($paramType, "?") == $this::class
-                )) 
-                {
-                    break;
-                } 
-                else 
-                {
-                    $paramName = $param->getName();
-                    if (isset($arguments[$paramName])) {
-                        $passedParams[] = $arguments[$paramName];
+                    if ($paramType && (ltrim($paramType, "?") == self::class ||
+                        ltrim($paramType, "?") == $this::class
+                    )) {
+                        break;
+                    } else {
+                        $paramName = $param->getName();
+                        if (isset($arguments[$paramName])) {
+                            $passedParams[] = $arguments[$paramName];
+                        }
                     }
                 }
             }
-
 
             if (!empty($passedParams)) {
                 $nested = $classReflection->newInstanceArgs($passedParams);

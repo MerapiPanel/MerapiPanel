@@ -28,10 +28,8 @@ class App extends AppBox
      */
     public function __construct()
     {
-        
-        $this->core_template();
         $this->core_error();
-        
+        $this->core_template();
     }
 
 

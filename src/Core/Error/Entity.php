@@ -2,8 +2,6 @@
 
 namespace il4mb\Mpanel\Core\Error;
 
-use il4mb\Mpanel\Core\AppBox;
-use il4mb\Mpanel\Core\Template;
 use Throwable;
 
 class Entity extends ErrorAbstract
@@ -11,15 +9,8 @@ class Entity extends ErrorAbstract
 
 
     private bool $locked = false;
-    protected AppBox $box;
 
-
-    function setBox(AppBox $box)
-    {
-        $this->box = $box;
-    }
-
-    function shutdown() 
+    function shutdown()
     {
 
         $error = error_get_last();
@@ -56,7 +47,6 @@ class Entity extends ErrorAbstract
         $this->setLine($error['line']);
         $this->setStackTrace($stackTrace);
         $this->view();
-
     }
 
     function catch_error(Throwable $e)
@@ -79,23 +69,30 @@ class Entity extends ErrorAbstract
         if ($this->locked) {
             return;
         }
-
         $this->locked = true;
 
-
-        $error = $this->toArray();
+        $error            = $this->toArray();
         $error['snippet'] = $this->getSnippet();
 
         $template = $this->box->core_template();
-        $template->addGlobal('error', $error);
 
-        if ($template->templateExists("/error/error$error[code].html.twig")) {
 
-            echo $template->load("/error/error$error[code].html.twig");
-            return;
+        if ($template) {
+
+           // print_r($template);
+
+            $template->addGlobal('error', $error);
+
+            if ($template->templateExists("/error/error$error[code].html.twig")) {
+
+                echo $template->load("/error/error$error[code].html.twig");
+                return;
+            }
+
+            echo $template->load("/error/error.html.twig");
+            exit;
         }
 
-        echo $template->load("/error/error.html.twig");
+        print_r($error);
     }
-
 }

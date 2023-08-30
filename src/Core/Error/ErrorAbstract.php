@@ -3,11 +3,12 @@
 namespace il4mb\Mpanel\Core\Error;
 use Exception;
 use il4mb\Mpanel\Core\AppBox;
+use Throwable;
 
 abstract class ErrorAbstract extends Exception
 {
 
-    protected AppBox $container;
+    protected AppBox $box;
     protected $type;
     protected $message;
     protected $code;
@@ -19,20 +20,25 @@ abstract class ErrorAbstract extends Exception
 
     public function __construct()
     {
-        // error_reporting(0);
+        
+        error_reporting(0);
+        register_shutdown_function([$this, "shutdown"]);
     }
 
 
-    public function setContainer(AppBox $container)
-    {
-        $this->container = $container;
+    abstract public function catch_error(Throwable $e);
+    abstract public function view();
+    abstract public function shutdown();
 
-        register_shutdown_function([$container("exception", "error"), "shutdown"]);
+
+    final public function setBox(AppBox $box)
+    {
+        $this->box = $box;
     }
 
-    public function getContainer()
+    public function getBox()
     {
-        return $this->container;
+        return $this->box;
     }
 
 
