@@ -20,9 +20,15 @@ class Entity
     {
 
 
-        $this->localeEngine = new LocaleEngine();
-        $this->loader       = new FilesystemLoader(__DIR__ . "/../../template");
-        $this->twig         = new Twig($this->loader, ['cache' => false]);
+        
+    }
+
+    function setBox(?AppBox $box)
+    {
+
+        $this->localeEngine = $box->core_locale();
+        $this->loader       = $box->core_template_loader(__DIR__ . "/../../template");
+        $this->twig         = $box->core_template_twig($this->loader, ["cache" => false]);
         $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
 
 
@@ -38,35 +44,25 @@ class Entity
                 $this->twig->addExtension(new $className());
             }
         }
-    }
-
-    function setBox(?AppBox $box)
-    {
 
         $this->twig->addGlobal('guest', $box->core_mod_segment_guest());
         $this->twig->addGlobal('admin', $box->core_mod_segment_admin());
     }
 
-    function load($template)
-    {
+    function exist($name) {
 
-        if(!$this->twig) {
-            $this->twig = new Twig($this->loader, ['cache' => false]);
+        return false;
+    }
+
+
+    function render() {
+        return $this->twig->render($this->twig->getTemplate(), $this->twig->getGlobals());
+    }
+   
+    function __call($name, $arguments)
+    {
+        if(method_exists($this->twig, $name)) {
+            return call_user_func_array([$this->twig, $name], $arguments);
         }
-
-        return $this->twig->render($template, []);
-    }
-
-    // Add a method to add global template variables
-    public function addGlobal($name, $value)
-    {
-
-        $this->twig->addGlobal($name, $value);
-    }
-
-    // Add a method to check if a template exists
-    public function templateExists($templateName)
-    {
-        return $this->twig->getLoader()->exists($templateName);
     }
 }

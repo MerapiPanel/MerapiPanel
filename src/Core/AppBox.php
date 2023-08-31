@@ -41,19 +41,29 @@ class AppBox
         $nested = &$this->stack;
         $className = "il4mb\\Mpanel";
 
-        foreach ($segments as $key) {
+        foreach ($segments as $x => $key) {
 
             if (!isset($nested[$key])) {
                 $nested[$key] = [];
             }
             $className .= "\\" . ucfirst($key);
+
+            if (is_object($nested[$key]) && $x < count($segments) - 1) {
+                $nested[$key] = ["entity" => $nested[$key]];
+            }
             $nested = &$nested[$key];
         }
 
-        if (!class_exists($className)) {
 
+        if (is_array($nested) && isset($nested["entity"]) && is_object($nested["entity"])) {
+            return $nested["entity"];
+        }
+
+
+        if (!class_exists($className)) {
             $className .= "\\Entity";
         }
+
 
         if (empty($nested) && class_exists($className)) {
 
@@ -66,18 +76,30 @@ class AppBox
                 $passedParams    = [];
 
 
-                foreach ($classParams as $param) {
+                foreach ($classParams as $key => $param) {
 
                     $paramType = $param->getType();
 
                     if ($paramType && (ltrim($paramType, "?") == self::class ||
                         ltrim($paramType, "?") == $this::class
                     )) {
-                        break;
+
+                        throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
+
                     } else {
                         $paramName = $param->getName();
                         if (isset($arguments[$paramName])) {
+
                             $passedParams[] = $arguments[$paramName];
+
+                        } elseif(isset($arguments[$key]))  {
+
+                            $passedParams[] = $arguments[$key];
+
+                        } else {
+
+                            
+                            throw new \Exception("Missing argument: $paramName at key: $key");
                         }
                     }
                 }

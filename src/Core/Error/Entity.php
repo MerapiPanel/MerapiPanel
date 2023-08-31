@@ -58,7 +58,6 @@ class Entity extends ErrorAbstract
         $this->setFile($e->getFile());
         $this->setLine($e->getLine());
         $this->setStackTrace($e->getTrace());
-
         $this->view();
     }
 
@@ -66,33 +65,32 @@ class Entity extends ErrorAbstract
     function view()
     {
 
-        if ($this->locked) {
-            return;
-        }
-        $this->locked = true;
+        try {
 
-        $error            = $this->toArray();
-        $error['snippet'] = $this->getSnippet();
+            if ($this->locked) {
+                return;
+            }
+            $this->locked = true;
 
-        $template = $this->box->core_template();
+            $error            = $this->toArray();
+            $error['snippet'] = $this->getSnippet();
 
-
-        if ($template) {
-
-           // print_r($template);
-
+            $template = $this->box->core_template();
             $template->addGlobal('error', $error);
 
             if ($template->templateExists("/error/error$error[code].html.twig")) {
 
-                echo $template->load("/error/error$error[code].html.twig");
-                return;
+                $template->load("/error/error$error[code].html.twig");
+            } else {
+
+                $template->load("/error/error.html.twig");
             }
 
-            echo $template->load("/error/error.html.twig");
-            exit;
-        }
+            echo $template->render();
+            
+        } catch (\Exception $e) {
 
-        print_r($error);
+            print_r($e);
+        }
     }
 }

@@ -21,7 +21,7 @@ abstract class ErrorAbstract extends Exception
     public function __construct()
     {
         
-        error_reporting(0);
+        // error_reporting(0);
         register_shutdown_function([$this, "shutdown"]);
     }
 
