@@ -1,7 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core;
+namespace il4mb\Mpanel\Core\Cog;
 
+use ArrayAccess;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -9,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
  * used for reading config file
  * also for setting and getting
  */
-class Config
+class Config implements \ArrayAccess
 {
 
     protected $config = [];
@@ -34,10 +35,29 @@ class Config
 
             $this->config =  $value;
             $this->yml    = $yml;
-
         } else {
             $this->config = [];
         }
+    }
+
+
+    function offsetExists($k) : bool
+    {
+        return isset($this->config[$k]);
+    }
+    function offsetGet($k) : mixed
+    {
+
+        return $this->config[$k];
+    }
+    function offsetSet($k, $v) : void
+    {
+
+        $this->config[$k] = $v;
+    }
+    function offsetUnset($k) : void
+    {
+        unset($this->config[$k]);
     }
 
 
@@ -65,14 +85,7 @@ class Config
     }
 
 
-    function getAll()
-    {
-        return $this->config;
-    }
-
-
-    
-    public static function fromArray($array =[]) : Config
+    public static function fromArray($array = []): Config
     {
         $config = new Config();
         foreach ($array as $key => $value) {

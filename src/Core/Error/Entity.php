@@ -91,6 +91,7 @@ class Entity extends ErrorAbstract
         } catch (\Exception $e) {
 
             print_r($e);
+            exit;
         }
     }
 }

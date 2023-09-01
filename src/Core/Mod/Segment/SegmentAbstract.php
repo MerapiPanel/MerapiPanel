@@ -40,15 +40,20 @@ abstract class SegmentAbstract
         }
 
         $address =  "Modules" . $address . "\\" . $segment;
-       // $object = $this->box->$address($arguments);
 
-       $object = $this->getBox()->core_mod_proxy($arguments);
+        if(!class_exists($address))
+        {
+            throw new \Exception("Error: $address not found");
+        }
+        $object = $this->box->$address($arguments);
+
+        // $object = $this->getBox()->core_mod_proxy($address);
 
 
         if (!is_object($object)) {
             throw new \Exception("Error: $address not found");
         }
-        
+
         return call_user_func([$object, $method]);
     }
 }

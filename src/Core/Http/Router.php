@@ -3,6 +3,7 @@
 namespace il4mb\Mpanel\Core\Http;
 
 use Exception;
+use il4mb\Mpanel\Core\AppBox;
 use il4mb\Mpanel\Exceptions\Error;
 
 class Router
@@ -15,21 +16,13 @@ class Router
         "PUT"    => [],
         "DELETE" => []
     ];
-
+    protected AppBox $box;
     protected $adminPrefix = '/panel/admin';
-    private $instance;
 
 
+    public function setBox(AppBox $box) {
 
-    /**
-     * Constructs a new instance of the class.
-     * Private constructor to prevent direct instantiation
-     */
-    public function __construct()
-    {
-
-
-
+        $this->box = $box;
     }
 
 
@@ -342,12 +335,18 @@ class Router
 
             list($controller, $method) = explode('@', $callback);
 
-            $controllerClass = 'il4mb\\Mpanel\\Controllers\\' . $controller;
+            if(!class_exists($controller))
+            {
+                $controllerClass = 'il4mb\\Mpanel\\Controllers\\' . $controller;
+
+            } else {
+                $controllerClass = $controller;
+            }
 
             if (!class_exists($controllerClass)) 
             {
 
-                throw new Error("Controller not found: $controllerClass", 404);
+                throw new Exception("Controller not found: $controllerClass", 404);
 
             }
 
@@ -356,7 +355,7 @@ class Router
             if (!method_exists($controllerInstance, $method)) 
             {
 
-                throw new Error("Method not found: $method", 404);
+                throw new Exception("Method not found: $method", 404);
 
             }
 

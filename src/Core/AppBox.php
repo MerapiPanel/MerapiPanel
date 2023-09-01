@@ -2,12 +2,14 @@
 
 namespace il4mb\Mpanel\Core;
 
+use il4mb\Mpanel\Core\Cog\Config;
 use ReflectionClass;
 
 class AppBox
 {
 
 
+    protected bool $debug;
     protected $stack = [];
     protected Config $cog;
 
@@ -15,16 +17,23 @@ class AppBox
 
     final public function setConfig(string $fileYml)
     {
-        $this->cog = new Config($fileYml);
-        $services = $this->cog->get("services");
 
-        if ($services !== null) {
-            foreach ($services as $service) {
-                $this->register($service);
-            }
+        $this->cog = new Config($fileYml);
+        
+        if(!isset($this->cog['debug']))
+        {
+            throw new \Exception("Cofig error: debug not found, check config file the key 'debug' is missing, 'debug' is required with the value 'true' or 'false'"); 
+        }
+        if(!isset($this->cog['admin']))
+        {
+            throw new \Exception("Cofig error: admin not found, check config file the key 'admin' is missing, 'admin' is url path to admin segment");
+        }
+
+        if(!isset($this->cog['services']))
+        {
+            throw new \Exception("Cofig error: services not found, check config file the key 'services' is missing, 'services' is array of services");
         }
     }
-
 
 
     final public function getConfig(): Config
@@ -36,6 +45,7 @@ class AppBox
 
     final public function __call($address, $arguments)
     {
+
         $segments = explode("_", $address);
 
         $nested = &$this->stack;
@@ -59,9 +69,15 @@ class AppBox
             return $nested["entity"];
         }
 
-
         if (!class_exists($className)) {
             $className .= "\\Entity";
+        }
+
+
+        if(!class_exists($className))
+        {
+        
+            throw new \Exception("Error: $className not found");
         }
 
 

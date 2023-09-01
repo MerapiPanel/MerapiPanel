@@ -9,7 +9,6 @@
 
 namespace il4mb\Mpanel\Core;
 
-use il4mb\Mpanel\Core\Http\Request;
 use il4mb\Mpanel\Core\Http\Response;
 use Throwable;
 
@@ -28,9 +27,24 @@ class App extends AppBox
      */
     public function __construct()
     {
+        
         $this->core_error();
         $this->core_template();
+        $this->setConfig(self::app_config);
+
+        if(is_array($this->getConfig()->get("services")))
+        {
+            foreach($this->getConfig()->get("services") as $mod)
+            {
+                $address = $mod . "\\Controller\\Guest";
+                $address = strtolower(str_replace("\\", "_", $address));
+                $this->$address();                
+            }
+        }
+
     }
+
+
 
 
     function getDirectory()
@@ -68,6 +82,6 @@ class App extends AppBox
         $response->send();
 
         // Send content
-        echo $response->getContent();
+        //echo $response->getContent();
     }
 }

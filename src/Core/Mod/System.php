@@ -3,7 +3,7 @@
 namespace il4mb\Mpanel\Core\Module;
 
 use il4mb\Mpanel\Core\AppBox;
-use il4mb\Mpanel\Core\Config;
+use il4mb\Mpanel\Core\Cog\Config;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Yaml\Yaml;
 
