@@ -2,15 +2,14 @@
 
 namespace il4mb\Mpanel\Modules\Index\Controller;
 
-use il4mb\Mpanel\Core\AppBox;
-use il4mb\Mpanel\Core\Http\Response;
+use il4mb\Mpanel\Core\Box;
 
 class Guest
 {
     
     private $box;
     
-    public function setBox(AppBox $box)
+    public function setBox(Box $box)
     {
         $this->box = $box;
 
@@ -27,7 +26,9 @@ class Guest
     public function index()
     {
 
-       // throw new \Exception("Error: index not found");
-       return new Response("Hello World");
+        // throw new \Exception("Error: index not found");
+        $this->box->get_service("template")->render("index.html.twig");
+
+        $this->box->template()->render("content.html.twig");
     }
 }

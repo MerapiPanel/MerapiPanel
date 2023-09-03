@@ -2,7 +2,7 @@
 
 namespace il4mb\Mpanel\Core\Template;
 
-use il4mb\Mpanel\Core\AppBox;
+use il4mb\Mpanel\Core\Box;
 use il4mb\Mpanel\Core\Locale\Engine as LocaleEngine;
 use il4mb\Mpanel\Core\Mod\Segment\Admin;
 use il4mb\Mpanel\Core\Mod\Segment\Guest;
@@ -23,7 +23,7 @@ class Entity
         
     }
 
-    function setBox(?AppBox $box)
+    function setBox(?Box $box)
     {
 
         $this->localeEngine = $box->core_locale();

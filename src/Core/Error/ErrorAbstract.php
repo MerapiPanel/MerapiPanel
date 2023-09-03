@@ -2,13 +2,13 @@
 
 namespace il4mb\Mpanel\Core\Error;
 use Exception;
-use il4mb\Mpanel\Core\AppBox;
+use il4mb\Mpanel\Core\Box;
 use Throwable;
 
 abstract class ErrorAbstract extends Exception
 {
 
-    protected AppBox $box;
+    protected Box $box;
     protected $type;
     protected $message;
     protected $code;
@@ -31,7 +31,7 @@ abstract class ErrorAbstract extends Exception
     abstract public function shutdown();
 
 
-    final public function setBox(AppBox $box)
+    final public function setBox(Box $box)
     {
         $this->box = $box;
     }

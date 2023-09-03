@@ -3,12 +3,11 @@
 namespace il4mb\Mpanel\Core\Http;
 
 use Exception;
-use il4mb\Mpanel\Core\AppBox;
+use il4mb\Mpanel\Core\Box;
 use il4mb\Mpanel\Exceptions\Error;
 
 class Router
 {
-
 
     protected $routeStack = [
         "GET"    => [],
@@ -16,11 +15,11 @@ class Router
         "PUT"    => [],
         "DELETE" => []
     ];
-    protected AppBox $box;
+    protected Box $box;
     protected $adminPrefix = '/panel/admin';
 
 
-    public function setBox(AppBox $box) {
+    public function setBox(Box $box) {
 
         $this->box = $box;
     }
@@ -347,10 +346,9 @@ class Router
             {
 
                 throw new Exception("Controller not found: $controllerClass", 404);
-
             }
 
-            $controllerInstance = new $controllerClass($request, new Response());
+            $controllerInstance = $this->box->$controllerClass($request, new Response());
 
             if (!method_exists($controllerInstance, $method)) 
             {

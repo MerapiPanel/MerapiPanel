@@ -2,7 +2,7 @@
 
 namespace il4mb\Mpanel\Core\Mod\Segment;
 
-use il4mb\Mpanel\Core\AppBox;
+use il4mb\Mpanel\Core\Box;
 
 abstract class SegmentAbstract
 {
@@ -12,12 +12,12 @@ abstract class SegmentAbstract
     abstract function __isset($name);
 
 
-    final function setBox(?AppBox $box)
+    final function setBox(?Box $box)
     {
         $this->box = $box;
     }
 
-    final function getBox(): ?AppBox
+    final function getBox(): ?Box
     {
         return $this->box;
     }
