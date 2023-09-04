@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Mod\Segment;
+namespace il4mb\Mpanel\Core\Segment;
 
 use il4mb\Mpanel\Core\Box;
 

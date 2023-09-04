@@ -45,8 +45,11 @@ class Entity
             }
         }
 
-        $this->twig->addGlobal('guest', $box->core_mod_segment_guest());
-        $this->twig->addGlobal('admin', $box->core_mod_segment_admin());
+        $segment = $box->core_segment();
+        $this->twig->addGlobal("$segment", $segment);
+       
+        // $this->twig->addGlobal('guest', $box->core_segment_guest());
+        // $this->twig->addGlobal('admin', $box->core_mod_segment_admin());
     }
 
     function exist($name) {

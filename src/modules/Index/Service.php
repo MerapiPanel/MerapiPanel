@@ -2,11 +2,24 @@
 
 namespace il4mb\Mpanel\Modules\Index;
 
-class Service
+use il4mb\Mpanel\Core\BoxMod;
+use il4mb\Mpanel\Core\Mod\ModProxy;
+
+class Service 
 {
 
-    public function hallo()
+    protected $box;
+
+    public function __construct()
     {
-        return "Hallo";
+        print_r("Hello");
     }
+
+    function setBox($box)
+    {
+        $this->box = $box;
+        
+        $this->box->api_index();
+    }
+    
 }

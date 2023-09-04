@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Mod\Segment;
+namespace il4mb\Mpanel\Core\Segment;
 
 class Admin extends SegmentAbstract {
 
@@ -10,10 +10,6 @@ class Admin extends SegmentAbstract {
         if ('title' == $name) {
             return 'The title';
         }
-
-       // return "None";
-
-        // throw some kind of error
     }
 
     public function __isset($name)

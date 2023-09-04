@@ -1,6 +1,5 @@
 debug: true
 admin: "/panel/admin"
-services:
-    - Modules\Index
+service: Index
 mods: 
     - Index

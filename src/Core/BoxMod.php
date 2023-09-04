@@ -8,20 +8,32 @@ class BoxMod extends Box
 {
 
     protected $stack = [];
-  
+    protected Box $box;
+
     public function __construct()
 
     {
         $this->base = "il4mb\\Mpanel\\Modules";
     }
 
+    public function setBox(Box $box)
+    {
+        $this->box = $box;
+    }
+
+    public function getBox(): ?Box
+    {
+        return $this->box;
+    }
+
     function __call($name, $arguments)
     {
 
-        $class = $this->base . "\\" . ltrim($name, "\\"). "\\Service";
+        $parts    = explode("_", $name);
+        $name     = ucfirst($parts[0]);
+        $class    = $this->base . "\\" . ucfirst(ltrim($name, "\\")) . "\\Service";
 
-        if(!class_exists($class))
-        {
+        if (!class_exists($class)) {
             throw new \Exception("Error: $class not found");
         }
 
@@ -47,10 +59,22 @@ class BoxMod extends Box
 
 
         if (empty($nested)) {
-            $nested = new ModProxy();
+
+            $nested = new ModProxy($className);
+
+            if (method_exists($nested, "setBox")) {
+                call_user_func([$nested, "setBox"], $this);
+            }
+        }
+
+        if (isset($parts[1])) {
+
+            unset($parts[0]);
+            $method = implode("_", $parts);
+
+            call_user_func([$nested, $method]);
         }
 
         return $nested;
-        
     }
 }

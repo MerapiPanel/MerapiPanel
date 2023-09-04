@@ -32,7 +32,7 @@ class BoxApp extends Box
             throw new \Exception("Cofig error: admin not found, check config file the key 'admin' is missing, 'admin' is url path to admin segment");
         }
 
-        if (!isset($this->cog['services'])) {
+        if (!isset($this->cog['service'])) {
             throw new \Exception("Cofig error: services not found, check config file the key 'services' is missing, 'services' is array of services");
         }
     }

@@ -12,7 +12,6 @@ namespace il4mb\Mpanel\Core;
 use il4mb\Mpanel\Core\Http\Response;
 use Throwable;
 
-
 class App extends BoxApp
 {
 
@@ -27,21 +26,24 @@ class App extends BoxApp
      */
     public function __construct()
     {
-        
+
+       // ob_start();
+
         $this->core_error();
         $this->core_template();
         $this->setConfig(self::app_config);
 
-        if(is_array($this->getConfig()->get("mods")))
-        {
-            foreach($this->getConfig()->get("mods") as $mod)
-            {
-                $address = $mod . "\\Controller\\Guest";
-                $address = strtolower(str_replace("\\", "_", $address));
-                $this->core_boxmod()->$mod();                
-            }
-        }
+        if ($this->getConfig()->get("service")) {
 
+            $service = $this->getConfig()->get("service");
+
+            // $address = $mod . "\\Controller\\Guest";
+            // $address = strtolower(str_replace("\\", "_", $address));
+
+            $mod = $this->core_boxmod()->$service();
+            // $mod->api_hallo();
+        }
+        //ob_end_clean();
     }
 
 
@@ -62,12 +64,12 @@ class App extends BoxApp
 
         try {
 
-            $request = $this->core_http_request();
+            // $request = $this->core_http_request();
             // Send the response
-            $this->sendResponse($this->core_http_router()->dispatch($request));
+            // $this->sendResponse($this->core_http_router()->dispatch($request));
         } catch (Throwable $e) {
 
-            $this->core_error()->catch_error($e);
+            // $this->core_error()->catch_error($e);
         }
     }
 
