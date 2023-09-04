@@ -8,67 +8,56 @@ use il4mb\Mpanel\Core\BoxMod;
 final class ModProxy
 {
 
-    protected string $base;
+    protected string $classInstance;
     protected Box $box;
-    protected $modService;
+    protected $instance;
 
-    function __construct($classService)
+    function __construct($classInstance)
     {
-        $this->base = pathinfo($classService, PATHINFO_DIRNAME);
+        $this->classInstance = $classInstance;
     }
 
     public function setBox($box)
     {
+
         $this->box = $box;
-
-        $this->modService = $this->createReflection();
+        $this->instance = $this->createInstance($this->classInstance);
+        
     }
 
-
-    private function service()
+    private function createInstance($classInstance = null)
     {
-    }
 
-    private function createReflection($segment = "service")
-    {
-        $class = $this->base . "\\" . ucfirst(ltrim($segment, "\\"));
-        $reflection = new \ReflectionClass($class);
-        $object = $reflection->newInstanceWithoutConstructor();
+        if (!class_exists($classInstance)) {
 
-        if (method_exists($object, "setBox")) {
-            call_user_func([$object, "setBox"], $this->box);
+            throw new \Exception("Module $classInstance not found");
+
+        } else {
+
+            $reflection = new \ReflectionClass($classInstance);
+            $object = $reflection->newInstanceWithoutConstructor();
+
+            if (method_exists($object, "setBox")) {
+                call_user_func([$object, "setBox"], $this->box);
+            }
+            return $object;
         }
-        return $object;
     }
 
     public function __call($name, $arguments)
     {
-      //  if(method_exists($this->modService, $name)){
-            return call_user_func_array([$this->modService, $name], $arguments);
-        //} else {
-          //  throw new \Exception("Method $name not found");
-        //}
+
+        return call_user_func([$this->instance, $name], $arguments);
+
     }
 
-    private function createSegment($command)
+    public function isMethodExists($name)
     {
-        if (!strpos($command, "_")) {
-            throw new \Exception("underscore is required in method name");
-        }
+        return method_exists($this->instance, $name);
+    }
 
-        $segments = explode("_", $command);
-
-        $segment = [
-            "segment" => (string) $this->box->getBox()->core_segment(),
-            "entity"  => "",
-            "method"  => ""
-        ];
-
-        $segment["entity"]  = ucfirst($segments[0]);
-        unset($segments[0]);
-        $segment["method"] = implode("_", $segments);
-
-
-        return $segment;
+    public function __toString()
+    {
+        return "(Module)" . $this->classInstance;
     }
 }

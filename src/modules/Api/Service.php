@@ -16,14 +16,26 @@ class Service
     {
         $parts = explode("_", $name);
 
-        print_r($parts);
-        $name = ucfirst($parts[0]);
+        $mod     = ucfirst($parts[0]);
+        $address = $mod . "\\Api\\Guest";
+        $object  = $this->box->$address();
+        unset($parts[0]);
 
-        return $this->box->$name();
+        if (!empty($parts)) {
+
+            $method = implode("_", $parts);
+
+            if ($object->isMethodExists($method)) {
+
+                return call_user_func([$object, $method], $arguments);
+
+            } else {
+
+                throw new \Exception("API " . $mod . " doesn't have method " . $method);
+
+            }
+        }
+
+        return $object;
     }
-
-    // public function hallo()
-    // {
-    //     echo "Hallo";
-    // }
 }

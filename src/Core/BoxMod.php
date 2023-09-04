@@ -31,7 +31,11 @@ class BoxMod extends Box
 
         $parts    = explode("_", $name);
         $name     = ucfirst($parts[0]);
-        $class    = $this->base . "\\" . ucfirst(ltrim($name, "\\")) . "\\Service";
+        $class    = $this->base . "\\" . ucfirst(ltrim($name, "\\"));
+
+        if(!class_exists($class)) {
+            $class .= "\\Service";
+        }
 
         if (!class_exists($class)) {
             throw new \Exception("Error: $class not found");
@@ -72,7 +76,7 @@ class BoxMod extends Box
             unset($parts[0]);
             $method = implode("_", $parts);
 
-            call_user_func([$nested, $method]);
+            return call_user_func([$nested, $method]);
         }
 
         return $nested;
