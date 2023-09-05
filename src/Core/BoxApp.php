@@ -8,16 +8,10 @@ use ReflectionClass;
 class BoxApp extends Box
 {
 
-
+    protected $base = "il4mb\\Mpanel\\Core";
     protected bool $debug;
     protected $stack = [];
     protected Config $cog;
-
-    public function __construct()
-    {
-        $this->base = "il4mb\\Mpanel";
-    }
-
 
 
     final public function setConfig(string $fileYml)
@@ -57,7 +51,19 @@ class BoxApp extends Box
         $segments = explode("_", $address);
 
         $nested = &$this->stack;
-        $className = "il4mb\\Mpanel";
+        $className = $this->base;
+
+
+        foreach ($segments as $x => $key) {
+            if(strpos($className, "\\" . ucfirst($key))) {
+                unset($segments[$x]);
+                
+            } else {
+
+                $segments = array_values($segments);
+                break;
+            }
+        }
         
 
         foreach ($segments as $x => $key) {
@@ -65,18 +71,30 @@ class BoxApp extends Box
             if (!isset($nested[$key])) {
                 $nested[$key] = [];
             }
-            $className .= "\\" . ucfirst($key);
-
-            if (is_object($nested[$key]) && $x < count($segments) - 1) {
-                $nested[$key] = ["entity" => $nested[$key]];
+        
+            if ($x < count($segments) - 1) {
+                // Ensure that "entity" key is set if the next segment is not the last one
+                if (is_object($nested[$key])) {
+                    $nested[$key] = ["entity" => $nested[$key]];
+                }
             }
+      
+            // Append the current segment to $className, ensuring there's no duplication
+            if (strpos($className, "\\" . ucfirst($key)) === false) {
+                $className .= "\\" . ucfirst($key);
+            }
+
             $nested = &$nested[$key];
         }
 
 
+        // before construction
         if (is_array($nested) && isset($nested["entity"]) && is_object($nested["entity"])) {
             return $nested["entity"];
         }
+
+
+
 
         if (!class_exists($className)) {
             $className .= "\\Entity";
@@ -141,6 +159,12 @@ class BoxApp extends Box
             if (method_exists($nested, 'setBox')) {
                 call_user_func(array($nested, 'setBox'), $this);
             }
+        }
+
+
+        // after construction
+        if (is_array($nested) && isset($nested["entity"]) && is_object($nested["entity"])) {
+            return $nested["entity"];
         }
 
         return $nested;

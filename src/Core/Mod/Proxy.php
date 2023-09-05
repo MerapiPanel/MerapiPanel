@@ -62,31 +62,15 @@ final class Proxy
     {
         $meta = $this->getDetails();
 
-        try {
+        if (method_exists($this->instance, $name)) {
 
             return call_user_func([$this->instance, $name], ...$arguments);
 
-        } catch (\Exception $e) {
+        } else {
 
-            throw new \Exception("Module {$meta['name']} doesn't have method $name");
-
-        } catch (\TypeError $e) {
-
-            throw new \Exception("Type error: {$e->getMessage()}");
-            
+            throw new \Exception("Module <b>{$meta['name']}</b> doesn't have method $name");
         }
     }
-
-
-
-
-
-
-    public function isMethodExists($name)
-    {
-        return method_exists($this->instance, $name);
-    }
-
 
 
     public function getDetails()

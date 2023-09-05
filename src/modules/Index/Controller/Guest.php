@@ -34,6 +34,6 @@ class Guest
         // throw new \Exception("Error: index not found");
         //$this->box->get_service("template")->render("index.html.twig");
 
-        $this->box->core_view()->render("content.html.twig");
+        $this->box->view()->render("content.html.twig");
     }
 }

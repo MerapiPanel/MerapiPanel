@@ -11,10 +11,10 @@ class Service
     {
         $this->box = $box;
 
-        $api = $this->box->api_index();
+        // $api = $this->box->api_index();
 
-        $detail =  $api->getDetails();
+        // $detail =  $api->getDetails();
 
-        print_r($detail);
+        // print_r($detail);
     }
 }

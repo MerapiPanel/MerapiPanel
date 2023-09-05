@@ -19,7 +19,8 @@ class Router
     protected $adminPrefix = '/panel/admin';
 
 
-    public function setBox(Box $box) {
+    public function setBox(Box $box)
+    {
 
         $this->box = $box;
     }
@@ -36,12 +37,11 @@ class Router
     {
 
         $this->adminPrefix = $prefix;
-
     }
 
 
 
-    
+
     /**
      * Retrieves a route object for a GET request.
      *
@@ -51,7 +51,7 @@ class Router
      * @throws None
      * @return Route The route object.
      */
-    public function get($path, $callback, $isAdmin = false) : Route
+    public function get($path, $callback, $isAdmin = false): Route
     {
 
         if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
@@ -59,11 +59,10 @@ class Router
         $route = new Route(Route::GET, $path, $callback);
 
         return $this->addRoute(Route::GET, $route);
-
     }
 
 
-    
+
 
     /**
      * Creates a new POST route and adds it to the route collection.
@@ -81,12 +80,11 @@ class Router
         $route = new Route(Route::POST, $path, $callback);
 
         return $this->addRoute(Route::POST, $route);
-
     }
 
 
 
-    
+
     /**
      * Adds a PUT route to the router.
      *
@@ -103,7 +101,6 @@ class Router
         $route = new Route(Route::PUT, $path, $callback);
 
         return $this->addRoute(Route::PUT, $route);
-
     }
 
 
@@ -126,13 +123,12 @@ class Router
         $route = new Route(Route::DELETE, $path, $callback);
 
         return $this->addRoute(Route::DELETE, $route);
-        
     }
 
 
 
 
-    
+
     /**
      * Adds a route to the route stack.
      *
@@ -146,12 +142,11 @@ class Router
         $this->routeStack[$method][] = $route;
 
         return $route;
-
     }
 
 
 
-    
+
 
     /**
      * Dispatches the HTTP request to the appropriate route handler.
@@ -167,37 +162,31 @@ class Router
 
         $path = $request->getPath();
 
-        if (!isset($this->routeStack[$method])) 
-        {
+        if (!isset($this->routeStack[$method])) {
             throw new Exception("Unsupported HTTP method: $method", 405);
         }
 
         /**
          * @var Route $route
          */
-        foreach ($this->routeStack[$method] as $route) 
-        {
+        foreach ($this->routeStack[$method] as $route) {
 
-            if ($this->matchRoute($route->getPath(), $path)) 
-            {
+            if ($this->matchRoute($route->getPath(), $path)) {
 
                 $routeParams = $this->extractRouteParams($route->getPath(), $path);
 
                 $request->setParams($routeParams);
 
                 return $this->handle($request, $route);
-
             }
-
         }
 
         throw new Exception("Route not found $path", 404);
-
     }
 
 
 
-    
+
     /**
      * Matches a route against a given path and saves the route parameters.
      *
@@ -216,20 +205,15 @@ class Router
         preg_match($pattern, $path, $matches);
 
         // Save the matches as route parameters
-        foreach ($matches as $key => $value) 
-        {
+        foreach ($matches as $key => $value) {
 
-            if (is_string($key)) 
-            {
+            if (is_string($key)) {
 
                 $this->routeStack[$key] = $value;
-
             }
-
         }
 
         return !empty($matches);
-
     }
 
 
@@ -264,12 +248,11 @@ class Router
 
         // Return the matched route parameters
         return $routeParams;
-
     }
 
 
 
-    
+
 
     /**
      * Handles the request and returns the response.
@@ -285,32 +268,28 @@ class Router
         $callback        = $route->getController();
         $middlewareStack = $route->getMiddlewareStack();
 
-        $response = 
+        $response =
             $middlewareStack->handle(
-                $request, 
-                function (Request $request) use ($callback) 
-                {
+                $request,
+                function (Request $request) use ($callback) {
                     return $this->callCallback($request, $callback);
                 }
             );
-        
 
-        if ($response instanceof Response) 
-        {
+
+        if ($response instanceof Response) {
 
             return $response;
-
         }
 
         // Jika tidak ada middleware atau middleware telah selesai dieksekusi,
         // jalankan callback untuk mendapatkan responsnya.
         return $this->callCallback($request, $callback);
-
     }
 
 
 
-    
+
 
     /**
      * Calls the provided callback function with the given request object.
@@ -323,50 +302,41 @@ class Router
     protected function callCallback(Request $request, $callback): Response
     {
 
-        if (is_callable($callback)) 
-        {
+        if (is_callable($callback)) {
 
             return call_user_func($callback, $request);
-
-        } 
-        else if (is_string($callback) && strpos($callback, '@') !== false) 
-        {
+        } else if (is_string($callback) && strpos($callback, '@') !== false) {
 
             list($controller, $method) = explode('@', $callback);
 
-            if(!class_exists($controller))
-            {
+            if (!class_exists($controller)) {
                 $controllerClass = 'il4mb\\Mpanel\\Controllers\\' . $controller;
 
+                if (!class_exists($controllerClass)) {
+
+                    throw new Exception("Controller not found: $controllerClass", 404);
+                }
             } else {
                 $controllerClass = $controller;
             }
 
-            if (!class_exists($controllerClass)) 
-            {
 
-                throw new Exception("Controller not found: $controllerClass", 404);
-            }
+            $controllerInstance = $this->box->mod()->$controllerClass();
 
-            $controllerInstance = $this->box->$controllerClass($request, new Response());
+      //      print_r($controllerInstance);
 
-            if (!method_exists($controllerInstance, $method)) 
-            {
+            // if (!method_exists($controllerInstance, $method)) 
+            // {
 
-                throw new Exception("Method not found: $method", 404);
+            //     throw new Exception("Method not found: $method", 404);
 
-            }
+            // }
 
             return $controllerInstance->$method($request);
 
-        }
-        else 
-        {
+        } else {
 
             return new Response('Internal server error', 500);
-
         }
-
     }
-
 }

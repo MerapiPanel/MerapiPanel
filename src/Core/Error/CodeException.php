@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Exception;
+namespace il4mb\Mpanel\Core\Error;
 
 use Exception;
 use Throwable;

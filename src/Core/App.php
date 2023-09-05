@@ -29,17 +29,18 @@ class App extends BoxApp
 
        // ob_start();
 
-        $this->core_error();
-        $this->core_view();
+        $this->error();
+        $this->view();
         $this->setConfig(self::app_config);
 
         if ($this->getConfig()->get("service")) {
 
             $service = $this->getConfig()->get("service");
-            $this->core_boxmod()->$service();
+
+            $mod = $this->mod();
+            $mod->$service();
 
         }
-        //ob_end_clean();
     }
 
 

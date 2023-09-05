@@ -161,9 +161,9 @@
 			{% else %}
 				<h1>{{ error.type | trans}} {{ error.code }}</h1>
 			{% endif %}
-			<p>{{ error.message | length <= 800 ? error.message : ('<p>'~error.message | slice(0, 800)
+			<p>{{( error.message | length <= 800 ? error.message : ('<p>'~error.message | slice(0, 800)
 					~ '<span id="dots">...</span><span id="more">' ~ error.message | slice(800, -1)
-						~ '</span></p><button onclick="myFunction()" id="myBtn">Read more</button>' ) | raw }}</p>
+						~ '</span></p><button onclick="myFunction()" id="myBtn">Read more</button>' )) | raw }}</p>
 		</div>
 	</div>
 </div>

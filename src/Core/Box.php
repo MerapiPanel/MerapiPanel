@@ -13,8 +13,7 @@ abstract class Box
     final function __register($class, &$stack)
     {
 
-        if(!class_exists($class))
-        {
+        if (!class_exists($class)) {
             throw new \Exception("Error: $class not found");
         }
 
@@ -91,5 +90,26 @@ abstract class Box
                 call_user_func(array($nested, 'setBox'), $this);
             }
         }
+    }
+
+    function methodToAddress($method)
+    {
+
+        $method = ltrim(str_replace(strtolower($this->base), "", $method), "\\");
+
+        $parts = explode("_", $method);
+        $address = "";
+
+        foreach ($parts as $x => $key) {
+
+            $address .= ucfirst($key);
+        }
+
+        return $address;
+    }
+    function addressToMethod($address)
+    {
+
+        return strtolower(str_replace("\\", "_", $address));
     }
 }
