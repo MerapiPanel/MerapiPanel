@@ -1,11 +1,10 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Http;
+namespace il4mb\Mpanel\Core\Utilities\Middleware;
 
 use Closure;
-use il4mb\Mpanel\Core\Http\Middleware;
-use il4mb\Mpanel\Core\Http\Request;
-use il4mb\Mpanel\Core\Http\Response;
+use il4mb\Mpanel\Core\Utilities\Http\Request;
+use il4mb\Mpanel\Core\Utilities\Http\Response;
 
 class MiddlewareStack
 {

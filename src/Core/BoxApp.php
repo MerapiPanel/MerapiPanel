@@ -3,6 +3,7 @@
 namespace il4mb\Mpanel\Core;
 
 use il4mb\Mpanel\Core\Cog\Config;
+use il4mb\Mpanel\Core\Error\CodeException;
 use ReflectionClass;
 
 class BoxApp extends Box
@@ -89,7 +90,9 @@ class BoxApp extends Box
 
 
         // before construction
-        if (is_array($nested) && isset($nested["entity"]) && is_object($nested["entity"])) {
+        if (is_array($nested) && isset($nested["entity"]) && is_object($nested["entity"])) 
+        {
+            
             return $nested["entity"];
         }
 
@@ -103,7 +106,17 @@ class BoxApp extends Box
 
         if (!class_exists($className)) {
 
-            throw new \Exception("Error: $className not found");
+            $e = new CodeException("Error: Module <b>" .  $address . "</b> not found");
+            $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2); // Get the call stack
+
+            if (isset($trace[0]['file'])) {
+                $e->setFile($trace[0]['file']); // Set the file from the caller
+            }
+            if(isset($trace[0]['line'])) {
+                $e->setLine($trace[0]['line']); // Set the line from the caller
+            }
+
+            throw $e;
         }
 
 

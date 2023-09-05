@@ -1,10 +1,11 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Http;
+namespace il4mb\Mpanel\Core\Utilities;
 
 use Closure;
+use il4mb\Mpanel\Core\Utilities\Middleware\AwareComponent;
 
-class Route
+class Route extends AwareComponent
 {
 
 
@@ -12,10 +13,6 @@ class Route
     const GET    = 'GET';
     const PUT    = 'PUT';
     const DELETE = 'DELETE';
-
-
-    protected MiddlewareStack $middlewareStack;
-
 
     protected string $method;
     protected string $path;
@@ -33,47 +30,13 @@ class Route
     public function __construct($method, $path, $controller)
     {
 
-        $this->middlewareStack = new MiddlewareStack();
+        parent::__construct();
+
         $this->method          = $method;
         $this->path            = $path;
         $this->controller      = $controller;
 
     }
-
-
-
-    
-    /**
-     * Adds a middleware to the route.
-     *
-     * @param Middleware $middleware The middleware to be added.
-     * @return Route The updated Route object.
-     */
-    public function addMiddleware(Middleware $middleware): Route
-    {
-
-        $this->middlewareStack->addMiddleware($middleware);
-
-        return $this;
-
-    }
-
-
-    
-
-    /**
-     * Retrieves the middleware stack.
-     *
-     * @return MiddlewareStack The middleware stack.
-     */
-    public function getMiddlewareStack(): MiddlewareStack
-    {
-
-        return $this->middlewareStack;
-
-    }
-
-
 
 
     /**

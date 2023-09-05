@@ -61,9 +61,10 @@ class App extends BoxApp
 
         try {
 
-             $request = $this->core_http_request();
+             $request = $this->utilities_http_request();
             // Send the response
-             $this->sendResponse($this->core_http_router()->dispatch($request));
+             $this->sendResponse($this->utilities_router()->dispatch($request));
+             
         } catch (Throwable $e) {
 
              $this->core_error()->catch_error($e);

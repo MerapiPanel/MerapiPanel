@@ -62,7 +62,7 @@ class Factory extends AppAware
             $object = $modBox->$addr();
 
             // try {
-            $object->register($this->box->core_http_router());
+            $object->register($this->box->utilities_router());
             //  } catch (Exception $e) {
 
             // throw new Exception("Controller $name expected have register method but register method not found");

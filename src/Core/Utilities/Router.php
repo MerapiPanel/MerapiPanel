@@ -1,12 +1,15 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Http;
+namespace il4mb\Mpanel\Core\Utilities;
 
 use Exception;
 use il4mb\Mpanel\Core\Box;
+use il4mb\Mpanel\Core\Utilities\Middleware\AwareComponent;
+use il4mb\Mpanel\Core\Utilities\Http\Response;
+use il4mb\Mpanel\Core\Utilities\Http\Request;
 use il4mb\Mpanel\Exceptions\Error;
 
-class Router
+class Router extends AwareComponent
 {
 
     protected $routeStack = [
@@ -22,6 +25,7 @@ class Router
     public function setBox(Box $box)
     {
 
+        parent::__construct();
         $this->box = $box;
     }
 
@@ -305,6 +309,7 @@ class Router
         if (is_callable($callback)) {
 
             return call_user_func($callback, $request);
+
         } else if (is_string($callback) && strpos($callback, '@') !== false) {
 
             list($controller, $method) = explode('@', $callback);
@@ -322,15 +327,6 @@ class Router
 
 
             $controllerInstance = $this->box->mod()->$controllerClass();
-
-      //      print_r($controllerInstance);
-
-            // if (!method_exists($controllerInstance, $method)) 
-            // {
-
-            //     throw new Exception("Method not found: $method", 404);
-
-            // }
 
             return $controllerInstance->$method($request);
 
