@@ -30,18 +30,14 @@ class App extends BoxApp
        // ob_start();
 
         $this->core_error();
-        $this->core_template();
+        $this->core_view();
         $this->setConfig(self::app_config);
 
         if ($this->getConfig()->get("service")) {
 
             $service = $this->getConfig()->get("service");
+            $this->core_boxmod()->$service();
 
-            // $address = $mod . "\\Controller\\Guest";
-            // $address = strtolower(str_replace("\\", "_", $address));
-
-            $mod = $this->core_boxmod()->$service();
-            // $mod->api_hallo();
         }
         //ob_end_clean();
     }
@@ -64,12 +60,12 @@ class App extends BoxApp
 
         try {
 
-            // $request = $this->core_http_request();
+             $request = $this->core_http_request();
             // Send the response
-            // $this->sendResponse($this->core_http_router()->dispatch($request));
+             $this->sendResponse($this->core_http_router()->dispatch($request));
         } catch (Throwable $e) {
 
-            // $this->core_error()->catch_error($e);
+             $this->core_error()->catch_error($e);
         }
     }
 

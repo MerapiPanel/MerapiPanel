@@ -75,7 +75,7 @@ class Entity extends ErrorAbstract
             $error            = $this->toArray();
             $error['snippet'] = $this->getSnippet();
 
-            $template = $this->box->core_template();
+            $template = $this->box->core_view();
             $template->addGlobal('error', $error);
 
             if ($template->templateExists("/error/error$error[code].html.twig")) {

@@ -1,13 +1,13 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Template;
+namespace il4mb\Mpanel\Core\view;
 
 use Twig\TemplateWrapper;
 
 class Twig extends \Twig\Environment
 {
 
-    protected $template;
+    protected $view;
 
     public function __construct($loader, array $options = [])
     {
@@ -17,13 +17,13 @@ class Twig extends \Twig\Environment
 
     public function load($name): TemplateWrapper
     {
-        $this->template = $name;
+        $this->view = $name;
         return parent::load($name);
     }
 
-    public function getTemplate(): string
+    public function getView(): string
     {
-        return $this->template;
+        return $this->view;
     }
 
 }

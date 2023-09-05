@@ -3,6 +3,8 @@
 namespace il4mb\Mpanel\Modules\Index\Controller;
 
 use il4mb\Mpanel\Core\Box;
+use il4mb\Mpanel\Core\Http\Router;
+use il4mb\Mpanel\Core\Mod\Interface\Box_Controller;
 
 class Guest
 {
@@ -12,14 +14,17 @@ class Guest
     public function setBox(Box $box)
     {
         $this->box = $box;
+    }
 
-        if(!is_object($this->box->core_http_router()))
-        {
-            throw new \Exception("Error: core_http_router not found");
-        }
+    public function getBox(): ?Box
+    {
+        return $this->box;
+    }
 
-        $box->core_http_router()->get("/", self::class . "@index");
-        
+    public function register(Router $router)
+    {
+
+        $router->get("/", self::class . "@index");
     }
 
 
@@ -27,8 +32,8 @@ class Guest
     {
 
         // throw new \Exception("Error: index not found");
-        $this->box->get_service("template")->render("index.html.twig");
+        //$this->box->get_service("template")->render("index.html.twig");
 
-        $this->box->template()->render("content.html.twig");
+        $this->box->core_view()->render("content.html.twig");
     }
 }

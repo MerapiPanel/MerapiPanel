@@ -3,21 +3,28 @@
 namespace il4mb\Mpanel\Core\Mod;
 
 use il4mb\Mpanel\Core\Box;
-use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
+use Throwable;
 
-final class ModProxy
+final class Proxy
 {
+
 
     protected string $classInstance;
     protected Box $box;
     protected $instance;
     protected $reflection;
 
+
+
+
     function __construct($classInstance)
     {
         $this->classInstance = $classInstance;
     }
+
+
+
 
     public function setBox($box)
     {
@@ -25,6 +32,9 @@ final class ModProxy
         $this->box = $box;
         $this->createInstance($this->classInstance);
     }
+
+
+
 
     private function createInstance($classInstance = null)
     {
@@ -45,16 +55,39 @@ final class ModProxy
         }
     }
 
+
+
+
     public function __call($name, $arguments)
     {
+        $meta = $this->getDetails();
 
-        return call_user_func([$this->instance, $name], $arguments);
+        try {
+
+            return call_user_func([$this->instance, $name], ...$arguments);
+
+        } catch (\Exception $e) {
+
+            throw new \Exception("Module {$meta['name']} doesn't have method $name");
+
+        } catch (\TypeError $e) {
+
+            throw new \Exception("Type error: {$e->getMessage()}");
+            
+        }
     }
+
+
+
+
+
 
     public function isMethodExists($name)
     {
         return method_exists($this->instance, $name);
     }
+
+
 
     public function getDetails()
     {
@@ -74,13 +107,34 @@ final class ModProxy
 
         $yml = $file . "/module.yml";
 
-        if (!file_exists($yml)) {
-            return null;
+        $meta = [
+            "name" => ucfirst(basename($file)),
+            "version" => "1.0.0",
+            "author" => "Merapi panel",
+        ];
+
+        if (file_exists($yml)) {
+            $array = Yaml::parseFile($yml);
+
+            if (isset($array["name"])) {
+                $meta["name"] = $array["name"];
+            }
+            if (isset($array["version"])) {
+                $meta["version"] = $array["version"];
+            }
+            if (isset($array["author"])) {
+                $meta["author"] = $array["author"];
+            }
+            if (isset($array["description"])) {
+                $meta["description"] = $array["description"];
+            }
         }
-        $meta = Yaml::parseFile($yml);
 
         return $meta;
     }
+
+
+
     public function __toString()
     {
         return "(Module)" . $this->classInstance;

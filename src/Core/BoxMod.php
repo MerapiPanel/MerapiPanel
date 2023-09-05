@@ -2,7 +2,7 @@
 
 namespace il4mb\Mpanel\Core;
 
-use il4mb\Mpanel\Core\Mod\ModProxy;
+use il4mb\Mpanel\Core\Mod\Proxy;
 
 class BoxMod extends Box
 {
@@ -10,36 +10,42 @@ class BoxMod extends Box
     protected $stack = [];
     protected Box $box;
 
+
     public function __construct()
     {
         $this->base = "il4mb\\Mpanel\\Modules";
     }
 
+
     public function setBox(Box $box)
     {
         $this->box = $box;
-
-        $this->box->core_mod_modfactory();
+        $this->box->core_mod_factory();
     }
 
-    public function getBox(): ?Box
-    {
-        return $this->box;
-    }
 
     function __call($name, $arguments)
     {
 
-        $parts    = explode("_", $name);
-        $name     = ucfirst($parts[0]);
-        $class    = $this->base . "\\" . ucfirst(ltrim($name, "\\"));
+        if (!class_exists($name)) {
 
-        if (!class_exists($class)) {
-            $class .= "\\Service";
-        }
+            $parts    = explode("_", $name);
+            $name     = ucfirst($parts[0]);
+            $class    = $this->base . "\\" . ucfirst(ltrim($name, "\\"));
 
-        if (!class_exists($class)) {
-            throw new \Exception("Error: Module " . $name . " not found");
+            if (!class_exists($class)) {
+                $class .= "\\Service";
+            }
+
+            if (!class_exists($class)) {
+
+
+                throw new \Exception("Error: Module " . $name . " not found");
+            }
+        } else {
+
+            $class = $name;
+
         }
 
         $class    = strtolower(str_replace("\\", "_", ltrim(str_replace($this->base, "", $class), "\\")));
@@ -65,7 +71,7 @@ class BoxMod extends Box
 
         if (empty($nested)) {
 
-            $nested = new ModProxy($className);
+            $nested = new Proxy($className);
 
             if (method_exists($nested, "setBox")) {
                 call_user_func([$nested, "setBox"], $this);

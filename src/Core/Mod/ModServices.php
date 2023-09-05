@@ -2,8 +2,6 @@
 
 namespace il4mb\Mpanel\Core\Mod;
 
-use ReflectionClass;
-
 class ModServices
 {
 

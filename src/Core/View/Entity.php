@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Template;
+namespace il4mb\Mpanel\Core\View;
 
 use il4mb\Mpanel\Core\Box;
 use il4mb\Mpanel\Core\Locale\Engine as LocaleEngine;
@@ -27,8 +27,8 @@ class Entity
     {
 
         $this->localeEngine = $box->core_locale();
-        $this->loader       = $box->core_template_loader(__DIR__ . "/../../template");
-        $this->twig         = $box->core_template_twig($this->loader, ["cache" => false]);
+        $this->loader       = $box->core_view_loader(__DIR__ . "/../../view");
+        $this->twig         = $box->core_view_twig($this->loader, ["cache" => false]);
         $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
 
 
@@ -37,7 +37,7 @@ class Entity
         foreach ($files as $file) {
 
             $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = "il4mb\\Mpanel\\Core\\Template\\Extension\\" . ucfirst($file_name);
+            $className = "il4mb\\Mpanel\\Core\\view\\Extension\\" . ucfirst($file_name);
 
             if (class_exists($className)) {
 
@@ -59,7 +59,7 @@ class Entity
 
 
     function render() {
-        return $this->twig->render($this->twig->getTemplate(), $this->twig->getGlobals());
+        return $this->twig->render($this->twig->getview(), $this->twig->getGlobals());
     }
    
     function __call($name, $arguments)
