@@ -11,7 +11,6 @@ class BoxMod extends Box
     protected Box $box;
 
     public function __construct()
-
     {
         $this->base = "il4mb\\Mpanel\\Modules";
     }
@@ -19,6 +18,8 @@ class BoxMod extends Box
     public function setBox(Box $box)
     {
         $this->box = $box;
+
+        $this->box->core_mod_modfactory();
     }
 
     public function getBox(): ?Box
@@ -33,12 +34,12 @@ class BoxMod extends Box
         $name     = ucfirst($parts[0]);
         $class    = $this->base . "\\" . ucfirst(ltrim($name, "\\"));
 
-        if(!class_exists($class)) {
+        if (!class_exists($class)) {
             $class .= "\\Service";
         }
 
         if (!class_exists($class)) {
-            throw new \Exception("Error: $class not found");
+            throw new \Exception("Error: Module " . $name . " not found");
         }
 
         $class    = strtolower(str_replace("\\", "_", ltrim(str_replace($this->base, "", $class), "\\")));

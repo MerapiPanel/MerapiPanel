@@ -49,17 +49,6 @@ class BoxApp extends Box
     {
 
 
-        
-        if (strpos($address, "_mod") === 0) {
-
-            $object = $this->stack["modules"]['index']["controller"]["guest"];
-            print_r(get_object_vars($object));
-
-            throw new \Exception("Error: $address not found");
-        }
-
-
-
         if(class_exists($address)) {
             $address = strtolower(str_replace("\\", "_", $address));
             $address = str_replace("il4mb_mpanel_", "", $address);

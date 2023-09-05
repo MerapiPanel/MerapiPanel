@@ -3,7 +3,8 @@
 namespace il4mb\Mpanel\Core\Mod;
 
 use il4mb\Mpanel\Core\Box;
-use il4mb\Mpanel\Core\BoxMod;
+use ReflectionClass;
+use Symfony\Component\Yaml\Yaml;
 
 final class ModProxy
 {
@@ -11,6 +12,7 @@ final class ModProxy
     protected string $classInstance;
     protected Box $box;
     protected $instance;
+    protected $reflection;
 
     function __construct($classInstance)
     {
@@ -21,8 +23,7 @@ final class ModProxy
     {
 
         $this->box = $box;
-        $this->instance = $this->createInstance($this->classInstance);
-        
+        $this->createInstance($this->classInstance);
     }
 
     private function createInstance($classInstance = null)
@@ -31,16 +32,16 @@ final class ModProxy
         if (!class_exists($classInstance)) {
 
             throw new \Exception("Module $classInstance not found");
-
         } else {
 
-            $reflection = new \ReflectionClass($classInstance);
-            $object = $reflection->newInstanceWithoutConstructor();
+            $this->reflection = new \ReflectionClass($classInstance);
+            $this->instance = $this->reflection->newInstanceWithoutConstructor();
 
-            if (method_exists($object, "setBox")) {
-                call_user_func([$object, "setBox"], $this->box);
+            if (method_exists($this->instance, "setBox")) {
+                call_user_func([$this->instance, "setBox"], $this->box);
             }
-            return $object;
+
+            return $this->instance;
         }
     }
 
@@ -48,7 +49,6 @@ final class ModProxy
     {
 
         return call_user_func([$this->instance, $name], $arguments);
-
     }
 
     public function isMethodExists($name)
@@ -56,6 +56,31 @@ final class ModProxy
         return method_exists($this->instance, $name);
     }
 
+    public function getDetails()
+    {
+
+        if (!isset($this->instance)) {
+            $this->createInstance($this->classInstance);
+        }
+
+        $file = $this->reflection->getFileName();
+
+        while ($directory = dirname($file)) {
+            if (basename($directory) === 'modules') {
+                break;
+            }
+            $file = $directory;
+        }
+
+        $yml = $file . "/module.yml";
+
+        if (!file_exists($yml)) {
+            return null;
+        }
+        $meta = Yaml::parseFile($yml);
+
+        return $meta;
+    }
     public function __toString()
     {
         return "(Module)" . $this->classInstance;

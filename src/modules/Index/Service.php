@@ -2,10 +2,7 @@
 
 namespace il4mb\Mpanel\Modules\Index;
 
-use il4mb\Mpanel\Core\BoxMod;
-use il4mb\Mpanel\Core\Mod\ModProxy;
-
-class Service 
+class Service
 {
 
     protected $box;
@@ -13,8 +10,11 @@ class Service
     function setBox($box)
     {
         $this->box = $box;
-        
-       echo $this->box->api_index();
+
+        $api = $this->box->api_index();
+
+        $detail =  $api->getDetails();
+
+        print_r($detail);
     }
-    
 }
