@@ -4,41 +4,29 @@ namespace Mp\Core\Utilities\Http;
 
 use Exception;
 use Mp\Core\Box;
+use Throwable;
 
 class Api extends Response
 {
     protected $request;
-    protected $box;
+    protected $content = [];
 
 
-    public function __construct(Request $request)
+    function setResponse($response = null)
     {
-
-        parent::__construct(["status" => 200, "response" => null]);
-        $this->request = $request;
-        $this->setHeader("Content-Type", "application/json");
+        $this->content['response'] = $response;
+        $this->setContent($this->content);
     }
 
-
-    public function setBox(Box $box)
+    function setCode($code = 200)
     {
-        $this->box = $box;
+        $this->content['status'] = $code;
+        $this->setStatusCode($code);
+        $this->setContent($this->content);
     }
 
-
-    function __toString()
+    function getContent(): mixed
     {
-
-        if (!isset($this->box)) {
-            throw new Exception("Box not set");
-        }
-        foreach ($this->getHeaders() as $key => $value) {
-            header("$key: $value");
-        };
-
-        $data = is_string($this->content) ? json_decode($this->content, true) : $this->content;
-        $data['execution_time'] = (microtime(true) - floatval($GLOBALS['time_start'])) . " seconds";
-
-        return json_encode($data);
+        return $this->content;
     }
 }

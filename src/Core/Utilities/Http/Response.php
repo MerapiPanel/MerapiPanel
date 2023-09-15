@@ -20,13 +20,6 @@ class Response
      */
     public function __construct(string|array|object $content = '', int $statusCode = 200, array $headers = [])
     {
-
-        if(is_object($content) || is_array($content)) 
-        {
-
-            $content = json_encode($content);
-
-        }
         
         $this->content    = $content;
         $this->statusCode = $statusCode;
@@ -45,13 +38,6 @@ class Response
     public function setContent(mixed $content): void
     {
 
-        if(is_object($content) || is_array($content)) 
-        {
-
-            $content = json_encode($content);
-
-        }
-
         $this->content = $content;
 
     }
@@ -64,7 +50,7 @@ class Response
      *
      * @return string The content of the object.
      */
-    public function getContent(): string
+    public function getContent(): mixed
     {
 
         return $this->content;
@@ -176,7 +162,16 @@ class Response
 
 
     public function __toString() {
-        return $this->content;
+
+        if(gettype($this->content) !== "string") {
+            $this->setHeader("Content-Type", "application/json");
+        }
+
+        foreach($this->headers as $name => $value) {
+            header("$name: $value");
+        }
+
+        return !is_string($this->content) ? json_encode($this->content) : $this->content;
     }
 
 }

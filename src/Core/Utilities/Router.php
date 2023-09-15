@@ -173,12 +173,10 @@ class Router extends AwareComponent
             throw new Exception("Unsupported HTTP method: $method", 405);
         }
 
+        // if($method !== Route::GET) {
 
-
-        if($method !== Route::GET) {
-
-            return $this->box->utilities_http_api($request);
-        }
+        //     return $this->box->utilities_http_api($request);
+        // }
 
         /**
          * @var Route $route
@@ -334,24 +332,39 @@ class Router extends AwareComponent
                 $controllerClass = $controller;
             }
 
-            $view = $this->box->view();
+
             $controllerInstance = $this->box->mod()->$controllerClass();
+            $meta = $controllerInstance->getDetails();
 
-            if ($controllerInstance) {
-                
-                $meta = $controllerInstance->getDetails();
-                $render = $controllerInstance->$method($view);
 
-                $file = "@$meta[name]/" . ltrim($render, "\/");
+            if ($request->getMethod() === Route::GET) {
+
+                $view = $this->box->view();
+                $retrun = $controllerInstance->$method($view);
+
+
+                $file = "@$meta[name]/" . ltrim($retrun, "\/");
                 $template = $view->load($file);
-
                 $content = $template->render([]);
+                $response->setContent($content);
+            } else {
+
+                $content = ["status" => 200, "response" => null];
+                $response->setHeader('Content-Type', 'application/json');
+                $result = $controllerInstance->$method($request);
+
+                if (is_array($result)) {
+
+                    $content["response"] = isset($result['response']) ? $result['response'] : null;
+                    $content["status"] = isset($result['status']) ? $result['status'] : 200;
+                } else {
+                    $content["response"] = $result;
+                }
+
                 $response->setContent($content);
             }
 
-
             return $response;
-
         } else {
 
             return new Response('Internal server error', 500);
