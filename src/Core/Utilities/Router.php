@@ -4,9 +4,12 @@ namespace Mp\Core\Utilities;
 
 use Exception;
 use Mp\Core\Box;
+use Mp\Core\Utilities\Http\API;
+use Mp\Core\Utilities\Http\Http_Api;
 use Mp\Core\Utilities\Middleware\AwareComponent;
 use Mp\Core\Utilities\Http\Response;
 use Mp\Core\Utilities\Http\Request;
+use Mp\Core\Utilities\Http\Response_Api;
 use Mp\Exceptions\Error;
 
 class Router extends AwareComponent
@@ -170,6 +173,13 @@ class Router extends AwareComponent
             throw new Exception("Unsupported HTTP method: $method", 405);
         }
 
+
+
+        if($method !== Route::GET) {
+
+            return new Http_Api($request);
+        }
+
         /**
          * @var Route $route
          */
@@ -255,9 +265,6 @@ class Router extends AwareComponent
     }
 
 
-
-
-
     /**
      * Handles the request and returns the response.
      *
@@ -306,6 +313,8 @@ class Router extends AwareComponent
     protected function callCallback(Request $request, $callback)
     {
 
+
+        $response = new Response();
         if (is_callable($callback)) {
 
             return call_user_func($callback, $request);
@@ -318,6 +327,7 @@ class Router extends AwareComponent
 
                 if (!class_exists($controllerClass)) {
 
+                    $response->setStatusCode(404);
                     throw new Exception("Controller not found: $controllerClass", 404);
                 }
             } else {
@@ -335,13 +345,12 @@ class Router extends AwareComponent
                 $file = "@$meta[name]/" . ltrim($render, "\/");
                 $template = $view->load($file);
 
-                echo $template->render([]);
+                $content = $template->render([]);
+                $response->setContent($content);
             }
 
 
-            return new Response();
-
-            //$view->load($file);
+            return $response;
 
         } else {
 

@@ -5,6 +5,7 @@ namespace Mp\Core\View;
 use Mp\Core\Box;
 use Mp\Core\view\Twig;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Throwable;
 
 class Entity
 {
@@ -14,6 +15,7 @@ class Entity
     protected $loader;
     protected $localeEngine;
     protected $globals = [];
+    protected $initialize = false;
 
     function setBox(?Box $box)
     {
@@ -58,7 +60,6 @@ class Entity
 
     function addGlobal($name, $value)
     {
-
         $this->twig->addGlobal($name, $value);
     }
 

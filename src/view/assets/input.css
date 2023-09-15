@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.text-input {
+    @apply shadow w-full rounded-sm py-2 px-3 border-[1px] border-slate-200;
+}

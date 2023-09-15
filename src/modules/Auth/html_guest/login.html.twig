@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+<main class="max-w-[800px] w-full mx-auto">
+    <div class="py-5">
+        Merapi Panel
+    </div>
+
+    <div class="py-5 max-w-[600px] mx-auto">
+        <header>
+            <h1 class="text-3xl font-bold mb-4">Welcome to merapi panel</h1>
+        </header>
+        <article>
+
+            <div class="max-w-[800px] w-full mx-auto py-3">
+                <form action="{{ 'app_api' }}" method="post">
+
+                    <div class="mb-3">
+                        <label for="email">Email</label>
+                        <input class="text-input" placeholder="Enter email address" type="email" name="email" id="email"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password">Password</label>
+                        <input class="text-input" placeholder="Enter you password" type="password" name="password"
+                            id="password" required>
+                    </div>
+
+                    <div class="pt-4">
+                        <input class="text-white bg-blue-400 hover:bg-blue-600 rounded-sm px-4 py-2" type="submit" value="Login">
+                    </div>
+
+                </form>
+            </div>
+
+        </article>
+    </div>
+</main>
+
+{% endblock %}
