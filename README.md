@@ -36,7 +36,7 @@ To get started with Merapi Panel, follow these steps:
 2. Usage:
 ```php
 // index.php
-use il4mb\Mpanel\Application;
+use Mp\Application;
 
 required 'vendor/autoload.php';
 
