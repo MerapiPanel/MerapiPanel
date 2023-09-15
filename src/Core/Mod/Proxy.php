@@ -4,18 +4,14 @@ namespace Mp\Core\Mod;
 
 use Mp\Core\Box;
 use Symfony\Component\Yaml\Yaml;
-use Throwable;
 
 final class Proxy
 {
-
 
     protected string $classInstance;
     protected Box $box;
     protected $instance;
     protected $reflection;
-
-
 
 
     function __construct($classInstance)
@@ -65,7 +61,6 @@ final class Proxy
         if (method_exists($this->instance, $name)) {
 
             return call_user_func([$this->instance, $name], ...$arguments);
-
         } else {
 
             throw new \Exception("Module <b>{$meta['name']}</b> doesn't have method $name");
@@ -92,9 +87,10 @@ final class Proxy
         $yml = $file . "/module.yml";
 
         $meta = [
-            "name" => ucfirst(basename($file)),
-            "version" => "1.0.0",
-            "author" => "Merapi panel",
+            "name"     => ucfirst(basename($file)),
+            "version"  => "1.0.0",
+            "author"   => "Merapi panel",
+            "location" => $file
         ];
 
         if (file_exists($yml)) {

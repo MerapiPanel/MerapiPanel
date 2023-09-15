@@ -4,22 +4,23 @@ namespace Mp\Modules\Index\Controller;
 
 use Mp\Core\Box;
 use Mp\Core\Utilities\Router;
-use Mp\Core\Mod\Interface\Box_Controller;
 
 class Guest
 {
-    
+
     private $box;
-    
+
     public function setBox(Box $box)
     {
         $this->box = $box;
     }
 
+
     public function getBox(): ?Box
     {
         return $this->box;
     }
+
 
     public function register(Router $router)
     {
@@ -28,12 +29,9 @@ class Guest
     }
 
 
-    public function index()
+    public function index(\Mp\Core\View\Entity $entity)
     {
 
-        // throw new \Exception("Error: index not found");
-        //$this->box->get_service("template")->render("index.html.twig");
-
-        
+        return $entity->render("/content.html.twig");
     }
 }

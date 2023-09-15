@@ -63,25 +63,11 @@ class App extends BoxApp
 
              $request = $this->utilities_http_request();
             // Send the response
-             $this->sendResponse($this->utilities_router()->dispatch($request));
+             $this->utilities_router()->dispatch($request);
              
         } catch (Throwable $e) {
 
              $this->core_error()->catch_error($e);
         }
-    }
-
-
-
-
-
-    // Method to Send HTTP Response
-    protected function sendResponse(Response $response): void
-    {
-
-        $response->send();
-
-        // Send content
-        echo $response->getContent();
     }
 }

@@ -15,7 +15,7 @@ class Entity extends Box
     public function setBox(Box $box)
     {
         $this->box = $box;
-        $this->box->core_mod_factory();
+        $this->box->mod_factory();
     }
 
 

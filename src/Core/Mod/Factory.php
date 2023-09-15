@@ -5,7 +5,6 @@ namespace Mp\Core\Mod;
 use Exception;
 use Mp\Core\AppAware;
 use Mp\Core\Box;
-use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 class Factory extends AppAware
 {
@@ -17,7 +16,6 @@ class Factory extends AppAware
     {
 
         $this->box = $box;
-
         $this->segment = (string) $this->box->core_segment();
         $this->initController();
     }
@@ -60,13 +58,7 @@ class Factory extends AppAware
             $modBox =  $this->box->core_boxmod();
 
             $object = $modBox->$addr();
-
-            // try {
             $object->register($this->box->utilities_router());
-            //  } catch (Exception $e) {
-
-            // throw new Exception("Controller $name expected have register method but register method not found");
-            //}
         }
     }
 }

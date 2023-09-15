@@ -272,19 +272,19 @@ class Router extends AwareComponent
         $callback        = $route->getController();
         $middlewareStack = $route->getMiddlewareStack();
 
-        $response =
-            $middlewareStack->handle(
-                $request,
-                function (Request $request) use ($callback) {
-                    return $this->callCallback($request, $callback);
-                }
-            );
+        // $response =
+        //     $middlewareStack->handle(
+        //         $request,
+        //         function (Request $request) use ($callback) {
+        //             return $this->callCallback($request, $callback);
+        //         }
+        //     );
 
 
-        if ($response instanceof Response) {
+        // if ($response instanceof Response) {
 
-            return $response;
-        }
+        //     return $response;
+        // }
 
         // Jika tidak ada middleware atau middleware telah selesai dieksekusi,
         // jalankan callback untuk mendapatkan responsnya.
@@ -303,13 +303,12 @@ class Router extends AwareComponent
      * @throws Error If the callback is a string and the controller or method is not found.
      * @return Response The response returned by the callback function or a new Response object.
      */
-    protected function callCallback(Request $request, $callback): Response
+    protected function callCallback(Request $request, $callback)
     {
 
         if (is_callable($callback)) {
 
             return call_user_func($callback, $request);
-
         } else if (is_string($callback) && strpos($callback, '@') !== false) {
 
             list($controller, $method) = explode('@', $callback);
@@ -325,10 +324,21 @@ class Router extends AwareComponent
                 $controllerClass = $controller;
             }
 
+            $view = $this->box->view();
 
             $controllerInstance = $this->box->mod()->$controllerClass();
+            $meta = $controllerInstance->getDetails();
+            $render = $controllerInstance->$method($view);
 
-            return $controllerInstance->$method($request);
+            $file = "@$meta[name]/" . ltrim($render, "\/");
+            $template = $view->load($file);
+
+            echo $template->render([]);
+
+
+            return new Response();
+
+            //$view->load($file);
 
         } else {
 

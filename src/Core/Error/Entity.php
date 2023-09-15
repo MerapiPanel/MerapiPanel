@@ -47,6 +47,7 @@ class Entity extends ErrorAbstract
         $this->setLine($error['line']);
         $this->setStackTrace($stackTrace);
         $this->view();
+        exit;
     }
 
     function catch_error(Throwable $e)
@@ -59,6 +60,7 @@ class Entity extends ErrorAbstract
         $this->setLine($e->getLine());
         $this->setStackTrace($e->getTrace());
         $this->view();
+        exit;
     }
 
 
@@ -75,23 +77,24 @@ class Entity extends ErrorAbstract
             $error            = $this->toArray();
             $error['snippet'] = $this->getSnippet();
 
-            $template = $this->box->core_view();
-            $template->addGlobal('error', $error);
+            $view = $this->box->view();
+            $view->addGlobal('error', $error);
+            $template = null;
 
-            if ($template->templateExists("/error/error$error[code].html.twig")) {
+            if ($view->templateExists("/error/error$error[code].html.twig")) {
 
-                $template->load("/error/error$error[code].html.twig");
+               $template = $view->load("/error/error$error[code].html.twig");
             } else {
 
-                $template->load("/error/error.html.twig");
+               $template = $view->load("/error/error.html.twig");
             }
 
-            echo $template->render();
+            echo $template->render([]);
             
         } catch (\Exception $e) {
 
             print_r($e);
-            exit;
+           
         }
     }
 }

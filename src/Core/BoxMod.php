@@ -76,6 +76,11 @@ class BoxMod extends Box
             if (method_exists($nested, "setBox")) {
                 call_user_func([$nested, "setBox"], $this);
             }
+            if (isset($nested->getDetails()['location'])) {
+                $view = $this->box->view();
+                $viewLoader = $view->getLoader();
+                $viewLoader->addPath($nested->getDetails()['location'], $nested->getDetails()['name']);
+            }
         }
 
         if (isset($parts[1])) {
