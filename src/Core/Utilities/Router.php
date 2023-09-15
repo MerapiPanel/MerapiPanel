@@ -177,7 +177,7 @@ class Router extends AwareComponent
 
         if($method !== Route::GET) {
 
-            return new Http_Api($request);
+            return $this->box->utilities_http_api($request);
         }
 
         /**
