@@ -1,8 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core;
+namespace Mp\Core;
 
-use il4mb\Mpanel\Core\Mod\Proxy;
+use Mp\Core\Mod\Proxy;
 
 class BoxMod extends Box
 {
@@ -13,7 +13,7 @@ class BoxMod extends Box
 
     public function __construct()
     {
-        $this->base = "il4mb\\Mpanel\\Modules";
+        $this->base = "Mp\\Modules";
     }
 
 

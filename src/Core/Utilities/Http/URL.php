@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Http;
+namespace Mp\Core\Http;
 
 class URL
 {

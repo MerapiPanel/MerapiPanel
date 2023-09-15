@@ -1,11 +1,11 @@
 <?php
 
-namespace il4mb\Mpanel\Core\View;
+namespace Mp\Core\View;
 
-use il4mb\Mpanel\Core\Box;
-use il4mb\Mpanel\Core\Locale\Engine as LocaleEngine;
-use il4mb\Mpanel\Core\Mod\Segment\Admin;
-use il4mb\Mpanel\Core\Mod\Segment\Guest;
+use Mp\Core\Box;
+use Mp\Core\Locale\Engine as LocaleEngine;
+use Mp\Core\Mod\Segment\Admin;
+use Mp\Core\Mod\Segment\Guest;
 use Twig\Loader\FilesystemLoader;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 
@@ -37,7 +37,7 @@ class Entity
         foreach ($files as $file) {
 
             $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = "il4mb\\Mpanel\\Core\\view\\Extension\\" . ucfirst($file_name);
+            $className = "Mp\\Core\\view\\Extension\\" . ucfirst($file_name);
 
             if (class_exists($className)) {
 

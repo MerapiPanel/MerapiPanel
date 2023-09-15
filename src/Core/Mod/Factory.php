@@ -1,10 +1,10 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Mod;
+namespace Mp\Core\Mod;
 
 use Exception;
-use il4mb\Mpanel\Core\AppAware;
-use il4mb\Mpanel\Core\Box;
+use Mp\Core\AppAware;
+use Mp\Core\Box;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 class Factory extends AppAware
@@ -37,7 +37,7 @@ class Factory extends AppAware
         // Get a list of all PHP files in the directory
         $phpFiles = glob($directory . '/*');
 
-        $namespacePattern = 'il4mb\\Mpanel\\Modules\\';
+        $namespacePattern = 'Mp\\Modules\\';
         $controllers = [];
 
         foreach ($phpFiles as $file) {

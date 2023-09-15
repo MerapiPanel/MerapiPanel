@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Modules\Index\Api;
+namespace Mp\Modules\Index\Api;
 
 class Guest {
 

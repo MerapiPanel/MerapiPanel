@@ -20,10 +20,6 @@ class ComposerStaticInit9e50c783db2d586c25600187c8e5ef13
     );
 
     public static $prefixLengthsPsr4 = array (
-        'i' => 
-        array (
-            'il4mb\\Mpanel\\' => 13,
-        ),
         'T' => 
         array (
             'Twig\\Extra\\TwigExtraBundle\\' => 27,
@@ -72,13 +68,13 @@ class ComposerStaticInit9e50c783db2d586c25600187c8e5ef13
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
         ),
+        'M' => 
+        array (
+            'Mp\\' => 3,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'il4mb\\Mpanel\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src',
-        ),
         'Twig\\Extra\\TwigExtraBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/twig/extra-bundle',
@@ -234,6 +230,10 @@ class ComposerStaticInit9e50c783db2d586c25600187c8e5ef13
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'Mp\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Mod\Interface;
+namespace Mp\Core\Mod\Interface;
 
-use il4mb\Mpanel\Core\BoxMod;
+use Mp\Core\BoxMod;
 
 interface Box_Controller {
 

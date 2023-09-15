@@ -1,10 +1,10 @@
 <?php
 
-namespace il4mb\Mpanel\Modules\Index\Controller;
+namespace Mp\Modules\Index\Controller;
 
-use il4mb\Mpanel\Core\Box;
-use il4mb\Mpanel\Core\Utilities\Router;
-use il4mb\Mpanel\Core\Mod\Interface\Box_Controller;
+use Mp\Core\Box;
+use Mp\Core\Utilities\Router;
+use Mp\Core\Mod\Interface\Box_Controller;
 
 class Guest
 {

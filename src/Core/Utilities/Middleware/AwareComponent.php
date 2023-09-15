@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Utilities\Middleware;
+namespace Mp\Core\Utilities\Middleware;
 
 abstract class AwareComponent {
 

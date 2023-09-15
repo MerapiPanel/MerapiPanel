@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Segment;
+namespace Mp\Core\Segment;
 
 class Guest extends SegmentAbstract
 {

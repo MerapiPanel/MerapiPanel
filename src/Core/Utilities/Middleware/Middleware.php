@@ -1,10 +1,10 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Utilities\Middleware;
+namespace Mp\Core\Utilities\Middleware;
 
 use Closure;
-use il4mb\Mpanel\Core\Utilities\Http\Request;
-use il4mb\Mpanel\Core\Utilities\Http\Response;
+use Mp\Core\Utilities\Http\Request;
+use Mp\Core\Utilities\Http\Response;
 
 interface Middleware
 {

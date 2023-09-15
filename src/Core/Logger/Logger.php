@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Logger;
+namespace Mp\Core\Logger;
 
 class Logger
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Modules\Api;
+namespace Mp\Modules\Api;
 
 class Service
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Cog;
+namespace Mp\Core\Cog;
 
 use ArrayAccess;
 use Symfony\Component\Yaml\Yaml;

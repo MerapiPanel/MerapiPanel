@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Utilities\Http;
+namespace Mp\Core\Utilities\Http;
 
 class Request
 {

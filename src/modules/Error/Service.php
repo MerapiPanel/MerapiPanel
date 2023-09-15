@@ -1,8 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Modules\Error;
+namespace Mp\Modules\Error;
 
-use il4mb\Mpanel\Core\AppBox;
+use Mp\Core\AppBox;
 
 class Engine {
 

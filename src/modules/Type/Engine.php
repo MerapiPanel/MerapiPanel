@@ -1,6 +1,6 @@
 <?php
 
-use il4mb\Mpanel\Core\AppBox;
+use Mp\Core\AppBox;
 
 class Type {
 

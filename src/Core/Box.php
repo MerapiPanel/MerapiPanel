@@ -1,12 +1,12 @@
 <?php
 
-namespace il4mb\Mpanel\Core;
+namespace Mp\Core;
 
 use ReflectionClass;
 
 abstract class Box
 {
-    protected $base = "il4mb\\Mpanel";
+    protected $base = "Mp";
 
     abstract function __call($address, $arguments);
 

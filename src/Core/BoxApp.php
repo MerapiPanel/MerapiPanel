@@ -1,15 +1,15 @@
 <?php
 
-namespace il4mb\Mpanel\Core;
+namespace Mp\Core;
 
-use il4mb\Mpanel\Core\Cog\Config;
-use il4mb\Mpanel\Core\Error\CodeException;
+use Mp\Core\Cog\Config;
+use Mp\Core\Error\CodeException;
 use ReflectionClass;
 
 class BoxApp extends Box
 {
 
-    protected $base = "il4mb\\Mpanel\\Core";
+    protected $base = "Mp\\Core";
     protected bool $debug;
     protected $stack = [];
     protected Config $cog;

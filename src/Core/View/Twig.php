@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core\view;
+namespace Mp\Core\view;
 
 use Twig\TemplateWrapper;
 

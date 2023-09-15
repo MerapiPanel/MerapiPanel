@@ -1,8 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Segment;
+namespace Mp\Core\Segment;
 
-use il4mb\Mpanel\Core\Box;
+use Mp\Core\Box;
 
 abstract class SegmentAbstract
 {

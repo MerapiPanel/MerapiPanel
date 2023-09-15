@@ -1,8 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Error;
+namespace Mp\Core\Error;
 use Exception;
-use il4mb\Mpanel\Core\Box;
+use Mp\Core\Box;
 use Throwable;
 
 abstract class ErrorAbstract extends Exception

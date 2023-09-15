@@ -1,13 +1,13 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Utilities;
+namespace Mp\Core\Utilities;
 
 use Exception;
-use il4mb\Mpanel\Core\Box;
-use il4mb\Mpanel\Core\Utilities\Middleware\AwareComponent;
-use il4mb\Mpanel\Core\Utilities\Http\Response;
-use il4mb\Mpanel\Core\Utilities\Http\Request;
-use il4mb\Mpanel\Exceptions\Error;
+use Mp\Core\Box;
+use Mp\Core\Utilities\Middleware\AwareComponent;
+use Mp\Core\Utilities\Http\Response;
+use Mp\Core\Utilities\Http\Request;
+use Mp\Exceptions\Error;
 
 class Router extends AwareComponent
 {
@@ -315,7 +315,7 @@ class Router extends AwareComponent
             list($controller, $method) = explode('@', $callback);
 
             if (!class_exists($controller)) {
-                $controllerClass = 'il4mb\\Mpanel\\Controllers\\' . $controller;
+                $controllerClass = 'Mp\\Controllers\\' . $controller;
 
                 if (!class_exists($controllerClass)) {
 

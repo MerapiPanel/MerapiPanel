@@ -1,8 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Mod;
+namespace Mp\Core\Mod;
 
-use il4mb\Mpanel\Core\Box;
+use Mp\Core\Box;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
 

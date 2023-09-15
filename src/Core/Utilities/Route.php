@@ -1,9 +1,9 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Utilities;
+namespace Mp\Core\Utilities;
 
 use Closure;
-use il4mb\Mpanel\Core\Utilities\Middleware\AwareComponent;
+use Mp\Core\Utilities\Middleware\AwareComponent;
 
 class Route extends AwareComponent
 {

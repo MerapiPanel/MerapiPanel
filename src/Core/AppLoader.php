@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Core;
+namespace Mp\Core;
 
 class AppLoader {
 

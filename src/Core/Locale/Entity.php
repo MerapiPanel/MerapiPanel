@@ -1,8 +1,8 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Locale;
+namespace Mp\Core\Locale;
 
-use il4mb\Mpanel\Core\AppBox;
+use Mp\Core\AppBox;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 

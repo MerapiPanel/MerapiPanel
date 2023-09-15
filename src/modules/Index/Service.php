@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Modules\Index;
+namespace Mp\Modules\Index;
 
 class Service
 {

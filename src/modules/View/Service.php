@@ -1,6 +1,6 @@
 <?php
 
-namespace il4mb\Mpanel\Modules\View;
+namespace Mp\Modules\View;
 
 class Service {
 

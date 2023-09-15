@@ -1,14 +1,14 @@
 <?php
 
-namespace il4mb\Mpanel\Core\Mod;
+namespace Mp\Core\Mod;
 
-use il4mb\Mpanel\Core\Box;
-use il4mb\Mpanel\Core\Error\CodeException;
+use Mp\Core\Box;
+use Mp\Core\Error\CodeException;
 
 class Entity extends Box
 {
 
-    protected $base = "il4mb\\Mpanel\\Modules";
+    protected $base = "Mp\\Modules";
     protected $stack = [];
     protected Box $box;
 
