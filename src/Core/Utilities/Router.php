@@ -325,15 +325,18 @@ class Router extends AwareComponent
             }
 
             $view = $this->box->view();
-
             $controllerInstance = $this->box->mod()->$controllerClass();
-            $meta = $controllerInstance->getDetails();
-            $render = $controllerInstance->$method($view);
 
-            $file = "@$meta[name]/" . ltrim($render, "\/");
-            $template = $view->load($file);
+            if ($controllerInstance) {
+                
+                $meta = $controllerInstance->getDetails();
+                $render = $controllerInstance->$method($view);
 
-            echo $template->render([]);
+                $file = "@$meta[name]/" . ltrim($render, "\/");
+                $template = $view->load($file);
+
+                echo $template->render([]);
+            }
 
 
             return new Response();
