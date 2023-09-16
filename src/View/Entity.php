@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Core\View;
+namespace Mp\View;
 
-use Mp\Core\Box;
-use Mp\Core\view\Twig;
+use Mp\Box;
+use Mp\view\Twig;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Throwable;
 

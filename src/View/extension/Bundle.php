@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\View\Extension;
+namespace Mp\View\Extension;
 
 class Bundle extends \Twig\Extension\AbstractExtension
 {

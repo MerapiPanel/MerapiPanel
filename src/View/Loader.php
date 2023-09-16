@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\View;
+namespace Mp\View;
 
 use Twig\Loader\FilesystemLoader;
 
