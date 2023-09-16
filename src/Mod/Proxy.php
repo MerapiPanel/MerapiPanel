@@ -78,7 +78,7 @@ final class Proxy
         $file = $this->reflection->getFileName();
 
         while ($directory = dirname($file)) {
-            if (basename($directory) === 'modules') {
+            if (basename($directory) === 'module') {
                 break;
             }
             $file = $directory;

@@ -30,12 +30,12 @@ class Factory extends AppAware
     {
 
         // Directory where your PHP files are located
-        $directory = realpath(__DIR__ . "/../../modules"); // You may need to specify your project's directory here
+        $directory = realpath(__DIR__ . "/../module"); // You may need to specify your project's directory here
 
         // Get a list of all PHP files in the directory
         $phpFiles = glob($directory . '/*');
 
-        $namespacePattern = 'Mp\\Modules\\';
+        $namespacePattern = 'Mp\\Module\\';
         $controllers = [];
 
         foreach ($phpFiles as $file) {
@@ -55,10 +55,10 @@ class Factory extends AppAware
 
             $addr = $controller["addr"];
             $name = $controller["name"];
-            $modBox =  $this->box->core_boxmod();
+            $modBox =  $this->box->boxmod();
 
             $object = $modBox->$addr();
-            $object->register($this->box->utilities_router());
+            $object->register($this->box->utility_router());
         }
     }
 }

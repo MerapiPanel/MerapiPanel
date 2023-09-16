@@ -1,11 +1,11 @@
 <?php
 
-namespace Mp\Modules\Auth\Controller;
+namespace Mp\Module\Auth\Controller;
 
 use Mp\Box;
-use Mp\Core\Utilities\Http\Response;
-use Mp\Core\Utilities\Router;
-use Mp\Core\View\Entity;
+use Mp\Utility\Http\Response;
+use Mp\Utility\Router;
+use Mp\View\Entity;
 
 class  Guest
 {

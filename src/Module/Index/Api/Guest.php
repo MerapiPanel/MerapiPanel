@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Modules\Index\Api;
+namespace Mp\Module\Index\Api;
 
 class Guest {
 

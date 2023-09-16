@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Modules\Index\Controller;
+namespace Mp\Module\Index\Controller;
 
-use Mp\Core\Box;
-use Mp\Core\Utilities\Router;
+use Mp\Box;
+use Mp\Utility\Router;
 
 class Guest
 {

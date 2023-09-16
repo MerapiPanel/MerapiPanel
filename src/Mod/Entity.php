@@ -8,7 +8,7 @@ use Mp\Exception\CodeException;
 class Entity extends Box
 {
 
-    protected $base = "Mp\\Modules";
+    protected $base = "Mp\\Module";
     protected $stack = [];
     protected Box $box;
 

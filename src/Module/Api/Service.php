@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Modules\Api;
+namespace Mp\Module\Api;
 
 class Service
 {

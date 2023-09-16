@@ -2,7 +2,7 @@
 
 namespace Mp;
 
-use Mp\Core\Mod\Proxy;
+use Mp\Mod\Proxy;
 
 class BoxMod extends Box
 {
@@ -13,14 +13,14 @@ class BoxMod extends Box
 
     public function __construct()
     {
-        $this->base = "Mp\\Modules";
+        $this->base = "Mp\\Module";
     }
 
 
     public function setBox(Box $box)
     {
         $this->box = $box;
-        $this->box->core_mod_factory();
+        $this->box->mod_factory();
     }
 
 
