@@ -2,7 +2,7 @@
 
 namespace Mp\Core\Segment;
 
-use Mp\Core\Box;
+use Mp\Box;
 
 abstract class SegmentAbstract
 {

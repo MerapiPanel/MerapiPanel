@@ -3,7 +3,6 @@
 namespace Mp\Module\Auth\Controller;
 
 use Mp\Box;
-use Mp\Utility\Http\Response;
 use Mp\Utility\Router;
 use Mp\View\Entity;
 

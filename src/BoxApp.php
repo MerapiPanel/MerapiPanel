@@ -46,7 +46,7 @@ class BoxApp extends Box
 
         if(class_exists($address)) {
             $address = strtolower(str_replace("\\", "_", $address));
-            $address = str_replace("il4mb_mpanel_", "", $address);
+            $address = str_replace(strtolower(trim($this->base))."_", "", $address);
         }
 
         $segments = explode("_", $address);

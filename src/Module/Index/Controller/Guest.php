@@ -25,11 +25,11 @@ class Guest
     public function register(Router $router)
     {
 
-        $router->get("/", self::class . "@index");
+       $router->get("/", self::class . "@index");
     }
 
 
-    public function index(\Mp\Core\View\Entity $entity)
+    public function index(\Mp\View\Entity $entity)
     {
 
         return $entity->render("/content.html.twig");

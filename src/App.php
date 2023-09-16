@@ -28,10 +28,10 @@ class App extends BoxApp
     public function __construct()
     {
 
-       // ob_start();
+        // ob_start();
 
         $this->exception();
-       // $this->database_db();
+        // $this->database_db();
         $this->view();
         $this->setConfig(self::app_config);
 
@@ -39,9 +39,7 @@ class App extends BoxApp
 
             $service = $this->getConfig()->get("service");
 
-            $mod = $this->mod();
-            $mod->$service();
-
+            $this->mod()->$service();
         }
     }
 
@@ -64,13 +62,12 @@ class App extends BoxApp
 
         try {
 
-             $request = $this->utility_http_request();
+            $request = $this->utility_http_request();
             // Send the response
             echo $this->utility_router()->dispatch($request);
-             
         } catch (Throwable $e) {
 
-             $this->exception()->catch_error($e);
+            $this->exception()->catch_error($e);
         }
     }
 }

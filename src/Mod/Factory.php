@@ -2,9 +2,9 @@
 
 namespace Mp\Mod;
 
-use Exception;
 use Mp\AppAware;
 use Mp\Box;
+use Throwable;
 
 class Factory extends AppAware
 {
@@ -30,7 +30,7 @@ class Factory extends AppAware
     {
 
         // Directory where your PHP files are located
-        $directory = realpath(__DIR__ . "/../module"); // You may need to specify your project's directory here
+        $directory = realpath(__DIR__ . "/../Module"); // You may need to specify your project's directory here
 
         // Get a list of all PHP files in the directory
         $phpFiles = glob($directory . '/*');
@@ -55,10 +55,13 @@ class Factory extends AppAware
 
             $addr = $controller["addr"];
             $name = $controller["name"];
-            $modBox =  $this->box->boxmod();
+            // $modBox =  $this->box->boxmod();
 
-            $object = $modBox->$addr();
-            $object->register($this->box->utility_router());
+            $object = $this->box->mod()->$addr();
+
+           // print_r($object);
+
+             $object->register($this->box->utility_router());
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp;
+namespace _Mp;
 
 use Mp\Mod\Proxy;
 
@@ -67,7 +67,6 @@ class BoxMod extends Box
             }
             $nested = &$nested[$key];
         }
-
 
         if (empty($nested)) {
 

@@ -14,8 +14,10 @@ class Entity extends Box
 
     public function setBox(Box $box)
     {
-        $this->box = $box;
-        $this->box->mod_factory();
+        if (!isset($this->box)) {
+            $this->box = $box;
+            $this->box->mod_factory();
+        }
     }
 
 
@@ -41,7 +43,7 @@ class Entity extends Box
                 if (isset($trace[0]['file'])) {
                     $e->setFile($trace[0]['file']); // Set the file from the caller
                 }
-                if(isset($trace[0]['line'])) {
+                if (isset($trace[0]['line'])) {
                     $e->setLine($trace[0]['line']); // Set the line from the caller
                 }
 
@@ -78,7 +80,7 @@ class Entity extends Box
             $nested = new Proxy($className);
 
             if (method_exists($nested, "setBox")) {
-                call_user_func([$nested, "setBox"], $this);
+                call_user_func([$nested, "setBox"], $this->box);
             }
         }
 
