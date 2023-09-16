@@ -75,10 +75,11 @@ final class Proxy
             $this->createInstance($this->classInstance);
         }
 
+        $deep = 3;
         $file = $this->reflection->getFileName();
 
-        while ($directory = dirname($file)) {
-            if (basename($directory) == 'Module') {
+        while ($directory = dirname($file) && $deep-- > 0) {
+            if (basename($directory) == 'module') {
                 break;
             }
             $file = $directory;
