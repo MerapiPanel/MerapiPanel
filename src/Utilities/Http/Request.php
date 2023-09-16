@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\Utilities\Http;
+namespace Mp\Utility\Http;
 
 class Request
 {

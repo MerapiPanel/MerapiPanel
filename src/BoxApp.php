@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Core;
+namespace Mp;
 
 use Mp\Core\Cog\Config;
-use Mp\Core\Error\CodeException;
+use Mp\Exception\CodeException;
 use ReflectionClass;
 
 class BoxApp extends Box

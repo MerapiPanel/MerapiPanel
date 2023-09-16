@@ -7,7 +7,7 @@
  * by editing this file, you are breaking the Application
  */
 
-namespace Mp\Core;
+namespace Mp;
 
 use Mp\Core\Http\Response;
 use Throwable;
@@ -32,6 +32,7 @@ class App extends BoxApp
        // ob_start();
 
         $this->error();
+        $this->database_db();
         $this->view();
         $this->setConfig(self::app_config);
 

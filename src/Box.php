@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core;
+namespace Mp;
 
 use ReflectionClass;
 

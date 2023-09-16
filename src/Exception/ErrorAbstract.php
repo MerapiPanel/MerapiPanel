@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Core\Error;
+namespace Mp\Exception;
 use Exception;
-use Mp\Core\Box;
+use Mp\Box;
 use Throwable;
 
 abstract class ErrorAbstract extends Exception

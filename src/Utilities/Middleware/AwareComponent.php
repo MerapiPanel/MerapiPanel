@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\Utilities\Middleware;
+namespace Mp\Utility\Middleware;
 
 abstract class AwareComponent {
 

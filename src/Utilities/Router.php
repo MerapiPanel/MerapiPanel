@@ -1,15 +1,15 @@
 <?php
 
-namespace Mp\Core\Utilities;
+namespace Mp\Utility;
 
 use Exception;
-use Mp\Core\Box;
-use Mp\Core\Utilities\Http\API;
-use Mp\Core\Utilities\Http\Http_Api;
-use Mp\Core\Utilities\Middleware\AwareComponent;
-use Mp\Core\Utilities\Http\Response;
-use Mp\Core\Utilities\Http\Request;
-use Mp\Core\Utilities\Http\Response_Api;
+use Mp\Box;
+use Mp\Utility\Http\API;
+use Mp\Utility\Http\Http_Api;
+use Mp\Utility\Middleware\AwareComponent;
+use Mp\Utility\Http\Response;
+use Mp\Utility\Http\Request;
+use Mp\Utility\Http\Response_Api;
 use Mp\Exceptions\Error;
 
 class Router extends AwareComponent
@@ -342,11 +342,11 @@ class Router extends AwareComponent
                 $view = $this->box->view();
                 $retrun = $controllerInstance->$method($view);
 
-
                 $file = "@$meta[name]/" . ltrim($retrun, "\/");
                 $template = $view->load($file);
                 $content = $template->render([]);
                 $response->setContent($content);
+
             } else {
 
                 $content = ["status" => 200, "response" => null];
@@ -357,8 +357,11 @@ class Router extends AwareComponent
 
                     $content["response"] = isset($result['response']) ? $result['response'] : null;
                     $content["status"] = isset($result['status']) ? $result['status'] : 200;
+
                 } else {
+
                     $content["response"] = $result;
+
                 }
 
                 $response->setContent($content);

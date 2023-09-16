@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\Error;
+namespace Mp\Exception;
 
 use Exception;
 use Throwable;

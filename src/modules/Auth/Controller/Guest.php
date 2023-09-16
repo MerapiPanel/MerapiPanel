@@ -2,7 +2,7 @@
 
 namespace Mp\Modules\Auth\Controller;
 
-use Mp\Core\Box;
+use Mp\Box;
 use Mp\Core\Utilities\Http\Response;
 use Mp\Core\Utilities\Router;
 use Mp\Core\View\Entity;

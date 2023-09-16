@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Core\Utilities\Http;
+namespace Mp\Utility\Http;
 
 use Exception;
-use Mp\Core\Box;
+use Mp\Box;
 use Throwable;
 
 class Api extends Response
