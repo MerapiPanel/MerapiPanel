@@ -50,6 +50,7 @@ class BoxApp extends Box
 
 
         if (class_exists($name)) {
+            $name = str_replace($this->base, "", $name);
             $name = strtolower(str_replace("\\", "_", $name));
             $name = str_replace(strtolower(trim($this->base)) . "_", "", $name);
         }
@@ -93,6 +94,9 @@ class BoxApp extends Box
 
 
         // before construction
+        if (is_object($nested)) {
+            return $nested;
+        }
         if (is_array($nested) && isset($nested["service"]) && is_object($nested["service"])) {
 
             return $nested["service"];
@@ -180,8 +184,7 @@ class BoxApp extends Box
         foreach ($controllers as $controller) {
 
             $class = $controller["class"];
-            $reflection = new ReflectionClass($class);
-            $object = $reflection->newInstanceWithoutConstructor();
+            $object = $this->$class();
             $object->register($this->utility_router());
         }
     }

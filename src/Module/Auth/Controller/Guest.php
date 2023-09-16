@@ -25,7 +25,7 @@ class  Guest
     }
 
 
-    public function index(Entity $entity)
+    public function index($entity)
     {
 
         return $entity->render("login.html.twig");

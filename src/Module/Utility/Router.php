@@ -335,10 +335,9 @@ class Router extends Component
             $controllerInstance = $this->box->$controllerClass();
             $meta = $controllerInstance->__getMeta();
 
-
             if ($request->getMethod() === Route::GET) {
 
-                $view = $this->box->view();
+                $view = $this->box->viewengine();
                 $retrun = $controllerInstance->$method($view);
 
                 $file = "@$meta[name]/" . ltrim($retrun, "\/");

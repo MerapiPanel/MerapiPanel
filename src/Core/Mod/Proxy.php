@@ -97,7 +97,8 @@ final class Proxy
         }
     }
 
-    public function getRealInstance() {
+    public function getRealInstance()
+    {
         return $this->instance;
     }
 
@@ -130,24 +131,28 @@ final class Proxy
             $this->createInstance($this->classInstance);
         }
 
-        $deep = 3;
         $file = $reflection->getFileName();
+        $parts = explode((PHP_OS == "WINNT" ? "\\" : "/"), $file);
 
-        while ($directory = dirname($file) && $deep-- > 0) {
-            if (basename($directory) == 'module') {
+        $modName = null;
+        foreach ($parts as $key => $part) {
+
+            if (strtolower($part) == "module") {
+                $modName = $parts[$key + 1];
+                $file = implode("/", array_slice($parts, 0, $key + 1)) . "/" . $modName;
                 break;
             }
-            $file = $directory;
         }
 
         $yml = $file . "/module.yml";
 
         $meta = [
-            "name"     => ucfirst(basename($file)),
+            "name"     => $modName ? $modName : ucfirst(basename($file)),
             "version"  => "1.0.0",
             "author"   => "Merapi panel",
             "location" => $file
         ];
+        $this->meta = array_merge($this->meta, $meta);
 
         if (file_exists($yml)) {
             $array = Yaml::parseFile($yml);
@@ -168,7 +173,8 @@ final class Proxy
     }
 
 
-    public function __getMeta() {
+    public function __getMeta()
+    {
         return $this->meta;
     }
 
@@ -176,7 +182,7 @@ final class Proxy
     public final function __toString()
     {
 
-        if(method_exists($this->instance, "__toString")) {
+        if (method_exists($this->instance, "__toString")) {
             return $this->instance->__toString();
         }
         return "(Module)" . $this->classInstance;

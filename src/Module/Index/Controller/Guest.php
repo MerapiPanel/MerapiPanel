@@ -28,7 +28,7 @@ class Guest
     }
 
 
-    public function index(\Mp\View\Entity $entity)
+    public function index($entity)
     {
 
         return $entity->render("/content.html.twig");
