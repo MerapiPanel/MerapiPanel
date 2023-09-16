@@ -1,10 +1,10 @@
 <?php
 
-namespace Mp\Utility\Middleware;
+namespace Mp\Module\Utility\Middleware;
 
 use Closure;
-use Mp\Utility\Http\Request;
-use Mp\Utility\Http\Response;
+use Mp\Module\Utility\Http\Request;
+use Mp\Module\Utility\Http\Response;
 
 class MiddlewareStack
 {

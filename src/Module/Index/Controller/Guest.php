@@ -3,7 +3,6 @@
 namespace Mp\Module\Index\Controller;
 
 use Mp\Box;
-use Mp\Utility\Router;
 
 class Guest
 {
@@ -22,10 +21,10 @@ class Guest
     }
 
 
-    public function register(Router $router)
+    public function register($router)
     {
 
-       $router->get("/", self::class . "@index");
+        $router->get("/", self::class . "@index");
     }
 
 

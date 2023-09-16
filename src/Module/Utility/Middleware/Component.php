@@ -1,8 +1,9 @@
 <?php
 
-namespace Mp\Utility\Middleware;
+namespace Mp\Module\Utility\Middleware;
 
-abstract class AwareComponent {
+
+abstract class Component {
 
     protected MiddlewareStack $middleware;
 

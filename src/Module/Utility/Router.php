@@ -1,15 +1,15 @@
 <?php
 
-namespace Mp\Utility;
+namespace Mp\Module\Utility;
 
 use Exception;
 use Mp\Box;
-use Mp\Utility\Middleware\AwareComponent;
-use Mp\Utility\Http\Response;
-use Mp\Utility\Http\Request;
+use Mp\Module\Utility\Middleware\Component;
+use Mp\Module\Utility\Http\Response;
+use Mp\Module\Utility\Http\Request;
 use Mp\Exceptions\Error;
 
-class Router extends AwareComponent
+class Router extends Component
 {
 
     protected $routeStack = [
@@ -27,6 +27,7 @@ class Router extends AwareComponent
 
         parent::__construct();
         $this->box = $box;
+
     }
 
 
@@ -180,6 +181,7 @@ class Router extends AwareComponent
          */
         foreach ($this->routeStack[$method] as $route) {
 
+
             if ($this->matchRoute($route->getPath(), $path)) {
 
                 $routeParams = $this->extractRouteParams($route->getPath(), $path);
@@ -330,8 +332,8 @@ class Router extends AwareComponent
             }
 
 
-            $controllerInstance = $this->box->mod()->$controllerClass();
-            $meta = $controllerInstance->getDetails();
+            $controllerInstance = $this->box->$controllerClass();
+            $meta = $controllerInstance->__getMeta();
 
 
             if ($request->getMethod() === Route::GET) {

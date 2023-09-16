@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Utility\Http;
+namespace Mp\Module\Utility\Http;
 
 class URL
 {

@@ -4,7 +4,6 @@ namespace Mp\Mod;
 
 use Mp\AppAware;
 use Mp\Box;
-use Throwable;
 
 class Factory extends AppAware
 {

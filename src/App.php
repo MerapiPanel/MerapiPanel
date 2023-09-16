@@ -29,27 +29,17 @@ class App extends BoxApp
     {
 
         // ob_start();
-
         $this->exception();
-        // $this->database_db();
-        $this->view();
+        $this->viewengine();
         $this->setConfig(self::app_config);
+        $this->__registerController();
 
         if ($this->getConfig()->get("service")) {
 
             $service = $this->getConfig()->get("service");
 
-            $this->mod()->$service();
+            $this->$service();
         }
-    }
-
-
-
-
-    function getDirectory()
-    {
-
-        return __DIR__;
     }
 
 
@@ -59,13 +49,14 @@ class App extends BoxApp
     public function run(): void
     {
 
-
         try {
 
             $request = $this->utility_http_request();
             // Send the response
-            echo $this->utility_router()->dispatch($request);
+            echo $this->utility_router()->dispatch($request->getRealInstance());
         } catch (Throwable $e) {
+
+            // print_r($e);
 
             $this->exception()->catch_error($e);
         }

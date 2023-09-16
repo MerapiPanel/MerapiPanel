@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Core\Segment;
+namespace Mp\Module\Segment;
 
-class Entity {
+class Service {
 
     protected $auth = false;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Mp\Utility;
+namespace Mp\Module\Utility;
 
 use Closure;
-use Mp\Utility\Middleware\AwareComponent;
+use Mp\Module\Utility\Middleware\Component;
 
-class Route extends AwareComponent
+class Route extends Component
 {
 
 

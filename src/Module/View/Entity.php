@@ -3,9 +3,7 @@
 namespace Mp\View;
 
 use Mp\Box;
-use Mp\view\Twig;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use Throwable;
 
 class Entity
 {

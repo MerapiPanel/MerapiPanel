@@ -3,7 +3,7 @@
 namespace Mp\Module\Auth\Controller;
 
 use Mp\Box;
-use Mp\Utility\Router;
+use Mp\Module\Utility\Router;
 use Mp\View\Entity;
 
 class  Guest
@@ -17,7 +17,7 @@ class  Guest
     }
 
 
-    public function register(Router $router)
+    public function register($router)
     {
 
         $router->get("/login", self::class . "@index");
