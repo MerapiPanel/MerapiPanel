@@ -9,7 +9,7 @@ use ReflectionClass;
 class BoxApp extends Box
 {
 
-    protected $base = "Mp\\Core";
+    protected $base = "Mp";
     protected bool $debug;
     protected $stack = [];
     protected Config $cog;

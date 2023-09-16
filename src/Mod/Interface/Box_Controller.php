@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Core\Mod\Interface;
+namespace Mp\Mod\Interface;
 
-use Mp\Core\BoxMod;
-use Mp\Core\Http\Router;
+use Mp\BoxMod;
+use Mp\Utility\Router;
 
 interface Box_Controller {
     

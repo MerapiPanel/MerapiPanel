@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Core\Mod;
+namespace Mp\Mod;
 
-use Mp\Core\Box;
+use Mp\Box;
 use Symfony\Component\Yaml\Yaml;
 
 final class Proxy

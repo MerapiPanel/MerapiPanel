@@ -9,7 +9,6 @@
 
 namespace Mp;
 
-use Mp\Core\Http\Response;
 use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);
@@ -17,7 +16,7 @@ $GLOBALS['time_start'] = microtime(true);
 class App extends BoxApp
 {
 
-    const app_config = __DIR__ . "/../config/app.yml";
+    const app_config = __DIR__ . "/config/app.yml";
     /**
      * Constructor function for initializing the class.
      * 
@@ -31,8 +30,8 @@ class App extends BoxApp
 
        // ob_start();
 
-        $this->error();
-        $this->database_db();
+        $this->exception();
+       // $this->database_db();
         $this->view();
         $this->setConfig(self::app_config);
 
@@ -65,13 +64,13 @@ class App extends BoxApp
 
         try {
 
-             $request = $this->utilities_http_request();
+             $request = $this->utility_http_request();
             // Send the response
-            echo $this->utilities_router()->dispatch($request);
+            echo $this->utility_router()->dispatch($request);
              
         } catch (Throwable $e) {
 
-             $this->core_error()->catch_error($e);
+             $this->exception()->catch_error($e);
         }
     }
 }

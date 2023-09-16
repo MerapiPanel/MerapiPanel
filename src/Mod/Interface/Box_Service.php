@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Core\Mod\Interface;
+namespace Mp\Mod\Interface;
 
-use Mp\Core\BoxMod;
+use Mp\BoxMod;
 
 interface Box_Controller {
 

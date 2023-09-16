@@ -22,7 +22,7 @@ class Entity
 
         $this->box          = $box;
         $this->localeEngine = $box->core_locale();
-        $this->loader       = $box->core_view_loader(realpath(__DIR__ . "/../../view"));
+        $this->loader       = $box->view_loader(realpath(__DIR__ . "/../../templates"));
         $this->twig         = new \Twig\Environment($this->loader, ["cache" => false]);
         $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
 
@@ -32,7 +32,7 @@ class Entity
         foreach ($files as $file) {
 
             $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = "Mp\\Core\\view\\Extension\\" . ucfirst($file_name);
+            $className = "Mp\\view\\Extension\\" . ucfirst($file_name);
 
             if (class_exists($className)) {
 

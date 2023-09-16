@@ -1,10 +1,10 @@
 <?php
 
-namespace Mp\Core\Mod;
+namespace Mp\Mod;
 
 use Exception;
-use Mp\Core\AppAware;
-use Mp\Core\Box;
+use Mp\AppAware;
+use Mp\Box;
 
 class Factory extends AppAware
 {

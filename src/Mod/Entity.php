@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Core\Mod;
+namespace Mp\Mod;
 
-use Mp\Core\Box;
-use Mp\Core\Error\CodeException;
+use Mp\Box;
+use Mp\Exception\CodeException;
 
 class Entity extends Box
 {
