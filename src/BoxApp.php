@@ -40,11 +40,6 @@ class BoxApp extends Box
     }
 
 
-    // public function __call($name, $arguments){
-
-    //     print_r($name);
-    // }
-
     final public function __call($name, $arguments)
     {
 

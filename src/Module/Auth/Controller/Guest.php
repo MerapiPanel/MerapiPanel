@@ -3,10 +3,8 @@
 namespace Mp\Module\Auth\Controller;
 
 use Mp\Box;
-use Mp\Module\Utility\Router;
-use Mp\View\Entity;
 
-class  Guest
+class Guest
 {
 
     protected $box;
@@ -27,6 +25,22 @@ class  Guest
 
     public function index($entity)
     {
+
+        $db = $this->box->database();
+        $users = $db->executeSelectQuery("SELECT * FROM users");
+
+        ($db->prepare("ALTER TABLE users ADD password TEXT;"))->execute();
+
+        if (empty($users)) {
+
+            $db->executeInsertQuery("INSERT INTO users (username, password) VALUES ('admin', 'admin')");
+        }
+
+        $users = $db->executeSelectQuery("SELECT * FROM users");
+
+
+        print_r($users);
+
 
         return $entity->render("login.html.twig");
     }

@@ -2,11 +2,11 @@
 
 namespace Mp\Mod\Interface;
 
-use Mp\BoxMod;
+use Mp\Box;
 
 interface Box_Controller {
 
-    public function setBox(BoxMod $box);
-    public function getBox(): ?BoxMod;
+    public function setBox(Box $box);
+    public function getBox(): ?Box;
     
 }
