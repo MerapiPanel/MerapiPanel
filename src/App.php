@@ -13,7 +13,7 @@ use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);
 
-class App extends BoxApp
+class App extends Box
 {
 
     const app_config = __DIR__ . "/config/app.yml";

@@ -8,9 +8,8 @@ use Symfony\Component\Yaml\Yaml;
 
 final class Proxy
 {
-
+    
     protected Box $box;
-
     protected string $classInstance;
     protected Object $instance;
     protected $meta = [];
@@ -62,7 +61,9 @@ final class Proxy
                     )) {
 
                         throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
+
                     } else {
+
                         $paramName = $param->getName();
                         if (isset($arguments[$paramName])) {
 
@@ -75,6 +76,7 @@ final class Proxy
 
                             throw new \Exception("Missing argument: $paramName at key: $key");
                         }
+
                     }
                 }
 

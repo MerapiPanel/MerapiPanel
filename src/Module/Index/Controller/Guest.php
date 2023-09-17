@@ -3,9 +3,9 @@
 namespace Mp\Module\Index\Controller;
 
 use Mp\Box;
+use Mp\Core\Abstract\Module;
 
-class Guest
-{
+class Guest extends Module {
 
     private $box;
 
@@ -30,6 +30,8 @@ class Guest
 
     public function index($entity)
     {
+
+        $db = $this->getDatabase();
 
         return $entity->render("/content.html.twig");
     }

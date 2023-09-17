@@ -2,115 +2,115 @@
 
 namespace Mp;
 
-use ReflectionClass;
+use Mp\Core\Cog\Config;
+use Mp\Core\Mod\Proxy;
 
-
-abstract class Box
+class Box
 {
-    protected $base = "Mp";
+    protected bool $debug;
+    protected $stack = [];
+    protected Config $cog;
 
-    abstract function __call($address, $arguments);
 
-    final function __register($class, &$stack)
+    final public function setConfig(string $fileYml)
     {
 
-        if (!class_exists($class)) {
-            throw new \Exception("Error: $class not found");
+        $this->cog = new Config($fileYml);
+
+        if (!isset($this->cog['debug'])) {
+            throw new \Exception("Cofig error: debug not found, check config file the key 'debug' is missing, 'debug' is required with the value 'true' or 'false'");
+        }
+        if (!isset($this->cog['admin'])) {
+            throw new \Exception("Cofig error: admin not found, check config file the key 'admin' is missing, 'admin' is url path to admin segment");
         }
 
-        $class    = strtolower(str_replace("\\", "_", ltrim(str_replace($this->base, "", $class), "\\")));
-        $segments = explode("_", $class);
-
-        $nested = &$stack;
-        $className = $this->base;
-
-
-        foreach ($segments as $x => $key) {
-
-            if (!isset($nested[$key])) {
-                $nested[$key] = [];
-            }
-            $className .= "\\" . ucfirst($key);
-
-            if (is_object($nested[$key]) && $x < count($segments) - 1) {
-                $nested[$key] = ["entity" => $nested[$key]];
-            }
-            $nested = &$nested[$key];
-        }
-
-        if (empty($nested) && class_exists($class)) {
-
-            $classReflection  = new ReflectionClass($class);
-            $classConstructor = $classReflection->getConstructor();
-
-            if ($classConstructor !== null) {
-
-                $classParams     = $classConstructor->getParameters();
-                $passedParams    = [];
-
-
-                foreach ($classParams as $key => $param) {
-
-                    $paramType = $param->getType();
-
-                    if ($paramType && (ltrim($paramType, "?") == self::class ||
-                        ltrim($paramType, "?") == $this::class
-                    )) {
-
-                        throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
-                    } else {
-                        $paramName = $param->getName();
-                        if (isset($arguments[$paramName])) {
-
-                            $passedParams[] = $arguments[$paramName];
-                        } elseif (isset($arguments[$key])) {
-
-                            $passedParams[] = $arguments[$key];
-                        } else {
-
-
-                            throw new \Exception("Missing argument: $paramName at key: $key");
-                        }
-                    }
-                }
-            }
-
-
-            if (!empty($passedParams)) {
-                $nested = $classReflection->newInstanceArgs($passedParams);
-            } else {
-                $nested = $classReflection->newInstance();
-            }
-
-            /**
-             * @var ReflectionClass $nested
-             */
-            $nested->{"__location__"} = $class;
-
-            if (method_exists($nested, 'setBox')) {
-                call_user_func(array($nested, 'setBox'), $this);
-            }
+        if (!isset($this->cog['service'])) {
+            throw new \Exception("Cofig error: services not found, check config file the key 'services' is missing, 'services' is array of services");
         }
     }
 
-    function methodToAddress($method)
+
+    final public function getConfig(): Config
+    {
+        return $this->cog;
+    }
+
+
+    final public function __call($name, $arguments)
     {
 
-        $method = ltrim(str_replace(strtolower($this->base), "", $method), "\\");
+        $name = str_replace(__NAMESPACE__, "", $name);
+        $name = strtolower(str_replace("\\", "_", str_replace("/", "_", $name)));
+        $name = ltrim(str_replace(strtolower(trim(__NAMESPACE__)) . "_", "", $name), "_");
 
-        $parts = explode("_", $method);
-        $address = "";
+        $theClass = __NAMESPACE__ . "\\" . implode("\\", array_map("ucfirst", explode("_", $name)));
+        $className = $theClass;
 
-        foreach ($parts as $x => $key) {
+        if(!class_exists($className)) {
 
-            $address .= ucfirst($key);
+            $className .= "\\Service";
         }
 
-        return $address;
+        $instance = &$this->stack;
+        if(isset($instance[$theClass])) {
+           return $instance[$theClass];
+        }
+
+        $instance = &$instance[$theClass];
+
+        if (class_exists($className)) {
+
+            $instance = new Proxy($className, $arguments);
+
+            if (method_exists($instance, "setBox")) {
+                call_user_func([$instance, "setBox"], $this);
+            }
+        }
+
+        return $instance;
     }
-    function addressToMethod($address)
+
+
+
+    public function __registerController()
     {
 
-        return strtolower(str_replace("\\", "_", $address));
+        // Directory where your PHP files are located
+        $directory = realpath(__DIR__ . "/Module"); // You may need to specify your project's directory here
+
+        // Get a list of all PHP files in the directory
+        $phpFiles = glob($directory . '/*');
+
+        $namespacePattern = 'Mp\\Module\\';
+        $controllers = [];
+
+        foreach ($phpFiles as $file) {
+
+            $mod = basename($file);
+            $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst((string)$this->module_segment());
+
+            if (class_exists($className)) {
+                $controllers[] = [
+                    "name" => $mod,
+                    "class" => $className
+                ];
+            }
+        }
+
+        foreach ($controllers as $controller) {
+
+            $class  = $controller["class"];
+            $object = $this->$class();
+            $object->register($this->utility_router());
+        }
+    }
+
+    public function __getZone() {
+
+        /**
+         * Do verification here
+         */
+
+        return isset($_COOKIE['auth']) ? "admin" : "guest";
     }
 }

@@ -38,8 +38,7 @@ class Service
             }
         }
 
-        $segment = $box->module_segment();
-        $this->twig->addGlobal("$segment", $segment);
+        $this->twig->addGlobal($this->box->__getZone(), []);
     }
 
 
@@ -52,7 +51,7 @@ class Service
     function render($fileName)
     {
 
-        return "/html_" . $this->box->module_segment() . "/" . ltrim($fileName, "/");
+        return "/html_" . $this->box->__getZone() . "/" . ltrim($fileName, "/");
     }
 
 
