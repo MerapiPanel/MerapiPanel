@@ -1,10 +1,10 @@
 <?php
 
-namespace Mp\Module\Utility\Middleware;
+namespace Mp\Utility\Middleware;
 
 use Closure;
-use Mp\Module\Utility\Http\Request;
-use Mp\Module\Utility\Http\Response;
+use Mp\Utility\Http\Request;
+use Mp\Utility\Http\Response;
 
 interface Middleware
 {

@@ -19,7 +19,7 @@ class Service
     {
 
         $this->box          = $box;
-        $this->localeEngine = $box->locale()->getRealInstance();
+        $this->localeEngine = $box->module_locale()->getRealInstance();
         $this->loader       = new Loader(realpath(__DIR__ . "/../../templates"));
         $this->twig         = new \Twig\Environment($this->loader, ["cache" => false]);
         $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
@@ -38,7 +38,7 @@ class Service
             }
         }
 
-        $segment = $box->segment();
+        $segment = $box->module_segment();
         $this->twig->addGlobal("$segment", $segment);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Exception;
+namespace Mp\Core\Exception;
 use Exception;
 use Mp\Box;
 use Throwable;
@@ -21,7 +21,6 @@ abstract class ErrorAbstract extends Exception
     public function __construct()
     {
         
-        // error_reporting(0);
         register_shutdown_function([$this, "shutdown"]);
     }
 
@@ -31,7 +30,7 @@ abstract class ErrorAbstract extends Exception
     abstract public function shutdown();
 
 
-    final public function setBox(Box $box)
+    public function setBox(Box $box)
     {
         $this->box = $box;
     }

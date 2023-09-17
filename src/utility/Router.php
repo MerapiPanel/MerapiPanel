@@ -1,12 +1,12 @@
 <?php
 
-namespace Mp\Module\Utility;
+namespace Mp\Utility;
 
 use Exception;
 use Mp\Box;
-use Mp\Module\Utility\Middleware\Component;
-use Mp\Module\Utility\Http\Response;
-use Mp\Module\Utility\Http\Request;
+use Mp\Utility\Middleware\Component;
+use Mp\Utility\Http\Response;
+use Mp\Utility\Http\Request;
 use Mp\Exceptions\Error;
 
 class Router extends Component

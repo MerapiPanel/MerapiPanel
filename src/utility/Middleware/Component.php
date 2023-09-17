@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Module\Utility\Middleware;
+namespace Mp\Utility\Middleware;
 
 
 abstract class Component {

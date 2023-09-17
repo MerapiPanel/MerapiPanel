@@ -29,8 +29,8 @@ class App extends BoxApp
     {
 
         // ob_start();
-        $this->Exception();
-        $this->ViewEngine();
+        $this->Core_Exception();
+        $this->Module_ViewEngine();
         $this->setConfig(self::app_config);
         $this->__registerController();
 

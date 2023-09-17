@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\Segment;
+namespace Mp\Module\Segment;
 
 class Guest extends SegmentAbstract
 {

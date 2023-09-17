@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Module\Utility;
+namespace Mp\Utility;
 
 use Closure;
-use Mp\Module\Utility\Middleware\Component;
+use Mp\Utility\Middleware\Component;
 
 class Route extends Component
 {

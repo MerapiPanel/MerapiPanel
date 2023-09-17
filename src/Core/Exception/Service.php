@@ -1,14 +1,23 @@
 <?php
 
-namespace Mp\Exception;
+namespace Mp\Core\Exception;
+// Mp\Module\Mp\Module\Exception\Service
 
+use Mp\Box;
 use Throwable;
 
-class Entity extends ErrorAbstract
+class Service extends ErrorAbstract
 {
 
 
     private bool $locked = false;
+    public Box $box;
+
+
+    function setBox(Box $box)
+    {
+        $this->box = $box;
+    }
 
     function shutdown()
     {
@@ -67,34 +76,27 @@ class Entity extends ErrorAbstract
     function view()
     {
 
-        try {
-
-            if ($this->locked) {
-                return;
-            }
-            $this->locked = true;
-
-            $error            = $this->toArray();
-            $error['snippet'] = $this->getSnippet();
-
-            $view = $this->box->view();
-            $view->addGlobal('error', $error);
-            $template = null;
-
-            if ($view->templateExists("/error/error$error[code].html.twig")) {
-
-               $template = $view->load("/error/error$error[code].html.twig");
-            } else {
-
-               $template = $view->load("/error/error.html.twig");
-            }
-
-            echo $template->render([]);
-            
-        } catch (\Exception $e) {
-
-            print_r($e);
-           
+        if ($this->locked) {
+            return;
         }
+        $this->locked = true;
+
+        $error            = $this->toArray();
+        $error['snippet'] = $this->getSnippet();
+
+        $view = $this->box->module_viewEngine();
+
+        $view->addGlobal('error', $error);
+        $template = null;
+
+        if ($view->templateExists("/error/error$error[code].html.twig")) {
+
+            $template = $view->load("/error/error$error[code].html.twig");
+        } else {
+
+            $template = $view->load("/error/error.html.twig");
+        }
+
+        echo $template->render([]);
     }
 }

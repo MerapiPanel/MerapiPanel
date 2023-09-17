@@ -3,14 +3,12 @@
 namespace Mp;
 
 use Mp\Core\Cog\Config;
-use Mp\Exception\CodeException;
+use Mp\Core\Exception\CodeException;
 use Mp\Core\Mod\Proxy;
-use ReflectionClass;
+
 
 class BoxApp extends Box
 {
-
-    protected $base = "Mp\\Module";
     protected bool $debug;
     protected $stack = [];
     protected Config $cog;
@@ -43,20 +41,22 @@ class BoxApp extends Box
     final public function __call($name, $arguments)
     {
 
-
         if (class_exists($name)) {
-            $name = str_replace($this->base, "", $name);
+
+            $name = str_replace(__NAMESPACE__, "", $name);
             $name = strtolower(str_replace("\\", "_", $name));
-            $name = str_replace(strtolower(trim($this->base)) . "_", "", $name);
+            $name = str_replace(strtolower(trim(__NAMESPACE__)) . "_", "", $name);
         }
 
 
-        $className = $this->base;
+        $className = __NAMESPACE__;
         $nested = &$this->stack;
         $segments = explode("_", $name);
 
         foreach ($segments as $x => $key) {
+
             if (strpos($className, "\\" . ucfirst($key))) {
+
                 unset($segments[$x]);
             } else {
 
@@ -166,7 +166,7 @@ class BoxApp extends Box
         foreach ($phpFiles as $file) {
 
             $mod = basename($file);
-            $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst((string)$this->segment());
+            $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst((string)$this->module_segment());
 
             if (class_exists($className)) {
                 $controllers[] = [
@@ -178,7 +178,7 @@ class BoxApp extends Box
 
         foreach ($controllers as $controller) {
 
-            $class = $controller["class"];
+            $class  = $controller["class"];
             $object = $this->$class();
             $object->register($this->utility_router());
         }

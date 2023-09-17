@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Module\Utility\Http;
+namespace Mp\Utility\Http;
 
 use Exception;
 use Mp\Box;

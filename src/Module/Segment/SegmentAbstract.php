@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\Segment;
+namespace Mp\Module\Segment;
 
 use Mp\Box;
 
