@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Module\Index;
+namespace Mp\Module\Site;
 
 class Service
 {

@@ -22,7 +22,7 @@ abstract class Module
         return $reflection->getFileName();
     }
 
-    private function __getIndex()
+    public function __getIndex()
     {
         $file = $this->__getChildFile();
 

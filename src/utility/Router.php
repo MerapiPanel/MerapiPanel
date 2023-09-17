@@ -27,7 +27,6 @@ class Router extends Component
 
         parent::__construct();
         $this->box = $box;
-
     }
 
 
@@ -334,17 +333,17 @@ class Router extends Component
 
             $controllerInstance = $this->box->$controllerClass();
             $meta = $controllerInstance->__getMeta();
+            $name = ucfirst(basename($meta['location']));
 
             if ($request->getMethod() === Route::GET) {
 
-                $view = $this->box->module_viewengine();
+                $view = $this->box->Module_ViewEngine();
                 $retrun = $controllerInstance->$method($view);
 
-                $file = "@$meta[name]/" . ltrim($retrun, "\/");
+                $file = "@$name/" . ltrim($retrun, "\/");
                 $template = $view->load($file);
                 $content = $template->render([]);
                 $response->setContent($content);
-
             } else {
 
                 $content = ["status" => 200, "response" => null];
@@ -355,11 +354,9 @@ class Router extends Component
 
                     $content["response"] = isset($result['response']) ? $result['response'] : null;
                     $content["status"] = isset($result['status']) ? $result['status'] : 200;
-
                 } else {
 
                     $content["response"] = $result;
-
                 }
 
                 $response->setContent($content);

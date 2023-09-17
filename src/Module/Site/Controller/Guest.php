@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Module\Index\Controller;
+namespace Mp\Module\Site\Controller;
 
 use Mp\Box;
 use Mp\Core\Abstract\Module;
