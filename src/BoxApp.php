@@ -65,6 +65,7 @@ class BoxApp extends Box
             }
         }
 
+        $segments = array_filter($segments);
 
         foreach ($segments as $x => $key) {
 

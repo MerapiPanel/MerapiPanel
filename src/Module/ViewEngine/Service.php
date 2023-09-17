@@ -52,7 +52,7 @@ class Service
     function render($fileName)
     {
 
-        return "/html_" . $this->box->segment() . "/" . ltrim($fileName, "/");
+        return "/html_" . $this->box->module_segment() . "/" . ltrim($fileName, "/");
     }
 
 

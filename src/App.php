@@ -58,7 +58,7 @@ class App extends BoxApp
 
             // print_r($e);
 
-            $this->exception()->catch_error($e);
+            $this->core_exception()->catch_error($e);
         }
     }
 }

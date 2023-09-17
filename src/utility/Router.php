@@ -337,7 +337,7 @@ class Router extends Component
 
             if ($request->getMethod() === Route::GET) {
 
-                $view = $this->box->viewengine();
+                $view = $this->box->module_viewengine();
                 $retrun = $controllerInstance->$method($view);
 
                 $file = "@$meta[name]/" . ltrim($retrun, "\/");
