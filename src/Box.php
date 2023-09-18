@@ -46,14 +46,14 @@ class Box
         $theClass = __NAMESPACE__ . "\\" . implode("\\", array_map("ucfirst", explode("_", $name)));
         $className = $theClass;
 
-        if(!class_exists($className)) {
+        if (!class_exists($className)) {
 
             $className .= "\\Service";
         }
 
         $instance = &$this->stack;
-        if(isset($instance[$theClass])) {
-           return $instance[$theClass];
+        if (isset($instance[$theClass])) {
+            return $instance[$theClass];
         }
 
         $instance = &$instance[$theClass];
@@ -87,7 +87,7 @@ class Box
         foreach ($phpFiles as $file) {
 
             $mod = basename($file);
-            $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst((string)$this->module_segment());
+            $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst((string)$this->__getZone());
 
             if (class_exists($className)) {
                 $controllers[] = [
@@ -105,7 +105,8 @@ class Box
         }
     }
 
-    public function __getZone() {
+    public function __getZone()
+    {
 
         /**
          * Do verification here
