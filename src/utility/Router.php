@@ -4,6 +4,7 @@ namespace Mp\Utility;
 
 use Exception;
 use Mp\Box;
+use Mp\Core\Cog\Config;
 use Mp\Utility\Middleware\Component;
 use Mp\Utility\Http\Response;
 use Mp\Utility\Http\Request;
@@ -20,6 +21,7 @@ class Router extends Component
     ];
     protected Box $box;
     protected $adminPrefix = '/panel/admin';
+    protected Config $config;
 
 
     public function setBox(Box $box)
@@ -27,6 +29,12 @@ class Router extends Component
 
         parent::__construct();
         $this->box = $box;
+        $this->config = $this->box->getConfig();
+
+        if (isset($this->config['admin'])) {
+
+            $this->adminPrefix = $this->config['admin'];
+        }
     }
 
 
@@ -134,6 +142,8 @@ class Router extends Component
     }
 
 
+
+
     function validateController($controller)
     {
 
@@ -183,11 +193,6 @@ class Router extends Component
             throw new Exception("Unsupported HTTP method: $method", 405);
         }
 
-        // if($method !== Route::GET) {
-
-        //     return $this->box->utilities_http_api($request);
-        // }
-
         /**
          * @var Route $route
          */
@@ -220,8 +225,11 @@ class Router extends Component
     protected function matchRoute($route, $path)
     {
 
-        $pattern = preg_replace('/\//', '\/', $route);
+        if (strpos("/", $route) !== 0) {
+            $route = rtrim($route, "/");
+        }
 
+        $pattern = preg_replace('/\//', '\/', $route);
         $pattern = '/^' . preg_replace('/\{(.?)\}/', '(.?)', $pattern) . '$/';
 
         // Use preg_match to check if the path matches the pattern

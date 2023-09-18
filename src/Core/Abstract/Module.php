@@ -2,11 +2,21 @@
 
 namespace Mp\Core\Abstract;
 
+use Exception;
+use Mp\Box;
 use Mp\Core\Database;
 use ReflectionClass;
 
 abstract class Module
 {
+
+    protected $box;
+
+    public function setBox(Box $box)
+    {
+
+        $this->box = $box;
+    }
 
     final public function getDatabase()
     {
@@ -36,5 +46,21 @@ abstract class Module
             }
         }
         return $file;
+    }
+
+    public function __call($name, $arguments)
+    {
+
+        $index = $this->__getIndex();
+
+        $baseClass = substr($this::class, 0, strpos($this::class, basename($index)) + strlen(basename($index)));
+        $target    = implode("/", array_map("ucfirst", explode("/", $name)));
+        $instance  = "{$baseClass}\\{$target}";
+
+        if (!class_exists($instance)) {
+            throw new Exception("Module $target not found");
+        }
+
+        return $this->box->$instance($arguments);
     }
 }

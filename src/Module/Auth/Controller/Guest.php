@@ -3,9 +3,9 @@
 namespace Mp\Module\Auth\Controller;
 
 use Mp\Box;
+use Mp\Core\Abstract\Module;
 
-class Guest
-{
+class Guest extends Module {
 
     protected $box;
     function setBox(Box $box)
@@ -17,6 +17,8 @@ class Guest
 
     public function register($router)
     {
+
+        $this->service()->hallo();
 
         $router->get("/login",  "index", self::class);
         $router->post("/login",  "login", self::class);

@@ -8,7 +8,7 @@ use Mp\Core\Abstract\Module;
 class Guest extends Module
 {
 
-    private $box;
+    protected $box;
 
     public function setBox(Box $box)
     {
