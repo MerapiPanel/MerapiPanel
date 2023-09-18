@@ -75,6 +75,7 @@ class Box
     public function __registerController()
     {
 
+
         // Directory where your PHP files are located
         $directory = realpath(__DIR__ . "/Module"); // You may need to specify your project's directory here
 
@@ -84,16 +85,25 @@ class Box
         $namespacePattern = 'Mp\\Module\\';
         $controllers = [];
 
+        $zones = ['guest'];
+        if ($this->Module_Auth()->isAdmin()) {
+            $zones[] = 'admin';
+        }
+
         foreach ($phpFiles as $file) {
 
             $mod = basename($file);
-            $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst((string)$this->__getZone());
 
-            if (class_exists($className)) {
-                $controllers[] = [
-                    "name" => $mod,
-                    "class" => $className
-                ];
+            foreach ($zones as $zone) {
+                
+                $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst($zone);
+
+                if (class_exists($className)) {
+                    $controllers[] = [
+                        "name" => $mod,
+                        "class" => $className
+                    ];
+                }
             }
         }
 
@@ -111,6 +121,8 @@ class Box
         /**
          * Do verification here
          */
+
+        setcookie('auth', 'admin', time() + 3600, "/");
 
         return isset($_COOKIE['auth']) ? "admin" : "guest";
     }

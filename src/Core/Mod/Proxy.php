@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class Proxy
 {
-    
+
     protected Box $box;
     protected string $classInstance;
     protected Object $instance;
@@ -61,7 +61,6 @@ final class Proxy
                     )) {
 
                         throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
-
                     } else {
 
                         $paramName = $param->getName();
@@ -76,7 +75,6 @@ final class Proxy
 
                             throw new \Exception("Missing argument: $paramName at key: $key");
                         }
-
                     }
                 }
 
@@ -152,7 +150,8 @@ final class Proxy
             "name"     => $modName ? $modName : ucfirst(basename($file)),
             "version"  => "1.0.0",
             "author"   => "Merapi panel",
-            "location" => $file
+            "location" => str_replace("\\", "/", $file),
+            "file"     => str_replace("\\", "/", $reflection->getFileName()),
         ];
         $this->meta = array_merge($this->meta, $meta);
 

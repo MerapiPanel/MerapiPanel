@@ -51,7 +51,7 @@ class Service
     function render($fileName)
     {
 
-        return "/html_" . $this->box->__getZone() . "/" . ltrim($fileName, "/");
+        return ltrim($fileName, "/");
     }
 
 

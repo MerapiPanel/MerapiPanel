@@ -332,18 +332,22 @@ class Router extends Component
 
 
             $controllerInstance = $this->box->$controllerClass();
-            $meta = $controllerInstance->__getMeta();
-            $name = ucfirst(basename($meta['location']));
+            $meta   = $controllerInstance->__getMeta();
+            $file   = $meta['file'];
+            $zone   = basename(pathinfo($file, PATHINFO_BASENAME), ".php");
+            $module = ucfirst(basename($meta['location']));
+
 
             if ($request->getMethod() === Route::GET) {
 
                 $view = $this->box->Module_ViewEngine();
                 $retrun = $controllerInstance->$method($view);
 
-                $file = "@$name/" . ltrim($retrun, "\/");
+                $file = "@$module/html_" . strtolower($zone) . "/" . ltrim($retrun, "\/");
                 $template = $view->load($file);
                 $content = $template->render([]);
                 $response->setContent($content);
+                
             } else {
 
                 $content = ["status" => 200, "response" => null];
