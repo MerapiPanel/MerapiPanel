@@ -5,7 +5,8 @@ namespace Mp\Module\Site\Controller;
 use Mp\Box;
 use Mp\Core\Abstract\Module;
 
-class Guest extends Module {
+class Guest extends Module
+{
 
     private $box;
 
@@ -24,7 +25,7 @@ class Guest extends Module {
     public function register($router)
     {
 
-        $router->get("/", self::class . "@index");
+        $router->get("/", "index", self::class);
     }
 
 

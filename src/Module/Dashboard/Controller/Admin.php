@@ -1,6 +1,6 @@
 <?php 
 
-namespace Mp\Module\Dasboard\Controller;
+namespace Mp\Module\Dashboard\Controller;
 
 use Mp\Core\Abstract\Module;
 
@@ -9,11 +9,12 @@ class Admin extends Module {
 
     public function register($router) {
 
-        $router->get('/dasboard', self::class . "@index");
+        $router->get('/', "index", self::class);
+
     }
 
     function index($viewEn) {
         
-        return $viewEn->render("index.html.twig");
+        return $viewEn->render("base.html.twig");
     }
 }

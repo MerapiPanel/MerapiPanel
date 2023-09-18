@@ -30,37 +30,26 @@ class Router extends Component
     }
 
 
-
-
-    /**
-     * Sets the admin prefix for the PHP function.
-     *
-     * @param string $prefix The admin prefix to be set.
-     */
-    public function setAdminPrefix($prefix)
-    {
-
-        $this->adminPrefix = $prefix;
-    }
-
-
-
-
     /**
      * Retrieves a route object for a GET request.
      *
      * @param string $path The path for the route.
-     * @param callable $callback The callback function for the route.
+     * @param string $controller The callback function for the route.
      * @param bool $isAdmin Determines if the route is for an admin.
      * @throws None
      * @return Route The route object.
      */
-    public function get($path, $callback, $isAdmin = false): Route
+    public function get($path, $method, $controller): Route
     {
 
-        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+        $this->validateController($controller);
 
-        $route = new Route(Route::GET, $path, $callback);
+        if (strtolower(basename($controller)) === "admin") {
+
+            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
+        }
+
+        $route = new Route(Route::GET, $path, $controller . "@$method");
 
         return $this->addRoute(Route::GET, $route);
     }
@@ -72,16 +61,21 @@ class Router extends Component
      * Creates a new POST route and adds it to the route collection.
      *
      * @param string $path The path of the route.
-     * @param callable $callback The callback function to be executed when the route is matched.
+     * @param string $controller The controller function to be executed when the route is matched.
      * @param bool $isAdmin Whether the route is for admin only.
      * @return Route The created route.
      */
-    public function post($path, $callback, $isAdmin = false): Route
+    public function post($path, $method, $controller): Route
     {
 
-        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+        $this->validateController($controller);
 
-        $route = new Route(Route::POST, $path, $callback);
+        if (strtolower(basename($controller)) === "admin") {
+
+            $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+        }
+
+        $route = new Route(Route::POST, $path, $controller . "@$method");
 
         return $this->addRoute(Route::POST, $route);
     }
@@ -93,20 +87,24 @@ class Router extends Component
      * Adds a PUT route to the router.
      *
      * @param string $path The path for the route.
-     * @param callable $callback The callback function to be executed when the route is matched.
+     * @param string $controller The controller function to be executed when the route is matched.
      * @param bool $isAdmin (optional) Whether the route is for admin use only. Defaults to false.
      * @return Route The added route.
      */
-    public function put($path, $callback, $isAdmin = false): Route
+    public function put($path, $method, $controller): Route
     {
 
-        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+        $this->validateController($controller);
 
-        $route = new Route(Route::PUT, $path, $callback);
+        if (strtolower(basename($controller)) === "admin") {
+
+            $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+        }
+
+        $route = new Route(Route::PUT, $path, $controller . "@$method");
 
         return $this->addRoute(Route::PUT, $route);
     }
-
 
 
 
@@ -114,23 +112,38 @@ class Router extends Component
      * Deletes a route.
      *
      * @param string $path The path of the route.
-     * @param callable $callback The callback function to handle the route.
+     * @param string $controller The controller function to handle the route.
      * @param bool $isAdmin (optional) Indicates if the route is for an admin. Defaults to false.
      * @throws \Some_Exception_Class Description of the exception that can be thrown.
      * @return \Route The created route.
      */
-    public function delete($path, $callback, $isAdmin = false): Route
+    public function delete($path, $method, $controller): Route
     {
 
-        if ($isAdmin) $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+        $this->validateController($controller);
 
-        $route = new Route(Route::DELETE, $path, $callback);
+
+        if (strtolower(basename($controller)) === "admin") {
+
+            $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+        }
+
+        $route = new Route(Route::DELETE, $path, $controller . "@$method");
 
         return $this->addRoute(Route::DELETE, $route);
     }
 
 
+    function validateController($controller)
+    {
 
+        if (
+            strtolower(basename($controller)) !== "admin" &&
+            strtolower(basename($controller)) !== "guest"
+        ) {
+            throw new Exception("Controller must be admin or guest");
+        }
+    }
 
 
     /**
@@ -347,7 +360,6 @@ class Router extends Component
                 $template = $view->load($file);
                 $content = $template->render([]);
                 $response->setContent($content);
-                
             } else {
 
                 $content = ["status" => 200, "response" => null];

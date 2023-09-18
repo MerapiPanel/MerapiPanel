@@ -18,8 +18,8 @@ class Guest
     public function register($router)
     {
 
-        $router->get("/login", self::class . "@index");
-        $router->post("/login", self::class . "@login");
+        $router->get("/login",  "index", self::class);
+        $router->post("/login",  "login", self::class);
     }
 
 
