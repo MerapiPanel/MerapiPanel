@@ -2,6 +2,7 @@
 
 namespace Mp\Core\Mod;
 
+use Exception;
 use Mp\Box;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
@@ -72,8 +73,11 @@ final class Proxy
                             $passedParams[] = $arguments[$key];
                         } else {
 
-
-                            throw new \Exception("Missing argument: $paramName at key: $key");
+                            if (count($this->meta['arguments']) === count($classParams)) {
+                                $passedParams = $this->meta['arguments'];
+                            } else {
+                                throw new \Exception("Missing argument: $paramName at key: $key");
+                            }
                         }
                     }
                 }
@@ -112,6 +116,7 @@ final class Proxy
             return call_user_func_array([$this->instance, $name], $arguments);
         }
 
+
         if (class_exists($this->classInstance . "\\$name")) {
 
             $className = $this->classInstance . "\\$name";
@@ -121,6 +126,8 @@ final class Proxy
 
             return $instance;
         }
+
+        throw new Exception("Method $name not found in " . $this->classInstance);
     }
 
 
@@ -180,8 +187,9 @@ final class Proxy
     }
 
 
-    public function __reBuild()
+    public function __reBuild(...$arguments)
     {
+        $this->meta['arguments'] = $arguments;
         $this->createInstance($this->classInstance);
         return $this;
     }

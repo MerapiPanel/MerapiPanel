@@ -28,6 +28,9 @@ class App extends Box
     public function __construct()
     {
 
+        setcookie('auth', 'admin', time() + 3600, "/");
+
+
         // ob_start();
         $this->Core_Exception();
         $this->Module_ViewEngine();

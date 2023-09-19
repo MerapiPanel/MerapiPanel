@@ -18,8 +18,6 @@ class Guest extends Module {
     public function register($router)
     {
 
-        $this->service()->hallo();
-
         $router->get("/login",  "index", self::class);
         $router->post("/login",  "login", self::class);
     }

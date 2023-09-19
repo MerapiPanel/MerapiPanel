@@ -38,7 +38,13 @@ class Service
             }
         }
 
-        $this->twig->addGlobal($this->box->__getZone(), []);
+        $guest = new Zone("guest");
+        $admin = new Zone("admin");
+        $admin->setBox($box);
+        $guest->setBox($box);
+
+        $this->twig->addGlobal("admin", $admin);
+        $this->twig->addGlobal("guest", $guest);
     }
 
 
