@@ -1,6 +1,8 @@
 <?php
 
-namespace Mp\View\Extension;
+namespace Mp\Module\ViewEngine\Extension;
+
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 
 class Bundle extends \Twig\Extension\AbstractExtension
 {
@@ -8,18 +10,24 @@ class Bundle extends \Twig\Extension\AbstractExtension
     public function getFilters()
     {
         return [
-            new \Twig\TwigTest('test', [$this, 'test']),
-            new \Twig\TwigFilter('asset_url', [$this, 'asset_url'])
+            new \Twig\TwigFilter('assets', [$this, 'assets']),
         ];
     }
 
-    function asset_url($static_url = null)
-    {
-        return $static_url;
-    }
 
-    public function test()
+    function assets($file = null)
     {
-        return 'test';
+
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $base = str_replace($root, "", str_replace("\\", '/', realpath(__DIR__ . "/../..")));
+        preg_match_all('/\@\w+/ims', $file, $matches);
+
+        if (isset($matches[0][0])) {
+            foreach ($matches[0] as $match) {
+                $file = str_replace($match, rtrim($base, '/') . "/" . substr($match, 1), $file);
+            }
+        }
+
+        return $file;
     }
 }

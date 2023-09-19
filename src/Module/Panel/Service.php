@@ -24,6 +24,18 @@ class Service extends Module
             [
                 'name' => 'Pages',
                 'link' => $this->box->module_site()->adminLink('pages')
+            ],
+            [
+                'name' => 'Users',
+                'link' => $this->box->module_site()->adminLink('users')
+            ],
+            [
+                'name' => "Modules",
+                'link' => $this->box->module_site()->adminLink('modules')
+            ],
+            [
+                'name' => 'Settings',
+                'link' => $this->box->module_site()->adminLink('settings')
             ]
         ];
     }

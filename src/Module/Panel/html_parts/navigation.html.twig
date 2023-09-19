@@ -1,20 +1,30 @@
-<header class="max-w-[1440px] mx-auto shadow-sm">
-    <div class="w-full flex items-baseline py-3 px-2">
-        <a>
-            <span class="font-bold text-2xl">Merapi Panel</span>
+<button class="border-[1px] border-blue-300 text-blue-300 hover:text-blue-400 hover:border-blue-400 py-2 px-4 float-right mr-4 mt-4 lg:hidden rounded" onclick="openNav()">Open</button>
+
+<header class="sidenav" id="sidenav">
+    <div class="bg-white w-full h-full flex flex-col py-3 px-2 relative">
+
+        <button class="lg:hidden text-slate-400 hover:text-slate-800 absolute top-0 right-0 mt-4 mr-4" onclick="closeNav()">Close</button>
+
+        <a class="flex w-full px-2 p-4">
+            <img width="110" height="65" src="{{ '@panel/assets/logo.svg' | assets }}" alt="">
         </a>
 
-        <ul class="ms-auto flex">
+        <ul class="block w-full mt-0">
             {% for item in guest.panel_navs %}
-            <li class="mx-2"><a href="{{ item.link }}">{{ item.name }}</a></li>
+            <li class="mx-2 mb-2">
+                <a href="{{ item.link }}">{{ item.name }}</a>
+            </li>
             {% endfor %}
         </ul>
-
-
-
-        <div class="px-4">
-            <span class="font-bold">{{ admin.user_getName }}</span>
-        </div>
-
     </div>
 </header>
+
+<script>
+    function openNav() {
+        document.getElementById("sidenav").classList.add("open");
+    }
+
+    function closeNav() {
+        document.getElementById("sidenav").classList.remove("open");
+    }
+</script>

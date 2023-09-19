@@ -30,7 +30,7 @@ class Service
         foreach ($files as $file) {
 
             $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = $this::class . "\\Extension\\" . ucfirst($file_name);
+            $className = substr(self::class,0, strpos(self::class, basename(self::class))) . "Extension\\" . ucfirst($file_name);
 
             if (class_exists($className)) {
 

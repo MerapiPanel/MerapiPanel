@@ -5,3 +5,20 @@
 .text-input {
     @apply shadow w-full rounded-sm py-2 px-3 border-[1px] border-slate-200;
 }
+
+.sidenav {
+    @apply transition-all duration-300 overflow-hidden shadow-[0_5px_10px_0_rgba(0,0,0,0.4)] top-0 left-0 w-full max-w-0 lg:max-w-[250px] h-full fixed z-10 bg-white;
+}
+
+.sidenav.open::before {
+    content: "";
+    @apply fixed lg:relative top-0 left-0 w-full h-full bg-black opacity-50 -z-[1];
+}
+
+.sidenav > div {
+    @apply min-w-max;
+}
+
+.sidenav.open {
+    @apply max-w-[250px];
+}

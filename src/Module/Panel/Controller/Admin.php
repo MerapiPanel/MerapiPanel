@@ -20,6 +20,9 @@ class Admin extends Module
 
         $router->get('/', "index", self::class);
         $router->get('/pages', "pages", self::class);
+        $router->get('/users', "index", self::class);
+        $router->get('/modules', "index", self::class);
+        $router->get('/settings', "index", self::class);
     }
 
     function index($viewEn)
