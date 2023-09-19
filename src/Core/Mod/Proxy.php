@@ -180,6 +180,11 @@ final class Proxy
     }
 
 
+    public function __reBuild()
+    {
+        $this->createInstance($this->classInstance);
+        return $this;
+    }
     public final function __toString()
     {
 

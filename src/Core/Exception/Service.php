@@ -84,7 +84,8 @@ class Service extends ErrorAbstract
         $error            = $this->toArray();
         $error['snippet'] = $this->getSnippet();
 
-        $view = $this->box->module_viewEngine();
+        $view = $this->box->Module_viewEngine();
+        $view = $view->__reBuild();
 
         $view->addGlobal('error', $error);
         $template = null;

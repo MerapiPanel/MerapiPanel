@@ -151,7 +151,7 @@ class Router extends Component
             strtolower(basename($controller)) !== "admin" &&
             strtolower(basename($controller)) !== "guest"
         ) {
-            throw new Exception("Controller must be admin or guest");
+            throw new Exception("Controller must be Admin or Guest");
         }
     }
 
@@ -225,13 +225,11 @@ class Router extends Component
     protected function matchRoute($route, $path)
     {
 
-        if (strpos("/", $route) !== 0) {
-            $route = rtrim($route, "/");
-        }
+        if (strlen($path) > 1 && substr($path, -1) !== "/") $path .= "/";
+        if (strlen($route) > 1 && substr($route, -1) !== "/") $route .= "/";
 
         $pattern = preg_replace('/\//', '\/', $route);
         $pattern = '/^' . preg_replace('/\{(.?)\}/', '(.?)', $pattern) . '$/';
-
         // Use preg_match to check if the path matches the pattern
         preg_match($pattern, $path, $matches);
 

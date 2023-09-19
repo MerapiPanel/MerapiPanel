@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Module\Dashboard\Controller;
+namespace Mp\Module\Panel\Controller;
 
 use Mp\Core\Abstract\Module;
 
