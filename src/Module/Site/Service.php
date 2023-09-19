@@ -11,4 +11,10 @@ class Service
     {
         $this->box = $box;
     }
+
+    function adminLink($path = "")
+    {
+        $AppConfig = $this->box->getConfig();
+        return rtrim($AppConfig['admin'], "/") . "/" . ltrim($path, "/");
+    }
 }

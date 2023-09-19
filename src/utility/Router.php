@@ -353,8 +353,8 @@ class Router extends Component
             $controllerInstance = $this->box->$controllerClass();
             $meta   = $controllerInstance->__getMeta();
             $file   = $meta['file'];
-            $zone   = basename(pathinfo($file, PATHINFO_BASENAME), ".php");
-            $module = ucfirst(basename($meta['location']));
+            $zone   = strtolower(basename(pathinfo($file, PATHINFO_BASENAME), ".php"));
+            $module = strtolower(basename($meta['location']));
 
 
             if ($request->getMethod() === Route::GET) {
@@ -362,7 +362,7 @@ class Router extends Component
                 $view = $this->box->Module_ViewEngine();
                 $retrun = $controllerInstance->$method($view);
 
-                $file = "@$module/html_" . strtolower($zone) . "/" . ltrim($retrun, "\/");
+                $file = "@$zone>$module" . "/" . ltrim($retrun, "\/");
                 $template = $view->load($file);
                 $content = $template->render([]);
                 $response->setContent($content);

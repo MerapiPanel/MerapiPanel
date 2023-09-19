@@ -2,22 +2,13 @@
 
 namespace Mp\Module\Panel\Api;
 
-class Guest
+use Mp\Core\Abstract\Module;
+
+class Guest extends Module
 {
-
-
-    function hallo()
-    {
-        return "Hallo1";
-    }
 
     public function navs()
     {
-        return [
-            [
-                'name' => 'Home',
-                'link' => '/'
-            ]
-        ];
+        return $this->service()->getNavs();
     }
 }

@@ -19,12 +19,18 @@ class Admin extends Module
     {
 
         $router->get('/', "index", self::class);
-        
+        $router->get('/pages', "pages", self::class);
     }
 
     function index($viewEn)
     {
 
         return $viewEn->render("base.html.twig");
+    }
+
+    public function pages($viewEn)
+    {
+
+        return $viewEn->render("pages.html.twig");
     }
 }

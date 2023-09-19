@@ -10,7 +10,6 @@ class Zone
     protected $box;
     protected $zone;
 
-
     public function __construct($zone)
     {
         $this->zone = $zone;

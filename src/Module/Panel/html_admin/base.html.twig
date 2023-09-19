@@ -2,9 +2,26 @@
 
 {% block title %}Admin{% endblock %}
 
-{% block content %}
+{% block body %}
 
-{% include "@Panel/html_parts/navigation.html.twig" %}
+{% include "@parts>panel/navigation.html.twig" %}
+
+<main class="max-w-[1440px] mx-auto px-4 py-3">
+
+    {% block header %}
+    <header>
+        <h1 class="text-2xl">Dashboard</h1>
+    </header>
+    {% endblock %}
+
+
+    {% block content %}
+
+
+
+
+    {% endblock %}
+</main>
 
 
 {% endblock %}
