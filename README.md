@@ -6,7 +6,7 @@ Merapi Panel is an open-source blueprint that empowers developers to effortlessl
 
 ## Installation
 
-You can install Merapi Panel using Composer. If you haven't installed Composer yet, you can do so by following the instructions [here](https://getcomposer.org/download/).
+You can install MerapiQu using Composer. If you haven't installed Composer yet, you can do so by following the instructions [here](https://getcomposer.org/download/).
 
 Run the following command in your project directory to install Merapi Panel:
 
@@ -29,7 +29,7 @@ composer require il4mb/mpanel
 7. Comprehensive Documentation: Access clear instructions, code examples, and best practices to accelerate your development.
 
 ## Getting Started
-To get started with Merapi Panel, follow these steps:
+To get started with MerapiQu, follow these steps:
 
 1. Installation: If you haven't already, install Merapi Panel using Composer as shown above.
 
