@@ -18,24 +18,36 @@ class Service extends Module
 
         $this->navs = [
             [
+                'priority' => 100,
                 'name' => 'Dashboard',
                 'link' => $this->box->module_site()->adminLink()
             ],
             [
+                'priority' => 100,
                 'name' => 'Pages',
                 'link' => $this->box->module_site()->adminLink('pages')
             ],
             [
+                'priority' => 100,
                 'name' => 'Users',
                 'link' => $this->box->module_site()->adminLink('users')
             ],
             [
+                'priority' => 100,
                 'name' => "Modules",
                 'link' => $this->box->module_site()->adminLink('modules')
             ],
             [
+                'priority' => 100,
                 'name' => 'Settings',
-                'link' => $this->box->module_site()->adminLink('settings')
+                'link' => $this->box->module_site()->adminLink('settings'),
+                "childs" => [
+                    [
+                        'priority' => 100,
+                        'name' => 'Users',
+                        'link' => $this->box->module_site()->adminLink('settings/users')
+                    ]
+                ]
             ]
         ];
     }
