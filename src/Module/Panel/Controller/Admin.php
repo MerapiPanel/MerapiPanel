@@ -25,6 +25,8 @@ class Admin extends Module
     function index($viewEn)
     {
 
+        $this->box->module_user();
+
         return $viewEn->render("base.html.twig");
     }
 

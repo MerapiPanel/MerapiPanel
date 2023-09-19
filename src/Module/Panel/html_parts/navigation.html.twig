@@ -6,12 +6,15 @@
 
         <ul class="ms-auto flex">
             {% for item in guest.panel_navs %}
-            <li><a href="{{ item.link }}">{{ item.name }}</a></li>
+            <li class="mx-2"><a href="{{ item.link }}">{{ item.name }}</a></li>
             {% endfor %}
         </ul>
 
 
 
+        <div class="px-4">
+            <span class="font-bold">{{ admin.user_getName }}</span>
+        </div>
 
     </div>
 </header>

@@ -25,11 +25,22 @@ class Service extends Module
                 'name' => 'Pages',
                 'link' => $this->box->module_site()->adminLink('pages')
             ]
-            ];
+        ];
     }
 
     public function getNavs()
     {
         return $this->navs;
+    }
+
+
+
+    public function getAuthedUsers()
+    {
+
+        $mod_user = $this->box->module_user();
+        $user = $mod_user->getUserByEmail("admin@user.com");
+
+        return $user;
     }
 }
