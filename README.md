@@ -2,13 +2,13 @@
 > This repo is under development 
 
 # MerapiQu: Open Source CMS for Web Applications
-Merapi Panel is an open-source blueprint that empowers developers to effortlessly build dynamic, scalable web applications. With its modular architecture, dynamic components, and active community, Merapi Panel provides the tools you need to create, customize, and scale your web projects with confidence.
+MerapiQu is an open-source blueprint that empowers developers to effortlessly build dynamic, scalable web applications. With its modular architecture, dynamic components, and active community, MerapiQu provides the tools you need to create, customize, and scale your web projects with confidence.
 
 ## Installation
 
 You can install MerapiQu using Composer. If you haven't installed Composer yet, you can do so by following the instructions [here](https://getcomposer.org/download/).
 
-Run the following command in your project directory to install Merapi Panel:
+Run the following command in your project directory to install MerapiQu:
 
 ```bash
 composer require il4mb/mpanel
@@ -31,7 +31,7 @@ composer require il4mb/mpanel
 ## Getting Started
 To get started with MerapiQu, follow these steps:
 
-1. Installation: If you haven't already, install Merapi Panel using Composer as shown above.
+1. Installation: If you haven't already, install MerapiQu using Composer as shown above.
 
 2. Usage:
 ```php
@@ -47,7 +47,7 @@ $app->run();
 4. Community: Join our community on the discussion board to connect with other developers, share insights, and ask questions.
 
 ## Contributing
-We welcome contributions from the community! To contribute to Merapi Panel, follow these steps:
+We welcome contributions from the community! To contribute to MerapiQu, follow these steps:
 
 Fork the repository and create a new branch for your feature or bug fix.
 
@@ -58,12 +58,12 @@ Open a pull request, providing a clear description of your changes and their pur
 Participate in the review process and address feedback to ensure the quality of your contribution.
 
 ## License
-Merapi Panel is released under the MIT License.
+MerapiQu is released under the MIT License.
 
 ## Acknowledgments
 We extend our gratitude to the open-source community for their continuous support and contributions.
 
-Embrace the power of Merapi Panel and create web applications that mirror the dynamism of nature while fueling your digital innovation.
+Embrace the power of MerapiQu and create web applications that mirror the dynamism of nature while fueling your digital innovation.
 
 ## Copy code
 
