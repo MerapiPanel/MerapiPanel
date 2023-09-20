@@ -19,10 +19,6 @@ class Admin extends Module
     {
 
         $router->get('/', "index", self::class);
-        $router->get('/pages', "pages", self::class);
-        $router->get('/users', "index", self::class);
-        $router->get('/modules', "index", self::class);
-        $router->get('/settings', "index", self::class);
     }
 
     function index($viewEn)
@@ -31,11 +27,5 @@ class Admin extends Module
         $this->box->module_user();
 
         return $viewEn->render("base.html.twig");
-    }
-
-    public function pages($viewEn)
-    {
-
-        return $viewEn->render("pages.html.twig");
     }
 }

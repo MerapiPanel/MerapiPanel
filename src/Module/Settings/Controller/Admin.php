@@ -13,7 +13,7 @@ class Admin extends Module {
 
         $panel = $this->getBox()->Module_Panel();
 
-        $panel->addNav([
+        $panel->addMenu([
             'order' => 100,
             'name' => "Settings",
             'icon' => 'fa-solid fa-gear',
@@ -23,6 +23,7 @@ class Admin extends Module {
 
     function index($view) {
 
+        return $view->render('index.html.twig');
     }
 }
 

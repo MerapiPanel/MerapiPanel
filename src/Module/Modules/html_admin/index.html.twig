@@ -1,0 +1,12 @@
+{% extends "@admin>panel/base.html.twig" %}
+{% block header_title %}Modules{% endblock %}
+
+{% block content %}
+
+<ul>
+    {% for mod in admin.modules_ListModule %}
+    <li>{{ mod.name }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

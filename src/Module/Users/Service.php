@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Module\User;
+namespace MerapiQu\Module\Users;
 
 use MerapiQu\Box;
 use MerapiQu\Core\Abstract\Module;

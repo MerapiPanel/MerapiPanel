@@ -7,8 +7,8 @@ use MerapiQu\Core\Abstract\Module;
 class Guest extends Module
 {
 
-    public function navs()
+    public function ListMenu()
     {
-        return $this->service()->getNavs();
+        return $this->service()->getMenu();
     }
 }

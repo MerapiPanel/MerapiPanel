@@ -21,16 +21,11 @@ class Service extends Module
                 'name' => 'Dashboard',
                 'icon' => 'fa-solid fa-house',
                 'link' => $this->box->module_site()->adminLink()
-            ],
-            [
-                'order' => 100,
-                'name' => "Modules",
-                'link' => $this->box->module_site()->adminLink('modules')
-            ],
+            ]
         ];
     }
 
-    public function getNavs()
+    public function getMenu()
     {
 
         $listMenu = $this->ListMenu;
@@ -67,14 +62,26 @@ class Service extends Module
 
 
 
-    public function addNav($nav = [
+    public function addMenu($menu = [
         'order' => 100,
         'name' => '',
         'link' => '',
 
     ])
     {
-        $this->ListMenu[] = $nav;
+
+        if(!isset($menu['name'])) {
+            throw new \Exception("The name of the menu is required");
+        }
+        if(!isset($menu['link'])) {
+            throw new \Exception("The link of the menu is required");
+        }
+
+        if(!isset($menu['order'])) {
+            $menu['order'] = count($this->ListMenu) + 1;
+        }
+
+        $this->ListMenu[] = $menu;
     }
 
 

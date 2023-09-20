@@ -11,32 +11,33 @@ class Admin extends Module
     {
 
         $router->get('pages', 'index', self::class);
+        $router->get('pages/all', 'all', self::class);
+        $router->get('pages/new', 'new', self::class);
 
         $panel = $this->getBox()->Module_Panel();
-
-        $panel->addNav([
+        $site  = $this->box->module_site();
+        $panel->addMenu([
             'order' => 1,
             'name' => 'Pages',
             'icon' => 'fa-solid fa-pager',
-            'link' => $this->box->module_site()->adminLink('pages')
+            'link' => $site->adminLink('pages')
         ]);
 
-        $panel->addNav([
+        $panel->addMenu([
             'order' => 1,
             'parent' => 'Pages',
             'name' => "List Page",
             "icon" => 'fa-solid fa-bars-staggered',
-            'link' => "/pages"
+            'link' => $site->adminLink('pages/all')
         ]);
 
-        $panel->addNav([
+        $panel->addMenu([
             'order' => 2,
             'parent' => 'Pages',
             'name' => "New Page",
             "icon" => "fa-solid fa-plus",
-            'link' => "/pages"
+            'link' => $site->adminLink('pages/new')
         ]);
-
     }
 
 
@@ -44,5 +45,16 @@ class Admin extends Module
     {
 
         return $view->render("index.html.twig");
+    }
+
+    public function all($view)
+    {
+
+        return $view->render("all.html.twig");
+    }
+
+    public function new($view)
+    {
+        return $view->render("new.html.twig");
     }
 }
