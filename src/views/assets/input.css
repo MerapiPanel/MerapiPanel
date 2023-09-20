@@ -22,3 +22,15 @@
 .sidenav.open {
     @apply max-w-[250px];
 }
+
+.nav-menu li a.active {
+    @apply text-blue-500;
+}
+.nav-menu li:has( ul>li>a.active) {
+    @apply text-slate-500;
+}
+
+.nav-menu li ul:has( li>a.active) {
+    @apply border-blue-500;
+}
+

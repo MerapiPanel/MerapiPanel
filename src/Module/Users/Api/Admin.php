@@ -18,9 +18,14 @@ class Admin extends Module
         $this->user = $this->service()->getLogedinUser();
     }
 
-
     function getName()
     {
         return $this->user->getName();
+    }
+
+    function AllUser()
+    {
+
+        return $this->service()->getAllUser();
     }
 }

@@ -1,2 +1,25 @@
 {% extends "@admin>panel/base.html.twig" %}
-{% block  header_title %}Users{% endblock %}
+{% block header_title %}Users{% endblock %}
+
+
+{% set users = admin.users_alluser %}
+{% block content %}
+
+<div class="grid">
+
+    {{users | json_encode}}
+
+    {% for user in users %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ user.name }}</h5>
+                <p class="card-text">{{ user.email }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

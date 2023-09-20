@@ -3,10 +3,23 @@
 
 {% block content %}
 
-<ul>
+<div class="ms-3">
+    <span>Total Module: {{ admin.modules_ListModule|length }}</span>
+</div>
+
+<div class="grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-5">
     {% for mod in admin.modules_ListModule %}
-    <li>{{ mod.name }}</li>
+
+        <div class="relative">
+            <div class="rounded bg-blue-300 text-center">
+                <img class="mx-auto" width="200" height="125" src="{{ mod.image }}" alt="{{ mod.name }}">
+            </div>
+            <h3 class="text-slate-600">{{ mod.name }}</h3>
+            <p class="text-slate-400 text-sm">{{ mod.description }}</p>
+            <span class="absolute top-0 right-0 mt-2 mr-3">{{ mod.version }}</span>
+        </div>
+  
     {% endfor %}
-</ul>
+</div>
 
 {% endblock %}

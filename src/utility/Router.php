@@ -360,7 +360,9 @@ class Router extends Component
             if ($request->getMethod() === Route::GET) {
 
                 $view = $this->box->Module_ViewEngine();
-                $retrun = $controllerInstance->$method($view);
+
+                $view->addGlobal('request', $request->__toJson());
+                $retrun = $controllerInstance->$method($view, $request);
 
                 $file = "@$zone>$module" . "/" . ltrim($retrun, "\/");
                 $template = $view->load($file);

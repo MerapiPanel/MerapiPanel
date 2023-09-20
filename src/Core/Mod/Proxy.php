@@ -48,6 +48,7 @@ final class Proxy
 
             $reflection = new \ReflectionClass($this->classInstance);
             $construct = $reflection->getConstructor();
+            
             if ($construct) {
 
                 $classParams     = $construct->getParameters();
@@ -157,6 +158,7 @@ final class Proxy
             "name"     => $modName ? $modName : ucfirst(basename($file)),
             "version"  => "1.0.0",
             "author"   => "Merapi panel",
+            'image'     => "/src/views/assets/img/default-box.svg",
             "location" => str_replace("\\", "/", $file),
             "file"     => str_replace("\\", "/", $reflection->getFileName()),
         ];
@@ -176,6 +178,9 @@ final class Proxy
             }
             if (isset($array["description"])) {
                 $this->meta["description"] = $array["description"];
+            }
+            if(isset($array["image"]) && !empty($array["image"])) {
+                $this->meta["image"] = $array["image"];
             }
         }
     }

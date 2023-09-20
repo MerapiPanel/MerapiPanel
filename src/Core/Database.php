@@ -2,10 +2,15 @@
 
 namespace MerapiQu\Core;
 
+use PDO;
 use SQLite3;
 
-class Database extends SQLite3
+class Database
 {
+    
+    protected $pdo;
+    protected $file;
+
     /**
      * Constructs a new instance of the class.
      *
@@ -13,7 +18,15 @@ class Database extends SQLite3
      */
     public function __construct($dbFile)
     {
-        parent::__construct(rtrim($dbFile, '/') . '/' . strtolower(basename($dbFile)) . '.db');
+        $file = rtrim($dbFile, '/') . '/' . strtolower(basename($dbFile)) . '.db';
+
+        // Create a PDO connection
+        $dsn = 'sqlite:' . $file;
+        $this->pdo = new PDO($dsn);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Optionally, store the database file path as a property
+        $this->file = $file;
     }
 
     /**
@@ -21,19 +34,19 @@ class Database extends SQLite3
      *
      * @param string $query The SQL query to be executed.
      * @param array $params An array of parameters to be bound to the query.
-     * @return SQLite3Stmt The statement object representing the executed query.
+     * @return PDOStatement The statement object representing the executed query.
      */
     public function runQuery($query, $params = [])
     {
-        $statement = $this->prepare($query);
+        $statement = $this->pdo->prepare($query);
 
         foreach ($params as $key => $value) {
             $statement->bindValue(":$key", $value);
         }
 
-        $result = $statement->execute();
+        $statement->execute();
 
-        return $result;
+        return $statement;
     }
 
     /**
@@ -46,13 +59,8 @@ class Database extends SQLite3
     public function fetchAll($query, $params = [])
     {
         $statement = $this->runQuery($query, $params);
-        $rows = [];
 
-        while ($row = $statement->fetchArray(SQLITE3_ASSOC)) {
-            $rows[] = $row;
-        }
-
-        return $rows;
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -66,7 +74,7 @@ class Database extends SQLite3
     {
         $statement = $this->runQuery($query, $params);
 
-        return $statement->fetchArray(SQLITE3_ASSOC);
+        return $statement->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -79,14 +87,12 @@ class Database extends SQLite3
     public function insert($table, $data)
     {
         $columns = implode(', ', array_keys($data));
-        $values = implode(', ', array_map(function ($key) {
-            return ":$key";
-        }, array_keys($data)));
+        $values = ':' . implode(', :', array_keys($data));
 
         $query = "INSERT INTO $table ($columns) VALUES ($values)";
         $statement = $this->runQuery($query, $data);
 
-        return $this->lastInsertRowID();
+        return $this->pdo->lastInsertId();
     }
 
     /**
@@ -108,7 +114,7 @@ class Database extends SQLite3
         $params = array_merge($data, $params);
         $statement = $this->runQuery($query, $params);
 
-        return $this->changes();
+        return $statement->rowCount();
     }
 
     /**
@@ -124,6 +130,6 @@ class Database extends SQLite3
         $query = "DELETE FROM $table WHERE $where";
         $statement = $this->runQuery($query, $params);
 
-        return $this->changes();
+        return $statement->rowCount();
     }
 }

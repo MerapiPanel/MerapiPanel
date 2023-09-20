@@ -5,6 +5,7 @@ namespace MerapiQu\Core\Abstract;
 use Exception;
 use MerapiQu\Box;
 use MerapiQu\Core\Database;
+use PDO;
 use ReflectionClass;
 
 abstract class Module
@@ -26,7 +27,9 @@ abstract class Module
     {
 
         $file = $this->__getIndex();
-        return new Database($file);
+        
+        $db = new Database($file);
+        return $db;
     }
 
 

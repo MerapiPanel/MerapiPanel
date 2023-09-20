@@ -197,5 +197,18 @@ class Request
         return $headers;
 
     }
+
+
+    public function __toJson() {
+
+        return [
+            'headers' => $this->headers,
+            'body' => $this->body,
+            'params' => $this->params,
+            'query' => $this->query,
+            'method' => $this->method,
+            'path' => $this->path,
+        ];
+    }
     
 }

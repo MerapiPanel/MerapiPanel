@@ -12,27 +12,33 @@
             <img width="110" height="65" src="{{ '@panel/assets/logo.svg' | assets }}" alt="">
         </a>
 
-        <ul class="block w-full mt-0 text-slate-800">
+        <ul class="nav-menu block w-full mt-0 text-slate-400">
+
             {% for item in guest.Panel_ListMenu %}
             <li class="mx-2 mb-3">
 
-                <a href="{{ item.link }}">
-                    {{(item.icon?("<i class=\"text-slate-300 "~item.icon~" pe-2\"></i>"):'')|raw}}{{item.name}}
+                <a href="{{ item.link }}" class="{{ item.active ? ' active' : '' }}">
+                    {{(item.icon?("<i class=\""~item.icon~" pe-2\"></i>"):'')|raw}}{{item.name}}
                 </a>
 
                 {% if item.childs %}
                 <ul class="ms-[8px] pt-2 mb-3 ps-4 border-[0px] border-slate-300 border-l-[2px]">
+
                     {% for child in item.childs %}
                     <li class="mb-2">
-                        <a href="{{ child.link }}">
-                            {{(child.icon?("<i class=\"text-slate-300 "~child.icon~" pe-2\"></i>"):'')|raw}}{{child.name}}
+                        <a href="{{ child.link }}" class="{{ child.active ? ' active' : '' }}">
+                            {{(child.icon?("<i class=\""~child.icon~"
+                                pe-2\"></i>"):'')|raw}}{{child.name}}
                         </a>
                     </li>
                     {% endfor %}
+
                 </ul>
                 {% endif %}
+
             </li>
             {% endfor %}
+
         </ul>
     </div>
 </header>

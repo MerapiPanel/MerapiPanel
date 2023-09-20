@@ -4,6 +4,7 @@ namespace MerapiQu\Module\Users;
 
 use MerapiQu\Box;
 use MerapiQu\Core\Abstract\Module;
+use PDO;
 
 class Service extends Module
 {
@@ -24,11 +25,11 @@ class Service extends Module
                 role INTEGER NOT NULL
             );";
 
-        $this->db->query($SQL);
+        $this->db->runQuery($SQL);
 
 
         $SQL = "INSERT OR IGNORE INTO users (name, email, password, role) VALUES ('admin', 'admin@user.com', 'password123', 10);";
-        $this->db->query($SQL);
+        $this->db->runQuery($SQL);
     }
 
 
@@ -36,15 +37,15 @@ class Service extends Module
     public function getLogedinUser(): Type
     {
         $SQL = "SELECT * FROM users WHERE email = 'admin@user.com'";
-        $result = $this->db->query($SQL);
-        return new Type(...$result->fetchArray(SQLITE3_ASSOC));
+        $result = $this->db->runQuery($SQL);
+        return new Type(...$result->fetch(PDO::FETCH_ASSOC));
     }
 
 
     public function getUserById($id)
     {
         $SQL = "SELECT * FROM users WHERE id = $id";
-        $result = $this->db->query($SQL);
+        $result = $this->db->runQuery($SQL);
         return $result;
     }
 
@@ -52,7 +53,14 @@ class Service extends Module
     public function getUserByEmail($email)
     {
         $SQL = "SELECT * FROM users WHERE email = '$email'";
-        $result = $this->db->query($SQL);
+        $result = $this->db->runQuery($SQL);
         return $result;
+    }
+
+    public function getAllUser() {
+
+        $SQL = "SELECT * FROM users";
+        $result = $this->db->runQuery($SQL);
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 }
