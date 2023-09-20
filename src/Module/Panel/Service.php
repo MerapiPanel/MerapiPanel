@@ -9,52 +9,72 @@ class Service extends Module
 
     protected $box;
 
-    protected $navs;
+    protected $ListMenu = [];
 
     public function setBox($box)
     {
+
         $this->box = $box;
-
-
-        $this->navs = [
+        $this->ListMenu = [
             [
-                'priority' => 100,
+                'order' => 0,
                 'name' => 'Dashboard',
+                'icon' => 'fa-solid fa-house',
                 'link' => $this->box->module_site()->adminLink()
             ],
             [
-                'priority' => 100,
-                'name' => 'Pages',
-                'link' => $this->box->module_site()->adminLink('pages')
-            ],
-            [
-                'priority' => 100,
-                'name' => 'Users',
-                'link' => $this->box->module_site()->adminLink('users')
-            ],
-            [
-                'priority' => 100,
+                'order' => 100,
                 'name' => "Modules",
                 'link' => $this->box->module_site()->adminLink('modules')
             ],
-            [
-                'priority' => 100,
-                'name' => 'Settings',
-                'link' => $this->box->module_site()->adminLink('settings'),
-                "childs" => [
-                    [
-                        'priority' => 100,
-                        'name' => 'Users',
-                        'link' => $this->box->module_site()->adminLink('settings/users')
-                    ]
-                ]
-            ]
         ];
     }
 
     public function getNavs()
     {
-        return $this->navs;
+
+        $listMenu = $this->ListMenu;
+        $indexed = [];
+
+        usort($listMenu, function ($a, $b) {
+            return $a["order"] - $b["order"];
+        });
+
+        foreach ($listMenu as $menu) {
+            $indexed[$menu['name']] = $menu;
+        }
+
+        foreach ($listMenu as $menu) 
+        {
+
+            if (isset($menu['parent']) && $indexed[$menu['parent']]) 
+            {
+
+                if (!isset($indexed[$menu['parent']]['childs'])) 
+                    $indexed[$menu['parent']]['childs'] = [];
+
+                $indexed[$menu['parent']]['childs'][] = $menu;
+
+                if (isset($indexed[$menu['name']])) 
+                {
+                    unset($indexed[$menu['name']]);
+                }
+            }
+        }
+
+        return array_values($indexed);
+    }
+
+
+
+    public function addNav($nav = [
+        'order' => 100,
+        'name' => '',
+        'link' => '',
+
+    ])
+    {
+        $this->ListMenu[] = $nav;
     }
 
 

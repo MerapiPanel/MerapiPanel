@@ -4,5 +4,8 @@
   },
   "scripts": {
     "start": "npx tailwindcss -i ./src/views/assets/input.css -o ./public/assets/css/output.css --watch"
+  },
+  "dependencies": {
+    "tailwind-fontawesome": "^0.5.0"
   }
 }

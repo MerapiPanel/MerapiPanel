@@ -1,18 +1,36 @@
-<button class="border-[1px] border-blue-300 text-blue-300 hover:text-blue-400 hover:border-blue-400 py-2 px-4 float-right mr-4 mt-4 lg:hidden rounded" onclick="openNav()">Open</button>
+<button
+    class="border-[1px] border-blue-300 text-blue-300 hover:text-blue-400 hover:border-blue-400 py-2 px-4 float-right mr-4 mt-4 lg:hidden rounded"
+    onclick="openNav()">Open</button>
 
 <header class="sidenav" id="sidenav">
     <div class="bg-white w-full h-full flex flex-col py-3 px-2 relative">
 
-        <button class="lg:hidden text-slate-400 hover:text-slate-800 absolute top-0 right-0 mt-4 mr-4" onclick="closeNav()">Close</button>
+        <button class="lg:hidden text-slate-400 hover:text-slate-800 absolute top-0 right-0 mt-4 mr-4"
+            onclick="closeNav()">Close</button>
 
         <a class="flex w-full px-2 p-4">
             <img width="110" height="65" src="{{ '@panel/assets/logo.svg' | assets }}" alt="">
         </a>
 
-        <ul class="block w-full mt-0">
+        <ul class="block w-full mt-0 text-slate-800">
             {% for item in guest.panel_navs %}
-            <li class="mx-2 mb-2">
-                <a href="{{ item.link }}">{{ item.name }}</a>
+            <li class="mx-2 mb-3">
+
+                <a href="{{ item.link }}">
+                    {{(item.icon?("<i class=\"text-slate-300 "~item.icon~" pe-2\"></i>"):'')|raw}}{{item.name}}
+                </a>
+
+                {% if item.childs %}
+                <ul class="ms-[8px] pt-2 mb-3 ps-4 border-[0px] border-slate-300 border-l-[2px]">
+                    {% for child in item.childs %}
+                    <li class="mb-2">
+                        <a href="{{ child.link }}">
+                            {{(child.icon?("<i class=\"text-slate-300 "~child.icon~" pe-2\"></i>"):'')|raw}}{{child.name}}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>

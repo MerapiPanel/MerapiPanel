@@ -40,7 +40,6 @@ class App extends Box
         if ($this->getConfig()->get("service")) {
 
             $service = $this->getConfig()->get("service");
-
             $this->$service();
         }
     }

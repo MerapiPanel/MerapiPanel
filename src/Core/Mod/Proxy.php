@@ -117,15 +117,15 @@ final class Proxy
         }
 
 
-        if (class_exists($this->classInstance . "\\$name")) {
+        // if (class_exists($this->classInstance . "\\$name")) {
 
-            $className = $this->classInstance . "\\$name";
+        //     $className = $this->classInstance . "\\$name";
 
-            $instance = new Proxy($className, $arguments);
-            $instance->setBox($this->box);
+        //     $instance = new Proxy($className, $arguments);
+        //     $instance->setBox($this->box);
 
-            return $instance;
-        }
+        //     return $instance;
+        // }
 
         throw new Exception("Method $name not found in " . $this->classInstance);
     }

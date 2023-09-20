@@ -1,0 +1,28 @@
+<?php
+
+namespace MerapiQu\Module\Settings\Controller;
+
+use MerapiQu\Core\Abstract\Module;
+
+class Admin extends Module {
+
+    public function register($router)
+    {
+
+        $router->get("/settings", "index", self::class);
+
+        $panel = $this->getBox()->Module_Panel();
+
+        $panel->addNav([
+            'order' => 100,
+            'name' => "Settings",
+            'icon' => 'fa-solid fa-gear',
+            'link' => $this->box->module_site()->adminLink('settings')
+        ]);
+    }
+
+    function index($view) {
+
+    }
+}
+

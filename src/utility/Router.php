@@ -366,6 +366,7 @@ class Router extends Component
                 $template = $view->load($file);
                 $content = $template->render([]);
                 $response->setContent($content);
+                
             } else {
 
                 $content = ["status" => 200, "response" => null];

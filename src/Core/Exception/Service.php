@@ -62,6 +62,8 @@ class Service extends ErrorAbstract
     function catch_error(Throwable $e)
     {
 
+        header("HTTP/1.1 " . $e->getCode() . " " . $e->getMessage());
+
         $this->setType(basename(get_class($e)));
         $this->setMessage($e->getMessage());
         $this->setCode($e->getCode());

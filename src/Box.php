@@ -43,20 +43,16 @@ class Box
         $name = strtolower(str_replace("\\", "_", str_replace("/", "_", $name)));
         $name = ltrim(str_replace(strtolower(trim(__NAMESPACE__)) . "_", "", $name), "_");
 
-        $theClass = __NAMESPACE__ . "\\" . implode("\\", array_map("ucfirst", explode("_", $name)));
-        $className = $theClass;
-
-        if (!class_exists($className)) {
-
-            $className .= "\\Service";
-        }
+        $className = __NAMESPACE__ . "\\" . implode("\\", array_map("ucfirst", explode("_", $name)));
+        if (!class_exists($className)) $className .= "\\Service";
+        $theKey = strtolower(preg_replace("/[^A-Za-z0-9]+/", "", $className));
 
         $instance = &$this->stack;
-        if (isset($instance[$theClass])) {
-            return $instance[$theClass];
+        if (isset($instance[$theKey])) {
+            return $instance[$theKey];
         }
 
-        $instance = &$instance[$theClass];
+        $instance = &$instance[$theKey];
 
         if (class_exists($className)) {
 

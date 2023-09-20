@@ -18,6 +18,10 @@ abstract class Module
         $this->box = $box;
     }
 
+    public function getBox() {
+        return $this->box;
+    }
+
     final public function getDatabase()
     {
 
