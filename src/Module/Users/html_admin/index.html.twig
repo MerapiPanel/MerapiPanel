@@ -5,21 +5,46 @@
 {% set users = admin.users_alluser %}
 {% block content %}
 
-<div class="grid">
+<div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
+    <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
+        <input class="text-input" type="text" placeholder="Search">
+        <button class="ms-2 rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+    <div class="ms-auto">
+        <button class="rounded border outline-none shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
+            <i class="fa-solid fa-plus"></i> Create new
+        </button>
+    </div>
+</div>
 
-    {{users | json_encode}}
+<span>Total {{ users|length }}</span>
+
+<ul class="pt-8">
 
     {% for user in users %}
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ user.name }}</h5>
-                <p class="card-text">{{ user.email }}</p>
-            </div>
+    <li class="flex items-center shadow pe-8 ps-2 py-2">
+        <div class="w-14 h-14 rounded-full bg-slate-800 overflow-hidden">
+            <img class="w-full h-full object-cover" src="{{ getAvatar(user.email) }}" alt="{{ user.name }}">
         </div>
-    </div>
+
+        <div class="ps-4">
+            <h5 class="text-blue-500 text-xl font-medium">{{ user.name }}</h5>
+            <p class="text-slate-500">{{ user.email }}</p>
+        </div>
+
+        <div class="ms-auto grid grid-cols-2 gap-4">
+            <button class="rounded border outline-none shadow px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+            <button class="rounded border outline-none shadow px-4 py-2 text-blue-500 hover:bg-blue-500 hover:text-white">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+        </div>
+    </li>
     {% endfor %}
 
-</div>
+</ul>
 
 {% endblock %}

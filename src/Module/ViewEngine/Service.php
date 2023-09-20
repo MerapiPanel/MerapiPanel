@@ -84,6 +84,11 @@ class Service
         return false;
     }
 
+    public function addExtension($extension)
+    {
+        $this->twig->addExtension($extension);
+    }
+
 
 
     function getTwig()

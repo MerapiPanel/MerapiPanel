@@ -3,6 +3,7 @@
 namespace MerapiQu\Module\Users\Controller;
 
 use MerapiQu\Core\Abstract\Module;
+use MerapiQu\Module\Users\Custom\Extension;
 
 class Admin extends Module
 {
@@ -24,6 +25,9 @@ class Admin extends Module
 
     public function index($view)
     {
+        
+        $this->getBox()->Module_ViewEngine()->addExtension(new Extension());
+
         return $view->render("index.html.twig");
     }
 }
