@@ -1,10 +1,10 @@
 <?php
 
-namespace Mp\Core\Abstract;
+namespace MerapiQu\Core\Abstract;
 
 use Exception;
-use Mp\Box;
-use Mp\Core\Database;
+use MerapiQu\Box;
+use MerapiQu\Core\Database;
 use ReflectionClass;
 
 abstract class Module

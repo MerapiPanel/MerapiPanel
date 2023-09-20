@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Core\Exception;
+namespace MerapiQu\Core\Exception;
 
 use Exception;
 use Throwable;

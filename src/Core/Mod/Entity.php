@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Mod;
+namespace MerapiQu\Core\Mod;
 
-use Mp\Box;
-use Mp\Exception\CodeException;
+use MerapiQu\Box;
+use MerapiQu\Core\Exception\CodeException;
 
 class Entity extends Box
 {
@@ -77,7 +77,7 @@ class Entity extends Box
 
         if (empty($nested)) {
 
-            $nested = new Proxy($className);
+            $nested = new Proxy($className, $arguments);
 
             if (method_exists($nested, "setBox")) {
                 call_user_func([$nested, "setBox"], $this->box);

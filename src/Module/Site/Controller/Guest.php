@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Module\Site\Controller;
+namespace MerapiQu\Module\Site\Controller;
 
-use Mp\Box;
-use Mp\Core\Abstract\Module;
+use MerapiQu\Box;
+use MerapiQu\Core\Abstract\Module;
 
 class Guest extends Module
 {

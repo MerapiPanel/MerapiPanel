@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Module\Site;
+namespace MerapiQu\Module\Site;
 
 class Service
 {

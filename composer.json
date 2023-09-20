@@ -19,7 +19,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Mp\\": "src/"
+            "MerapiQu\\": "src/"
         }
     },
     "authors": [

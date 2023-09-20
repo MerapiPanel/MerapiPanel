@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Mod\Interface;
+namespace MerapiQu\Mod\Interface;
 
-use Mp\Box;
+use MerapiQu\Box;
 
 interface Box_Api {
 

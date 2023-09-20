@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Module\ViewEngine;
+namespace MerapiQu\Module\ViewEngine;
 
-use Mp\Box;
+use MerapiQu\Box;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 
 class Service

@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp;
+namespace MerapiQu;
 
-use Mp\Core\Cog\Config;
-use Mp\Core\Mod\Proxy;
+use MerapiQu\Core\Cog\Config;
+use MerapiQu\Core\Mod\Proxy;
 
 class Box
 {
@@ -75,14 +75,13 @@ class Box
     public function __registerController()
     {
 
-
         // Directory where your PHP files are located
         $directory = realpath(__DIR__ . "/Module"); // You may need to specify your project's directory here
 
         // Get a list of all PHP files in the directory
         $phpFiles = glob($directory . '/*');
 
-        $namespacePattern = 'Mp\\Module\\';
+        $namespacePattern = __NAMESPACE__ . '\\Module\\';
         $controllers = [];
 
         $zones = ['guest'];
@@ -95,7 +94,7 @@ class Box
             $mod = basename($file);
 
             foreach ($zones as $zone) {
-                
+
                 $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst($zone);
 
                 if (class_exists($className)) {

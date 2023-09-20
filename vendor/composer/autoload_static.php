@@ -70,7 +70,7 @@ class ComposerStaticInit9e50c783db2d586c25600187c8e5ef13
         ),
         'M' => 
         array (
-            'Mp\\' => 3,
+            'MerapiQu\\' => 9,
         ),
     );
 
@@ -231,7 +231,7 @@ class ComposerStaticInit9e50c783db2d586c25600187c8e5ef13
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-        'Mp\\' => 
+        'MerapiQu\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

@@ -1,8 +1,6 @@
 <?php
 
-namespace Mp\Module\ViewEngine\Extension;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
+namespace MerapiQu\Module\ViewEngine\Extension;
 
 class Bundle extends \Twig\Extension\AbstractExtension
 {

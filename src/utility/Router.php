@@ -1,14 +1,14 @@
 <?php
 
-namespace Mp\Utility;
+namespace MerapiQu\Utility;
 
 use Exception;
-use Mp\Box;
-use Mp\Core\Cog\Config;
-use Mp\Utility\Middleware\Component;
-use Mp\Utility\Http\Response;
-use Mp\Utility\Http\Request;
-use Mp\Exceptions\Error;
+use MerapiQu\Box;
+use MerapiQu\Core\Cog\Config;
+use MerapiQu\Utility\Middleware\Component;
+use MerapiQu\Utility\Http\Response;
+use MerapiQu\Utility\Http\Request;
+use MerapiQu\Exceptions\Error;
 
 class Router extends Component
 {

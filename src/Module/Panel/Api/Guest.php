@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Module\Panel\Api;
+namespace MerapiQu\Module\Panel\Api;
 
-use Mp\Core\Abstract\Module;
+use MerapiQu\Core\Abstract\Module;
 
 class Guest extends Module
 {

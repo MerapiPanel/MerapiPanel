@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Module\User;
+namespace MerapiQu\Module\User;
 
-use Mp\Box;
-use Mp\Core\Abstract\Module;
+use MerapiQu\Box;
+use MerapiQu\Core\Abstract\Module;
 
 class Service extends Module
 {

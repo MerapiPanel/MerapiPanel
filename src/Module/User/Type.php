@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Module\User;
+namespace MerapiQu\Module\User;
 
 class Type
 {

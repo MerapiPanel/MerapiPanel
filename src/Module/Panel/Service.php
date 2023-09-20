@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Module\Panel;
+namespace MerapiQu\Module\Panel;
 
-use Mp\Core\Abstract\Module;
+use MerapiQu\Core\Abstract\Module;
 
 class Service extends Module
 {

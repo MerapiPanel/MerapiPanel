@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Utility\Middleware;
+namespace MerapiQu\Utility\Middleware;
 
 
 abstract class Component {

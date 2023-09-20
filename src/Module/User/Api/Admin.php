@@ -1,9 +1,9 @@
 <?php
 
-namespace Mp\Module\User\Api;
+namespace MerapiQu\Module\User\Api;
 
-use Mp\Core\Abstract\Module;
-use Mp\Module\User\Type;
+use MerapiQu\Core\Abstract\Module;
+use MerapiQu\Module\User\Type;
 
 class Admin extends Module
 {

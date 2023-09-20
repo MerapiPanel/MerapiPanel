@@ -1,8 +1,8 @@
 <?php
 
-namespace Mp\Module\Locale;
+namespace MerapiQu\Module\Locale;
 
-use Mp\Box;
+use MerapiQu\Box;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 

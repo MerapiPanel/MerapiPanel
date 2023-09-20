@@ -1,6 +1,6 @@
 <?php
 
-namespace Mp\Utility\Http;
+namespace MerapiQu\Utility\Http;
 
 class URL
 {
