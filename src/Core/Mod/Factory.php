@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Mod;
+namespace MerapiPanel\Mod;
 
-use MerapiQu\AppAware;
-use MerapiQu\Box;
+use MerapiPanel\AppAware;
+use MerapiPanel\Box;
 
 class Factory extends AppAware
 {

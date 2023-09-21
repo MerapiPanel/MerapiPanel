@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Mod\Interface;
+namespace MerapiPanel\Mod\Interface;
 
-use MerapiQu\Box;
-use MerapiQu\Utility\Router;
+use MerapiPanel\Box;
+use MerapiPanel\Utility\Router;
 
 interface Box_Controller {
     

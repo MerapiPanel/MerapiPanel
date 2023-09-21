@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Module\Panel;
+namespace MerapiPanel\Module\Panel;
 
-use MerapiQu\Core\Abstract\Module;
-use MerapiQu\Utility\Http\Request;
+use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Utility\Http\Request;
 
 class Service extends Module
 {

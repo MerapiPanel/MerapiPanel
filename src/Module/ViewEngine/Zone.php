@@ -1,8 +1,8 @@
 <?php
 
-namespace MerapiQu\Module\ViewEngine;
+namespace MerapiPanel\Module\ViewEngine;
 
-use MerapiQu\Box;
+use MerapiPanel\Box;
 
 class Zone
 {
@@ -32,7 +32,7 @@ class Zone
     {
 
         [$module, $method] = array_values(array_filter(explode('_', $name)));
-        $module = "MerapiQu\\Module\\" . ucfirst($module) . "\\Api\\" . ucfirst($this->zone);
+        $module = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Api\\" . ucfirst($this->zone);
 
         $instance = $this->box->$module();
         return $instance->$method();

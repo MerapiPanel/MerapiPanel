@@ -7,7 +7,7 @@
  * by editing this file, you are breaking the Application
  */
 
-namespace MerapiQu;
+namespace MerapiPanel;
 
 use Throwable;
 

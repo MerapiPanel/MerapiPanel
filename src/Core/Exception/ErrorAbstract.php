@@ -1,8 +1,8 @@
 <?php
 
-namespace MerapiQu\Core\Exception;
+namespace MerapiPanel\Core\Exception;
 use Exception;
-use MerapiQu\Box;
+use MerapiPanel\Box;
 use Throwable;
 
 abstract class ErrorAbstract extends Exception

@@ -1,10 +1,10 @@
 <?php
 
-namespace MerapiQu\Core\Abstract;
+namespace MerapiPanel\Core\Abstract;
 
 use Exception;
-use MerapiQu\Box;
-use MerapiQu\Core\Database;
+use MerapiPanel\Box;
+use MerapiPanel\Core\Database;
 use PDO;
 use ReflectionClass;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace MerapiQu\Module\Auth;
+namespace MerapiPanel\Module\Auth;
 
-use MerapiQu\Core\Abstract\Module;
+use MerapiPanel\Core\Abstract\Module;
 
 class Service extends Module {
     

@@ -1,10 +1,10 @@
 <?php
 
-namespace MerapiQu\Utility\Middleware;
+namespace MerapiPanel\Utility\Middleware;
 
 use Closure;
-use MerapiQu\Utility\Http\Request;
-use MerapiQu\Utility\Http\Response;
+use MerapiPanel\Utility\Http\Request;
+use MerapiPanel\Utility\Http\Response;
 
 class MiddlewareStack
 {

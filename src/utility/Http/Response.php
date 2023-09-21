@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Utility\Http;
+namespace MerapiPanel\Utility\Http;
 
 class Response
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu;
+namespace MerapiPanel;
 
-use MerapiQu\Core\Cog\Config;
-use MerapiQu\Core\Mod\Proxy;
+use MerapiPanel\Core\Cog\Config;
+use MerapiPanel\Core\Mod\Proxy;
 
 class Box
 {

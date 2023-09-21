@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Utility;
+namespace MerapiPanel\Utility;
 
 use Closure;
-use MerapiQu\Utility\Middleware\Component;
+use MerapiPanel\Utility\Middleware\Component;
 
 class Route extends Component
 {

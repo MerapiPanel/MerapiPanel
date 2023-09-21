@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Core\Mod;
+namespace MerapiPanel\Core\Mod;
 
 use Exception;
-use MerapiQu\Box;
+use MerapiPanel\Box;
 use ReflectionClass;
 use Symfony\Component\Yaml\Yaml;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Module\Users;
+namespace MerapiPanel\Module\Users;
 
-use MerapiQu\Box;
-use MerapiQu\Core\Abstract\Module;
+use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Module;
 use PDO;
 
 class Service extends Module

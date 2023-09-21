@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Core\Exception;
+namespace MerapiPanel\Core\Exception;
 
 use Exception;
 use Throwable;

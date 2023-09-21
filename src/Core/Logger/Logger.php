@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Core\Logger;
+namespace MerapiPanel\Core\Logger;
 
 class Logger
 {

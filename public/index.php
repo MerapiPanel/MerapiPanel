@@ -1,6 +1,6 @@
 <?php
 
-use MerapiQu\App;
+use MerapiPanel\App;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

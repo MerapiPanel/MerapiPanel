@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Core\Exception;
-// MerapiQu\Module\Exception\Service
+namespace MerapiPanel\Core\Exception;
+// MerapiPanel\Module\Exception\Service
 
-use MerapiQu\Box;
+use MerapiPanel\Box;
 use Throwable;
 
 class Service extends ErrorAbstract

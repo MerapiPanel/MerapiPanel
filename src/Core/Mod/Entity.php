@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Core\Mod;
+namespace MerapiPanel\Core\Mod;
 
-use MerapiQu\Box;
-use MerapiQu\Core\Exception\CodeException;
+use MerapiPanel\Box;
+use MerapiPanel\Core\Exception\CodeException;
 
 class Entity extends Box
 {

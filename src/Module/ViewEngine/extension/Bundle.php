@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Module\ViewEngine\Extension;
+namespace MerapiPanel\Module\ViewEngine\Extension;
 
 class Bundle extends \Twig\Extension\AbstractExtension
 {

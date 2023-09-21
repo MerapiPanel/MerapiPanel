@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Core;
+namespace MerapiPanel\Core;
 
 use PDO;
 use SQLite3;

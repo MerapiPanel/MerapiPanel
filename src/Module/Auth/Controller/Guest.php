@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Module\Auth\Controller;
+namespace MerapiPanel\Module\Auth\Controller;
 
-use MerapiQu\Box;
-use MerapiQu\Core\Abstract\Module;
+use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Module;
 
 class Guest extends Module {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Core\Cog;
+namespace MerapiPanel\Core\Cog;
 
 use ArrayAccess;
 use Symfony\Component\Yaml\Yaml;

@@ -1,9 +1,9 @@
 <?php
 
-namespace MerapiQu\Utility\Http;
+namespace MerapiPanel\Utility\Http;
 
 use Exception;
-use MerapiQu\Box;
+use MerapiPanel\Box;
 use Throwable;
 
 class Api extends Response

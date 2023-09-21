@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Module\ViewEngine\Abstract;
+namespace MerapiPanel\Module\ViewEngine\Abstract;
 
 use \Twig\Extension\AbstractExtension;
 

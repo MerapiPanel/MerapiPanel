@@ -1,8 +1,8 @@
 <?php
 
-namespace MerapiQu\Module\Panel\Controller;
+namespace MerapiPanel\Module\Panel\Controller;
 
-use MerapiQu\Core\Abstract\Module;
+use MerapiPanel\Core\Abstract\Module;
 
 class Admin extends Module
 {

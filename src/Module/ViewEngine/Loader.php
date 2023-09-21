@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Module\ViewEngine;
+namespace MerapiPanel\Module\ViewEngine;
 
 use Twig\Loader\FilesystemLoader;
 

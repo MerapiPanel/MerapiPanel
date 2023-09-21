@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiQu\Module\Index\Api;
+namespace MerapiPanel\Module\Index\Api;
 
 class Guest {
 
