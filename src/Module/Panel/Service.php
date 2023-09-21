@@ -43,14 +43,16 @@ class Service extends Module
             return $a["order"] - $b["order"];
         });
 
-        foreach ($listMenu as $key => $menu) {
+        $unique = [];
+        foreach ($listMenu as $menu) {
 
             if ($this->isCurrent($menu['link'])) {
-                $listMenu[$key]['active'] = true;
+                $menu['active'] = true;
             }
+            $unique[strtolower($menu['name'])] = $menu;
         }
 
-        $grouped = $this->buildMenuHierarchy($listMenu);
+        $grouped = $this->buildMenuHierarchy(array_values($unique));
         return $grouped;
     }
 

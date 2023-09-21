@@ -1,23 +1,8 @@
 {% extends "@admin>panel/base.html.twig" %}
 {% block header_title %}Users{% endblock %}
-
-
 {% set users = admin.users_alluser %}
-{% block content %}
 
-<div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
-    <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
-        <input class="text-input" type="text" placeholder="Search">
-        <button class="ms-2 rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </div>
-    <div class="ms-auto">
-        <button class="rounded border outline-none shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
-            <i class="fa-solid fa-plus"></i> Create new
-        </button>
-    </div>
-</div>
+{% block content %}
 
 <span>Total {{ users|length }}</span>
 
