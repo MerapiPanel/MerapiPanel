@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\View;
+namespace MerapiPanel\Module\ViewEngine;
 
 use Twig\TemplateWrapper;
 

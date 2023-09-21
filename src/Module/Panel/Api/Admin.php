@@ -11,4 +11,9 @@ class Admin extends Module
     {
         return $this->service()->getBase();
     }
+
+    public function ListMenu()
+    {
+        return $this->service()->getMenu();
+    }
 }

@@ -9,12 +9,12 @@
             onclick="closeNav()">Close</button>
 
         <a class="flex w-full px-2 p-4">
-            <img width="110" height="65" src="{{ '@panel/assets/logo.svg' | assets }}" alt="">
+            <img width="110" height="65" src="{{ '@panel/assets/logo.svg?v=1' | assets }}" alt="">
         </a>
 
         <ul class="nav-menu block w-full mt-0 text-slate-400">
 
-            {% for item in guest.Panel_ListMenu %}
+            {% for item in admin.Panel_ListMenu %}
             <li class="mx-2 mb-3">
 
                 <a href="{{ item.link }}" class="{{ item.active ? ' active' : '' }}">

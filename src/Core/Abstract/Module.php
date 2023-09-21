@@ -5,7 +5,6 @@ namespace MerapiPanel\Core\Abstract;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Database;
-use PDO;
 use ReflectionClass;
 
 abstract class Module
@@ -19,7 +18,8 @@ abstract class Module
         $this->box = $box;
     }
 
-    public function getBox() {
+    public function getBox()
+    {
         return $this->box;
     }
 
@@ -27,7 +27,7 @@ abstract class Module
     {
 
         $file = $this->__getIndex();
-        
+
         $db = new Database($file);
         return $db;
     }
@@ -52,15 +52,19 @@ abstract class Module
                 break;
             }
         }
+
         return $file;
     }
 
     public function __call($name, $arguments)
     {
 
-        $index = $this->__getIndex();
+        $index    = $this->__getIndex();
+        $basename = "\\".basename($index);
+        $class    = $this::class;
+        $pos      = strpos($class, $basename);
 
-        $baseClass = substr($this::class, 0, strpos($this::class, basename($index)) + strlen(basename($index)));
+        $baseClass = substr($class, 0, $pos + strlen($basename));
         $target    = implode("/", array_map("ucfirst", explode("/", $name)));
         $instance  = "{$baseClass}\\{$target}";
 

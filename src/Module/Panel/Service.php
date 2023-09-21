@@ -3,7 +3,6 @@
 namespace MerapiPanel\Module\Panel;
 
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Utility\Http\Request;
 
 class Service extends Module
 {
@@ -26,6 +25,16 @@ class Service extends Module
         ];
     }
 
+
+
+    function adminLink($path = "")
+    {
+        $AppConfig = $this->box->getConfig();
+        return rtrim($AppConfig['admin'], "/") . "/" . ltrim($path, "/");
+    }
+
+
+
     public function getMenu()
     {
 
@@ -43,25 +52,25 @@ class Service extends Module
                 $menu['active'] = true;
             }
 
-            $indexed[$menu['name']] = $menu;
+            $indexed[strtolower($menu['name'])] = $menu;
         }
 
         foreach ($listMenu as $menu) {
 
-            if (isset($menu['parent']) && $indexed[$menu['parent']]) {
+            if (isset($menu['parent']) && (isset($indexed[strtolower($menu['parent'])]))) {
 
-                if (!isset($indexed[$menu['parent']]['childs']))
-                    $indexed[$menu['parent']]['childs'] = [];
+                if (!isset($indexed[strtolower($menu['parent'])]['childs']))
+                    $indexed[strtolower($menu['parent'])]['childs'] = [];
 
                 if ($this->isCurrent($menu['link'])) 
                 {
                     $menu['active'] = true;
                 }
 
-                $indexed[$menu['parent']]['childs'][] = $menu;
+                $indexed[strtolower($menu['parent'])]['childs'][] = $menu;
 
-                if (isset($indexed[$menu['name']])) {
-                    unset($indexed[$menu['name']]);
+                if (isset($indexed[strtolower($menu['name'])])) {
+                    unset($indexed[strtolower($menu['name'])]);
                 }
             }
         }

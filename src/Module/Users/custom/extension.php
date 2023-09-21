@@ -1,8 +1,8 @@
 <?php
 
-namespace MerapiQu\Module\Users\Custom;
+namespace MerapiPanel\Module\Users\Custom;
 
-use MerapiQu\Module\ViewEngine\Abstract\FunctionAbstract;
+use MerapiPanel\Module\ViewEngine\Abstract\FunctionAbstract;
 
 class Extension extends FunctionAbstract
 {
