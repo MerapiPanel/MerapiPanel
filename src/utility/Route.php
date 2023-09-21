@@ -81,4 +81,9 @@ class Route extends Component
 
     }
 
+    public function __toString()
+    {
+        return $this->getPath();
+    }
+
 }

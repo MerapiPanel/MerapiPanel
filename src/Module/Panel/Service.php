@@ -38,44 +38,56 @@ class Service extends Module
     public function getMenu()
     {
 
-
-
         $listMenu = $this->ListMenu;
-        $indexed = [];
-
         usort($listMenu, function ($a, $b) {
             return $a["order"] - $b["order"];
         });
 
-        foreach ($listMenu as $menu) {
+        foreach ($listMenu as $key => $menu) {
+
             if ($this->isCurrent($menu['link'])) {
-                $menu['active'] = true;
-            }
-
-            $indexed[strtolower($menu['name'])] = $menu;
-        }
-
-        foreach ($listMenu as $menu) {
-
-            if (isset($menu['parent']) && (isset($indexed[strtolower($menu['parent'])]))) {
-
-                if (!isset($indexed[strtolower($menu['parent'])]['childs']))
-                    $indexed[strtolower($menu['parent'])]['childs'] = [];
-
-                if ($this->isCurrent($menu['link'])) 
-                {
-                    $menu['active'] = true;
-                }
-
-                $indexed[strtolower($menu['parent'])]['childs'][] = $menu;
-
-                if (isset($indexed[strtolower($menu['name'])])) {
-                    unset($indexed[strtolower($menu['name'])]);
-                }
+                $listMenu[$key]['active'] = true;
             }
         }
 
-        return array_values($indexed);
+        $grouped = $this->buildMenuHierarchy($listMenu);
+        return $grouped;
+    }
+
+
+    function buildMenuHierarchy($items, $parentId = null): array
+    {
+
+        $menu = [];
+
+        foreach ($items as $key => $item) {
+
+            $parent = isset($item['parent']) && !empty($item['parent']) ? strtolower($item['parent']) : null;
+            // Check if the current item has a "parent" key that matches the provided $parentId.
+            if ($parent === $parentId) {
+                // If it does, recursively call the function to find its children.
+                $childItems = $this->buildMenuHierarchy($items, strtolower($item['name']));
+
+                // If the current item has children, add them as the "children" attribute.
+                if (!empty($childItems)) {
+                    $item['childs'] = $childItems;
+                }
+
+                // Add the current item to the menu.
+                $menu[] = $item;
+            }
+        }
+
+        if ($parentId == null) {
+            return $menu;
+        }
+
+        return array_values($menu);
+    }
+
+
+    public function assignToParent(&$source, $item)
+    {
     }
 
 

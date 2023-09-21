@@ -15,6 +15,7 @@ class Admin extends Module
         $panel = $this->getBox()->Module_Panel();
         $site = $this->getBox()->Module_Site();
         $panel->addMenu([
+            "parent" => "settings",
             "name" => "Modules",
             "link" => $site->adminLink("/modules"),
             'icon' => 'fa-solid fa-cube'

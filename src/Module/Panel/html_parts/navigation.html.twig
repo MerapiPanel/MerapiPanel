@@ -15,6 +15,7 @@
         <ul class="nav-menu block w-full mt-0 text-slate-400">
 
             {% for item in admin.Panel_ListMenu %}
+
             <li class="mx-2 mb-3">
 
                 <a href="{{ item.link }}" class="{{ item.active ? ' active' : '' }}">
@@ -27,9 +28,24 @@
                     {% for child in item.childs %}
                     <li class="mb-2">
                         <a href="{{ child.link }}" class="{{ child.active ? ' active' : '' }}">
-                            {{(child.icon?("<i class=\""~child.icon~"
-                                pe-2\"></i>"):'')|raw}}{{child.name}}
+                            {{(child.icon?("<i class=\""~child.icon~" pe-2\"></i>"):'')|raw}}{{child.name}}
                         </a>
+
+                        {% if child.childs %}
+                        <ul class="ms-[8px] pt-2 mb-3 ps-4 border-[0px] border-slate-300 border-l-[2px]">
+
+                            {% for child in child.childs %}
+                            <li class="mb-2">
+                                <a href="{{ child.link }}" class="{{ child.active ? ' active' : '' }}">
+                                    {{(child.icon?("<i class=\""~child.icon~" pe-2\"></i>"):'')|raw}}{{child.name}}
+                                </a>
+                            </li>
+                            {% endfor %}
+
+                        </ul>
+                        {% endif %}
+
+
                     </li>
                     {% endfor %}
 
