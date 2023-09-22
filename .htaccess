@@ -1,4 +1,3 @@
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ public/index.php [NC,L,QSA]
+RewriteRule ^ public/index.php [NC,L,QSA]

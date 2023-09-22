@@ -6,7 +6,7 @@
 
 {% set settings = admin.auth_settings %}
 {% block content %}
-<div class="py-5 max-w-[800px]">
+<form class="py-5 max-w-[800px]">
 
     <section class="bg-white mb-3 p-4 rounded shadow">
         <header>
@@ -48,9 +48,23 @@
     </section>
 
     <div class="flex mt-5">
-        <button class="ms-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+        <button type="submit" class="ms-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
             save
         </button>
     </div>
-</div>
+</form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            let data = new FormData(e.currentTarget);
+            Merapi.post('/', data,
+                () => {
+
+                })
+        })
+    </script>
 {% endblock %}
