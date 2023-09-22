@@ -2,21 +2,7 @@
 {% block header_title %}Modules{% endblock %}
 
 {% block content %}
-
-<div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
-    <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
-        <input class="text-input" type="text" placeholder="Search">
-        <button class="ms-2 rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </div>
-    <div class="ms-auto">
-
-    </div>
-</div>
-
 <span>Total {{ admin.modules_ListModule|length }}</span>
-
 
 <div class="grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-5">
     {% for mod in admin.modules_ListModule %}

@@ -5,25 +5,32 @@
 	<title>{% block page_title %}Merapi panel{% endblock %}</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	{% block stylesheets %}
 	<link rel="stylesheet" href="/public/assets/css/output.css" />
 	{% endblock %}
-	{% block javascripts %}
-	<script></script>
-	{% endblock %}
+
 </head>
 {% block body %}
 
 <body class="min-h-screen min-w-screen">
+
 	{% block content %}
 	<main class="h-[100vh] w-[100vw] flex justify-center items-center text-white bg-black">
 		<div clas="text-center">
 			<h1 class="text-6xl font-bold mb-4">This is the base template</h1>
-			<p class="text-lg text-center">You need to replace this view by add 
-				<span class="font-bold">{{"{%"}} <span class="text-purple-300">block</span> <span class="text-blue-300">content</span> {{ "%}" }}</span> in you template</p>
+			<p class="text-lg text-center">You need to replace this view by add
+				<span class="font-bold">{{"{%"}} <span class="text-purple-300">block</span> <span
+						class="text-blue-300">content</span> {{ "%}" }}</span> in you template
+			</p>
 		</div>
 	</main>
 	{% endblock %}
+
+	{% block javascripts %}
+	<script></script>
+	{% endblock %}
+
 </body>
 {% endblock %}
 

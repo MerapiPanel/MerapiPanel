@@ -31,9 +31,13 @@ class Zone
     public function __get($name)
     {
 
-        [$module, $method] = array_values(array_filter(explode('_', $name)));
-        $module = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Api\\" . ucfirst($this->zone);
+        $parts = array_values(array_filter(explode('_', $name)));
+        $module = $parts[0];
+        unset($parts[0]);
+        $method = implode('_', $parts);
 
+        $module = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Api\\" . ucfirst($this->zone);
+        
         $instance = $this->box->$module();
         return $instance->$method();
     }

@@ -20,7 +20,7 @@ class Service
 
         $this->box          = $box;
         $this->localeEngine = $box->module_locale()->getRealInstance();
-        $this->loader       = new Loader(realpath(__DIR__ . "/../../views"));
+        $this->loader       = new Loader(realpath(__DIR__ . "/../../base/views"));
         $this->twig         = new \Twig\Environment($this->loader, ["cache" => false]);
         $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
 

@@ -4,7 +4,9 @@ namespace MerapiPanel\Core\Abstract;
 
 use Exception;
 use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Component\Settings;
 use MerapiPanel\Core\Database;
+use PDO;
 use ReflectionClass;
 
 abstract class Module
@@ -73,5 +75,14 @@ abstract class Module
         }
 
         return $this->box->$instance($arguments);
+    }
+
+
+    public function __getSettings() {
+
+        $db = $this->getDatabase();
+
+        return new Settings($db);
+        
     }
 }

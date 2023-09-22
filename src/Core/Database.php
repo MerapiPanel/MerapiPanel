@@ -3,7 +3,6 @@
 namespace MerapiPanel\Core;
 
 use PDO;
-use SQLite3;
 
 class Database
 {
