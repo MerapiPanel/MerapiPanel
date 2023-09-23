@@ -1,0 +1,17 @@
+{% extends "@admin>panel/base.html.twig" %}
+{% block header %}{% endblock %}
+{% block subheader %}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="//unpkg.com/grapesjs/dist/css/grapes.min.css">
+{% endblock %}
+
+
+{% block body %}
+{{ setJsModule('Template') }}
+<body>
+    <div>
+        <div id="gjs"></div>
+    </div>
+</body>
+{% endblock %}

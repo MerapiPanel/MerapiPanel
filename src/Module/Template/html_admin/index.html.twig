@@ -2,6 +2,16 @@
 {% block header_title %}Template{% endblock %}
 
 
+{% block subheader_actions %}
+<a href="{{ 'template/create' | admin_url }}"
+    class="ms-auto bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
+    <i class="fa fa-plus"></i> new template
+</a>
+{% endblock %}
+
 {% block content %}
 
+<div>
+    <div id="gjs"></div>
+</div>
 {% endblock %}

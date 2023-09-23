@@ -28,7 +28,7 @@ class Service
         $this->loader       = new Loader(realpath(__DIR__ . "/../../base/views"));
         $this->twig         = new \Twig\Environment($this->loader, ["cache" => false]);
 
-        
+
         $this->twig = new \Twig\Environment($this->loader, [
             'cache' => false,
         ]);
@@ -40,11 +40,11 @@ class Service
         foreach ($files as $file) {
 
             $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = substr(self::class,0, strpos(self::class, basename(self::class))) . "Extension\\" . ucfirst($file_name);
+            $className = substr(self::class, 0, strpos(self::class, basename(self::class))) . "Extension\\" . ucfirst($file_name);
 
             if (class_exists($className)) {
 
-                $this->twig->addExtension(new $className());
+                $this->twig->addExtension(new $className($box));
             }
         }
 

@@ -4,7 +4,7 @@ const webpack = require('webpack')
 
 module.exports = {
     mode: 'development',
-    entry: './src/index.js',
+    entry: './src',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].bundle.js',
@@ -23,7 +23,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jquery: "jQuery",
-            "window.jQuery": "jquery"
+            "window.jQuery": "jquery" 
         })
     ],
     module: {
@@ -32,18 +32,6 @@ module.exports = {
                 test: /\.css$/i,
                 include: path.resolve(__dirname, 'src'),
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
-            },
-            {
-                test: /\.(?:js|mjs|cjs)$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ['@babel/preset-env', { targets: "defaults" }]
-                        ]
-                    }
-                }
             }
         ],
     },

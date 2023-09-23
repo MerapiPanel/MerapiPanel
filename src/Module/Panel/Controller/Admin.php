@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\Panel\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Module\Panel\Custom\Extension;
 
 class Admin extends Module
 {
@@ -12,6 +13,7 @@ class Admin extends Module
     public function setBox($box)
     {
         $this->box = $box;
+
     }
 
 

@@ -6,12 +6,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+	{% block stylesheets %}{% endblock %}
+
 	<script src="/dist/main.bundle.js"></script>
-
-	{# {% block stylesheets %}
-	<link rel="stylesheet" href="/public/assets/css/output.css" />
-	{% endblock %} #}
-
 </head>
 {% block body %}
 
@@ -35,5 +32,7 @@
 
 </body>
 {% endblock %}
+
+
 
 </html>
