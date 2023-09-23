@@ -4,6 +4,7 @@
 {% block subheader %}{% endblock %}
 
 
+
 {% set settings = admin.auth_settings %}
 {% block content %}
 <form class="py-5 max-w-[800px]">
@@ -56,17 +57,17 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script type="module">
-        var $ = require('jquery');
-
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
         $('form').on('submit', function (e) {
             e.preventDefault();
             let data = new FormData(e.currentTarget);
-            Merapi.post('/', data,
+            merapi.post('/', data,
                 () => {
 
                 })
         })
-    </script>
+    })
+</script>
 {% endblock %}

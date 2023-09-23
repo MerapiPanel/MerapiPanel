@@ -1,8 +1,4 @@
-(() => {
-    if (typeof window.$ == 'undefined' || window.jQuery == undefined) {
-        console.error('Merapi Panel is required jQuery');
-    }
-})();
+import $ from "jquery";
 
 const proggressbars = $(`<div class='http-progress'><div class='download running-strip'></div><div class='upload running-strip'></div></div>`);
 var isOnAjax = false;
@@ -218,3 +214,5 @@ Toast.control = function () {
 const Merapi = {};
 Merapi.get = (url, callback) => ajaxRequest(url, null, callback);
 Merapi.post = (url, data, callback) => ajaxRequest(url, data, callback);
+
+export default Merapi;

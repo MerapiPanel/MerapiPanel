@@ -1,7 +1,8 @@
 import './app.css';;
 import './base/assets/fontawesome/css/all.min.css';
 import $ from 'jquery';
+import merapi from './merapi';
 
-export default {
-    $
-}
+
+window.$ = $;
+window.merapi = merapi;
