@@ -10,6 +10,8 @@ class Admin extends Module
     public function register($router)
     {
 
+        $router->post("/settings/general", "updateSetting", self::class);
+
         $setting =  $router->get("/settings", "index", self::class);
         $general = $router->get("/settings/general", "index", self::class);
 
@@ -34,5 +36,29 @@ class Admin extends Module
     {
 
         return $view->render('index.html.twig');
+    }
+
+    function updateSetting($request)
+    {
+
+        $setting = $this->service()->__getSettings();
+        $_BODY = $request->getRequestBody();
+
+        if (!isset($_BODY['website_name']) || empty($_BODY['website_name'])) {
+            return "Website name is required";
+        }
+
+        $setting['website_name'] = $_BODY['website_name'];
+        $setting['website_email'] = $_BODY['website_email'] ?? "";
+        $setting['website_timezone'] = $_BODY['website_timezone'] ?? "";
+        $setting['website_date_format'] = $_BODY['website_date_format'] ?? "";
+
+        return [
+            "status" => 200,
+            "response" => [
+                "message" => "Settings updated successfully",
+                'code' => 2
+            ]
+        ];
     }
 }

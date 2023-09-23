@@ -35,7 +35,7 @@
 }
 
 .running-strip {
-    background-image: url("data:image/svg+xml,%3Csvg width='50.351mm' height='38mm' version='1.1' viewBox='-9 0 50.351 41.38' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(-113.46)'%3E%3Cpath d='m122.46 0h23.36l-17.992 41.38h-23.36z' style='fill:%23dedede45'/%3E%3C/g%3E%3C/svg%3E%0A");
+    background-image: url("data:image/svg+xml,%3Csvg width='50.351mm' height='38mm' version='1.1' viewBox='-9 0 50.351 41.38' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(-113.46)'%3E%3Cpath d='m122.46 0h23.36l-17.992 41.38h-23.36z' style='fill:%2300000045'/%3E%3C/g%3E%3C/svg%3E%0A");
     background-size: 25px;
     background-repeat: repeat-x;
     animation: running-strip 0.3s linear infinite;
