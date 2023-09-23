@@ -3,7 +3,12 @@
 namespace MerapiPanel\Module\ViewEngine;
 
 use MerapiPanel\Box;
+use MerapiPanel\Module\ViewEngine\extension\Encore;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Bridge\Twig\Extension\WebLinkExtension;
+use Symfony\WebpackEncoreBundle\DependencyInjection\WebpackEncoreExtension;
+use Symfony\WebpackEncoreBundle\Twig\EntryFilesTwigExtension;
+use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
 
 class Service
 {
@@ -22,6 +27,11 @@ class Service
         $this->localeEngine = $box->module_locale()->getRealInstance();
         $this->loader       = new Loader(realpath(__DIR__ . "/../../base/views"));
         $this->twig         = new \Twig\Environment($this->loader, ["cache" => false]);
+
+        
+        $this->twig = new \Twig\Environment($this->loader, [
+            'cache' => false,
+        ]);
         $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
 
 
