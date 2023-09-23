@@ -49,3 +49,8 @@
         background-position: 25px 0;
     }
 }
+
+
+input[type='radio'] {
+    @apply w-4 h-4 focus-within:drop-shadow-[0_0_2px_#3492eb];
+}

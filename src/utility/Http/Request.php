@@ -12,7 +12,7 @@ class Request
     protected $body;
     protected $params;
 
-    
+
 
     /**
      * Constructs a new instance of the class.
@@ -28,7 +28,6 @@ class Request
         $this->headers = $this->getAllHeaders();
         $this->body    = $this->getRequestBody();
         $this->params  = [];
-        
     }
 
     /**
@@ -40,7 +39,6 @@ class Request
     {
 
         return $this->method;
-
     }
 
 
@@ -55,11 +53,10 @@ class Request
     {
 
         return $this->path;
-
     }
 
 
-    
+
 
     /**
      * Retrieves the query parameters.
@@ -70,7 +67,6 @@ class Request
     {
 
         return $this->query;
-
     }
 
 
@@ -82,15 +78,15 @@ class Request
      * @param mixed $paramName The name of the parameter to retrieve.
      * @return mixed|null The value of the parameter if it exists, otherwise null.
      */
-    public function getQuery($paramName) {
+    public function getQuery($paramName)
+    {
 
         return isset($this->query[$paramName]) ? $this->query[$paramName] : null;
-
     }
 
 
 
-    
+
     /**
      * Retrieves the value of a specified header.
      *
@@ -102,11 +98,10 @@ class Request
 
         // Check if the header exists in the headers array
         return isset($this->headers[$headerName]) ? $this->headers[$headerName] : null;
-
     }
 
 
-    
+
 
     /**
      * Retrieves the request body from the input stream.
@@ -116,12 +111,15 @@ class Request
     public function getRequestBody()
     {
 
-        return file_get_contents('php://input');
-
+        $phpin = file_get_contents('php://input');
+        if (empty($phpin) && !empty($_POST)) {
+            $phpin = $_POST;
+        }
+        return $phpin;
     }
 
 
-    
+
     /**
      * Retrieves the parameters of the PHP function.
      *
@@ -131,7 +129,6 @@ class Request
     {
 
         return $this->params;
-
     }
 
 
@@ -146,12 +143,11 @@ class Request
     {
 
         $this->params = $params;
-
     }
 
 
 
-    
+
     /**
      * Retrieves the value of a specified parameter.
      *
@@ -162,11 +158,10 @@ class Request
     {
 
         return isset($this->params[$paramName]) ? $this->params[$paramName] : null;
-
     }
 
 
-    
+
 
     /**
      * Retrieves all HTTP headers from the current request.
@@ -178,28 +173,24 @@ class Request
 
         $headers = [];
 
-        foreach ($_SERVER as $name => $value) 
-        {
+        foreach ($_SERVER as $name => $value) {
 
-            if (strpos($name, 'HTTP_') === 0) 
-            {
-                
+            if (strpos($name, 'HTTP_') === 0) {
+
                 $headerName = str_replace('HTTP_', '', $name);
                 $headerName = str_replace('_', '-', $headerName);
                 $headerName = strtolower($headerName);
 
                 $headers[$headerName] = $value;
-
             }
-
         }
 
         return $headers;
-
     }
 
 
-    public function __toJson() {
+    public function __toJson()
+    {
 
         return [
             'headers' => $this->headers,
@@ -210,5 +201,4 @@ class Request
             'path' => $this->path,
         ];
     }
-    
 }

@@ -4,86 +4,42 @@ const proggressbars = $(`<div class='http-progress'><div class='download running
 var isOnAjax = false;
 $(document).on("ajaxSend", function (e) {
     $(document.body).append(proggressbars);
-    isOnAjax = true;
 }).on("ajaxComplete", function () {
     $('.http-progress').remove();
     isOnAjax = false;
 });
 
 
-function changeStrStyle(string, key, value) {
-
-    let reg = new RegExp(`${key}\:.*?(;|$)`, 'g');
-    if (reg.test(string)) {
-        string = string.replace(reg, `${key}: ${value};`);
-    } else {
-        string = (string[string.length - 1] === ';' ? string.substring(0, string.length - 1) : string) + `; ${key}: ${value};`;
-    }
-    return string;
-}
-
-function ajaxRequest(url, data = null, callback) {
+function createXmlHttpRequest() {
 
     if (isOnAjax) {
         Toast.create('Please wait...', 'hsl(51, 50%, 45%)', 10);
-        return;
+        return false;
     }
 
-    proggressbars.css({
-        position: 'fixed',
-        width: '100%',
-        height: '5px',
-        'background-color': '#00000000',
-        'box-shadow': '0 1px 2px #00000045',
-        top: 0,
-        'z-index': 99,
-    })
-    proggressbars.find('.download').css({
-        transision: '1s',
-        position: 'absolute',
-        top: 0,
-        width: '0%',
-        height: '100%',
-        'background-color': '#0091ff',
-        'z-index': 2
-    })
-    proggressbars.find('.upload').css({
-        transision: '1s',
-        position: 'absolute',
-        top: 0,
-        width: '5%',
-        height: '100%',
-        'background-color': '#eaeaea',
-        'z-index': 1
-    })
+    isOnAjax = true;
 
-    $.ajax({
-        xhr: function () {
+    proggressbars.css({ position: 'fixed', width: '100%', height: '5px', 'background-color': '#00000000', 'box-shadow': '0 1px 2px #00000045', top: 0, 'z-index': 99 })
+    proggressbars.find('.download').css({ transision: '1s', position: 'absolute', top: 0, width: '0%', height: '100%', 'background-color': '#0091ff', 'z-index': 2 })
+    proggressbars.find('.upload').css({ transision: '1s', position: 'absolute', top: 0, width: '5%', height: '100%', 'background-color': '#eaeaea', 'z-index': 1 })
 
-            let xhr = new window.XMLHttpRequest();
-            xhr.addEventListener("progress", function (evt) {
-                if (evt.lengthComputable) {
-                    let complete = (evt.loaded / evt.total * 100 | 0);
-                    $('.http-progress').find('.download').css('width', `${complete}%`);
-                }
-            });
+    const xhr = new XMLHttpRequest();
 
-            xhr.upload.addEventListener("progress", (evt) => {
-                if (evt.lengthComputable) {
-                    let complete = Math.ceil((evt.loaded / evt.total) * 100);
-                    $('.http-progress').find('.upload').css('width', `${complete}%`);
-                }
-            });
-            return xhr;
-        },
-        url: url,
-        method: 'POST',
-        data: data,
-        processData: false,
-        contentType: false,
-        cache: false,
-        success: callback
-    })
+    xhr.addEventListener("progress", function (evt) {
+        if (evt.lengthComputable) {
+            let complete = (evt.loaded / evt.total * 100 | 0);
+            $('.http-progress').find('.download').css('width', `${complete}%`);
+            isOnAjax = false;
+        }
+    });
+
+    xhr.upload.addEventListener("progress", (evt) => {
+        if (evt.lengthComputable) {
+            let complete = Math.ceil((evt.loaded / evt.total) * 100);
+            $('.http-progress').find('.upload').css('width', `${complete}%`);
+        }
+    });
+    return xhr;
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -106,6 +62,34 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+
+function getRequest(url, callback) {
+
+    $.ajax({
+        xhr: createXmlHttpRequest,
+        url: url,
+        method: 'GET',
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: callback
+    })
+}
+
+function postRequest(url, data, callback) {
+
+    $.ajax({
+        xhr: createXmlHttpRequest,
+        url: url,
+        method: 'POST',
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: callback
+    })
 }
 
 const Toast = {};
@@ -212,7 +196,10 @@ Toast.control = function () {
 
 
 const Merapi = {};
-Merapi.get = (url, callback) => ajaxRequest(url, null, callback);
-Merapi.post = (url, data, callback) => ajaxRequest(url, data, callback);
+Merapi.get = (url, callback) => getRequest(url, callback);
+Merapi.post = (url, data, callback) => postRequest(url, data, callback);
+Merapi.toast = (text, seconds = 3, textColor = "#0000ff45") => Toast.create(text, textColor, seconds)
+Merapi.setCookie = (name, value, exdays) => setCookie(name, value, exdays)
+Merapi.getCookie = (name) => getCookie(name)
 
 export default Merapi;

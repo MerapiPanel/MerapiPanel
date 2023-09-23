@@ -7,10 +7,10 @@ use MerapiPanel\Core\Abstract\Module;
 class Admin extends Module
 {
 
-    function setting_session()
+    function setting_session_name()
     {
 
-        $session = $this->service()->getSetting("session");
+        $session = $this->service()->getSetting("session_name");
         if (!$session) {
             return false;
         }
@@ -20,12 +20,8 @@ class Admin extends Module
     
     function settings()
     {
+        
         $container = $this->service()->getSetting()->getContainer();
-
-        $container[1] = [
-            'name' => 'session1',
-            'value' => 1
-        ];
 
         $map = [];
         
