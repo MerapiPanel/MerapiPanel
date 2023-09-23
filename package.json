@@ -1,11 +1,20 @@
 {
   "devDependencies": {
-    "tailwindcss": "^3.3.3"
+    "css-loader": "^6.8.1",
+    "postcss": "^8.4.30",
+    "postcss-loader": "^7.3.3",
+    "tailwindcss": "^3.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   },
+  "main": "./src/app.js",
   "scripts": {
-    "start": "npx tailwindcss -i ./src/base/assets/input.css -o ./public/assets/css/output.css --watch"
+    "watch": "webpack --watch",
+    "build": "webpack"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
+    "style-loader": "^3.3.3",
     "tailwind-fontawesome": "^0.5.0"
   }
 }
