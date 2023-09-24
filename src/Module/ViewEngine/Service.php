@@ -19,6 +19,7 @@ class Service
     protected $localeEngine;
     protected $globals = [];
     protected $initialize = false;
+    protected $variables = [];
 
     function setBox(?Box $box)
     {
@@ -64,8 +65,15 @@ class Service
     }
 
 
-    function render($fileName)
+    public function getVariables() {
+        return $this->variables;
+    }
+
+
+    function render($fileName, $vars = [])
     {
+
+        $this->variables = array_merge($this->variables, $vars);
 
         return ltrim($fileName, "/");
     }

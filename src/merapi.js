@@ -74,7 +74,6 @@ function getRequest(url) {
         processData: false,
         contentType: false,
         cache: false,
-        success: callback
     })
 
     return ajax;

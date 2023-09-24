@@ -15,3 +15,15 @@ if (_mod) {
         require('./Module/' + _mod[i] + "/Assets/app.js");
     }
 }
+
+$(document).on('DOMContentLoaded', function () {
+
+    $('[onload]').each(function () {
+        const $this = $(this);
+        try {
+            eval($this.attr('onload'));
+        } catch (e) {
+            console.error(e);
+        }
+    });
+})

@@ -2,6 +2,11 @@
 {% block header_title %}Template{% endblock %}
 
 
+{% block head_javascripts %}
+<script src="{{ '@template/dist/main.bundle.js' | assets }}"></script>
+{% endblock %}
+
+
 {% block subheader_actions %}
 <a href="{{ 'template/create' | admin_url }}"
     class="ms-auto bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
@@ -9,9 +14,34 @@
 </a>
 {% endblock %}
 
+
+{% set templates = admin.template_all_template %}
 {% block content %}
 
-<div>
-    <div id="gjs"></div>
+<div class="grid md:grid-cols-3 sm:grid-cols-1 gap-4">
+
+    {% for template in templates %}
+    <div class="relative z-10 w-full shadow hover:shadow-blue-400 border-gray-200 bg-white rounded">
+
+        <canvas class="w-full" width="600" height="400" id="{{ template.id }}" onload="drawView('{{ template.id }}')"></canvas>
+        <div class="px-6 py-2">
+            <h1 class="title-font text-lg font-medium text-blue-600 mb-3">{{ template.name }}</h1>
+            <p class="leading-relaxed">{{ template.description }}</p>
+            <small>{{ template.id }}</small>
+        </div>
+    </div>
+    {% endfor %}
+
 </div>
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    function drawView(id) {
+        const url = "{{ '/template/view/' | admin_url }}" + id;
+        merapi.renderTemplate(url, id);
+    }
+</script>
 {% endblock %}

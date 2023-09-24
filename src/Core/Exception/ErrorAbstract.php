@@ -56,7 +56,7 @@ abstract class ErrorAbstract extends Exception
         $this->message = $message;
     }
 
-    public function setCode(int $code)
+    public function setCode(mixed $code)
     {
         $this->code = $code;
     }

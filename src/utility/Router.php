@@ -229,7 +229,8 @@ class Router extends Component
         if (strlen($route) > 1 && substr($route, -1) !== "/") $route .= "/";
 
         $pattern = preg_replace('/\//', '\/', $route);
-        $pattern = '/^' . preg_replace('/\{(.?)\}/', '(.?)', $pattern) . '$/';
+        $pattern = '/^' . preg_replace('/\{(.+?)\}/', '(.+?)', $pattern) . '$/';
+
         // Use preg_match to check if the path matches the pattern
         preg_match($pattern, $path, $matches);
 
@@ -260,7 +261,7 @@ class Router extends Component
 
         $pattern = preg_replace('/\//', '\/', $route);
 
-        $pattern = '/^' . preg_replace('/\{(.?)\}/', '(.?)', $pattern) . '$/';
+        $pattern = '/^' . preg_replace('/\{(.+?)\}/', '(.+?)', $pattern) . '$/';
 
         // Use preg_match to check if the path matches the pattern
         preg_match($pattern, $path, $matches);
@@ -271,6 +272,7 @@ class Router extends Component
         // Get the parameter names from the route
         preg_match_all('/\{([a-zA-Z0-9_\/.]+)\}/', $route, $paramNames);
         $paramNames = $paramNames[1];
+
 
         // Combine the parameter names with the matched values
         $routeParams = array_combine($paramNames, $matches);
@@ -366,8 +368,9 @@ class Router extends Component
 
                 $file = "@$zone>$module" . "/" . ltrim($retrun, "\/");
                 $template = $view->load($file);
-                $content = $template->render([]);
+                $content = $template->render($view->getVariables());
                 $response->setContent($content);
+
             } else {
 
                 /**
@@ -376,7 +379,7 @@ class Router extends Component
                  * - data
                  */
 
-                $content = ["code" => 200, "message" => null, "data" => null];
+                $content = ["code" => 304, "message" => "No change", "data" => null];
                 $response->setHeader('Content-Type', 'application/json');
                 $result  = $controllerInstance->$method($request);
 
@@ -385,7 +388,8 @@ class Router extends Component
                     $content["code"]    = isset($result['code']) ? $result['code'] : null;
                     $content["message"] = isset($result['message']) ? $result['message'] : null;
                     $content["data"]    = isset($result['data']) ? $result['data'] : null;
-                } else {
+
+                } elseif (is_string($result)) {
 
                     $json = json_decode($result, true);
 
@@ -394,17 +398,19 @@ class Router extends Component
                         $content["code"]    = isset($json['code']) ? $json['code'] : null;
                         $content["message"] = isset($json['message']) ? $json['message'] : null;
                         $content["data"]    = isset($json['data']) ? $json['data'] : null;
+                        
                     } else {
 
                         $content["code"]    = 200;
                         $content["message"] = $result;
                         $content["data"]    = null;
                     }
-                }
+                } 
 
                 header('HTTP/1.1 ' . $content["code"] . ' ' . $content["message"]);
 
                 $response->setContent($content);
+
             }
 
             return $response;

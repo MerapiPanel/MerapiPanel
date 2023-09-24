@@ -4,9 +4,12 @@ const LodashModule = require("lodash-webpack-plugin");
 
 module.exports = {
     mode: 'development', // production
-    entry: './index.js',
+    entry: {
+        main: './index.js',
+        editor: './editor.js',
+    },
     output: {
-        path: path.resolve(__dirname, 'assets/dist'),
+        path: path.resolve(__dirname, 'dist'),
         filename: '[name].bundle.js',
     },
     plugins: [
