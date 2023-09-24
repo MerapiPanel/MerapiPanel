@@ -13,9 +13,9 @@
             <div class="py-3">
                 <label class="w-full" for="session_expired">Select Duration</label>
                 <select class="text-input" name="session_expired" id="session_expired">
-                    <option value="1" {{ settings.session_expired == 1 ? 'selected' : '' }}>only 24 hours</option>
-                    <option value="2" {{ settings.session_expired == 2 ? 'selected' : '' }}>one week</option>
-                    <option value="3" {{ settings.session_expired == 3 ? 'selected' : '' }}>one month</option>
+                    <option value="1" {{ settings.session_expired==1 ? 'selected' : '' }}>only 24 hours</option>
+                    <option value="2" {{ settings.session_expired==2 ? 'selected' : '' }}>one week</option>
+                    <option value="3" {{ settings.session_expired==3 ? 'selected' : '' }}>one month</option>
                 </select>
                 <small class="text-yellow-600 opacity-50"><i>for a security reason you should set the session expired
                         duration in 24 hours</i></small>
@@ -46,18 +46,30 @@
     </div>
 </form>
 {% endblock %}
+
 {% block javascripts %}
 {{ parent() }}
+
 <script type="text/javascript">
+
     $(document).ready(function () {
+
         $('form').on('submit', function (e) {
+
             e.preventDefault();
             let data = new FormData(e.currentTarget);
-            merapi.post('', data,
-                (data) => {
 
-                    merapi.toast(data.response.message, 5, 'success');
-                })
+            merapi.post('', data).then((result) => {
+
+                if (result.code == 200) {
+                    merapi.toast(result.message, 5, 'text-success');
+                } else throw new Error(result.message, result.code);
+
+            }).catch((err) => {
+
+                merapi.toast(err.merapi ? err.merapi.message : err, 5, 'text-danger');
+
+            });
         })
     })
 </script>

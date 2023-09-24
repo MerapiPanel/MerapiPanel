@@ -65,9 +65,9 @@ function getCookie(cname) {
 }
 
 
-function getRequest(url, callback) {
+function getRequest(url) {
 
-    $.ajax({
+    var ajax = $.ajax({
         xhr: createXmlHttpRequest,
         url: url,
         method: 'GET',
@@ -76,11 +76,13 @@ function getRequest(url, callback) {
         cache: false,
         success: callback
     })
+
+    return ajax;
 }
 
-function postRequest(url, data, callback) {
+function postRequest(url, data) {
 
-    $.ajax({
+    return $.ajax({
         xhr: createXmlHttpRequest,
         url: url,
         method: 'POST',
@@ -88,7 +90,14 @@ function postRequest(url, data, callback) {
         processData: false,
         contentType: false,
         cache: false,
-        success: callback
+        error: (e) => {
+
+            if (e.responseJSON && e.responseJSON.message) {
+                Toast.create(e.responseJSON.message, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
+            } else {
+                Toast.create(e.responseText, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
+            }
+        }
     })
 }
 
@@ -103,7 +112,6 @@ Toast.create = function (text = "", textColor = "#0000ff45", seconds = 3) {
     let max = 5;
     let posY = 100;
     let toast = $(`<toast style='background: white;
-                                color: ${textColor};
                                  width: 100%;
                                  transition: 0.25s;
                                  max-width: 350px;
@@ -114,6 +122,12 @@ Toast.create = function (text = "", textColor = "#0000ff45", seconds = 3) {
                                  right: -3000px;
                                  border-radius: 0.3rem;
                                  z-index: 900;'>`)
+
+    if(/\-/g.test(textColor)) {
+        toast.addClass(textColor);
+    } else {
+        toast.css("color", textColor);
+    }
     let icon = $(`<icon style='display: inline-flex;
                                border: 1px solid;
                                border-radius: 5rem;

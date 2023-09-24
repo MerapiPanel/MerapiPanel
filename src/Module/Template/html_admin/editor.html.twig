@@ -1,9 +1,22 @@
 {% extends "@admin>panel/base.html.twig" %}
-{% block header %}{% endblock %}
-{% block subheader %}{% endblock %}
 
+{% block head_javascripts %}
+<script src="{{ '@template/Assets/dist/main.bundle.js' | assets }}"></script>
+{% endblock %}
 {% block stylesheets %}
 <link rel="stylesheet" href="//unpkg.com/grapesjs/dist/css/grapes.min.css">
+<style>
+    .gjs-pn-active {
+        color: rgb(59 130 246);
+    }
+
+    .small-modal .gjs-mdl-dialog {
+        max-width: 500px;
+    }
+    .gjs-one-bg {
+        background-color: #384246;
+    }
+</style>
 {% endblock %}
 
 

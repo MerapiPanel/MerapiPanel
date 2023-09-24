@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\Settings\Controller;
+namespace MerapiPanel\Module\Setting\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
 
@@ -45,7 +45,10 @@ class Admin extends Module
         $_BODY = $request->getRequestBody();
 
         if (!isset($_BODY['website_name']) || empty($_BODY['website_name'])) {
-            return "Website name is required";
+            return [
+                "code" => 400,
+                "message" => "Website name is required",
+            ];
         }
 
         $setting['website_name'] = $_BODY['website_name'];
@@ -54,11 +57,8 @@ class Admin extends Module
         $setting['website_date_format'] = $_BODY['website_date_format'] ?? "";
 
         return [
-            "status" => 200,
-            "response" => [
-                "message" => "Settings updated successfully",
-                'code' => 2
-            ]
+            "code" => 200,
+            "message" => "Settings updated successfully",
         ];
     }
 }

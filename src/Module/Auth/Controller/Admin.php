@@ -32,25 +32,23 @@ class Admin extends Module
         return $view->render("index.html.twig");
     }
 
-    function UpdateSetting(Request $data) {
+    function UpdateSetting(Request $data)
+    {
 
         $settings = $this->service()->getSetting();
 
         $body = $data->getRequestBody();
 
-        if(isset($body['session_name'])) {
+        if (isset($body['session_name'])) {
             $settings['session_name'] = $body['session_name'];
         }
-        if(isset($body['session_expired'])) {
+        if (isset($body['session_expired'])) {
             $settings['session_expired'] = $body['session_expired'];
         }
 
         return [
-            "status" => 200,
-            "response" => [
-                "message" => "Settings updated successfully",
-                'code' => 2
-            ],
+            "message" => "Settings updated successfully",
+            'code' => 200
         ];
     }
 }

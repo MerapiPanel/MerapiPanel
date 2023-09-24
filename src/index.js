@@ -1,6 +1,6 @@
-import './app.css';;
-import './base/assets/fontawesome/css/all.min.css';
-import $ from 'jquery';
+require('./app.css')
+require('./base/assets/fontawesome/css/all.min.css');
+const $ = require('jquery');
 import merapi from './merapi';
 
 window.$ = $;
@@ -12,6 +12,6 @@ merapi.setCookie('_module', '', -1);
 if (_mod) {
     _mod = JSON.parse(_mod);
     for (let i in _mod) {
-        require('./Module/' + _mod[i] + "/app.js");
+        require('./Module/' + _mod[i] + "/Assets/app.js");
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\Settings;
+namespace MerapiPanel\Module\Setting;
 
 use MerapiPanel\Core\Abstract\Module;
 

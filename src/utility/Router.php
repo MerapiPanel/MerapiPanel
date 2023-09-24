@@ -368,21 +368,41 @@ class Router extends Component
                 $template = $view->load($file);
                 $content = $template->render([]);
                 $response->setContent($content);
-                
             } else {
 
-                $content = ["status" => 200, "response" => null];
+                /**
+                 * - code
+                 * - message
+                 * - data
+                 */
+
+                $content = ["code" => 200, "message" => null, "data" => null];
                 $response->setHeader('Content-Type', 'application/json');
-                $result = $controllerInstance->$method($request);
+                $result  = $controllerInstance->$method($request);
 
                 if (is_array($result)) {
 
-                    $content["response"] = isset($result['response']) ? $result['response'] : null;
-                    $content["status"] = isset($result['status']) ? $result['status'] : 200;
+                    $content["code"]    = isset($result['code']) ? $result['code'] : null;
+                    $content["message"] = isset($result['message']) ? $result['message'] : null;
+                    $content["data"]    = isset($result['data']) ? $result['data'] : null;
                 } else {
 
-                    $content["response"] = $result;
+                    $json = json_decode($result, true);
+
+                    if (json_last_error() === JSON_ERROR_NONE) {
+
+                        $content["code"]    = isset($json['code']) ? $json['code'] : null;
+                        $content["message"] = isset($json['message']) ? $json['message'] : null;
+                        $content["data"]    = isset($json['data']) ? $json['data'] : null;
+                    } else {
+
+                        $content["code"]    = 200;
+                        $content["message"] = $result;
+                        $content["data"]    = null;
+                    }
                 }
+
+                header('HTTP/1.1 ' . $content["code"] . ' ' . $content["message"]);
 
                 $response->setContent($content);
             }

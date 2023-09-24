@@ -5,10 +5,10 @@
 	<title>{% block page_title %}Merapi panel{% endblock %}</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	{% block meta %}{% endblock %}
 	{% block stylesheets %}{% endblock %}
-
 	<script src="/dist/main.bundle.js"></script>
+	{% block head_javascripts %}{% endblock %}
 </head>
 {% block body %}
 
@@ -26,13 +26,7 @@
 	</main>
 	{% endblock %}
 
-	{% block javascripts %}
-	<script></script>
-	{% endblock %}
-
+	{% block javascripts %}{% endblock %}
 </body>
 {% endblock %}
-
-
-
 </html>

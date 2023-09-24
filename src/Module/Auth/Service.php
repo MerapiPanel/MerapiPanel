@@ -9,9 +9,6 @@ class Service extends Module
 
     const COOKIE_KEY = "auth";
 
-
-    
-
     public function isAdmin()
     {
 

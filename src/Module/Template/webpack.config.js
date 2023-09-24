@@ -2,19 +2,18 @@ const path = require('path')
 const webpack = require('webpack')
 const LodashModule = require("lodash-webpack-plugin");
 
-
 module.exports = {
-    mode: 'development',
-    entry: './src/index.js',
+    mode: 'development', // production
+    entry: './index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'assets/dist'),
         filename: '[name].bundle.js',
     },
     plugins: [
         new webpack.ProvidePlugin({
             $: "jquery",
             jquery: "jQuery",
-            "window.jQuery": "jquery" 
+            "window.jQuery": "jquery"
         }),
         new LodashModule()
     ],
