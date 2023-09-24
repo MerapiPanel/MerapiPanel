@@ -100,6 +100,175 @@ function postRequest(url, data) {
     })
 }
 
+
+
+function createModal(title, content, action = {
+    positive: {
+        text: 'Ok',
+        class: 'btn btn-primary',
+        callback: null
+    },
+    negative: {
+        text: 'Close',
+        class: 'btn btn-secondary',
+        callback: null
+    }
+}) {
+
+    const element = $(
+        `<div class='modal' style='display: none;'>
+            <div class='modal-dialog'>
+                <div class='modal-header'>
+                    <h5 class='modal-title'>${title}</h5>
+                    <button type='button' class='btn-close'><i class='fa-solid fa-xmark'></i></button>
+                </div>
+                <div class='modal-content'></div>
+                <div class='modal-footer'>
+                    <button data-modal-act='negative' type='button' class='btn btn-secondary'>Close</button>
+                    <button data-modal-act='positive' type='button' class='btn btn-primary'>Save changes</button>
+                </div>
+            </div>
+        </div>`);
+
+    const dialog = element.find('.modal-dialog');
+    const header = element.find('.modal-header');
+    const footer = element.find('.modal-footer');
+    const body = element.find('.modal-content');
+    const close = element.find('.btn-close');
+    const btnPositive = element.find('[data-modal-act="positive"]');
+    const btnNegative = element.find('[data-modal-act="negative"]');
+
+    body.append(content);
+
+    if (!action.positive) {
+        btnPositive.remove();
+    } else {
+        btnPositive.text(action.positive.text);
+        btnPositive.addClass(action.positive.class);
+        btnPositive.on('click', () => {
+            if (action.positive.callback) {
+                action.positive.callback();
+            } else {
+                modal.hide();
+            }
+        })
+    }
+
+    if (!action.negative) {
+        btnNegative.remove();
+    } else {
+        btnNegative.text(action.negative.text);
+        btnNegative.addClass(action.negative.class);
+        btnNegative.on('click', () => {
+            if (action.negative.callback) {
+                action.negative.callback();
+            } else {
+                modal.hide();
+            }
+        })
+    }
+
+    close.on('click', () => {
+        modal.hide();
+    });
+
+    $(document.body).append(element);
+
+    function show() {
+        element.fadeIn();
+        $(document).trigger("modal:show");
+    }
+    function hide() {
+        element.fadeOut({
+            complete: () => {
+                element.remove();
+                $(document).trigger("modal:hide");
+            }
+        });
+    }
+    /**
+     * Sets the action for the given type of button.
+     *
+     * @param {string} act - The type of button action ('positive' or 'negative')
+     * @param {Object} [opt] - Optional settings for the button
+     * @param {string} [opt.text] - The text to display on the button
+     * @param {string} [opt.class] - The CSS class to apply to the button
+     * @param {function} [opt.callback] - The callback function to execute when the button is clicked
+     */
+    function setAction(act, opt = {
+        text: null,
+        class: null,
+        callback: null
+    }) {
+        if (act == 'positive' || act == '+') {
+
+            btnPositive.text(opt.text ?? btnPositive.text());
+            btnPositive.addClass(opt.class ?? btnPositive.attr('class'));
+            btnPositive.on('click', () => {
+                if (opt.callback) {
+                    opt.callback();
+                } else {
+                    modal.hide();
+                }
+            })
+        } else if (act == 'negative' || act == '-') {
+            btnNegative.text(opt.text ?? btnNegative.text());
+            btnNegative.addClass(opt.class ?? btnNegative.attr('class'));
+            btnNegative.on('click', () => {
+                if (opt.callback) {
+                    opt.callback();
+                } else {
+                    modal.hide();
+                }
+            })
+        } else throw new Error('Invalid action');
+    }
+
+    /**
+     * Sets the title of the modal header.
+     *
+     * @param {string} title - The title to be set.
+     * @return {void} This function does not return a value.
+     */
+    function setTitle(title) {
+        if (header.find('h5')) {
+            header.find('h5').text(title);
+        } else {
+            header.prepend(`<h5 class='modal-title'>${title}</h5>`);
+        }
+    }
+    /**
+     * Sets the content of the body element.
+     *
+     * @param {string} content - The new content to be set.
+     */
+    function setContent(content) {
+        body.html(content);
+    }
+
+    const modal = {
+        container: {
+            element: element,
+            dialog: dialog,
+            header: header,
+            body: body,
+            footer: footer,
+            action: {
+                positive: btnPositive,
+                negative: btnNegative
+            }
+        },
+        show: show,
+        hide: hide,
+        setAction: setAction,
+        setTitle: setTitle,
+        setContent: setContent
+    }
+
+    return modal;
+}
+
+
 const Toast = {};
 Toast.enable = true;
 Toast.create = function (text = "", textColor = "#0000ff45", seconds = 3) {
@@ -122,7 +291,7 @@ Toast.create = function (text = "", textColor = "#0000ff45", seconds = 3) {
                                  border-radius: 0.3rem;
                                  z-index: 900;'>`)
 
-    if(/\-/g.test(textColor)) {
+    if (/\-/g.test(textColor)) {
         toast.addClass(textColor);
     } else {
         toast.css("color", textColor);
@@ -214,5 +383,6 @@ Merapi.post = (url, data, callback) => postRequest(url, data, callback);
 Merapi.toast = (text, seconds = 3, textColor = "#0000ff45") => Toast.create(text, textColor, seconds)
 Merapi.setCookie = (name, value, exdays) => setCookie(name, value, exdays)
 Merapi.getCookie = (name) => getCookie(name)
+Merapi.createModal = (title, content, action) => createModal(title, content, action);
 
 export default Merapi;
