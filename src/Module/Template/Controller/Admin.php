@@ -4,7 +4,6 @@ namespace MerapiPanel\Module\Template\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Module\Template\Custom\Extension;
 use MerapiPanel\Module\Template\Custom\TemplateFunction;
 use MerapiPanel\Utility\Http\Request;
 
@@ -12,7 +11,6 @@ class Admin extends Module
 {
 
     protected $box;
-
 
     function setBox(Box $box)
     {
@@ -27,7 +25,15 @@ class Admin extends Module
         $router->get("/template/view/{id}/", "viewTemplate", self::class);
         $router->get("/template/edit/{id}/", "editTemplate", self::class);
         $router->get("/template/create", "createNewTemplate", self::class);
+
         $router->post("/template/save", "saveTemplate", self::class);
+
+        $router->delete("/template/delete/", "deleteTemplate", self::class);
+
+
+        /**
+         * Register menu component
+         */
         $route = $router->get("/template", "index", self::class);
         $panel = $this->box->Module_Panel();
         $panel->addMenu([
@@ -40,17 +46,19 @@ class Admin extends Module
     }
 
 
+
     public function index($view)
     {
         return $view->render("index.html.twig");
     }
 
 
+
     public function createNewTemplate($view)
     {
-
         return $view->render("editor.html.twig");
     }
+
 
 
     public function viewTemplate($view, Request $request)
@@ -65,6 +73,7 @@ class Admin extends Module
     }
 
 
+
     public function editTemplate($view, $request)
     {
         $id = $request->getParam("id");
@@ -74,6 +83,8 @@ class Admin extends Module
             "template" => $service->getTemplate($id)
         ]);
     }
+
+
 
     public function saveTemplate(Request $request)
     {
@@ -127,6 +138,7 @@ class Admin extends Module
     }
 
 
+
     function updateTemplate($opt = [
         "id" => "",
         "name" => "",
@@ -139,7 +151,7 @@ class Admin extends Module
         $service = $this->service();
         $update = $service->updateTemplate($opt['id'], $opt['name'], $opt['description'], $opt['htmldata'], $opt['cssdata']);
 
-        if($update) {
+        if ($update) {
             return [
                 "code" => 200,
                 "message" => "Template updated successfully",
@@ -153,6 +165,28 @@ class Admin extends Module
             return [
                 "code" => 400,
                 "message" => "Error updating template"
+            ];
+        }
+    }
+
+
+
+
+    function deleteTemplate($request)
+    {
+
+        $BODY = $request->getRequestBody();
+        $id = $BODY['id'];
+
+        if(!$this->service()->deleteTemplate($id)){
+            return [
+                "code" => 400,
+                "message" => "Error deleting template"
+            ];
+        } else {
+            return [
+                "code" => 200,
+                "message" => "Template deleted successfully",
             ];
         }
     }

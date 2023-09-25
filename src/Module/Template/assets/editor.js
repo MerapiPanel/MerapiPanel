@@ -14,7 +14,7 @@ function templateEditor(options = {
     assets: {
         url: null,
         name: null,
-        upload: null 
+        upload: null
     }
 }) {
 
@@ -45,6 +45,7 @@ function templateEditor(options = {
             transform: 'translate(-50%, -50%)',
             fontSize: '2rem',
             fontWeight: 'bold',
+            textAlign: 'center'
         });
         return;
     }
@@ -60,11 +61,17 @@ function templateEditor(options = {
         container: '#gjs',
         height: '100vh',
         plugins: [tailwind, gjsBasic, gjsForms],
+
         pluginsOpts: {
             [gjsBasic]: { /* options */ },
             [gjsForms]: { /* options */ },
             [tailwind]: {}
         },
+
+        storageManager: {
+            autoload: false
+        },
+
         assetManager: {
             upload: 'https://endpoint/upload/assets',
             uploadName: 'files',
@@ -89,10 +96,12 @@ function templateEditor(options = {
     am.clear();
     $.get(options.assets.url, function (e) {
         if (e.data) {
-            let assets = e.data.map(function (item) { return {
-                src: item.path,
-                category: item.parent
-            } })
+            let assets = e.data.map(function (item) {
+                return {
+                    src: item.path,
+                    category: item.parent
+                }
+            })
             am.add(assets);
         }
     })
@@ -102,19 +111,19 @@ function templateEditor(options = {
 
     // The upload is started
     editor.on('asset:upload:start', () => {
-       
+
         console.log('start');
     });
 
     // The upload is ended (completed or not)
     editor.on('asset:upload:end', () => {
-        
+
         console.log('end');
     });
 
     // Error handling
     editor.on('asset:upload:error', (err) => {
-        
+
         console.log(err);
     });
 
@@ -123,7 +132,6 @@ function templateEditor(options = {
 
         console.log(response);
     });
-
 
     /**
      * Panels action button
@@ -179,6 +187,35 @@ function templateEditor(options = {
                 editor.CssComposer.clear();  // Clear styles
                 editor.UndoManager.clear();
                 merapi.toast('Template Cleared', 5, 'text-success');
+            })
+        }
+    })
+
+    editor.Commands.add('confirm-modal', {
+        run: function (editor, sender, options = {
+            title: null,
+            text: null,
+            callback: null
+        }) {
+
+            const content = $(
+                `<div class='py-4'>
+                    <div class='mb-3'>
+                        <p>${options.text}</p>
+                    </div>
+                    <div class='flex'>
+                        <button class='ms-auto btn btn-primary'>Yes</button>
+                    </div>
+                </div>`);
+
+            modal.open({
+                title: "<h4 class='text-xl font-bold'>" + options.title + "</h4>",
+                content: content.get(0),
+                attributes: { class: 'small-modal', style: 'backdrop-filter: blur(3px);' },
+            });
+            content.find('.btn-primary').on('click', function () {
+                modal.close();
+                options.callback(modal);
             })
         }
     })
@@ -240,7 +277,6 @@ function templateEditor(options = {
     editor.Commands.add('commsave', {
         run: function (editor, sender, options = {}) {
 
-
             if (!template_save) {
 
                 merapi.toast('Save endpoint is not defined', 5, 'text-warning');
@@ -282,6 +318,8 @@ function templateEditor(options = {
                     template_id = data.data.id;
                     merapi.toast(data.message, 5, 'text-success');
 
+                    window.localStorage.removeItem('gjsProject');
+
                 } else throw new Error(textStatus, xhr.status);
 
             }).catch(function (error) {
@@ -289,6 +327,29 @@ function templateEditor(options = {
                 merapi.toast(error.message ?? error, 5, 'text-warning');
             })
         }
+    });
+
+
+    /**
+   * Storage Manager
+   */
+    if (window.localStorage.getItem('gjsProject') && template_id == null) {
+
+        setTimeout(() => {
+
+            editor.runCommand('confirm-modal', {
+                title: 'Load last progress?',
+                text: "Do you want to load last progress?",
+                callback: () => {
+                    editor.loadProjectData(JSON.parse(window.localStorage.getItem('gjsProject')));
+                    merapi.toast('Last progress loaded', 5, 'text-success');
+                }
+            })
+        }, 500);
+    }
+
+    $(window).on('beforeunload', function () {
+        return 'Are you sure you want to leave?';
     });
 }
 

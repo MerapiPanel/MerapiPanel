@@ -65,43 +65,6 @@ function getCookie(cname) {
 }
 
 
-function getRequest(url) {
-
-    var ajax = $.ajax({
-        xhr: createXmlHttpRequest,
-        url: url,
-        method: 'GET',
-        processData: false,
-        contentType: false,
-        cache: false,
-    })
-
-    return ajax;
-}
-
-function postRequest(url, data) {
-
-    return $.ajax({
-        xhr: createXmlHttpRequest,
-        url: url,
-        method: 'POST',
-        data: data,
-        processData: false,
-        contentType: false,
-        cache: false,
-        error: (e) => {
-
-            if (e.responseJSON && e.responseJSON.message) {
-                Toast.create(e.responseJSON.message, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
-            } else {
-                Toast.create(e.responseText, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
-            }
-        }
-    })
-}
-
-
-
 function createModal(title, content, action = {
     positive: {
         text: 'Ok',
@@ -268,7 +231,6 @@ function createModal(title, content, action = {
     return modal;
 }
 
-
 const Toast = {};
 Toast.enable = true;
 Toast.create = function (text = "", textColor = "#0000ff45", seconds = 3) {
@@ -377,9 +339,69 @@ Toast.control = function () {
 }
 
 
+function getRequest(url) {
+
+    return $.ajax({
+        xhr: createXmlHttpRequest,
+        url: url,
+        method: 'GET',
+        processData: false,
+        contentType: false,
+        cache: false
+    })
+}
+
+function postRequest(url, data) {
+
+    return $.ajax({
+        xhr: createXmlHttpRequest,
+        url: url,
+        method: 'POST',
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false
+    })
+}
+
+function deleteRequest(url, props = {}) {
+
+    const form = new FormData();
+
+    if (typeof props === 'object') {
+        Object.keys(props).forEach((key) => {
+            form.append(key, props[key]);
+        })
+    }
+
+    return $.ajax({
+        xhr: createXmlHttpRequest,
+        url: url,
+        method: 'DELETE',
+        processData: false,
+        contentType: false,
+        cache: false,
+        data: form || {},
+    })
+}
+
+$.ajax({
+    error: (e) => {
+        if (e.responseJSON && e.responseJSON.message) {
+            Toast.create(e.responseJSON.message, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
+        } else {
+            Toast.create(e.statusText || e.responseText, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
+        }
+    }
+})
+
+
 const Merapi = {};
-Merapi.get = (url, callback) => getRequest(url, callback);
-Merapi.post = (url, data, callback) => postRequest(url, data, callback);
+
+Merapi.get = getRequest;
+Merapi.post = postRequest;
+Merapi.delete = deleteRequest;
+
 Merapi.toast = (text, seconds = 3, textColor = "#0000ff45") => Toast.create(text, textColor, seconds)
 Merapi.setCookie = (name, value, exdays) => setCookie(name, value, exdays)
 Merapi.getCookie = (name) => getCookie(name)

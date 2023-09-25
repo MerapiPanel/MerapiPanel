@@ -11,7 +11,7 @@ class Service extends Module
 {
 
 
-    public function getTemplate($id) 
+    public function getTemplate($id)
     {
         $db = $this->getDatabase();
         $this->checkTable($db);
@@ -87,16 +87,15 @@ class Service extends Module
             'id' => $id,
             'name' => $name,
             'description' => $description
-        ])){
+        ])) {
 
             throw new Exception("Error updating template", 500);
-        } 
+        }
 
         $save_path = __DIR__ . "/Contents/" . $id;
 
         if (!file_exists($save_path)) {
             mkdir($save_path);
-
         }
 
         file_put_contents($save_path . "/index.html", $html);
@@ -106,6 +105,45 @@ class Service extends Module
     }
 
 
+
+    function deleteTemplate($id)
+    {
+
+        $db = $this->getDatabase();
+        $this->checkTable($db);
+
+        $SQL = "DELETE FROM `template` WHERE `id` = :id";
+        $db->runQuery($SQL, [
+            'id' => $id
+        ]);
+
+        $folder_content = __DIR__ . "/Contents/" . $id;
+        return $this->deleteDirectory($folder_content);
+    }
+
+
+    function deleteDirectory($dir)
+    {
+        if (!file_exists($dir)) {
+            return true;
+        }
+
+        if (!is_dir($dir)) {
+            return unlink($dir);
+        }
+
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+
+            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+                return false;
+            }
+        }
+
+        return rmdir($dir);
+    }
 
 
     private function checkTable(Database $db)

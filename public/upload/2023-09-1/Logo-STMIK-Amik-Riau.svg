@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg132"
+   width="872"
+   height="1170.6667"
+   viewBox="0 0 872 1170.6667"
+   sodipodi:docname="Logo-STMIK-Amik-Riau.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs136">
+    <linearGradient
+       id="linearGradient7543">
+      <stop
+         style="stop-color:#eb693a;stop-opacity:0.3222222;"
+         offset="0"
+         id="stop7547" />
+      <stop
+         style="stop-color:#eb693a;stop-opacity:1;"
+         offset="1"
+         id="stop7549" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient7543-1">
+      <stop
+         style="stop-color:#eb693a;stop-opacity:0.68888891;"
+         offset="0"
+         id="stop7539" />
+      <stop
+         style="stop-color:#eb693a;stop-opacity:1;"
+         offset="0.49705887"
+         id="stop7541" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6572"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#87927f;stop-opacity:1;"
+         offset="0"
+         id="stop6570" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7543-1"
+       id="radialGradient7545"
+       cx="215.09239"
+       cy="222.14461"
+       fx="215.09239"
+       fy="222.14461"
+       r="178.77351"
+       gradientTransform="matrix(1,0,0,1.0315582,-2,-9.0104791)"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview134"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="0.35368524"
+     inkscape:cx="21.205295"
+     inkscape:cy="445.3112"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer2" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Items"
+     style="display:inline">
+    <g
+       id="g7527"
+       inkscape:export-filename="LogoStmik.svg"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <ellipse
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#30348e;stroke-width:9.96189;stroke-dasharray:none;stroke-opacity:1"
+         id="path6628"
+         cx="434.44861"
+         cy="435.035"
+         rx="395.01904"
+         ry="395.01907" />
+      <path
+         id="rect1324"
+         style="display:inline;opacity:1;fill:#2e338d;fill-opacity:1;stroke:none;stroke-width:8.315;stroke-dasharray:none"
+         d="m 128.03692,505.61864 c 52.61382,-36.81691 116.8986,-56.12638 179.74503,-69.31821 72.08535,-15.13112 147.36664,-16.57588 220.73783,-10.10167 64.39669,5.68232 133.19578,18.64163 189.19171,42.65549 -2.06063,1.56485 -80.12828,-19.52844 -121.06634,-22.55716 -68.94259,-5.10058 -139.36464,-5.46874 -207.2548,7.57052 -51.02759,9.80058 -102.86808,24.67939 -146.80091,52.42419 -40.12554,25.3404 -82.35803,56.7838 -100.85662,100.48732 -10.0791,23.81221 -11.36714,53.85364 -1.05372,77.56529 22.64717,52.06824 126.17269,114.43958 126.17269,114.43958 0,0 -89.45479,-23.37097 -129.02798,-46.19322 -32.62104,-18.81288 -69.214538,-39.394 -86.227032,-72.98912 -12.087961,-23.87048 -14.072295,-54.71612 -5.546551,-80.07811 13.240488,-39.38719 47.941177,-70.0813 81.986693,-93.9049 z"
+         sodipodi:nodetypes="aaacaaaaacaaaa" />
+      <path
+         id="rect1324-7"
+         style="display:inline;opacity:1;fill:#4bb03f;fill-opacity:1;stroke:none;stroke-width:8.315;stroke-dasharray:none"
+         d="M 493.22668,82.498612 C 440.23805,122.3002 405.31049,184.04041 377.62937,244.25434 c -26.0621,56.69213 -36.70571,119.88625 -44.73461,181.76328 -7.11777,54.85513 -5.90145,110.69486 -2.77961,165.92168 1.90284,33.66227 6.12179,67.30861 13.08071,100.29865 6.41102,30.3926 15.57869,60.24322 26.29772,89.39651 4.80152,13.05902 16.96605,38.13774 16.96605,38.13774 0,0 -18.24242,-54.54933 -23.62385,-82.71347 -7.83887,-41.0253 -13.14488,-82.92263 -12.43364,-124.68406 0.59652,-35.02537 2.21741,-78.43019 7.73172,-117.1872 4.47324,-31.43986 11.30248,-62.64162 20.49107,-93.03972 8.45456,-27.96971 18.87527,-55.47385 31.72383,-81.71692 9.43685,-19.27465 20.26097,-38.02795 33.11662,-55.21221 17.732,-23.7025 36.29618,-47.80724 60.16064,-65.32065 28.42351,-20.85917 60.70777,-40.78079 95.70792,-45.02221 38.50356,-4.66597 81.00323,2.67717 114.07072,22.94628 45.72805,28.02956 99.85837,126.16937 99.85837,126.16937 0,0 -16.43464,-64.52188 -31.28987,-94.02428 C 757.671,161.70316 731.92761,109.9158 688.88287,77.248437 663.4837,57.972589 630.56387,45.434261 598.67851,45.41672 561.41794,45.39622 523.01891,60.120643 493.22668,82.498612 Z"
+         sodipodi:nodetypes="aaaaaacasaaaaaaacaaaa" />
+      <path
+         id="rect1426"
+         style="opacity:1;fill:url(#radialGradient7545);fill-opacity:1;stroke-width:8.315"
+         d="m 391.8659,35.729322 c 0,0 -31.68286,26.133365 -43.68185,42.537031 -20.28921,27.737127 -34.19213,59.969367 -46.17689,92.177537 -12.64364,33.97888 -20.8525,69.65633 -26.7028,105.43622 -2.85197,17.44237 -4.03124,51.79843 -4.03124,52.86852 0,1.4479 -77.18216,7.34575 -114.48895,17.22398 -33.88693,8.9727 -67.982063,19.94731 -98.109489,37.86856 -9.160505,5.44912 -24.355796,20.7187 -24.355796,20.7187 0,0 4.443318,-41.75452 9.558149,-62.04565 7.986883,-31.68489 18.076878,-63.20438 32.784189,-92.38343 14.481359,-28.73077 32.299917,-56.22988 53.920317,-80.05687 28.52293,-31.43401 61.92618,-59.03549 98.22774,-81.032099 28.97177,-17.555186 61.2269,-29.619597 93.61252,-39.555372 22.56004,-6.921328 69.4441,-13.757127 69.4441,-13.757127 z"
+         sodipodi:nodetypes="caaasaacaaaaac" />
+    </g>
+  </g>
+</svg>
