@@ -5,40 +5,141 @@ import tailwind from 'grapesjs-tailwind';
 import $ from "jquery";
 import merapi from '../../merapi';
 
-$(document).on('DOMContentLoaded', function () {
+function templateEditor(options = {
+    id: null,
+    name: null,
+    description: null,
+    url: null,
+    save: null,
+    assets: {
+        url: null,
+        name: null,
+        upload: null
+    }
+}) {
 
-    var template_name = "";
-    var template_description = "";
-    var template_id = null;
+    var flg = 0;
+    if (!options.assets) {
+        merapi.toast('assets option is not prepared', 5, 'text-danger'); flg++;
+    } else {
+
+        if (!options.assets.url) {
+            merapi.toast('assets url is empty', 5, 'text-danger'); flg++;
+        }
+        if (!options.assets.name) {
+            merapi.toast('assets name is empty', 5, 'text-danger'); flg++;
+        }
+        if (!options.assets.upload) {
+            merapi.toast('assets upload is empty', 5, 'text-danger'); flg++;
+        }
+    }
+
+    if (flg > 0) {
+        $('#gjs').html(`<h1>Error some important option is assumed</h1>`);
+        $('#gjs').find('h1').css({
+            color: 'red',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '2rem',
+            fontWeight: 'bold',
+        });
+        return;
+    }
+
+    var template_save = options.save || null;
+    var template_id = options.id || null;
+    var template_name = options.name || "";
+    var template_description = options.description || "";
+    var template_url = options.url || null;
 
     var editor = grapesjs.init({
         fromElement: true,
         container: '#gjs',
         height: '100vh',
-        components: '<div class="example"><h1 class="text-3xl font-bold text-blue-500">Welcome Les\'s Get Started</h1></div>',
-        style: '.example { width: 100vh; height: 100vw; display: flex; align-items: center; justify-content: center; }',
         plugins: [tailwind, gjsBasic, gjsForms],
         pluginsOpts: {
             [gjsBasic]: { /* options */ },
             [gjsForms]: { /* options */ },
             [tailwind]: {}
         },
+        assetManager: {
+            upload: 'https://endpoint/upload/assets',
+            uploadName: 'files',
+        }
     });
 
+
+    console.log(options);
+
+    const am = editor.AssetManager;
+    const amConfig = am.getConfig();
+
+    amConfig.upload = 'https://endpoint/upload/assets';
+    amConfig.uploadName = 'files';
+
+
+
+    if (template_url) {
+        $.get(template_url, function (e) {
+            editor.setComponents(e);
+            merapi.toast('Template Loaded', 5, 'text-success');
+        })
+    }
 
     editor.Panels.addButton('options',
         [{
             id: 'save',
-            className: 'fas fa-save',
+            className: 'fas fa-save text-primary',
             command: 'open-save-modal',
             attributes: {
                 title: 'Save Changes'
             }
         }]
     );
+    editor.Panels.addButton('options', [
+        {
+            id: 'clear',
+            className: 'fas fa-trash text-danger',
+            command: 'clear-confirm-modal',
+            attributes: {
+                title: 'Clear Template'
+            }
+        }
+    ]);
 
 
     const modal = editor.Modal;
+
+    editor.Commands.add('clear-confirm-modal', {
+        run: function (editor, sender, options = {}) {
+            sender && sender.set('active', 0); // turn off the button
+
+            const content = $(
+                `<div class='py-4'>
+                    <div class='mb-3'>
+                        <p>Are you sure you want to clear this template?</p>
+                    </div>
+                    <div class='flex'>
+                        <button class='ms-auto btn btn-primary'>Yes</button>
+                    </div>
+                </div>`);
+
+            modal.open({
+                title: "<h4 class='text-xl font-bold'><i class=\"fas fa-trash me-3\"></i> Are you sure?</h4>",
+                content: content.get(0),
+                attributes: { class: 'small-modal', style: 'backdrop-filter: blur(3px);' },
+            });
+            content.find('.btn-primary').on('click', function () {
+                modal.close();
+                editor.DomComponents.clear(); // Clear components
+                editor.CssComposer.clear();  // Clear styles
+                editor.UndoManager.clear();
+                merapi.toast('Template Cleared', 5, 'text-success');
+            })
+        }
+    })
 
     editor.Commands.add('open-save-modal', {
         run: function (editor, sender, options = {}) {
@@ -65,15 +166,12 @@ $(document).on('DOMContentLoaded', function () {
                 content: content.get(0),
                 attributes: { class: 'small-modal', style: 'backdrop-filter: blur(3px);' },
             });
-
-
             content.find('#template_name').on('input', function () {
                 template_name = content.find('#template_name').val();
             })
             content.find('#template_description').on('input', function () {
                 template_description = content.find('#template_description').val();
             })
-
             content.find('.btn-primary').on('click', function () {
 
                 modal.close();
@@ -95,9 +193,15 @@ $(document).on('DOMContentLoaded', function () {
         run: function (editor, sender, options = {}) {
 
 
+            if (!template_save) {
+
+                merapi.toast('Save endpoint is not defined', 5, 'text-warning');
+                return;
+            }
+
             if (!options.name || options.name.length == 0) {
 
-                merapi.toast('Template Name is required', 5, 'warning');
+                merapi.toast('Template Name is required', 5, 'text-warning');
                 editor.runCommand('open-save-modal');
                 return;
             }
@@ -121,14 +225,15 @@ $(document).on('DOMContentLoaded', function () {
             form.append("htmldata", htmldata);
             form.append("cssdata", tailwindcss);
             // form.append("template['tailwindcss']", tailwindcss);
+            if (template_id) form.append("id", template_id);
 
-            merapi.post("", form).then(function (data, textStatus, xhr) {
+            merapi.post(template_save, form).then(function (data, textStatus, xhr) {
 
-                if(xhr.status === 200 && data.data.id) {
+                if (xhr.status === 200 && data.data.id) {
 
                     template_id = data.data.id;
                     merapi.toast(data.message, 5, 'text-success');
-                    
+
                 } else throw new Error(textStatus, xhr.status);
 
             }).catch(function (error) {
@@ -137,5 +242,7 @@ $(document).on('DOMContentLoaded', function () {
             })
         }
     });
-});
+}
 
+window.merapi = window.merapi || {};
+window.merapi.templateEditor = templateEditor;

@@ -58,6 +58,9 @@ input[type="radio"] {
     @apply w-4 h-4 focus-within:drop-shadow-[0_0_2px_#3492eb];
 }
 
+.text-primary {
+    @apply text-blue-600 dark:text-blue-400;
+}
 .text-danger {
     @apply text-red-600 dark:text-red-400;
 }
@@ -65,14 +68,14 @@ input[type="radio"] {
     @apply text-yellow-600 dark:text-yellow-400;
 }
 .text-success {
-    @apply text-blue-600 dark:text-blue-400;
+    @apply text-green-600 dark:text-green-400;
 }
 .text-info {
     @apply text-cyan-600 dark:text-cyan-400;
 }
 
 .btn {
-    @apply px-7 py-[0.25rem] rounded;
+    @apply px-7 py-[0.3rem] rounded;
 }
 .btn-primary {
     @apply bg-blue-500 hover:bg-blue-600 text-white;
@@ -107,12 +110,12 @@ input[type="radio"] {
 }
 
 .modal {
-    @apply fixed top-0 left-0 w-full h-full z-50;
+    @apply fixed top-0 left-0 w-full h-full z-[199];
     background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(4px);
 }
 .modal-dialog {
-    @apply absolute top-1/2 left-1/2 -translate-x-1/2 w-full max-w-[600px] mx-auto bg-white shadow rounded px-6 py-4;
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] mx-auto bg-white shadow rounded px-6 py-4;
 }
 .modal-header{
     @apply flex justify-between items-center py-3;
@@ -132,4 +135,26 @@ input[type="radio"] {
 
 .btn-close {
     @apply absolute px-2 py-2 top-2 right-4 scale-100 hover:scale-[1.5] hover:text-red-400 transition-all;
+}
+
+
+
+.dropdown {
+    @apply relative flex flex-col justify-end;
+}
+.dropdown>[data-act-trigger] {
+    @apply cursor-pointer ms-auto;
+}
+
+.dropdown .dropdown-menu {
+    @apply max-w-0 max-h-0 mx-3 bg-white overflow-hidden transition-all;
+
+}
+
+.dropdown.open .dropdown-menu {
+    @apply max-w-[400px] max-h-[600px] shadow-md rounded;
+}
+.dropdown .dropdown-menu .dropdown-item {
+    @apply px-4 py-2 hover:bg-slate-100 cursor-pointer;
+    min-width: max-content;
 }

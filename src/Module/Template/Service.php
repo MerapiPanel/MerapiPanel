@@ -75,6 +75,37 @@ class Service extends Module
 
 
 
+    function updateTemplate($id, $name, $description, $html, $css)
+    {
+
+        $db = $this->getDatabase();
+        $this->checkTable($db);
+
+        $SQL = "UPDATE `template` SET `name` = :name, `description` = :description WHERE `id` = :id";
+
+        if (!$db->runQuery($SQL, [
+            'id' => $id,
+            'name' => $name,
+            'description' => $description
+        ])){
+
+            throw new Exception("Error updating template", 500);
+        } 
+
+        $save_path = __DIR__ . "/Contents/" . $id;
+
+        if (!file_exists($save_path)) {
+            mkdir($save_path);
+
+        }
+
+        file_put_contents($save_path . "/index.html", $html);
+        file_put_contents($save_path . "/style.css", $css);
+
+        return true;
+    }
+
+
 
 
     private function checkTable(Database $db)

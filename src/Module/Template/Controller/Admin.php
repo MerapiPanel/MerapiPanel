@@ -17,7 +17,6 @@ class Admin extends Module
     function setBox(Box $box)
     {
         $this->box = $box;
-
         $this->box->Module_ViewEngine()->addExtension(new TemplateFunction());
     }
 
@@ -26,8 +25,9 @@ class Admin extends Module
     {
 
         $router->get("/template/view/{id}/", "viewTemplate", self::class);
+        $router->get("/template/edit/{id}/", "editTemplate", self::class);
         $router->get("/template/create", "createNewTemplate", self::class);
-        $router->post("/template/create", "saveNewTemplate", self::class);
+        $router->post("/template/save", "saveTemplate", self::class);
         $route = $router->get("/template", "index", self::class);
         $panel = $this->box->Module_Panel();
         $panel->addMenu([
@@ -53,7 +53,7 @@ class Admin extends Module
     }
 
 
-    public function viewTemplate( $view, Request $request) 
+    public function viewTemplate($view, Request $request)
     {
 
         $id = $request->getParam("id");
@@ -64,7 +64,18 @@ class Admin extends Module
         ]);
     }
 
-    public function saveNewTemplate(Request $request)
+
+    public function editTemplate($view, $request)
+    {
+        $id = $request->getParam("id");
+        $service = $this->service();
+
+        return $view->render("editor.html.twig", [
+            "template" => $service->getTemplate($id)
+        ]);
+    }
+
+    public function saveTemplate(Request $request)
     {
 
         $service = $this->service();
@@ -78,13 +89,22 @@ class Admin extends Module
             }
         }
 
-
         $id = uniqid();
         $name = $BODY['name'];
         $descript = $BODY['description'];
         $htmldata = $BODY['htmldata'];
         $cssdata  = $BODY['cssdata'];
 
+
+        if (isset($BODY['id'])) {
+            return $this->updateTemplate([
+                "id" => $BODY['id'],
+                "name" => $name,
+                "description" => $descript,
+                "htmldata" => $htmldata,
+                "cssdata" => $cssdata
+            ]);
+        }
 
 
         if ($service->saveTemplate($id, $name, $descript, $htmldata, $cssdata)) {
@@ -102,6 +122,37 @@ class Admin extends Module
             return [
                 "code" => 400,
                 "message" => "Error saving template"
+            ];
+        }
+    }
+
+
+    function updateTemplate($opt = [
+        "id" => "",
+        "name" => "",
+        "description" => "",
+        "htmldata" => "",
+        "cssdata" => ""
+    ])
+    {
+
+        $service = $this->service();
+        $update = $service->updateTemplate($opt['id'], $opt['name'], $opt['description'], $opt['htmldata'], $opt['cssdata']);
+
+        if($update) {
+            return [
+                "code" => 200,
+                "message" => "Template updated successfully",
+                "data" => [
+                    "name" => $opt['name'],
+                    "description" => $opt['description'],
+                    "id" => $opt['id'],
+                ]
+            ];
+        } else {
+            return [
+                "code" => 400,
+                "message" => "Error updating template"
             ];
         }
     }

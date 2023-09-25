@@ -352,65 +352,30 @@ class Router extends Component
             }
 
 
+            /**
+             * @var $controllerInstance
+             * - init controller from class address
+             */
             $controllerInstance = $this->box->$controllerClass();
-            $meta   = $controllerInstance->__getMeta();
-            $file   = $meta['file'];
-            $zone   = strtolower(basename(pathinfo($file, PATHINFO_BASENAME), ".php"));
-            $module = strtolower(basename($meta['location']));
-
 
             if ($request->getMethod() === Route::GET) {
 
                 $view = $this->box->Module_ViewEngine();
-
                 $view->addGlobal('request', $request->__toJson());
+
                 $retrun = $controllerInstance->$method($view, $request);
 
-                $file = "@$zone>$module" . "/" . ltrim($retrun, "\/");
-                $template = $view->load($file);
-                $content = $template->render($view->getVariables());
-                $response->setContent($content);
-
+                if (is_object($retrun) || is_array($retrun)) {
+                    return $this->handleApiResponse($retrun);
+                } else {
+                    return $this->handleViewResponse([
+                        'controller' => $controllerInstance,
+                        'file-view'  => $retrun
+                    ]);
+                }
             } else {
 
-                /**
-                 * - code
-                 * - message
-                 * - data
-                 */
-
-                $content = ["code" => 304, "message" => "No change", "data" => null];
-                $response->setHeader('Content-Type', 'application/json');
-                $result  = $controllerInstance->$method($request);
-
-                if (is_array($result)) {
-
-                    $content["code"]    = isset($result['code']) ? $result['code'] : null;
-                    $content["message"] = isset($result['message']) ? $result['message'] : null;
-                    $content["data"]    = isset($result['data']) ? $result['data'] : null;
-
-                } elseif (is_string($result)) {
-
-                    $json = json_decode($result, true);
-
-                    if (json_last_error() === JSON_ERROR_NONE) {
-
-                        $content["code"]    = isset($json['code']) ? $json['code'] : null;
-                        $content["message"] = isset($json['message']) ? $json['message'] : null;
-                        $content["data"]    = isset($json['data']) ? $json['data'] : null;
-                        
-                    } else {
-
-                        $content["code"]    = 200;
-                        $content["message"] = $result;
-                        $content["data"]    = null;
-                    }
-                } 
-
-                header('HTTP/1.1 ' . $content["code"] . ' ' . $content["message"]);
-
-                $response->setContent($content);
-
+                return $this->handleApiResponse($controllerInstance->$method($request));
             }
 
             return $response;
@@ -418,5 +383,83 @@ class Router extends Component
 
             return new Response('Internal server error', 500);
         }
+    }
+
+
+
+    public function handleApiResponse($json = [])
+    {
+
+        $response = new Response();
+        $response->setHeader('Content-Type', 'application/json');
+
+        $content = ["code" => 304, "message" => "No change", "data" => null];
+
+        if (is_array($json)) {
+
+            $content["code"]    = isset($json['code']) ? $json['code'] : null;
+            $content["message"] = isset($json['message']) ? $json['message'] : null;
+            $content["data"]    = isset($json['data']) ? $json['data'] : null;
+
+        } elseif (is_string($json)) {
+
+            $json = json_decode($json, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+
+                $content["code"]    = isset($json['code']) ? $json['code'] : null;
+                $content["message"] = isset($json['message']) ? $json['message'] : null;
+                $content["data"]    = isset($json['data']) ? $json['data'] : null;
+
+            } else {
+
+                $content["code"]    = 200;
+                $content["message"] = $json;
+                $content["data"]    = null;
+            }
+        }
+
+        header('HTTP/1.1 ' . $content["code"] . ' ' . $content["message"]);
+        $response->setContent($content);
+
+        return $response;
+    }
+
+    public function handleViewResponse($opt = [
+        'file-view' => null,
+        'controller' => null,
+    ])
+    {
+
+        /**
+         * @var object $controller
+         */
+        $controller = $opt['controller'];
+        /**
+         * @var string $fileView
+         */
+        $fileView   = $opt['file-view'];
+
+        /**
+         * @var Response $response
+         */
+        $response = new Response();
+
+
+        $meta   = $controller->__getMeta();
+        $file   = $meta['file'];
+        $zone   = strtolower(basename(pathinfo($file, PATHINFO_BASENAME), ".php"));
+        $module = strtolower(basename($meta['location']));
+
+
+        $view = $this->box->Module_ViewEngine();
+
+        $file = "@$zone>$module" . "/" . ltrim($fileView, "\/");
+        $template = $view->load($file);
+        $content = $template->render($view->getVariables());
+
+        $response->setContent($content);
+
+        return $response;
     }
 }
