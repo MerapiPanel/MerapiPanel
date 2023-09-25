@@ -1,5 +1,5 @@
 import * as rasterizeHTML from 'rasterizehtml';
-import merapi from '../../merapi';
+import merapi from '../../../base/assets/merapi.js';
 
 window.merapi = window.merapi || {};
 
@@ -13,4 +13,4 @@ window.merapi.renderTemplate = function (url, id) {
         zoom: 1
     });
 
-};
+}; 

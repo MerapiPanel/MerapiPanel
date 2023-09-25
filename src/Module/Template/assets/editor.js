@@ -3,7 +3,7 @@ import gjsBasic from 'grapesjs-blocks-basic';
 import gjsForms from 'grapesjs-plugin-forms';
 import tailwind from 'grapesjs-tailwind';
 import $ from "jquery";
-import merapi from '../../merapi';
+import merapi from "../../../base/assets/merapi.js";
 
 function templateEditor(options = {
     id: null,
@@ -14,7 +14,7 @@ function templateEditor(options = {
     assets: {
         url: null,
         name: null,
-        upload: null
+        upload: null 
     }
 }) {
 
@@ -86,6 +86,7 @@ function templateEditor(options = {
     const am = editor.AssetManager;
     const amConfig = am.getConfig();
 
+    am.clear();
     $.get(options.assets.url, function (e) {
         if (e.data) {
             let assets = e.data.map(function (item) { return {
@@ -147,7 +148,7 @@ function templateEditor(options = {
             }
         }
     ]);
-    
+
 
     /**
      * Modal command
