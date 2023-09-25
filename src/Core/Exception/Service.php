@@ -78,6 +78,8 @@ class Service extends ErrorAbstract
     function view()
     {
 
+        header("Content-Type: text/html;charset=UTF-8");
+
         if ($this->locked) {
             return;
         }

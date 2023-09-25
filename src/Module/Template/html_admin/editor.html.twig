@@ -44,7 +44,7 @@
                 url: "{{ ('template/view/'~template.id) | admin_url }}",
                 save: "{{ ('template/save') | admin_url }}",
                 assets: {
-                    url: "{{ admin.FileManager_uploadEndpoint }}",
+                    url: "{{ admin.FileManager_fetchJsonEndpoint }}",
                     name: "files",
                     upload: "{{ admin.FileManager_uploadEndpoint }}",
                 }

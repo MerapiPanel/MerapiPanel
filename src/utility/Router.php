@@ -5,10 +5,12 @@ namespace MerapiPanel\Utility;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Cog\Config;
+use MerapiPanel\Core\Exception\CodeException;
 use MerapiPanel\Utility\Middleware\Component;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Exceptions\Error;
+use MerapiPanel\Module\Users\Custom\Extension;
 
 class Router extends Component
 {
@@ -367,11 +369,13 @@ class Router extends Component
 
                 if (is_object($retrun) || is_array($retrun)) {
                     return $this->handleApiResponse($retrun);
-                } else {
+                } elseif (is_string($retrun)) {
                     return $this->handleViewResponse([
                         'controller' => $controllerInstance,
                         'file-view'  => $retrun
                     ]);
+                } else {
+                    throw new Exception("Unxpected response type, Controller: $controller Method: $method should return string or array but null returned", 400);
                 }
             } else {
 
@@ -400,7 +404,6 @@ class Router extends Component
             $content["code"]    = isset($json['code']) ? $json['code'] : null;
             $content["message"] = isset($json['message']) ? $json['message'] : null;
             $content["data"]    = isset($json['data']) ? $json['data'] : null;
-
         } elseif (is_string($json)) {
 
             $json = json_decode($json, true);
@@ -410,7 +413,6 @@ class Router extends Component
                 $content["code"]    = isset($json['code']) ? $json['code'] : null;
                 $content["message"] = isset($json['message']) ? $json['message'] : null;
                 $content["data"]    = isset($json['data']) ? $json['data'] : null;
-
             } else {
 
                 $content["code"]    = 200;

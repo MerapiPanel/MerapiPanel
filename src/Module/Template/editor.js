@@ -35,6 +35,7 @@ function templateEditor(options = {
     }
 
     if (flg > 0) {
+
         $('#gjs').html(`<h1>Error some important option is assumed</h1>`);
         $('#gjs').find('h1').css({
             color: 'red',
@@ -71,16 +72,6 @@ function templateEditor(options = {
     });
 
 
-    console.log(options);
-
-    const am = editor.AssetManager;
-    const amConfig = am.getConfig();
-
-    amConfig.upload = 'https://endpoint/upload/assets';
-    amConfig.uploadName = 'files';
-
-
-
     if (template_url) {
         $.get(template_url, function (e) {
             editor.setComponents(e);
@@ -88,6 +79,54 @@ function templateEditor(options = {
         })
     }
 
+
+    /** 
+     * Asset Manager Group
+     */
+    const am = editor.AssetManager;
+    const amConfig = am.getConfig();
+
+    $.get(options.assets.url, function (e) {
+        if (e.data) {
+            let assets = e.data.map(function (item) { return {
+                src: item.path,
+                category: item.parent
+            } })
+            am.add(assets);
+        }
+    })
+
+    amConfig.upload = options.assets.upload;
+    amConfig.uploadName = options.assets.name;
+
+    // The upload is started
+    editor.on('asset:upload:start', () => {
+       
+        console.log('start');
+    });
+
+    // The upload is ended (completed or not)
+    editor.on('asset:upload:end', () => {
+        
+        console.log('end');
+    });
+
+    // Error handling
+    editor.on('asset:upload:error', (err) => {
+        
+        console.log(err);
+    });
+
+    // Do something on response
+    editor.on('asset:upload:response', (response) => {
+
+        console.log(response);
+    });
+
+
+    /**
+     * Panels action button
+     */
     editor.Panels.addButton('options',
         [{
             id: 'save',
@@ -108,10 +147,12 @@ function templateEditor(options = {
             }
         }
     ]);
+    
 
-
+    /**
+     * Modal command
+     */
     const modal = editor.Modal;
-
     editor.Commands.add('clear-confirm-modal', {
         run: function (editor, sender, options = {}) {
             sender && sender.set('active', 0); // turn off the button
@@ -188,6 +229,12 @@ function templateEditor(options = {
             })
         }
     })
+
+
+
+    /**
+     * Other command
+     */
 
     editor.Commands.add('commsave', {
         run: function (editor, sender, options = {}) {
