@@ -21,31 +21,30 @@ class Admin extends Module
 
         $panel = $this->box->Module_Panel();
 
+
+
+        $index =  $router->get("/content", "index", self::class);
+        $list = $router->get("/content/list", "list", self::class);
+        $new =  $router->get("/content/create", "createNewContent", self::class);
+
         $panel->addMenu([
             "name" => "Content",
             "icon" => "fa-solid fa-newspaper",
-            "link" => $panel->adminLink("contents")
+            "link" => $index
         ]);
 
         $panel->addMenu([
             "parent" => "content",
             "name" => "List of content",
             "icon" => "fa-solid fa-bars-staggered",
-            "link" => $panel->adminLink("contents/list")
+            "link" => $list
         ]);
         $panel->addMenu([
             "name" => "Create new content",
             "parent" => "content",
             "icon" => "fa fa-plus",
-            "link" => $panel->adminLink("contents/new")
+            "link" => $new
         ]);
-
-
-        $router->get("/contents", "index", self::class);
-        $router->get("/contents/list", "list", self::class);
-        $router->get("/contents/new", "new", self::class);
-
-
     }
 
     function index($view)
@@ -54,9 +53,9 @@ class Admin extends Module
         return $view->render("index.html.twig");
     }
 
-    function new($view)
+    function createNewContent($view)
     {
-        return $view->render("new.html.twig");
+        return $view->render("editor.html.twig");
     }
 
     function list($view)

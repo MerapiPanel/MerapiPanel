@@ -12,7 +12,7 @@ module.exports = {
             const filename = item.replace(/^.*[\\\/]/, '').replace(/\.js$/, '');
             const path = item.split("/");
             path.pop();
-            const name = "../../" + path.join('/') + '/dist/' + filename;
+            const name = "../../../../" + path.join('/') + '/dist/' + filename;
             acc[name] = item;
 
             return acc;
@@ -23,7 +23,7 @@ module.exports = {
             const filename = item.replace(/^.*[\\\/]/, '').replace(/\.js$/, '');
             const path = item.split("/");
             path.pop();
-            const name = "../../" + path.join('/') + '/dist/' + filename;
+            const name = "../../../../" + path.join('/') + '/dist/' + filename;
             acc[name] = item;
 
             return acc;
@@ -33,13 +33,8 @@ module.exports = {
     },
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, './src/base'),
+        path: path.resolve(__dirname, './src/base/assets/dist'),
     },
-    // entry: './src/index.js',
-    // output: {
-    //     path: path.resolve(__dirname, 'dist'),
-    //     filename: '[name].bundle.js',
-    // },
     plugins: [
         new webpack.ProvidePlugin({
             $: "jquery",
@@ -52,7 +47,6 @@ module.exports = {
         rules: [
             {
                 test: /\.css$/i,
-                include: path.resolve(__dirname, 'src'),
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             }
         ],

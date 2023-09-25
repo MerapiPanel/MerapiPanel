@@ -20,10 +20,12 @@
         </div>
 
         <div class="ms-auto grid grid-cols-2 gap-4">
-            <button class="rounded border outline-none shadow px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white">
+            <button onclick="confirmDeletion('{{ user.id }}')"
+                class="rounded border outline-none shadow px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white">
                 <i class="fa-solid fa-trash"></i>
             </button>
-            <button class="rounded border outline-none shadow px-4 py-2 text-blue-500 hover:bg-blue-500 hover:text-white">
+            <button
+                class="rounded border outline-none shadow px-4 py-2 text-blue-500 hover:bg-blue-500 hover:text-white">
                 <i class="fa-solid fa-pen-to-square"></i>
             </button>
         </div>
@@ -31,5 +33,28 @@
     {% endfor %}
 
 </ul>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    function confirmDeletion(id) {
+
+        const modal = merapi.createModal('Confirm deletion', 'Are you sure you want to delete this user?');
+
+        modal.setAction('+', {
+            text: "Confirm",
+            class: "btn btn-danger",
+            callback: () => {
+                modal.hide();
+                merapi.toast('User deleted', 5, 'text-success');
+            }
+        });
+
+        modal.show();
+
+    }
+</script>
 
 {% endblock %}
