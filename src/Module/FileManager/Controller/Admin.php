@@ -4,7 +4,6 @@ namespace MerapiPanel\Module\FileManager\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Utility\Http\Request;
-use tidy;
 
 class Admin extends Module
 {
@@ -12,6 +11,10 @@ class Admin extends Module
     public function register($router)
     {
 
+        $panel = $this->getBox()->Module_Panel();
+        setcookie("fm-adm-pth", $panel->adminLink(), time() + (86400 * 30), $panel->adminLink());
+
+        $router->get('/filemanager/fetch-endpoint', "fetchEndpoint", self::class);
         $router->get("/filemanager/fetchJson", "fetchJson", self::class);
         $router->post("/filemanager/upload", "upload", self::class);
         $route = $router->get("/filemanager", "index", self::class);
@@ -25,6 +28,21 @@ class Admin extends Module
         ]);
     }
 
+
+    public function fetchEndpoint()
+    {
+
+        $panel = $this->getBox()->Module_Panel();
+
+        return [
+            'code' => 200,
+            'data' => [
+                'assets' => $panel->adminLink('filemanager/fetchJson'),
+                'uploads' => $panel->adminLink('filemanager/upload')
+            ],
+            "message" => "Ok"
+        ];
+    }
 
     public function upload(Request $request)
     {
@@ -115,6 +133,7 @@ class Admin extends Module
                     'src' => $upload,
                     'category' => basename($folder),
                     'type' => $file['type'],
+                    'name' => $file['name'],
                 ];
             } else {
                 $error_stack[] = [

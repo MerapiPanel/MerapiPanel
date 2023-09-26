@@ -1,7 +1,13 @@
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import $ from "jquery";
+import filemanager from "../../FileManager/assets/filemanager";
+import Merapi from "../../../base/assets/merapi";
+import ImageResize from "quill-image-resize";
 
+
+
+Quill.register('modules/imageResize', ImageResize);
 
 var toolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -21,7 +27,8 @@ var toolbarOptions = [
     [{ 'font': [] }],
     [{ 'align': [] }],
 
-    ['clean']                                         // remove formatting button
+    ['clean'],                                         // remove formatting button
+
 ];
 
 
@@ -29,10 +36,23 @@ $(document).on("DOMContentLoaded", function () {
 
     var quill = new Quill('#editor', {
         modules: {
-            toolbar: toolbarOptions
+            toolbar: toolbarOptions,
+            imageResize: {
+                // See optional "config" below
+            }
         },
+        placeholder: 'Type something...',
         theme: 'snow'
     });
 
+    quill.getModule('toolbar').addHandler('image', function (value) {
 
+        if (value) {
+            filemanager.FilePicker().then(value => {
+                quill.insertEmbed(quill.getSelection(), 'image', value.path);
+            }).catch(err => {
+                Merapi.toast("Action cancel", 5, 'text-warning');
+            })
+        }
+    })
 })

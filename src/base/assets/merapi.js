@@ -65,6 +65,23 @@ function getCookie(cname) {
 }
 
 
+
+/**
+ * Creates a modal with the specified title, content, and action buttons.
+ *
+ * @param {string} title - The title of the modal.
+ * @param {string} content - The content of the modal body.
+ * @param {Object} [action] - Optional settings for the action buttons.
+ * @param {Object} [action.positive] - The settings for the positive action button.
+ * @param {string} [action.positive.text] - The text to display on the positive action button.
+ * @param {string} [action.positive.class] - The CSS class to apply to the positive action button.
+ * @param {function} [action.positive.callback] - The callback function to execute when the positive action button is clicked.
+ * @param {Object} [action.negative] - The settings for the negative action button.
+ * @param {string} [action.negative.text] - The text to display on the negative action button.
+ * @param {string} [action.negative.class] - The CSS class to apply to the negative action button.
+ * @param {function} [action.negative.callback] - The callback function to execute when the negative action button is clicked.
+ * @return {Object} The created modal object.
+ */
 function createModal(title, content, action = {
     positive: {
         text: 'Ok',
@@ -406,5 +423,11 @@ Merapi.toast = (text, seconds = 3, textColor = "#0000ff45") => Toast.create(text
 Merapi.setCookie = (name, value, exdays) => setCookie(name, value, exdays)
 Merapi.getCookie = (name) => getCookie(name)
 Merapi.createModal = (title, content, action) => createModal(title, content, action);
+
+
+Merapi.assign = function (name, obj) {
+    Object.assign(Merapi, { [name]: obj });
+    window.MERAPI = Merapi;
+}
 
 export default Merapi;

@@ -116,19 +116,19 @@ input[type="radio"] {
     backdrop-filter: blur(4px);
 }
 .modal-dialog {
-    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] mx-auto bg-white shadow rounded px-6 py-4;
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] mx-auto bg-white shadow rounded pt-2;
 }
-.modal-header{
-    @apply flex justify-between items-center py-3;
+.modal-header {
+    @apply flex justify-between items-center py-3 px-5;
 }
 .modal-title {
     @apply text-xl font-bold;
 }
 .modal-content {
-    @apply py-3;
+    @apply py-3 px-5 max-h-[80vh] overflow-auto;
 }
 .modal-footer {
-    @apply py-3 flex justify-end;
+    @apply py-3 px-5 flex justify-end;
 }
 .modal-footer button {
     @apply ms-3;

@@ -1,16 +1,18 @@
 import * as rasterizeHTML from 'rasterizehtml';
-import merapi from '../../../base/assets/merapi.js';
+import Merapi from '../../../base/assets/merapi.js';
 
-window.merapi = window.merapi || {};
 
-window.merapi.renderTemplate = function (url, id) {
+const Template = {
+    renderTemplate: (url, id) => {
 
-    const canvas = $(`#${id}`).get(0);
+        const canvas = $(`#${id}`).get(0);
+        rasterizeHTML.drawURL(url, canvas, {
+            width: canvas.width,
+            height: canvas.height,
+            zoom: 1
+        });
+    }
+}
 
-    rasterizeHTML.drawURL(url, canvas, {
-        width: canvas.width,
-        height: canvas.height,
-        zoom: 1
-    });
 
-}; 
+Merapi.assign('Template', Template);

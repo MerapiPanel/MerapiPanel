@@ -56,6 +56,9 @@ function templateEditor(options = {
     var template_description = options.description || "";
     var template_url = options.url || null;
 
+    /**
+     * GrapesJS init
+     */
     var editor = grapesjs.init({
         fromElement: true,
         container: '#gjs',
@@ -65,7 +68,9 @@ function templateEditor(options = {
         pluginsOpts: {
             [gjsBasic]: { /* options */ },
             [gjsForms]: { /* options */ },
-            [tailwind]: {}
+            [tailwind]: {},
+            [gjsForms]: {/* ...options */ }
+
         },
 
         storageManager: {
@@ -77,6 +82,17 @@ function templateEditor(options = {
             uploadName: 'files',
         }
     });
+
+    const blockManager = editor.BlockManager;
+
+    blockManager.add('code-block', {
+        label: 'Code Block',
+        content: '<php>this is php code</php>',
+        category: 'Basic',
+        attributes: {
+          title: 'Insert h1 block'
+        }
+      });
 
 
     if (template_url) {
@@ -348,10 +364,14 @@ function templateEditor(options = {
         }, 500);
     }
 
-    $(window).on('beforeunload', function () {
-        return 'Are you sure you want to leave?';
-    });
+    // $(window).on('beforeunload', function () {
+    //     return 'Are you sure you want to leave?';
+    // });
 }
 
-window.merapi = window.merapi || {};
-window.merapi.templateEditor = templateEditor;
+
+
+const Template = {
+    editor: templateEditor
+}
+merapi.assign('Template', Template);

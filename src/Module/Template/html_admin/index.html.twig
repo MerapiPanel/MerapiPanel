@@ -56,22 +56,22 @@
 <script>
     function drawView(id) {
         const url = "{{ '/template/view/' | admin_url }}" + id;
-        merapi.renderTemplate(url, id);
+        MERAPI.Template.renderTemplate(url, id);
     }
     function deleteTemplate(id) {
-        const modal = merapi.createModal('Delete template', 'Are you sure you want to delete this template?');
+        const modal = MERAPI.createModal('Delete template', 'Are you sure you want to delete this template?');
         modal.setAction('+', {
             text: "Yes",
             class: "btn btn-danger",
             callback: function () {
                 modal.hide();
                 const url = "{{ '/template/delete/' | admin_url }}";
-                merapi.delete(url, { id: id }).then(function (data, status, xhr) {
+                MERAPI.delete(url, { id: id }).then(function (data, status, xhr) {
                     if (xhr.status === 200) {
-                        merapi.toast(data.message || "Template deleted", 5, 'text-success');
+                        MERAPI.toast(data.message || "Template deleted", 5, 'text-success');
                         window.location.reload();
                     } else {
-                        merapi.toast(data.message || "Failed to deleted template", 5, 'text-danger');
+                        MERAPI.toast(data.message || "Failed to deleted template", 5, 'text-danger');
                     }
                 });
             }

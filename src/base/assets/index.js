@@ -1,12 +1,10 @@
 require('./app.css')
 require('./fontawesome/css/all.min.css');
 const $ = require('jquery');
-import merapi from './merapi';
+import Merapi from './merapi';
 
 window.$ = $;
-window.merapi = merapi;
-
-
+window.MERAPI = Merapi;
 const acts = {
 
 }

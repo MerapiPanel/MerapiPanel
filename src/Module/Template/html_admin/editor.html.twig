@@ -37,7 +37,7 @@
     {% if template %}
     <script>
         $(() => {
-            merapi.templateEditor({
+            MERAPI.Template.editor({
                 id: "{{ template.id }}",
                 name: "{{template.name}}",
                 description: "{{template.description}}",
@@ -54,7 +54,7 @@
     {% else %}
     <script>
         $(() => {
-            merapi.templateEditor({
+            MERAPI.Template.editor({
                 save: "{{ ('template/save') | admin_url }}",
                 assets: {
                     url: "{{ admin.FileManager_fetchJsonEndpoint }}",
