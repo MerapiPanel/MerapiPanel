@@ -4,6 +4,7 @@ import gjsForms from 'grapesjs-plugin-forms';
 import tailwind from 'grapesjs-tailwind';
 import $ from "jquery";
 import merapi from "../../../base/assets/merapi.js";
+import CodeBlock from "../../CodeBlock/assets/codeBlock.js";
 
 function templateEditor(options = {
     id: null,
@@ -63,7 +64,7 @@ function templateEditor(options = {
         fromElement: true,
         container: '#gjs',
         height: '100vh',
-        plugins: [tailwind, gjsBasic, gjsForms],
+        plugins: [tailwind, gjsBasic, gjsForms, CodeBlock],
 
         pluginsOpts: {
             [gjsBasic]: { /* options */ },
@@ -82,17 +83,6 @@ function templateEditor(options = {
             uploadName: 'files',
         }
     });
-
-    const blockManager = editor.BlockManager;
-
-    blockManager.add('code-block', {
-        label: 'Code Block',
-        content: '<php>this is php code</php>',
-        category: 'Basic',
-        attributes: {
-          title: 'Insert h1 block'
-        }
-      });
 
 
     if (template_url) {
