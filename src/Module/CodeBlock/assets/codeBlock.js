@@ -3,6 +3,8 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/ambiance.css';
 import 'codemirror/mode/php/php.js';
 import $ from 'jquery';
+import { trimEnd } from 'lodash';
+import Merapi from '../../../base/assets/merapi';
 
 const CodeBlock = function (Editor) {
 
@@ -11,39 +13,33 @@ const CodeBlock = function (Editor) {
 
         // Make the editor understand when to bind `custom-code-type`
         isComponent: function (el) {
-            return el.tagName === 'CUSTOMCODE';
+            return el.tagName === 'PHPCODE';
         },
 
         // Model definition
         model: {
             // Default properties
             defaults: {
-                tagName: 'customcode',
+                tagName: 'phpcode',
                 droppable: false, // Can't drop other elements inside
-                code: '<?php\r\necho "Hello, world!";\r\n?>',
-                traits: [{
-                    name: 'code',
-                    changeProp: 1,
-                }
-                ]
-            },
-            init() {
-                Editor.on('change:code', this.handleValueChange);
+                style: {
+                    display: "block",
+                    padding: "10px",
+                    border: "3px red dashed"
+                },
+                code: "<?php\r\necho \"Hello, world!\";\r\n?>",
+                traits: []
             },
 
+            init() { },
+
             updated(property, value, prevValue) {
-                if (value === "selected") {
-                    this.codeEdit();
-                }
+
             },
 
             codeEdit() {
 
-                if (!this.isOnWatching) {
-                    this.watching();
-                }
-
-                const content = $(`<div><textarea class="mb-3" id="ccode">${this.defaults.code}</textarea></div>`);
+                const content = $(`<div><textarea class="mb-3" id="ccode">${this.attributes.code}</textarea><div class="flex pt-3"><button class='ms-auto btn btn-primary'>save</button></div></div>`);
                 const CodeEditor = CodeMirror.fromTextArea($(content).find("#ccode").get(0), {
                     mode: "application/x-httpd-php",
                     lineNumbers: true,
@@ -55,70 +51,90 @@ const CodeBlock = function (Editor) {
                     autoBeautify: true,
                     autoCloseTags: true,
                     autoCloseBrackets: true,
-                    //lineWrapping: true,
                     styleActiveLine: true,
                     smartIndent: true, // Missing comma
                     indentWithTabs: true, // Remove trailing comma just to be safe
                 });
 
-                CodeEditor.on("change", () => {
-                    this.defaults.code = CodeEditor.doc.getValue();
-                });
-
                 Editor.Modal.open({
-                    title: 'Custom Code',
+                    title: 'PHP Code',
                     content: content[0],
                 });
 
                 CodeEditor.refresh();
+
+                $(content).find("button").on("click", () => {
+                    this.saveCode(CodeEditor.doc.getValue());
+                })
             },
 
-            watching() {
+            phprender() {
 
-                this.isOnWatching = true;
-                const ModalEl = Editor.Modal.modal.$el;
-                (new MutationObserver((mutations) => {
-                    Editor.selectRemove(this);
-                })).observe(ModalEl[0], {
-                    attributes: true
+                const endpoint = trimEnd(decodeURIComponent(Merapi.getCookie("fm-adm-pth")), "/") + "/codeblock/static-compile";
+                const form = new FormData();
+                form.append("code", this.attributes.code);
+
+                Merapi.post(endpoint, form).then(res => {
+                    if (res.data.output) {
+                        this.view.el.innerHTML = res.data.output;
+                    }
+                }).catch(err => {
+                    this.view.el.innerHTML = err.responseText || err;
+                })
+            },
+
+            saveCode(value) {
+
+                this.attributes.code = value;
+                Editor.store();
+                this.phprender();
+            }
+        },
+
+        view: {
+            init() {
+                $(this.el).on("dblclick", () => {
+                    this.model.codeEdit();
+                });
+
+                this.model.phprender();
+
+                Editor.on('run:core:preview', () => {
+                    $(this.el).css({
+                        "display": "unset",
+                        "padding": "unset",
+                        "border": "unset"
+                    })
+                });
+
+                Editor.on('stop:core:preview', () => {
+                    $(this.el).css({
+                        "display": "block",
+                        "padding": "10px",
+                        "border": "3px red dashed"
+                    })
                 });
             }
         },
 
-        view: {},
     }
 
-    Editor.DomComponents.addType('custom-code', customCodeType);
+    Editor.DomComponents.addType('php-code', customCodeType);
+
 
     const bm = Editor.BlockManager;
-
-    bm.add('custom-code', {
-        label: 'Custom Code',
+    bm.add('php-code', {
+        label: 'PHP Code',
         content: {
-            type: 'custom-code',
-            content: 'Hello, world!',
-            style: { padding: '10px', backgroud: 'black' },
+            type: 'php-code',
+            style: {
+                display: "block",
+                padding: "10px",
+                border: "3px red dashed"
+            },
         },
-        category: 'Basic',
-        attributes: {
-            customCode: 'Insert ...',
-        },
+        category: 'Code',
     });
 }
-
-$(document).on("DOMContentLoaded", function () {
-
-    $("customcode").each(function () {
-
-        let $this = $(this);
-
-        $this.on("click", function () {
-            console.log('block', $this);
-        })
-    })
-
-})
-
-
 
 export default CodeBlock;

@@ -12,10 +12,10 @@ $(document).on("ajaxSend", function (e) {
 
 function createXmlHttpRequest() {
 
-    if (isOnAjax) {
-        Toast.create('Please wait...', 'hsl(51, 50%, 45%)', 10);
-        return false;
-    }
+    // if (isOnAjax) {
+    //     Toast.create('Please wait...', 'hsl(51, 50%, 45%)', 10);
+    //     return false;
+    // }
 
     isOnAjax = true;
 
@@ -354,7 +354,6 @@ Toast.control = function () {
         posY = Y
     }
 }
-
 
 function getRequest(url) {
 

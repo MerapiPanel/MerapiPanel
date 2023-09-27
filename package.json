@@ -15,17 +15,17 @@
     "build": "webpack"
   },
   "dependencies": {
+    "@truenorthtechnology/grapesjs-code-editor": "^0.1.4",
     "autoprefixer": "^10.4.16",
+    "bootstrap": "^5.3.2",
     "grapesjs": "^0.21.7",
     "grapesjs-blocks-basic": "^1.0.2",
-    "grapesjs-plugin-ckeditor": "^1.0.1",
     "grapesjs-plugin-forms": "^2.0.6",
+    "grapesjs-script-editor": "^1.0.3",
     "grapesjs-tailwind": "^1.0.10",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21",
     "lodash-webpack-plugin": "^0.11.6",
-    "quill": "^1.3.6",
-    "quill-image-resize": "^3.0.9",
     "rasterizehtml": "^1.3.1",
     "style-loader": "^3.3.3",
     "tailwindcss": "^3.3.3"
