@@ -7,9 +7,11 @@ use MerapiPanel\Core\Mod\Proxy;
 
 class Box
 {
+
     protected bool $debug;
     protected $stack = [];
     protected Config $cog;
+    protected Event $event;
 
 
     final public function setConfig(string $fileYml)
@@ -66,6 +68,12 @@ class Box
         return $instance;
     }
 
+
+    final public function getEvent()
+    {
+        if (!isset($this->event)) $this->event = new Event();
+        return $this->event;
+    }
 
 
     public function __registerController()

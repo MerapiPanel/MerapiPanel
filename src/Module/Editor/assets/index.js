@@ -5,14 +5,13 @@ import grapesjs from "grapesjs";
 import gjsBasic from 'grapesjs-blocks-basic';
 import gjsForms from 'grapesjs-plugin-forms';
 import gjsScript from 'grapesjs-script-editor';
-import gjsEdit from "./plugins/codeEdit/index.js";
+import gjsTailwind from "grapesjs-tailwind";
+import moduleLoader from "./plugins/moduleLoader/index.js";
 
 import 'grapesjs/dist/css/grapes.min.css';
 
-
 import merapi from "../../../base/assets/merapi.js";
 import CodeBlock from "../../CodeBlock/assets/codeBlock.js";
-import tailwindPlugin from "./plugins/bootstrap/index.js";
 
 function templateEditor(options = {
     id: null,
@@ -72,7 +71,7 @@ function templateEditor(options = {
         fromElement: true,
         container: '#gjs',
         height: '100vh',
-        plugins: [gjsBasic, gjsForms, CodeBlock, gjsScript, gjsEdit],
+        plugins: [moduleLoader, gjsBasic, gjsForms, gjsScript, gjsTailwind, CodeBlock],
 
         storageManager: {
             autoload: false
@@ -230,6 +229,13 @@ function templateEditor(options = {
 
             // sender && sender.set('active', 0); // turn off the button
 
+            editor.runCommand('gethtmltwig', {
+                htmlTwig: (data) => {
+                    console.log(data);
+                }
+            })
+
+            
             const content = $(
                 `<div class='py-4'>
                 <div class='mb-3'>
@@ -298,7 +304,7 @@ function templateEditor(options = {
             editor.store();
             //storing values to variables
             var htmldata = editor.getHtml();
-            var cssdata = editor.getCss();
+            var cssdata  = editor.getCss();
             var tailwindcss = "";
 
             editor.runCommand('get-tailwindCss', {
@@ -306,6 +312,8 @@ function templateEditor(options = {
                     tailwindcss = e;
                 }
             });
+
+            
 
 
             var form = new FormData();

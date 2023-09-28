@@ -48,7 +48,7 @@ final class Proxy
 
             $reflection = new \ReflectionClass($this->classInstance);
             $construct = $reflection->getConstructor();
-            
+
             if ($construct) {
 
                 $classParams     = $construct->getParameters();
@@ -112,6 +112,12 @@ final class Proxy
     public function __call($name, $arguments)
     {
 
+
+        $classInstance = str_replace("merapipanel", "", strtolower($this->classInstance));
+        $eventKey = strtolower(ltrim(rtrim( str_replace("\\", ":", $classInstance . "\\" . $name), ":"), ":"));
+     
+        $this->box->getEvent()->notify($eventKey);
+        
         if (method_exists($this->instance, $name)) {
 
             return call_user_func_array([$this->instance, $name], $arguments);
@@ -179,7 +185,7 @@ final class Proxy
             if (isset($array["description"])) {
                 $this->meta["description"] = $array["description"];
             }
-            if(isset($array["image"]) && !empty($array["image"])) {
+            if (isset($array["image"]) && !empty($array["image"])) {
                 $this->meta["image"] = $array["image"];
             }
         }

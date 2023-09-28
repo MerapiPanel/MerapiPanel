@@ -14,7 +14,10 @@ class Admin extends Module {
         return $box->Module_Panel()->adminLink('/filemanager/upload'); 
     }
 
+
     public function fetchJsonEndpoint() {
+        
        return $this->getBox()->Module_Panel()->adminLink('/filemanager/fetchJson');
     }
+
 }

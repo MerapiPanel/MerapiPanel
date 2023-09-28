@@ -21,17 +21,22 @@ const CodeBlock = function (Editor) {
             // Default properties
             defaults: {
                 tagName: 'phpcode',
+                resizable: true,
                 droppable: false, // Can't drop other elements inside
                 style: {
                     display: "block",
                     padding: "10px",
-                    border: "3px red dashed"
+                    border: "3px red dashed",
+                    overflow: "auto",
                 },
                 code: "<?php\r\necho \"Hello, world!\";\r\n?>",
                 traits: []
             },
 
-            init() { },
+            init() { 
+
+                console.log(this);
+            },
 
             updated(property, value, prevValue) {
 
@@ -130,7 +135,8 @@ const CodeBlock = function (Editor) {
             style: {
                 display: "block",
                 padding: "10px",
-                border: "3px red dashed"
+                border: "3px red dashed",
+                overflow: "auto",
             },
         },
         category: 'Code',

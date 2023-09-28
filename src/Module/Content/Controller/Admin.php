@@ -19,13 +19,13 @@ class Admin extends Module
     function register($router)
     {
 
+        $this->getBox()->getEvent()->addListener("module:editor:loadcomponent", [$this, "initMeta"]);
+
         $panel = $this->box->Module_Panel();
 
-
-
         $index =  $router->get("/content", "index", self::class);
-        $list = $router->get("/content/list", "list", self::class);
-        $new =  $router->get("/content/create", "createNewContent", self::class);
+        $list  = $router->get("/content/list", "list", self::class);
+        $new   =  $router->get("/content/create", "createNewContent", self::class);
 
         $panel->addMenu([
             "name" => "Content",
@@ -47,9 +47,27 @@ class Admin extends Module
         ]);
     }
 
-    function index($view)
+    function initMeta($reflection)
     {
 
+        $reflection[] = [
+            "id"      => "content_listCurrent",
+            "label"   => "Content list",
+            "content" => "<ul><li>Content 1</li><li>Content 2</li></ul>",
+            "media"   => "<i style='padding: 1.2rem; font-size: 2rem;' class='fa-solid fa-bars-staggered'></i>",
+            "traits"  => [
+                [
+                    "type"  => "number",
+                    "label" => "Max length",
+                ]
+            ],
+        ];
+
+        return $reflection;
+    }
+
+    function index($view)
+    {
         return $view->render("index.html.twig");
     }
 
