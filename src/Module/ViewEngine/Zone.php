@@ -25,25 +25,44 @@ class Zone
         return $this->box;
     }
 
-
-
-
     public function __get($name)
     {
 
         $parts = array_values(array_filter(explode('_', $name)));
         $module = $parts[0];
         unset($parts[0]);
+
+        $component = false;
+        if (isset($parts[1]) && $parts[1] === "component") {
+            $component = true;
+            unset($parts[1]);
+        }
+
         $method = implode('_', $parts);
 
-        $module = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Api\\" . ucfirst($this->zone);
-        
+        $module = "MerapiPanel\\Module\\" . ucfirst($module) . ($component ? "\\View\\Component" : "\\Api\\" . ucfirst($this->zone));
+
         $instance = $this->box->$module();
         return $instance->$method();
     }
+
+
     public function __isset($name)
     {
         return true;
+    }
+
+
+
+    public function __call($name, $arguments)
+    {
+
+        [$module, $class, $method] = explode('_', $name);
+        $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\View\\" . ucfirst($class);
+        $module = $this->box->$classNames();
+        $module->setPayload($arguments[0]);
+
+        return $module->$method();
     }
 
     public function __toString()

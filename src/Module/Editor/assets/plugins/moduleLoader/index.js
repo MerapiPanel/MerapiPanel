@@ -103,7 +103,7 @@ export default (editor, opts = {}) => {
                     let params = {};
                     this.getTraits().map(trait => {
 
-                        let name  = trait.getName();
+                        let name = trait.getName();
                         let value = trait.getValue();
                         params[name] = value;
 
@@ -111,7 +111,12 @@ export default (editor, opts = {}) => {
                     });
 
                     $.post(_endpoint, params).then(res => {
-                        console.log(res);
+
+                        let obj = Object.assign({ data: { output: "" } }, res);
+
+                        console.log(obj);
+
+                        this.set("content", obj.data.output);
                     })
 
                     console.log(this.getAttributes())

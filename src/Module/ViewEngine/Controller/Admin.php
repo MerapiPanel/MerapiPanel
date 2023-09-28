@@ -2,10 +2,13 @@
 
 namespace MerapiPanel\Module\ViewEngine\Controller;
 
+use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Module\ViewEngine\Abstract\ViewComponent;
+use MerapiPanel\Module\ViewEngine\Zone;
 use MerapiPanel\Utility\Http\Request;
+use Twig\Loader\ArrayLoader;
 
-class Admin
+class Admin extends Module
 {
 
     function register($router)
@@ -33,7 +36,7 @@ class Admin
 
             if (class_exists($className)) {
 
-                $instance     = new $className(ViewComponent::COMPONENTMODE_EDIT);
+                $instance     = new $className();
                 $components[] = [
                     "name" => "Module " . $module_name,
                     "components" => $instance->getAvailableMethods()
@@ -50,20 +53,38 @@ class Admin
     }
 
 
+
     function staticRender(Request $request = null)
     {
+        ob_start();
 
-        
-        $id = $request->getParam("id");
+        $id   = $request->getParam("id");
         $body = $request->getRequestBody();
+
+        $params = json_encode($body);
+
+        $loader = new ArrayLoader([
+            "template" => "{{ guest.$id($params) | raw }}"
+        ]);
+
+        // Initialize the Twig environment
+        $twig = new \Twig\Environment($loader, []);
+
+        $guest = new Zone("guest");
+        $guest->setBox($this->getBox());
+
+        $twig->addGlobal("guest", $guest);
+        $htmlString = $twig->render('template', []);
+
+        $string =  ob_get_clean();
 
 
         return [
             "code"    => 200,
             "message" => "Ok",
             "data"    => [
-                "id" => $id,
-                "body" => $body
+                "string" => $string,
+                'output' => $htmlString
             ]
         ];
     }

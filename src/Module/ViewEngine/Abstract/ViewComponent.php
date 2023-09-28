@@ -8,17 +8,19 @@ use Twig\Extension\AbstractExtension;
 class ViewComponent extends AbstractExtension
 {
 
-    const COMPONENTMODE_EDIT = "edit";
-    const COMPONENTMODE_VIEW = "view";
+    protected $payLoad = false;
 
-    protected $mode;
-
-    public function __construct($mode = self::COMPONENTMODE_VIEW)
+    public function setPayload($payload)
     {
-        $this->mode = $mode;
+        $this->payLoad = $payload;
     }
 
-    public function getFilters()
+    public function getPayload()
+    {
+        return $this->payLoad;
+    }
+
+    public function getFunctions()
     {
 
         $thisMethod = get_class_methods($this);
@@ -26,15 +28,10 @@ class ViewComponent extends AbstractExtension
 
         $regs = [];
         foreach ($functions as $function) {
-            $regs[] = new \Twig\TwigFilter("$function", [$this, $function]);
+            $regs[] = new \Twig\TwigFunction("$function", [$this, $function]);
         }
 
         return $regs;
-    }
-
-    public function getAccessMode()
-    {
-        return $this->mode;
     }
 
     public function getAvailableMethods()

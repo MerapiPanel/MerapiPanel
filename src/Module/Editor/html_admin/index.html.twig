@@ -32,16 +32,14 @@
 
     {% block javascripts %}
     {{ parent() }}
-
-    {% if template %}
     <script>
         $(() => {
             MERAPI.Editor.init({
-                id: "{{ template.id }}",
-                name: "{{template.name}}",
-                description: "{{template.description}}",
-                url: "{{ ('template/view/'~template.id) | admin_url }}",
-                save: "{{ ('template/save') | admin_url }}",
+                id: null,
+                endpoint: {
+                    load: "{{ ('template/view') | admin_url }}",
+                    save: "{{ ('template/save') | admin_url }}"
+                },
                 assets: {
                     url: "{{ admin.FileManager_fetchJsonEndpoint }}",
                     name: "files",
@@ -50,21 +48,6 @@
             });
         })
     </script>
-    {% else %}
-    <script>
-        $(() => {
-            MERAPI.Editor.init({
-                
-                save: "{{ ('template/save') | admin_url }}",
-                assets: {
-                    url: "{{ admin.FileManager_fetchJsonEndpoint }}",
-                    name: "files",
-                    upload: "{{ admin.FileManager_uploadEndpoint }}",
-                }
-            });
-        })
-    </script>
-    {% endif %}
 
     {% endblock %}
 

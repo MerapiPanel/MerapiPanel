@@ -14,7 +14,7 @@ class Component extends ViewComponent
      *      <li>Content 2</li>
      *  </ul>
      * @label Content list
-     * @media <i class='fa-solid fa-bars-staggered'></i>
+     * @media <i style='font-size: 2rem; padding: 1rem' class='fa-solid fa-bars-staggered'></i>
      * @category Content
      * @return string
      */
@@ -23,5 +23,23 @@ class Component extends ViewComponent
         'ASC'
     ], $limit = 10)
     {
+
+
+        if ($this->getPayload()) {
+
+            $data  = $this->getPayload();
+            $order = $data['order'];
+            $limit = (int)$data['limit'];
+
+            $content = "<ul>";
+            for ($i = 0; $i < ($limit < 3 ? 3 : ($limit > 10 ? 10 : $limit)); $i++) {
+                $content .= "<li>Content " . $i + 1 . "</li>";
+            }
+            $content .= "</ul>";
+
+            return $content;
+        }
+
+        return "Content list";
     }
 }
