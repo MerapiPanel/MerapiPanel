@@ -25,7 +25,7 @@ class Service extends Module
         $template = $result->fetch(PDO::FETCH_ASSOC);
 
         if (!$template) {
-            throw new Exception("Template not found", 404);
+            return null;
         }
         $html =  "/contents/" . $id . "/index.html.twig";
         $css  = "/contents/" . $id . "/style.css";

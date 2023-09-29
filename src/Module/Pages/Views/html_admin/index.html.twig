@@ -19,40 +19,44 @@
     {% set pages = admin.pages_getall %}
     {% if pages %}
         {% for page in pages %}
-            <section class="bg-white shadow px-6 py-2 rounded relative mb-4 max-w-[800px]">
+            <section class="bg-white shadow px-6 py-3 rounded relative mb-4 max-w-[800px]">
                 <header class="flex justify-between items-center">
-                    <h4 class="text-lg">Title : {{ page.title }}</h4>
+                    <h4 class="text-lg font-bold">Title : {{ page.title }}</h4>
                 </header>
                 <article>
-                    <div>
-                        <i class="fa-solid fa-link text-slate-400"></i>
-                        <span>{{ page.slug }}</span>
+                    <div class="flex flex-wrap">
+                        <div class="w-full max-w-[350px]">
+                            <span>{{ page.slug }}</span>
+                        </div>
+                        {% if page.template %}
+                            <div class="w-full max-w-[350px]">
+                                <p>Mounted to template <b>{{ page.template.name }}</b><small class="ml-2"><i>{{ page.template.id }}</i></small></p>
+                            </div>
+                        {% endif %}
                     </div>
                     <small>{{ page.id }}</small>
                 </article>
-
-                
-
                 <div class="absolute right-2 top-0">
                     <div class="dropdown">
-
                         <button data-act-trigger="dropdown" class="dropdown-toggle">
                             <i class="fa-solid fa-ellipsis"></i>
                         </button>
-    
                         <ul class="dropdown-menu">
                             <li class="dropdown-item">
-                                <button>
+                                <button type="button" onclick="assignTemplate({
+                                    title: '{{ page.title }}',
+                                    slug: '{{ page.slug }}',
+                                    id: '{{ page.id }}',
+                                })">
                                     <i class="fa-solid fa-star-of-life"></i> Mount Template
                                 </button>
                             </li>
                             <li class="dropdown-item">
-                                <a type="button" class="text-red-500">
+                                <button type="button" class="text-red-500" onclick="deletePage('{{ page.id }}')">
                                     <i class="fa-solid fa-trash"></i> Delete Page
-                                </a>
+                                </button>
                             </li>
                         </ul>
-    
                     </div>
                 </div>
             </section>
@@ -73,10 +77,34 @@
     function createNewPage() {
 
         console.log(MERAPI)
-        MERAPI.pages.createPage({
+        MERAPI.Pages.createPage({
             template: "{{ '/template/fetchall' | admin_url | url }}",
             endpoint: "{{ '/pages/endpoint' | admin_url | url }}"
         });
+    }
+
+    function assignTemplate(args = {}) {
+        MERAPI.Pages.assignTemplate({
+            title: args.title,
+            slug: args.slug,
+            id: args.id,
+            endpoint: {
+                save:  "{{ '/pages/endpoint/assign' | admin_url | url }}",
+                template: "{{ '/template/fetchall' | admin_url | url }}"
+            }
+        });
+    }
+
+    function deletePage(id) {
+        const modal = MERAPI.createModal('Delete page', 'Are you sure you want to delete this page?');
+        modal.setAction('+', {
+            text: "Yes",
+            class: "btn btn-danger",
+            callback: function () {
+                modal.hide();
+            }
+        })
+        modal.show();
     }
 </script>
 {% endblock %}

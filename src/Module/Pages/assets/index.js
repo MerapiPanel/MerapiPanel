@@ -87,9 +87,90 @@ const createPage = (args = {}) => {
 }
 
 
+const assignTemplate = (args = {}) => {
+
+    const options = Object.assign({
+        id: null,
+        title: null,
+        slug: null,
+        endpoint: {
+            save: null,
+            template: null
+        }
+    }, args);
+
+
+    if (!options.id) {
+        Merapi.toast("Action error because no page id passed", 5, 'text-danger');
+        return;
+    }
+    if (!options.endpoint) {
+        Merapi.toast("Action error because no endpoint passed", 5, 'text-danger');
+        return;
+    }
+    if (!options.endpoint.save) {
+        Merapi.toast("Action error because no save endpoint passed", 5, 'text-danger');
+        return;
+    }
+    if (!options.endpoint.template) {
+        Merapi.toast("Action error because no template endpoint passed", 5, 'text-danger');
+        return;
+    }
+
+
+    const Modal = Merapi.createModal('<i class="fa-solid fa-code-pull-request"></i> Assign Template');
+    const content = $(Modal.container.body);
+    content.append(`<div class='mb-3'><div class='mb-4 flex'><i class="text-3xl rotate-[-30deg] p-2 fa-solid fa-thumbtack"></i><div class='ps-3'><h3>page: ${options.title}</h3><small>${options.slug}</small></div></div><p class='mb-2'>Chose template</p><div class='max-h-[50vh] overflow-auto p-1' id='template-wrapper'></div></div>`);
+
+    Merapi.get(options.endpoint.template).then((response) => {
+
+        const wrapper = content.find("#template-wrapper");
+        const templates = response.data.templates;
+
+        for(let i in templates) {
+
+            const template = templates[i];
+            const element  = $(`<label class='px-5 py-2 shadow mb-3 flex items-center'>
+            <div><h4>${template.name}</h4><p>${template.description}</p><small>${template.id}</small></div>
+            <input class='!w-[1.3rem] !h-[1.3rem] ms-auto' type='radio' name='template' value='${template.id}'>
+            </label>`);
+
+            wrapper.append(element);
+        }
+
+        Modal.setAction("+", {
+            text: "Assign",
+            class: "btn btn-primary",
+            callback: () => {
+                const template = wrapper.find("input:checked").val();
+
+                if(!template) {
+                    Merapi.toast("Please choose template", 5, 'text-warning');
+                    return;
+                }
+
+                const form = new FormData();
+                form.append("template_id", template);
+                form.append("page_id", options.id);
+
+                Merapi.post(options.endpoint.save, form).then((data, text, xhr) => {
+                    if (xhr.status === 200) {
+                        Merapi.toast(data.message, 5, 'text-success');
+                        window.location.reload();
+                    } else {
+                        Merapi.toast(data.message, 5, 'text-danger');
+                    }
+                })
+            }
+        })
+
+        Modal.show();
+    })
+}
 
 const pageManager = {
-    createPage: createPage
+    createPage: createPage,
+    assignTemplate: assignTemplate
 };
 
-Merapi.assign("pages", pageManager);
+Merapi.assign("Pages", pageManager);

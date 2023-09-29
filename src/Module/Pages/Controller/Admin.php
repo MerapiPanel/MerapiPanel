@@ -11,6 +11,7 @@ class Admin extends Module
     {
 
         $router->post('pages/endpoint', 'save', self::class);
+        $router->post('pages/endpoint/assign', 'assignTemplate', self::class);
 
         $router->get('pages', 'index', self::class);
         $router->get('pages/all', 'all', self::class);
@@ -23,22 +24,6 @@ class Admin extends Module
             'name' => 'Pages',
             'icon' => 'fa-solid fa-pager',
             'link' => $site->adminLink('pages')
-        ]);
-
-        $panel->addMenu([
-            'order' => 1,
-            'parent' => 'Pages',
-            'name' => "List Page",
-            "icon" => 'fa-solid fa-bars-staggered',
-            'link' => $site->adminLink('pages/all')
-        ]);
-
-        $panel->addMenu([
-            'order' => 2,
-            'parent' => 'Pages',
-            'name' => "New Page",
-            "icon" => "fa-solid fa-plus",
-            'link' => $site->adminLink('pages/new')
         ]);
     }
 
@@ -64,6 +49,7 @@ class Admin extends Module
 
     public function save($view, $request)
     {
+
         $BODY = $request->getRequestBody();
         if (!isset($BODY['title']) || empty($BODY['title'])) {
             return [
@@ -105,5 +91,39 @@ class Admin extends Module
                 ]
             ];
         }
+    }
+
+
+    function assignTemplate($view, $request)
+    {
+
+        $BODY = $request->getRequestBody();
+        if (!isset($BODY['page_id']) || empty($BODY['page_id'])) {
+            return [
+                "code" => 400,
+                "message" => "Id is required"
+            ];
+        }
+
+        if (!isset($BODY['template_id']) || empty($BODY['template_id'])) {
+            return [
+                "code" => 400,
+                "message" => "Template is required"
+            ];
+        }
+
+        $service = $this->service();
+        if($service->assignTemplate($BODY['page_id'], $BODY['template_id'])) {
+
+            return [
+                "code" => 200,
+                "message" => "Template assigned successfully"
+            ];
+        } 
+
+        return [
+            "code" => 400,
+            "message" => "Error assigning template"
+        ];
     }
 }

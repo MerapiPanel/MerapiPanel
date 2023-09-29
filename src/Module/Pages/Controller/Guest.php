@@ -15,7 +15,28 @@ class Guest extends Module {
 
     function loadPage($view, $request) {
 
+        $slug = $request->getParam("slug");
+        $page = $this->service()->getPageBySlug($slug);
 
-        return $view->render("page.html.twig");
+        if($page) {
+
+            if($page['template_id']) {
+
+                $template = $this->box->Module_Template()->getTemplate($page['template_id']);
+                if($template) {
+
+                    return $view->render("page.html.twig", [
+                        "page" => $page,
+                        "template" => $template
+                    ]);
+                }
+            }
+
+            return $view->render("page.html.twig", [
+                "page" => $page
+            ]);
+        }
+
+        return $view->render("404.html.twig");
     }
 }

@@ -54,7 +54,7 @@ class Admin extends Module
 
 
 
-    function staticRender(Request $request = null)
+    function staticRender($view, $request = null)
     {
         ob_start();
 

@@ -261,14 +261,14 @@ class Router extends Component
     protected function extractRouteParams($route, $path)
     {
 
+        if (strlen($path) > 1 && substr($path, -1) !== "/") $path .= "/";
+        if (strlen($route) > 1 && substr($route, -1) !== "/") $route .= "/";
+    
         $pattern = preg_replace('/\//', '\/', $route);
+        $pattern = '/^' . preg_replace('/\{(.*?)\}/', '(.*?)', $pattern) . '$/';
 
-        $pattern = '/^' . preg_replace('/\{(.+?)\}/', '(.+?)', $pattern) . '$/';
-
-        $path = $path[strlen($path) - 1] !== "/" ? $path . "/" : $path;
         // Use preg_match to check if the path matches the pattern
         preg_match($pattern, $path, $matches);
-
         // Remove the first element, as it contains the full match
         array_shift($matches);
 

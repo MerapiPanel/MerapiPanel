@@ -69,6 +69,8 @@ class Admin extends Module
         $id = $request->getQuery("id");
         $service = $this->service();
 
+       print_r($request);
+
         return $view->render("view.html.twig", [
             "template" => $service->getTemplate($id)
         ]);
@@ -118,7 +120,7 @@ class Admin extends Module
 
 
 
-    public function saveTemplate(Request $request)
+    public function saveTemplate($view, Request $request)
     {
 
         $panel = $this->box->Module_Panel();
@@ -214,7 +216,7 @@ class Admin extends Module
 
 
 
-    function deleteTemplate($request)
+    function deleteTemplate($view, $request)
     {
 
         $BODY = $request->getRequestBody();

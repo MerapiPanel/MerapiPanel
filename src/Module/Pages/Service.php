@@ -39,6 +39,19 @@ class Service extends Module
 
 
 
+    public function assignTemplate($page_id, $template_id)
+    {
+
+        $SQL = "UPDATE `pages` SET `template_id` = :template_id WHERE `id` = :page_id";
+        $db = $this->getDatabase();
+
+        return $db->runQuery($SQL, [
+            "page_id" => $page_id,
+            "template_id" => $template_id
+        ]);
+    }
+
+
     public function fetchAll()
     {
 
@@ -49,10 +62,30 @@ class Service extends Module
         $stack =  $db->runQuery($SQL)->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($stack as $key => $value) {
+
             $stack[$key]['slug'] = $this->box->Module_Site()->createLink("/page/" . $value['slug']);
+
+            if(isset($value['template_id'])) {
+                $stack[$key]['template'] = $this->box->Module_Template()->getTemplate($value['template_id']);
+            }
         }
         return $stack;
     }
+
+
+
+    public function getPageBySlug($slug)
+    {
+
+        $db = $this->getDatabase();
+        $SQL = "SELECT * FROM `pages` WHERE `slug` = :slug";
+        $result = $db->runQuery($SQL, [
+            "slug" => $slug
+        ]);
+
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     private function validateTable($db)
     {
