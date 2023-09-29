@@ -7,7 +7,7 @@ export default (editor, opts = {}) => {
     var comStack = [];
     const bm = editor.BlockManager;
 
-    editor.Commands.add('gethtmltwig', {
+    editor.Commands.add('get-html-twig', {
         run: function (editor, sender, opts = {}) {
 
             let twigStack = [];
@@ -23,7 +23,7 @@ export default (editor, opts = {}) => {
                     }
                 }).join(",");
 
-                let twig = `{ guest.${component.model.attributes.type}({${params}}) }`;
+                let twig = `{{ guest.${component.model.attributes.type}({${params}}) }}`;
 
                 twigStack.push({
                     id: component.attr.id,
@@ -144,7 +144,7 @@ export default (editor, opts = {}) => {
 
                     editor.store();
 
-                    editor.on("run:gethtmltwig:before", () => {
+                    editor.on("run:get-html-twig:before", () => {
                         comStack.push(this);
                     })
                 },

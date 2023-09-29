@@ -4,5 +4,6 @@
 <head>
     {{ create_style(template.css) | raw }}
 </head>
-{{ template.html | raw }}
+{% include template.html %}
+
 </html>

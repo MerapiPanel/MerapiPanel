@@ -1,3 +1,4 @@
+import Merapi from "../../../../../base/assets/merapi";
 
 const StoragePlugin = (editor, args = {}) => {
 
@@ -23,20 +24,17 @@ const StoragePlugin = (editor, args = {}) => {
 
     editor.on("load", function () {
 
-        if (window.localStorage.getItem(storageKey)) {
+        if (args.id && args.endpoint) {
+
+            Merapi.get(urlWithParams(args.endpoint, { id: args.id })).then(res => {
+
+                editor.setComponents(res);
+            })
+        } else if (window.localStorage.getItem(storageKey)) {
 
             const project = JSON.parse(window.localStorage.getItem(storageKey));
             editor.setComponents(project);
 
-        } else {
-
-            if (args.id && args.endpoint) {
-
-                Merapi.get(urlWithParams(args.endpoint, { id: args.id })).then(res => {
-
-                    editor.setComponents(res);
-                })
-            }
         }
     })
 

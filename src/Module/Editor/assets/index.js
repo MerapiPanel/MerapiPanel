@@ -38,7 +38,7 @@ const ControlPanel = (editor, args = {}) => {
                                         param.value = params[param.name] || param.value;
                                         delete params[param.name];
                                     });
-                                    
+
                                     if (Object.keys(params).length > 0) {
                                         for (let x in params) {
                                             let val = params[x];
@@ -48,6 +48,17 @@ const ControlPanel = (editor, args = {}) => {
                                                 value: val
                                             })
                                         }
+                                    }
+
+                                    if (response.state) {
+                                        
+                                        const state = Object.assign({}, {
+                                            data: {},
+                                            title: '',
+                                            url: null
+                                        }, response.state);
+
+                                        window.history.replaceState(state.data, state.title, state.url);
                                     }
                                 }
                             });

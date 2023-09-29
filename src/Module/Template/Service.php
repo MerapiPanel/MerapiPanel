@@ -23,8 +23,12 @@ class Service extends Module
         ]);
 
         $template = $result->fetch(PDO::FETCH_ASSOC);
-        $html = file_get_contents(__DIR__ . "/Contents/" . $id . "/index.html");
-        $css  = file_get_contents(__DIR__ . "/Contents/" . $id . "/style.css");
+
+        if(!$template) {
+            throw new Exception("Template not found", 404);
+        }
+        $html =  "@guest>template/Contents/" . $id . "/index.html.twig";
+        $css  = __DIR__ . "/Contents/" . $id . "/style.css";
 
         $template['html'] = $html;
         $template['css'] = $css;
@@ -68,7 +72,7 @@ class Service extends Module
         if (!file_exists($save_path)) {
             mkdir($save_path);
         }
-        file_put_contents($save_path . "/index.html", $html);
+        file_put_contents($save_path . "/index.html.twig", $html);
         file_put_contents($save_path . "/style.css", $css);
 
         return true;
@@ -99,7 +103,7 @@ class Service extends Module
             mkdir($save_path);
         }
 
-        file_put_contents($save_path . "/index.html", $html);
+        file_put_contents($save_path . "/index.html.twig", $html);
         file_put_contents($save_path . "/style.css", $css);
 
         return true;

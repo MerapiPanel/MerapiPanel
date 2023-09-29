@@ -24,7 +24,7 @@ class Loader extends FilesystemLoader
 
             foreach ($scopes as $scope) {
 
-                $finalFile = $dir . '/' . $file . "/html_" . $scope . '/';
+                $finalFile = $dir . '/' . $file . "/views/html_" . $scope . '/';
 
                 if (file_exists($finalFile)) {
 

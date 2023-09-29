@@ -212,20 +212,22 @@ const CommandPlugin = (editor, args = {}) => {
             }
 
             editor.runCommand('get-tailwindCss', {
-                callback(e) {
+                callback(css) {
 
-                    editor.store();
-                    const htmldata = editor.getHtml();
-                    const cssdata = e;
+                    editor.runCommand('get-html-twig', {
+                        callback: (twig) => {
 
-                    sendToEndpoint({
-                        endpoint: options.endpoint,
-                        htmldata: htmldata,
-                        cssdata: cssdata,
-                        params: options.params,
-                        callback: options.callback
+                            editor.store();
+
+                            sendToEndpoint({
+                                endpoint: options.endpoint,
+                                htmldata: twig,
+                                cssdata: css,
+                                params: options.params,
+                                callback: options.callback
+                            })
+                        }
                     })
-
                 }
             });
         }

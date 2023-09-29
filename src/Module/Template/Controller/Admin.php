@@ -100,6 +100,7 @@ class Admin extends Module
     public function saveTemplate(Request $request)
     {
 
+        $panel = $this->box->Module_Panel();
         $service = $this->service();
         $BODY    = $request->getRequestBody();
 
@@ -116,19 +117,6 @@ class Admin extends Module
         $descript = $BODY['description'];
         $htmldata = $BODY['htmldata'];
         $cssdata  = $BODY['cssdata'];
-
-
-        return [
-            "code" => 200,
-            "message" => "Template created successfully",
-            "data" => [
-                "params" => [
-                    "name" => $name,
-                    "description" => $descript,
-                    "id" => $id
-                ]
-            ]
-        ];
 
 
         if (isset($BODY['id'])) {
@@ -148,9 +136,16 @@ class Admin extends Module
                 "code" => 200,
                 "message" => "Template created successfully",
                 "data" => [
-                    "name" => $name,
-                    "description" => $descript,
-                    "id" => $id,
+                    "params" => [
+                        "name" => $name,
+                        "description" => $descript,
+                        "id" => $id,
+                    ],
+                    "state" => [
+                        'data'  => [],
+                        'title' => "Edit Template",
+                        'url'   => $panel->adminLink("/template/edit/" . $id)
+                    ]
                 ]
             ];
         } else {
@@ -180,9 +175,11 @@ class Admin extends Module
                 "code" => 200,
                 "message" => "Template updated successfully",
                 "data" => [
-                    "name" => $opt['name'],
-                    "description" => $opt['description'],
-                    "id" => $opt['id'],
+                    "params" => [
+                        "name" => $opt['name'],
+                        "description" => $opt['description'],
+                        "id" => $opt['id'],
+                    ]
                 ]
             ];
         } else {

@@ -55,6 +55,11 @@
                         required: false,
                         placeholder: "Enter template description",
                         value: "{{ template.description }}"
+                    },
+                    {
+                        label: "Template Id",
+                        value: "{{ template.id }}",
+                        name: "id"
                     }
                 ],
                 endpoint: "{{ ('template/endpoint') | admin_url | url }}",

@@ -52,7 +52,7 @@ class Zone
     {
 
         [$module, $class, $method] = explode('_', $name);
-        $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\View\\" . ucfirst($class);
+        $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Views\\" . ucfirst($class);
         $module = $this->box->$classNames();
         $module->setPayload($arguments[0]);
 
