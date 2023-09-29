@@ -6,14 +6,65 @@
 {% endblock %}
 
 {% block subheader_actions %}
-<button type="button" onclick="createNewPage()" class="ms-auto bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
+<button type="button" onclick="createNewPage()"
+    class="ms-auto bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
     <i class="fa fa-plus"></i> new page
 </button>
 {% endblock %}
 
 {% block content %}
 
-{% endblock %}
+    <div class="mb-5"></div>
+
+    {% set pages = admin.pages_getall %}
+    {% if pages %}
+        {% for page in pages %}
+            <section class="bg-white shadow px-6 py-2 rounded relative mb-4 max-w-[800px]">
+                <header class="flex justify-between items-center">
+                    <h4 class="text-lg">Title : {{ page.title }}</h4>
+                </header>
+                <article>
+                    <div>
+                        <i class="fa-solid fa-link text-slate-400"></i>
+                        <span>{{ page.slug }}</span>
+                    </div>
+                    <small>{{ page.id }}</small>
+                </article>
+
+                
+
+                <div class="absolute right-2 top-0">
+                    <div class="dropdown">
+
+                        <button data-act-trigger="dropdown" class="dropdown-toggle">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+    
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item">
+                                <button>
+                                    <i class="fa-solid fa-star-of-life"></i> Mount Template
+                                </button>
+                            </li>
+                            <li class="dropdown-item">
+                                <a type="button" class="text-red-500">
+                                    <i class="fa-solid fa-trash"></i> Delete Page
+                                </a>
+                            </li>
+                        </ul>
+    
+                    </div>
+                </div>
+            </section>
+        {% endfor %}
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <p>You have no pages</p>
+            </div>
+        </div>
+    {% endif %}
+ {% endblock %}
 
 
 {% block javascripts %}

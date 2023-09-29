@@ -17,4 +17,20 @@ class Service
         $AppConfig = $this->box->getConfig();
         return rtrim($AppConfig['admin'], "/") . "/" . ltrim($path, "/");
     }
+
+
+    function createLink($path = "")
+    {
+
+        $parse = parse_url($path);
+
+        if (!isset($parse['host'])) {
+            $parse['host'] = $_SERVER['HTTP_HOST'];
+        }
+        if (!isset($parse['scheme'])) {
+            $parse['scheme'] = $_SERVER['REQUEST_SCHEME'];
+        }
+
+        return $parse['scheme'] . "://" . $parse['host'] . $parse['path'];
+    }
 }

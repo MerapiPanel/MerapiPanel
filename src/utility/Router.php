@@ -265,6 +265,7 @@ class Router extends Component
 
         $pattern = '/^' . preg_replace('/\{(.+?)\}/', '(.+?)', $pattern) . '$/';
 
+        $path = $path[strlen($path) - 1] !== "/" ? $path . "/" : $path;
         // Use preg_match to check if the path matches the pattern
         preg_match($pattern, $path, $matches);
 
@@ -274,7 +275,6 @@ class Router extends Component
         // Get the parameter names from the route
         preg_match_all('/\{([a-zA-Z0-9_\/.]+)\}/', $route, $paramNames);
         $paramNames = $paramNames[1];
-
 
         // Combine the parameter names with the matched values
         $routeParams = array_combine($paramNames, $matches);

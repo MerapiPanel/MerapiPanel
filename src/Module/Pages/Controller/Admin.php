@@ -65,5 +65,45 @@ class Admin extends Module
     public function save($view, $request)
     {
         $BODY = $request->getRequestBody();
+        if (!isset($BODY['title']) || empty($BODY['title'])) {
+            return [
+                "code" => 400,
+                "message" => "Title is required"
+            ];
+        }
+
+        if (!isset($BODY['slug']) || empty($BODY['slug'])) {
+            return [
+                "code" => 400,
+                "message" => "Slug is required"
+            ];
+        }
+
+
+        $title = $BODY['title'];
+        $slug = $BODY['slug'];
+
+        $service = $this->service();
+        $id = $service->createPage($title, $slug);
+
+        if (!$id) {
+
+            return [
+                "code" => 400,
+                "message" => "Error creating page"
+            ];
+        } else {
+            return [
+                "code" => 200,
+                "message" => "Page created successfully",
+                "data" => [
+                    "params" => [
+                        "title" => $title,
+                        "slug" => $slug,
+                        "id" => $id
+                    ]
+                ]
+            ];
+        }
     }
 }

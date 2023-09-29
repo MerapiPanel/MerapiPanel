@@ -142,7 +142,7 @@ input[type="radio"] {
 }
 
 .dropdown {
-    @apply relative flex flex-col justify-end;
+    @apply relative flex flex-col justify-end z-10;
 }
 .dropdown > [data-act-trigger] {
     @apply cursor-pointer ms-auto;
@@ -158,4 +158,7 @@ input[type="radio"] {
 .dropdown .dropdown-menu .dropdown-item {
     @apply px-4 py-2 hover:bg-slate-100 cursor-pointer;
     min-width: max-content;
+}
+[data-act-trigger="dropdown"] {
+    @apply cursor-pointer rounded-full p-[0.3rem] m-[0.3rem] hover:scale-125 hover:bg-white transition-all flex align-middle justify-center hover:shadow;
 }

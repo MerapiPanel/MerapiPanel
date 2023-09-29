@@ -70,7 +70,7 @@ const createPage = (args = {}) => {
             }
             const form = new FormData();
             form.append("title", name);
-            form.append("slug", slug);
+            form.append("slug", trim(slug.replace(/^\/page\//, ''), "-"));
 
             Merapi.post(options.endpoint, form).then((data, text, xhr) => {
                 if (xhr.status === 200) {
