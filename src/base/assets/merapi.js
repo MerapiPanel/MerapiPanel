@@ -252,6 +252,12 @@ const Toast = {};
 Toast.enable = true;
 Toast.create = function (text = "", textColor = "#0000ff45", seconds = 3) {
 
+    let unlimit = false;
+    if (seconds == null) {
+        seconds = 3;
+        unlimit = true;
+    }
+
     if (!Toast.enable) return;
     Toast.enable = false;
     setTimeout(() => Toast.enable = true, 400)
@@ -332,16 +338,21 @@ Toast.create = function (text = "", textColor = "#0000ff45", seconds = 3) {
     }, 50)
 
     let delay = 1000 * seconds;
-    let timeOut = setTimeout(() => {
-        toast.remove()
-        Toast.control()
-    }, delay)
+    if (!unlimit) {
+        let timeOut = setTimeout(() => {
+            toast.remove()
+            Toast.control()
+        }, delay)
+
+        close.on("click", () => {
+            toast.remove();
+            clearTimeout(timeOut)
+        })
+    }
 
     close.on("click", () => {
         toast.remove();
-        clearTimeout(timeOut)
     })
-
 }
 Toast.control = function () {
 

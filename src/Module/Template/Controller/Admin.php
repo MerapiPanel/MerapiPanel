@@ -26,7 +26,8 @@ class Admin extends Module
         $router->get("/template/edit/{id}/", "editTemplate", self::class);
         $router->get("/template/create", "createNewTemplate", self::class);
 
-        $router->post("/template/save", "saveTemplate", self::class);
+        $router->get("/template/endpoint", "fetchTemplate", self::class);
+        $router->post("/template/endpoint", "saveTemplate", self::class);
 
         $router->delete("/template/delete/", "deleteTemplate", self::class);
 
@@ -60,6 +61,16 @@ class Admin extends Module
     }
 
 
+    public function fetchTemplate($view, Request $request)
+    {
+
+        $id = $request->getQuery("id");
+        $service = $this->service();
+
+        return $view->render("view.html.twig", [
+            "template" => $service->getTemplate($id)
+        ]);
+    }
 
     public function viewTemplate($view, Request $request)
     {
@@ -105,6 +116,19 @@ class Admin extends Module
         $descript = $BODY['description'];
         $htmldata = $BODY['htmldata'];
         $cssdata  = $BODY['cssdata'];
+
+
+        return [
+            "code" => 200,
+            "message" => "Template created successfully",
+            "data" => [
+                "params" => [
+                    "name" => $name,
+                    "description" => $descript,
+                    "id" => $id
+                ]
+            ]
+        ];
 
 
         if (isset($BODY['id'])) {
@@ -178,7 +202,7 @@ class Admin extends Module
         $BODY = $request->getRequestBody();
         $id = $BODY['id'];
 
-        if(!$this->service()->deleteTemplate($id)){
+        if (!$this->service()->deleteTemplate($id)) {
             return [
                 "code" => 400,
                 "message" => "Error deleting template"

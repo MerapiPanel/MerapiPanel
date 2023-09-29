@@ -5,7 +5,10 @@
 .text-input {
     @apply bg-white shadow w-full text-slate-800 rounded py-2 px-4 border-[1px] border-slate-200 focus-visible:outline-none focus-visible:border-blue-500;
 }
-
+.text-input:disabled {
+    background: #ffffffdd;
+    color: #00000088;
+}
 textarea.text-input {
     @apply min-h-[2.5rem];
 }
@@ -138,18 +141,15 @@ input[type="radio"] {
     @apply absolute px-2 py-2 top-2 right-4 scale-100 hover:scale-[1.5] hover:text-red-400 transition-all;
 }
 
-
-
 .dropdown {
     @apply relative flex flex-col justify-end;
 }
-.dropdown>[data-act-trigger] {
+.dropdown > [data-act-trigger] {
     @apply cursor-pointer ms-auto;
 }
 
 .dropdown .dropdown-menu {
     @apply max-w-0 max-h-0 mx-3 bg-white overflow-hidden transition-all;
-
 }
 
 .dropdown.open .dropdown-menu {

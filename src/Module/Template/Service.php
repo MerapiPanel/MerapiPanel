@@ -13,6 +13,7 @@ class Service extends Module
 
     public function getTemplate($id)
     {
+
         $db = $this->getDatabase();
         $this->checkTable($db);
 

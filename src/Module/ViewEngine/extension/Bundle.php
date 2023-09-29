@@ -30,6 +30,7 @@ class Bundle extends \Twig\Extension\AbstractExtension
         return [
             new TwigFilter('admin_url', [$this, 'admin_url']),
             new TwigFilter('assets', [$this, 'assets']),
+            new TwigFilter('url', [$this, 'url'])
         ];
     }
 
@@ -51,7 +52,21 @@ class Bundle extends \Twig\Extension\AbstractExtension
     }
 
 
-    function admin_url($path) {
+    function url($path)
+    {
+        $parse = parse_url($path);
+        if (!isset($parse['scheme'])) {
+            $parse['scheme'] = $_SERVER['REQUEST_SCHEME'];
+        }
+        if (!isset($parse['host'])) {
+            $parse['host'] = $_SERVER['HTTP_HOST'];
+        }
+
+        return $parse['scheme'] . "://" . $parse['host'] . "/" . ltrim($parse['path'], "/");
+    }
+
+    function admin_url($path)
+    {
 
         $AppConfig = $this->box->getConfig();
         return rtrim($AppConfig['admin'], "/") . "/" . ltrim($path, "/");

@@ -32,15 +32,9 @@ class Zone
         $module = $parts[0];
         unset($parts[0]);
 
-        $component = false;
-        if (isset($parts[1]) && $parts[1] === "component") {
-            $component = true;
-            unset($parts[1]);
-        }
-
         $method = implode('_', $parts);
 
-        $module = "MerapiPanel\\Module\\" . ucfirst($module) . ($component ? "\\View\\Component" : "\\Api\\" . ucfirst($this->zone));
+        $module = "MerapiPanel\\Module\\" . ucfirst($module) .  "\\Api\\" . ucfirst($this->zone);
 
         $instance = $this->box->$module();
         return $instance->$method();
