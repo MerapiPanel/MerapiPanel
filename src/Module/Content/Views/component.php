@@ -33,7 +33,7 @@ class Component extends ViewComponent
 
             $content = "<ul>";
             for ($i = 0; $i < ($limit < 3 ? 3 : ($limit > 10 ? 10 : $limit)); $i++) {
-                $content .= "<li>Content " . $i + 1 . "</li>";
+                $content .= "<li><a href='#'>Content " .  $i + 1 . "</a></li>";
             }
             $content .= "</ul>";
 

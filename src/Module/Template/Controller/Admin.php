@@ -69,10 +69,17 @@ class Admin extends Module
         $id = $request->getQuery("id");
         $service = $this->service();
 
-       print_r($request);
+        $template = $service->getTemplate($id);
+
+        if(!$template){
+            return [
+                "code" => 404,
+                "message" => "Template not found"
+            ];
+        }
 
         return $view->render("view.html.twig", [
-            "template" => $service->getTemplate($id)
+            "template" => $template
         ]);
     }
 
@@ -97,6 +104,13 @@ class Admin extends Module
         $service = $this->service();
 
         $template = $service->getTemplate($id);
+
+        if(!$template){
+            return [
+                "code" => 404,
+                "message" => "Template not found"
+            ];
+        }
 
         return $view->render("view.html.twig", [
             "template" => [
