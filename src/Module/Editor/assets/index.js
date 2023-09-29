@@ -142,7 +142,7 @@ const initEditor = (args = {}) => {
             }
         },
         storageManager: {
-            autoload: true,
+            autoload: false,
             options: {
                 local: { key: `editing${args.id ? '-' + args.id : ''}` }
             }

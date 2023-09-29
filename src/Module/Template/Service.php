@@ -24,11 +24,11 @@ class Service extends Module
 
         $template = $result->fetch(PDO::FETCH_ASSOC);
 
-        if(!$template) {
+        if (!$template) {
             throw new Exception("Template not found", 404);
         }
-        $html =  "@guest>template/Contents/" . $id . "/index.html.twig";
-        $css  = __DIR__ . "/Contents/" . $id . "/style.css";
+        $html =  "/contents/" . $id . "/index.html.twig";
+        $css  = "/contents/" . $id . "/style.css";
 
         $template['html'] = $html;
         $template['css'] = $css;

@@ -14,19 +14,20 @@ export default (editor, opts = {}) => {
 
             comStack.forEach(function (component) {
 
-                let traits = component.model.attributes.traits;
+                let attr = component.model.getAttributes();
+                let traits = component.model.getTraits();
+
                 let params = traits.map(trait => {
-                    if (trait.name) {
-                        return `"${trait.name}":"${component.attr[trait.name] || ''}"`;
-                    } else {
-                        return `"${trait.attributes.name}":"${component.attr[trait.attributes.name] || ''}"`;
-                    }
+
+                    return `"${trait.getName()}":"${trait.getValue()}"`;
+
                 }).join(",");
 
-                let twig = `{{ guest.${component.model.attributes.type}({${params}}) }}`;
+              
+                let twig = `{{ guest.${component.model.attributes.type}({${params}}) | raw }}`;
 
                 twigStack.push({
-                    id: component.attr.id,
+                    id: attr.id,
                     twig: twig
                 });
             });
@@ -39,6 +40,7 @@ export default (editor, opts = {}) => {
             twigStack.forEach(function (twig) {
 
                 let div = doc.getElementById(twig.id);
+                if (!div) return;
                 let parent = div.parentNode;
                 div.parentNode.insertBefore(doc.createTextNode(twig.twig), div);
                 parent.removeChild(div);
@@ -88,6 +90,7 @@ export default (editor, opts = {}) => {
                     name: args.id,
                     content: "",
                     droppable: false,
+                    styleable: false
                 },
                 init() {
 
@@ -113,14 +116,8 @@ export default (editor, opts = {}) => {
                     $.post(_endpoint, params).then(res => {
 
                         let obj = Object.assign({ data: { output: "" } }, res);
-
-                        console.log(obj);
-
                         this.set("content", obj.data.output);
                     })
-
-                    console.log(this.getAttributes())
-                    console.log('update')
                 }
             },
 
@@ -142,6 +139,14 @@ export default (editor, opts = {}) => {
                         this.attr.id = this.generateRandomStringByTime();
                     }
 
+                    this.model.set("droppable", false);
+                    this.model.set("styleable", false);
+                    this.model.handleAttrChange();
+
+
+                    console.log(this)
+
+
                     editor.store();
 
                     editor.on("run:get-html-twig:before", () => {
@@ -158,6 +163,7 @@ export default (editor, opts = {}) => {
             label: args.model.label,
             media: args.model.media,
             content: {
+                droppable: false,
                 type: args.id,
                 content: args.model.content,
                 traits: (() => {
@@ -176,6 +182,11 @@ export default (editor, opts = {}) => {
 
 
 
+    editor.Commands.add('loaded-components', {
+        run: function (editor, sender, args) {
+            console.log("Components loaded successful");
+        }
+    })
 
     $.get(endpoint).then(res => {
 
@@ -198,5 +209,10 @@ export default (editor, opts = {}) => {
                 bm.add(component.id, createBlock(editor, component));
             }
         }
+
+        setTimeout(() => {
+            editor.runCommand('loaded-components');
+        }, 250);
+
     })
 }

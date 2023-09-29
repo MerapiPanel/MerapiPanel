@@ -28,11 +28,13 @@ const CommandPlugin = (editor, args = {}) => {
                 content: content.get(0),
                 attributes: { class: 'small-modal', style: 'backdrop-filter: blur(3px);' },
             });
-            content.find('.btn-primary').on('click', function () {
+            content.find('.flex>.btn').on('click', function () {
+                console.log("click")
                 ModalManager.close();
                 editor.DomComponents.clear(); // Clear components
                 editor.CssComposer.clear();  // Clear styles
                 editor.UndoManager.clear();
+                editor.runCommand('clear-storage');
                 Merapi.toast('Action completed', 5, 'text-success');
             })
         }

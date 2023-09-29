@@ -2,8 +2,10 @@
 <html lang="en">
 
 <head>
-    {{ create_style(template.css) | raw }}
+    <style>
+        {% include "@Template::"~template.css %}
+    </style>
 </head>
-{% include template.html %}
 
+{% include "@Template::"~template.html %}
 </html>

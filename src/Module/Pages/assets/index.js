@@ -5,7 +5,21 @@ import { trim } from "lodash";
 
 
 
-const createPage = () => {
+const createPage = (args = {}) => {
+
+    const options = Object.assign({
+        template: null,
+        endpoint: null
+    }, args);
+
+
+    if (options.template) {
+
+        Merapi.get(options.template).then((data) => {
+            console.log(data)
+        })
+
+    }
 
     var name = "", slug = "";
 
@@ -24,27 +38,49 @@ const createPage = () => {
     </div>`);
 
     $(container).find("#input-title").on("input", function () {
-        slug = trim($(this).val().replace(/[^a-z0-9]+/gi, '-').toLowerCase(), "-");
+        name = $(this).val();
+        slug = "/page/" + trim($(this).val().replace(/^\/page/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase(), "-");
         $(container).find("#input-slug").val(slug);
     })
     let delay = null;
     $(container).find("#input-slug").on("input", function () {
-        slug = $(this).val().replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+        slug = ($(this).val().replace(/^\/page/g, '').replace(/[^a-z0-9]+/gi, '-').trim().toLowerCase());
+        if (slug.charAt(0) == "-") slug = slug.substring(1);
+        slug = "/page/" + slug;
+
         $(this).val(slug);
 
         if (delay) clearTimeout(delay);
         delay = setTimeout(() => {
-            $(this).val(trim($(this).val().replace(/[^a-z0-9]+/gi, '-').toLowerCase(), "-"));
-        }, 1000);
+            slug = "/page/" + trim($(this).val().replace(/^\/page/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase(), "-");
+            $(this).val(slug);
+        }, 500);
     })
 
-    modal.container.body.append(container);
 
+    modal.container.body.append(container);
     modal.setAction("+", {
         text: "create",
         class: "btn btn-primary",
         callback: () => {
-            alert();
+
+            if (!name) {
+                Merapi.toast("Please enter title", 5, 'text-warning');
+                return;
+            }
+            const form = new FormData();
+            form.append("title", name);
+            form.append("slug", slug);
+
+            Merapi.post(options.endpoint, form).then((data, text, xhr) => {
+                if (xhr.status === 200) {
+                    Merapi.toast(data.message, 5, 'text-success');
+                    modal.hide();
+                    window.location.reload();
+                } else {
+                    Merapi.toast(data.message, 5, 'text-danger');
+                }
+            })
         }
     })
     modal.show();

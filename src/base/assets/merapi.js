@@ -184,7 +184,7 @@ function createModal(title, content, action = {
 
             btnPositive.text(opt.text ?? btnPositive.text());
             btnPositive.addClass(opt.class ?? btnPositive.attr('class'));
-            btnPositive.on('click', () => {
+            btnPositive.off('click').on('click', () => {
                 if (opt.callback) {
                     opt.callback();
                 } else {
@@ -194,7 +194,7 @@ function createModal(title, content, action = {
         } else if (act == 'negative' || act == '-') {
             btnNegative.text(opt.text ?? btnNegative.text());
             btnNegative.addClass(opt.class ?? btnNegative.attr('class'));
-            btnNegative.on('click', () => {
+            btnNegative.off('click').on('click', () => {
                 if (opt.callback) {
                     opt.callback();
                 } else {

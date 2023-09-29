@@ -24,18 +24,26 @@ const StoragePlugin = (editor, args = {}) => {
 
     editor.on("load", function () {
 
-        if (args.id && args.endpoint) {
+        console.log("Please wait...");
 
-            Merapi.get(urlWithParams(args.endpoint, { id: args.id })).then(res => {
+        editor.on("run:loaded-components", function () {
 
-                editor.setComponents(res);
-            })
-        } else if (window.localStorage.getItem(storageKey)) {
+            if (args.id && args.endpoint) {
 
-            const project = JSON.parse(window.localStorage.getItem(storageKey));
-            editor.setComponents(project);
+                Merapi.get(urlWithParams(args.endpoint, { id: args.id, editor: 1 })).then(res => {
 
-        }
+                    editor.setComponents(res);
+                    console.log("Load finish");
+
+                })
+            } else if (window.localStorage.getItem(storageKey)) {
+
+                const project = JSON.parse(window.localStorage.getItem(storageKey));
+                editor.setComponents(project);
+                console.log("Load finish");
+
+            }
+        })
     })
 
     editor.Commands.add('clear-storage', {

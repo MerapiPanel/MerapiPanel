@@ -51,12 +51,31 @@ class Zone
     public function __call($name, $arguments)
     {
 
+        $fetchMode = $_SERVER["HTTP_SEC_FETCH_MODE"] ?? "navigate";
+
         [$module, $class, $method] = explode('_', $name);
         $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Views\\" . ucfirst($class);
+
         $module = $this->box->$classNames();
         $module->setPayload($arguments[0]);
 
-        return $module->$method();
+        $output = $module->$method();
+
+        if (!isset($_GET['editor']) || (isset($_GET['editor']) && $_GET['editor'] != 1)) {
+
+            return $output;
+
+        } elseif (isset($_GET['editor']) && $_GET['editor'] == 1) {
+
+            $params = $module->getPayload();
+            $param = "";
+            foreach ($params as $key => $value) {
+                $param .= " $key=\"$value\"";
+            }
+            $output = "<div data-gjs-type=\"$name\" $param></div>";
+
+            return $output;
+        }
     }
 
     public function __toString()

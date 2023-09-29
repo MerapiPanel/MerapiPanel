@@ -10,6 +10,8 @@ class Admin extends Module
     public function register($router)
     {
 
+        $router->post('pages/endpoint', 'save', self::class);
+
         $router->get('pages', 'index', self::class);
         $router->get('pages/all', 'all', self::class);
         $router->get('pages/new', 'new', self::class);
@@ -56,5 +58,12 @@ class Admin extends Module
     public function new($view)
     {
         return $view->render("new.html.twig");
+    }
+
+
+
+    public function save($view, $request)
+    {
+        $BODY = $request->getRequestBody();
     }
 }

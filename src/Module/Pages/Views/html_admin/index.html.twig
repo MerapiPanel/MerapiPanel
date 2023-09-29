@@ -22,7 +22,10 @@
     function createNewPage() {
 
         console.log(MERAPI)
-        MERAPI.pages.createPage();
+        MERAPI.pages.createPage({
+            template: "{{ '/template/fetchall' | admin_url | url }}",
+            endpoint: "{{ '/pages/endpoint' | admin_url | url }}"
+        });
     }
 </script>
 {% endblock %}

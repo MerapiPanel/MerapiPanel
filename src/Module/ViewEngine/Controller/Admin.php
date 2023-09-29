@@ -22,12 +22,12 @@ class Admin extends Module
     public function index($view, $request)
     {
 
-        $root       = realpath(__DIR__ . "/../../") . "\**\View\Component.php";
+        $root       = realpath(__DIR__ . "/../../") . "\**\Views\Component.php";
         $components = [];
 
         foreach (glob($root) as $file) {
 
-            $className  = "MerapiPanel\Module\{**}\View\Component";
+            $className  = "MerapiPanel\Module\{**}\Views\Component";
 
             $file = str_replace("\\", "/", $file);
             $file = trim(str_replace(str_replace("\\", "/", realpath(__DIR__ . "/../../")), "", $file), "/");
@@ -64,7 +64,7 @@ class Admin extends Module
         $params = json_encode($body);
 
         $loader = new ArrayLoader([
-            "template" => "{{ guest.$id($params) | raw }}"
+            "template" => "{{ guest.$id($params, 1) | raw }}"
         ]);
 
         // Initialize the Twig environment

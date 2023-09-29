@@ -5,6 +5,7 @@ namespace MerapiPanel\Core\Mod;
 use Exception;
 use MerapiPanel\Box;
 use ReflectionClass;
+use ReflectionMethod;
 use Symfony\Component\Yaml\Yaml;
 
 final class Proxy
@@ -114,25 +115,14 @@ final class Proxy
 
 
         $classInstance = str_replace("merapipanel", "", strtolower($this->classInstance));
-        $eventKey = strtolower(ltrim(rtrim( str_replace("\\", ":", $classInstance . "\\" . $name), ":"), ":"));
-     
+        $eventKey = strtolower(ltrim(rtrim(str_replace("\\", ":", $classInstance . "\\" . $name), ":"), ":"));
+
         $this->box->getEvent()->notify($eventKey);
-        
+
         if (method_exists($this->instance, $name)) {
 
             return call_user_func_array([$this->instance, $name], $arguments);
         }
-
-
-        // if (class_exists($this->classInstance . "\\$name")) {
-
-        //     $className = $this->classInstance . "\\$name";
-
-        //     $instance = new Proxy($className, $arguments);
-        //     $instance->setBox($this->box);
-
-        //     return $instance;
-        // }
 
         throw new Exception("Method $name not found in " . $this->classInstance);
     }

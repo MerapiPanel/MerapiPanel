@@ -29,6 +29,8 @@ class Admin extends Module
         $router->get("/template/endpoint", "fetchTemplate", self::class);
         $router->post("/template/endpoint", "saveTemplate", self::class);
 
+        $router->get("/template/fetchall/", "fetchAll", self::class);
+
         $router->delete("/template/delete/", "deleteTemplate", self::class);
 
 
@@ -72,14 +74,33 @@ class Admin extends Module
         ]);
     }
 
+
+    public function fetchAll()
+    {
+
+        $service = $this->service();
+        return [
+            "code" => 200,
+            "data" => [
+                "templates" => $service->getAllTemplate()
+            ],
+            "message" => "Templates fetched successfully"
+        ];
+    }
+
     public function viewTemplate($view, Request $request)
     {
 
         $id = $request->getParam("id");
         $service = $this->service();
 
+        $template = $service->getTemplate($id);
+
         return $view->render("view.html.twig", [
-            "template" => $service->getTemplate($id)
+            "template" => [
+                "html" => $template['html'],
+                "css" => $template['css']
+            ]
         ]);
     }
 

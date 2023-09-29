@@ -21,6 +21,9 @@ class Loader extends FilesystemLoader
         $dir = realpath(__DIR__ . '/../');
         foreach (scandir($dir) as $file) {
 
+            
+            $this->addPath($dir . '/' . $file, $file . "::");
+
 
             foreach ($scopes as $scope) {
 

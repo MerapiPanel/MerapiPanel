@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\Content\View;
+namespace MerapiPanel\Module\Content\Views;
 
 use MerapiPanel\Module\ViewEngine\Abstract\ViewComponent;
 

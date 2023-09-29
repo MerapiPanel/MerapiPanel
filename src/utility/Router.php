@@ -359,11 +359,11 @@ class Router extends Component
              * - init controller from class address
              */
             $controllerInstance = $this->box->$controllerClass();
+            $view = $this->box->Module_ViewEngine();
+            $view->addGlobal('request', $request->__toJson());
 
             if ($request->getMethod() === Route::GET) {
 
-                $view = $this->box->Module_ViewEngine();
-                $view->addGlobal('request', $request->__toJson());
 
                 $retrun = $controllerInstance->$method($view, $request);
 
@@ -379,7 +379,7 @@ class Router extends Component
                 }
             } else {
 
-                return $this->handleApiResponse($controllerInstance->$method($request));
+                return $this->handleApiResponse($controllerInstance->$method($view, $request));
             }
 
             return $response;

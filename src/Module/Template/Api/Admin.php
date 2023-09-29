@@ -11,7 +11,6 @@ class Admin extends Module
     {
 
         $service = $this->service();
-
         return $service->getAllTemplate();
     }
 }
