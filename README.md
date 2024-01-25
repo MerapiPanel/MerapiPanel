@@ -1,7 +1,7 @@
 > **Warning**
 > This repo is under development 
 
-# MerapiQu: Open Source CMS for Web Applications
+# MerapiPanel: Open Source CMS for Web Applications
 MerapiQu is an open-source blueprint that empowers developers to effortlessly build dynamic, scalable web applications. With its modular architecture, dynamic components, and active community, MerapiQu provides the tools you need to create, customize, and scale your web projects with confidence.
 
 ## Installation
