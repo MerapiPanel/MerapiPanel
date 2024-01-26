@@ -6,6 +6,7 @@ use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Cog\Config;
 use MerapiPanel\Core\Exception\CodeException;
+use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Middleware\Component;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
@@ -263,7 +264,7 @@ class Router extends Component
 
         if (strlen($path) > 1 && substr($path, -1) !== "/") $path .= "/";
         if (strlen($route) > 1 && substr($route, -1) !== "/") $route .= "/";
-    
+
         $pattern = preg_replace('/\//', '\/', $route);
         $pattern = '/^' . preg_replace('/\{(.*?)\}/', '(.*?)', $pattern) . '$/';
 
@@ -329,7 +330,7 @@ class Router extends Component
      * @throws Error If the callback is a string and the controller or method is not found.
      * @return Response The response returned by the callback function or a new Response object.
      */
-    protected function callCallback(Request $request, $callback)
+    protected function callCallback(Request $request, $callback): Response
     {
 
 
@@ -365,17 +366,25 @@ class Router extends Component
             if ($request->getMethod() === Route::GET) {
 
 
-                $retrun = $controllerInstance->$method($view, $request);
+                $retrun = $controllerInstance->$method($request);
+
+                if ($retrun instanceof View) {
+                    $template = $retrun->getTemplate();
+                    $response->setContent($template->render(["request" => $request]));
+                    return $response;
+                }
 
                 if (is_object($retrun) || is_array($retrun)) {
+
                     return $this->handleApiResponse($retrun);
                 } elseif (is_string($retrun)) {
+
                     return $this->handleViewResponse([
                         'controller' => $controllerInstance,
                         'file-view'  => $retrun
                     ]);
                 } else {
-                    throw new Exception("Unxpected response type, Controller: $controller Method: $method should return string or array but null returned", 400);
+                    throw new Exception("Unxpected response type, Controller: $controller Method: $method should return string or array but " . gettype($retrun) . " returned", 400);
                 }
             } else {
 

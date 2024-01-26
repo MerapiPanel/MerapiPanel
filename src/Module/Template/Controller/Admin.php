@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\Template\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 use MerapiPanel\Module\Template\Custom\TemplateFunction;
 use MerapiPanel\Utility\Http\Request;
 
@@ -52,14 +53,14 @@ class Admin extends Module
 
     public function index($view)
     {
-        return $view->render("index.html.twig");
+        return View::render("index.html.twig");
     }
 
 
 
     public function createNewTemplate($view)
     {
-        return $view->render("editor.html.twig");
+        return View::render("editor.html.twig");
     }
 
 
@@ -78,7 +79,7 @@ class Admin extends Module
             ];
         }
 
-        return $view->render("view.html.twig", [
+        return View::render("view.html.twig", [
             "template" => $template
         ]);
     }
@@ -112,7 +113,7 @@ class Admin extends Module
             ];
         }
 
-        return $view->render("view.html.twig", [
+        return View::render("view.html.twig", [
             "template" => [
                 "html" => $template['html'],
                 "css" => $template['css']
@@ -127,7 +128,7 @@ class Admin extends Module
         $id = $request->getParam("id");
         $service = $this->service();
 
-        return $view->render("editor.html.twig", [
+        return View::render("editor.html.twig", [
             "template" => $service->getTemplate($id)
         ]);
     }

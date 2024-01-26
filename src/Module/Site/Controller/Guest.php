@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\Site\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 
 class Guest extends Module
 {
@@ -32,8 +33,8 @@ class Guest extends Module
     public function index($entity)
     {
 
-        $db = $this->getDatabase();
+       // $db = $this->getDatabase();
 
-        return $entity->render("/content.html.twig");
+        return View::render("content.html.twig");
     }
 }

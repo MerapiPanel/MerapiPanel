@@ -9,6 +9,8 @@
 
 namespace MerapiPanel;
 
+ini_set("error_log", __DIR__ ."/php-error.log");
+
 use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);
@@ -31,6 +33,7 @@ class App extends Box
         setcookie('auth', 'admin', time() + 3600, "/");
 
 
+        parent::setConfig(self::app_config);
         // ob_start();
         $this->Core_Exception();
         $this->Module_ViewEngine();

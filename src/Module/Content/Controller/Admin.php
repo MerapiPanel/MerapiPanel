@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\Content\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 
 class Admin extends Module
 {
@@ -68,16 +69,16 @@ class Admin extends Module
 
     function index($view)
     {
-        return $view->render("index.html.twig");
+        return View::render("index.html.twig");
     }
 
     function createNewContent($view)
     {
-        return $view->render("editor.html.twig");
+        return View::render("editor.html.twig");
     }
 
     function list($view)
     {
-        return $view->render("list.html.twig");
+        return View::render("list.html.twig");
     }
 }

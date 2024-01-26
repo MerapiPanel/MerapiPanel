@@ -13,7 +13,7 @@ final class Proxy
 
     protected Box $box;
     protected string $classInstance;
-    protected Object $instance;
+    protected ?Object $instance = null;
     protected $meta = [];
 
 
@@ -27,6 +27,7 @@ final class Proxy
 
     public function setBox($box)
     {
+
         $this->box = $box;
         $this->instance = $this->createInstance();
     }

@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\Pages\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 
 class Guest extends Module {
 
@@ -25,18 +26,18 @@ class Guest extends Module {
                 $template = $this->box->Module_Template()->getTemplate($page['template_id']);
                 if($template) {
 
-                    return $view->render("page.html.twig", [
+                    return View::render("page.html.twig", [
                         "page" => $page,
                         "template" => $template
                     ]);
                 }
             }
 
-            return $view->render("page.html.twig", [
+            return View::render("page.html.twig", [
                 "page" => $page
             ]);
         }
 
-        return $view->render("404.html.twig");
+        return View::render("404.html.twig");
     }
 }

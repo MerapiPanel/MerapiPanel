@@ -65,7 +65,8 @@ class Service
     }
 
 
-    public function getVariables() {
+    public function getVariables()
+    {
         return $this->variables;
     }
 

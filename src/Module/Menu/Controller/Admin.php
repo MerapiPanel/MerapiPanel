@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\Menu\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 
 class Admin extends Module
 {
@@ -27,6 +28,6 @@ class Admin extends Module
 
     public function index($view)
     {
-        return $view->render("index.html.twig");
+        return View::render("index.html.twig");
     }
 }

@@ -12,6 +12,13 @@ class Box
     protected $stack = [];
     protected Config $cog;
     protected Event $event;
+    private static Box $instance;
+
+    public static function Get(Object $object): Box
+    {
+        if (!isset(self::$instance)) self::$instance = new Box();
+        return self::$instance;
+    }
 
 
     final public function setConfig(string $fileYml)
@@ -34,12 +41,16 @@ class Box
 
     final public function getConfig(): Config
     {
+
         return $this->cog;
     }
 
 
     final public function __call($name, $arguments)
     {
+
+        // assign current instance to sure that not null
+        if (!isset(self::$instance)) self::$instance = $this;
 
         $name = str_replace(__NAMESPACE__, "", $name);
         $name = strtolower(str_replace("\\", "_", str_replace("/", "_", $name)));

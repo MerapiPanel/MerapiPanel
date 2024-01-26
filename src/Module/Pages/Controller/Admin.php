@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\Pages\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 
 class Admin extends Module
 {
@@ -31,18 +32,18 @@ class Admin extends Module
     public function index($view)
     {
 
-        return $view->render("index.html.twig");
+        return View::render("index.html.twig");
     }
 
     public function all($view)
     {
 
-        return $view->render("all.html.twig");
+        return View::render("all.html.twig");
     }
 
     public function new($view)
     {
-        return $view->render("new.html.twig");
+        return View::render("new.html.twig");
     }
 
 

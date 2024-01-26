@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\Setting\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 
 class Admin extends Module
 {
@@ -35,7 +36,7 @@ class Admin extends Module
     function index($view)
     {
 
-        return $view->render('index.html.twig');
+        return View::render('index.html.twig');
     }
 
     function updateSetting($request)

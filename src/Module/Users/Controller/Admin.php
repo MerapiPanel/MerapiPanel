@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\Users\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
 use MerapiPanel\Module\Users\Custom\Extension;
 
 class Admin extends Module
@@ -23,11 +24,10 @@ class Admin extends Module
         ]);
     }
 
-    public function index($view)
+    public function index($req)
     {
         
-        $this->getBox()->Module_ViewEngine()->addExtension(new Extension());
-
-        return $view->render("index.html.twig");
+        View::AddExtension(new Extension());
+        return View::render("index.html.twig");
     }
 }
