@@ -2,6 +2,15 @@
 
 {% block title %}Admin{% endblock %}
 
+{% block stylesheets %}
+<style>
+    * {
+        transition: all;
+        transition-duration: 300ms;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
 
 <body class="min-h-screen min-w-screen bg-slate-100 text-slate-700">
@@ -23,7 +32,8 @@
             {% block subheader_search %}
             <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
                 <input class="text-input" type="text" placeholder="Search">
-                <button class="ms-2 bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
+                <button
+                    class="ms-2 bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>

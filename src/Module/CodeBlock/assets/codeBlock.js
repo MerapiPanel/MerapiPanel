@@ -8,7 +8,6 @@ import Merapi from '../../../base/assets/merapi';
 
 const CodeBlock = function (Editor) {
 
-
     const customCodeType = {
 
         // Make the editor understand when to bind `custom-code-type`

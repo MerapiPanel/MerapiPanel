@@ -161,4 +161,32 @@ input[type="radio"] {
 }
 [data-act-trigger="dropdown"] {
     @apply cursor-pointer rounded-full p-[0.3rem] m-[0.3rem] hover:scale-125 hover:bg-white transition-all flex align-middle justify-center hover:shadow;
+} 
+
+.img-scale-down {
+    @apply object-scale-down;
+}
+.img-contain {
+    @apply object-contain;
+}
+.img-cover {
+    @apply object-cover;
+}
+
+
+
+.flex-item-sticky {
+    align-self: flex-start;
+    position: sticky;
+    top: 0;
+}
+.offcanvas {
+
+    @apply opacity-0 w-0 max-w-[400px] h-full z-[260] bg-transparent;
+}
+.offcanvas.offcanvas-end {
+    @apply left-auto right-0;
+}
+.offcanvas.show {
+    @apply min-w-[350px] w-full opacity-100;
 }

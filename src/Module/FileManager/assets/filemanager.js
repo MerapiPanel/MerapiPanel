@@ -2,7 +2,6 @@ import merapi from '../../../base/assets/merapi';
 import $ from 'jquery';
 
 const FileManager = {
-
 }
 
 const createUrl = (path = "") => {

@@ -30,7 +30,7 @@ class View
     {
 
         $this->loader = new Loader(realpath(__DIR__ . "/../../base/views"));
-        $this->twig   = new \Twig\Environment($this->loader, ['cache' => false]);
+        $this->twig   = new Twig($this->loader, ['cache' => false]);
 
         // Load our own Twig extensions
         $files = glob(__DIR__ . "/extension/*.php");
@@ -53,32 +53,6 @@ class View
         $this->twig->addGlobal("guest", $guest);
     }
 
-    function setBox(?Box $box)
-    {
-
-        $this->box          = $box;
-        $this->localeEngine = $box->module_locale()->getRealInstance();
-        $this->twig         = new \Twig\Environment($this->loader, ["cache" => false]);
-
-
-
-        $this->twig->addExtension(new TranslationExtension($this->localeEngine)); // Pass your translator instance
-
-
-        // Load our own Twig extensions
-        $files = glob(__DIR__ . "/extension/*.php");
-        foreach ($files as $file) {
-
-            $file_name = pathinfo($file, PATHINFO_FILENAME);
-            $className = substr(self::class, 0, strpos(self::class, basename(self::class))) . "Extension\\" . ucfirst($file_name);
-
-            if (class_exists($className)) {
-
-                $this->twig->addExtension(new $className($box));
-            }
-        }
-    }
-
 
     function getLoader()
     {
@@ -86,10 +60,6 @@ class View
     }
 
 
-    public function getVariables()
-    {
-        return $this->variables;
-    }
 
     function addGlobal($name, $value)
     {
@@ -107,6 +77,11 @@ class View
     }
 
 
+    private function addVariable(array $data = [])
+    {
+
+        $this->variables = array_merge($this->variables, $data);
+    }
 
 
 
@@ -130,7 +105,9 @@ class View
 
     public function __toString()
     {
-        return $this->twig->render(["hallo" => "123"]);
+
+        if(!isset($this->wrapper)) return "Unprepare wrapper or unready view";
+        return $this->wrapper->render($this->variables);
     }
 
 
@@ -144,17 +121,15 @@ class View
         return self::$instance;
     }
 
-
-
     public static function AddExtension(AbstractExtension $extension)
     {
-
         self::getInstance()->twig->addExtension($extension);
     }
 
 
     public static function render(string $file, array $data = []): View
     {
+
         $backtrace = debug_backtrace();
         $caller = $backtrace[0]; // Index 0 is the current function, index 1 is its caller
         $metadata = [
@@ -185,6 +160,7 @@ class View
 
         $view = self::getInstance();
         $view->load(("@" . strtolower($env) . "::" . strtolower($metadata['module_name'])  . "/"  . ltrim($file, "\\/")));
+        $view->addVariable($data);
         return $view;
     }
 }

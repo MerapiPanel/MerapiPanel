@@ -365,12 +365,13 @@ class Router extends Component
 
             if ($request->getMethod() === Route::GET) {
 
-
+                ob_start();
                 $retrun = $controllerInstance->$method($request);
+                ob_end_clean();
 
                 if ($retrun instanceof View) {
-                    $template = $retrun->getTemplate();
-                    $response->setContent($template->render(["request" => $request]));
+                    
+                    $response->setContent("$retrun");
                     return $response;
                 }
 

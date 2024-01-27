@@ -16,7 +16,7 @@ class Loader extends FilesystemLoader
         $dir = realpath(__DIR__ . '/../../module');
         foreach (scandir($dir) as $file) {
 
-            // $this->addPath($dir . '/' . $file, strtolower($file));
+            $this->addPath($dir . '/' . $file, "module::" . strtolower($file));
 
             foreach ($sections as $section) {
 

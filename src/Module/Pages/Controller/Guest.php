@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\Pages\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\View;
+use MerapiPanel\Utility\Http\Request;
 
 class Guest extends Module {
 
@@ -14,7 +15,7 @@ class Guest extends Module {
     }
 
 
-    function loadPage($view, $request) {
+    function loadPage(Request $request) {
 
         $slug = $request->getParam("slug");
         $page = $this->service()->getPageBySlug($slug);

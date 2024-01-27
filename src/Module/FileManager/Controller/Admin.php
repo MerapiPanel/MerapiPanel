@@ -174,6 +174,34 @@ class Admin extends Module
     public function index($req)
     {
 
-        return View::render("index.html.twig");
+        $root = $_SERVER['DOCUMENT_ROOT'] . '/public/upload';
+
+        $data = [];
+        $files = scandir($root);
+        foreach ($files as $f) {
+
+            if ($f == '.' || $f == '..') {
+                continue;
+            }
+            $filePath = $root . "/{$f}";
+
+            $data[] = [
+                "name" => $f,
+                "path" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $filePath),
+                "size" => filesize($filePath),
+                "time" => filemtime($filePath),
+                "type" => mime_content_type($filePath),
+                "icon" => $this->service()->getIconName($filePath)
+            ];
+        }
+
+        $container = [
+            "root" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $root),
+            "data" => $data,
+        ];
+
+        return View::render("index.html.twig", [
+            'container' => $container
+        ]);
     }
 }

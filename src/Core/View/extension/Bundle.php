@@ -38,9 +38,10 @@ class Bundle extends \Twig\Extension\AbstractExtension
     {
 
         $root = $_SERVER['DOCUMENT_ROOT'];
-        $base = str_replace($root, "", str_replace("\\", '/', realpath(__DIR__ . "/../..")));
+        $base = str_replace($root, "", str_replace("\\", '/', realpath(__DIR__ . "/../../../Module")));
         preg_match_all('/\@\w+/ims', $file, $matches);
 
+        
         if (isset($matches[0][0])) {
             foreach ($matches[0] as $match) {
                 $file = str_replace($match, rtrim($base, '/') . "/" . substr($match, 1), $file);

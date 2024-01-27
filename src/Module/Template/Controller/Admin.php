@@ -51,23 +51,23 @@ class Admin extends Module
 
 
 
-    public function index($view)
+    public function index($req)
     {
         return View::render("index.html.twig");
     }
 
 
 
-    public function createNewTemplate($view)
+    public function createNewTemplate($req)
     {
         return View::render("editor.html.twig");
     }
 
 
-    public function fetchTemplate($view, Request $request)
+    public function fetchTemplate(Request $req)
     {
 
-        $id = $request->getQuery("id");
+        $id = $req->getQuery("id");
         $service = $this->service();
 
         $template = $service->getTemplate($id);
@@ -98,7 +98,7 @@ class Admin extends Module
         ];
     }
 
-    public function viewTemplate($view, Request $request)
+    public function viewTemplate(Request $request)
     {
 
         $id = $request->getParam("id");

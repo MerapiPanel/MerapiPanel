@@ -6,9 +6,11 @@
     {% if template %} 
         {% block stylesheets %}
             {{ parent() }}
-            <style>{% include "@Template::" ~ template.css %}</style>
+            {% if template.css %}
+            <style>{% include "@module::template" ~ template.css %}</style>
+            {% endif %} 
         {% endblock %}
-        {% include "@Template::" ~ template.html %}
+        {% include "@module::template" ~ template.html %}
     {% else %}
 
         {% block content %}

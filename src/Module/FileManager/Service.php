@@ -82,8 +82,7 @@ class Service extends Module
         $name = $file['name'];
         $path = $root . "/" . $name;
 
-        if (move_uploaded_file($temp, $path)) 
-        {
+        if (move_uploaded_file($temp, $path)) {
 
             return $this->absoluteToRelativePath($path);
         }
@@ -97,5 +96,50 @@ class Service extends Module
         $absolute_path = strtolower(str_replace('\\', '/', $absolute_path));
 
         return str_replace($server_root, '', $absolute_path);
+    }
+
+
+
+    function getIconName($file)
+    {
+
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if (empty($ext)) {
+            return [
+                "src" => "@filemanager/assets/imgs/open-folder.png",
+                "scale" => "scale-down"
+            ];
+        }
+        switch ($ext) {
+            case 'png':
+            case 'jpg':
+            case 'jpeg':
+                return [
+                    "src" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $file),
+                    "scale" => "cover"
+                ];
+
+            case 'pdf':
+                return 'fa-file-pdf-o';
+            case 'doc':
+                return 'fa-file-word-o';
+            case 'docx':
+                return 'fa-file-word-o';
+            case 'xls':
+                return 'fa-file-excel-o';
+            case 'xlsx':
+                return 'fa-file-excel-o';
+            case 'ppt':
+                return 'fa-file-powerpoint-o';
+            case 'pptx':
+                return 'fa-file-powerpoint-o';
+            case 'zip':
+                return 'fa-file-archive-o';
+            case 'rar':
+                return 'fa-file-archive-o';
+            default:
+                return 'fa-file';
+        }
     }
 }
