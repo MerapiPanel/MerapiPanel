@@ -131,7 +131,7 @@ class Request
         // grab multipart boundary from content type header
         preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
         if (isset($matches[1])) {
-            
+
             $boundary = $matches[1];
 
             // split content by boundary and get rid of last -- element
@@ -230,6 +230,26 @@ class Request
         return $headers;
     }
 
+
+    function __call($name, $arguments)
+    {
+
+        if(isset($this->query[$name])) {
+            return $this->query[$name];
+        }
+
+        if(isset($this->params[$name])) {
+            return $this->params[$name];
+        }
+
+        if(isset($this->body[$name])) {
+            return $this->body[$name];
+        }
+
+        if(isset($_POST[$name])) {
+            return $_POST[$name];
+        }
+    }
 
     public function __toJson()
     {

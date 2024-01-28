@@ -1,5 +1,6 @@
 import $ from "jquery";
 
+
 const proggressbars = $(`<div class='http-progress'><div class='download running-strip'></div><div class='upload running-strip'></div></div>`);
 var isOnAjax = false;
 $(document).on("ajaxSend", function (e) {
@@ -433,6 +434,53 @@ Merapi.toast = (text, seconds = 3, textColor = "#0000ff45") => Toast.create(text
 Merapi.setCookie = (name, value, exdays) => setCookie(name, value, exdays)
 Merapi.getCookie = (name) => getCookie(name)
 Merapi.createModal = (title, content, action) => createModal(title, content, action);
+
+Merapi.confirm = (title, message) => {
+
+    const modal = createModal(title, message);
+
+    return new Promise(resolve => {
+        
+        modal.setAction('+', {
+            text: 'Yes',
+            callback: () => {
+                modal.hide();
+                resolve(true);
+            }
+        })
+        modal.setAction('-', {
+            text: 'No',
+            callback: () => {
+                modal.hide();
+                resolve(false);
+            }
+        })
+
+        modal.show();
+    });
+}
+
+Merapi.confirmDelete = (title, message) => {
+
+    const modal = createModal(title, message);
+
+    return new Promise(resolve => {
+        
+        const positive = $(modal.container.action.positive);
+        const negative = $(modal.container.action.negative);
+        positive.addClass("btn btn-danger")
+        positive.text("Continue")
+        positive.on("click", () => resolve(true))
+
+        negative.addClass("btn btn-primary")
+        negative.removeClass("btn-secondary")
+        negative.text("Cancel")
+        negative.on("click", () => resolve(false))
+    
+
+        modal.show();
+    });
+}
 
 
 Merapi.assign = function (name, obj) {

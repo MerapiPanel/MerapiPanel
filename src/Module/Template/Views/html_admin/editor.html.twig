@@ -62,7 +62,7 @@
                         name: "id"
                     }
                 ],
-                endpoint: "{{ ('template/endpoint') | admin_url | url }}",
+                endpoint: "{{ 'template/endpoint' | admin_url | url }}",
                 assets: {
                     url: "{{ admin.FileManager_fetchJsonEndpoint }}",
                     name: "files",
@@ -92,7 +92,7 @@
                         placeholder: "Enter template description"
                     }
                 ],
-                endpoint: "{{ ('template/endpoint') | admin_url | url }}",
+                endpoint: "{{ 'template/endpoint' | admin_url | url }}",
                 assets: {
                     url: "{{ admin.FileManager_fetchJsonEndpoint }}",
                     name: "files",

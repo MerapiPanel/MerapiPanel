@@ -10,55 +10,184 @@
 
     <main class="transition-all duration-300 ms-0 lg:ms-[260px] max-w-[1440px] mx-auto px-4 py-4 pb-24">
 
-        <div class="flex">
-            <div>
-                {% block header %}
-                <header class="py-3 pb-4 ps-2">
-                    <h1 class="font-bold text-3xl">{% block header_title %}File Manager{% endblock %}</h1>
-                </header>
-                {% endblock %}
+        {% block header %}
+        <header class="py-3 pb-4 ps-2">
+            <h1 class="font-bold text-3xl">{% block header_title %}File Manager{% endblock %}</h1>
 
-                {% block subheader %}
-                <div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
+            <h4 class="py-3">
+                <a class="text-blue-400 px-3 py-0 border border-blue-400/20" href="?directory="><i
+                        class="fa-solid fa-house"></i></a>
 
-                    {% block subheader_search %}
-                    <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
-                        <input class="text-input" type="text" placeholder="Search">
-                        <button
-                            class="ms-2 bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </div>
-                    {% endblock %}
+                {% if request.getQuery("directory") %}
+                {% set paths = request.getQuery("directory") | split('/') %}
+                {% set link = "" %}
+                {% for key, item in paths %}
 
-                    {% block subheader_actions %}{% endblock %}
+                {% set link = link ~ "/" ~ item %}
+                <a class="text-blue-400 px-3 py-0 border border-blue-400/20" href="?directory={{ link | trim('/') }}">/
+                    {{ item }}</a>
+                {% endfor %}
+                {% endif %}
+            </h4>
 
-                </div>
-                {% endblock %}
+        </header>
+        {% endblock %}
 
-                {% block content %}
+        {% block subheader %}
+        {% if container.type == 'navigate' %}
+        <div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
 
-                <div class="grid grid-cols-7 gap-4">
+            {% block subheader_search %}
 
-                    {% for key, item in container.data %}
-                    <a data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
-                        class="cursor-pointer [&.active]:bg-blue-400 [&.active>div]:to-slate-500/80 [&.active>div]:text-white [&.active]:shadow-blue-500/40 bg-gray-200 rounded overflow-hidden shadow aspect-[3/4] flex items-top justify-center relative">
+            <div class="ml-auto pr-5">
+                <button class="btn btn-secondary" onclick="createFolder('{{ request.getQuery('directory') }}')">
+                    <i class="fa-solid fa-folder-plus"></i> new folder
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fa-solid fa-file-arrow-up"></i> upload file
+                </button>
+            </div>
 
-                        <img class="img-{{ item.icon.scale }}" src="{{ item.icon.src | assets }}" />
+            {% endblock %}
 
-                        <div
-                            class="absolute pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">
-                            {{ item.name }}
+            {% block subheader_actions %}{% endblock %}
+
+        </div>
+        {% endif %}
+        {% endblock %}
+
+        {% block content %}
+
+        {% if container.type == 'navigate' %}
+
+            {% if container.data | length > 0 %}
+            <div class="flex">
+                <div class="mb-[15rem]">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
+                        {% for key, item in container.data %}
+                        <div data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
+                            class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
+
+                            {% if item.icon is iterable %}
+                            <img class="rounded overflow-hidden img-{{ item.icon.scale }}"
+                                src="{{ item.icon.src | assets }}" />
+                            {% else %}
+                            <div class="h-full w-full flex items-center justify-center"><i
+                                    class="fa-solid {{ item.icon }} fa-2x"></i></div>
+                            {% endif %}
+
+
+                            <div
+                                class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">
+                                {{ item.name }}
+                            </div>
+
+                            {% set contentType = item.type == "directory" ? "directory" : "file" %}
+                            {% set contentFile = item.path %}
+
+                            <div class="absolute hidden right-2 top-0 z-20">
+                                <div class="dropdown">
+                                    <button data-act-trigger="dropdown" class="dropdown-toggle">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </button>
+                                    <ul class="dropdown-menu text-sm">
+                                        <li class="dropdown-item">
+                                            <a type="button" href="?directory={{ item.path }}">
+                                                <i
+                                                    class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
+                                                Open {% if item.type ==
+                                                "directory" %}folder{% else %}file{% endif %}
+                                            </a>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <button type="button" class="" onclick="infoFile('{{ key }}')">
+                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
+                                            </button>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <button type="button" class="" onclick="renameFile({
+                                                                file: '{{ contentFile }}',
+                                                                name: '{{ item.name }}',
+                                                                type: '{{ contentType }}'
+                                                        })">
+                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
+                                            </button>
+                                        </li>
+                                        <li class="dropdown-item">
+
+                                            <button type="button" class="text-red-500" onclick="deleteFile({
+                                                                    file: '{{ contentFile }}',
+                                                                    type: '{{ contentType }}'
+                                                                })">
+                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </a>
-                    {% endfor %}
+                        {% endfor %}
+
+                    </div>
                 </div>
             </div>
-            {% endblock %}
-            <div class="offcanvas-placement flex-item-sticky top-8"></div>
-        </div>
-      
+            {% else %}
+            <div class="flex flex-wrap justify-center items-center h-[60vh] w-full">
+                <div class="text-center">
+                    <div class="opacity-50 p-5"><i class="fa-regular fa-folder-open fa-6x"></i></div>
+                    <h2 class="text-3xl font-bold">Directory Empty</h2>
+                </div>
+            </div>
+            {% endif %}
 
+        {% else %}
+
+            <div class="w-full aspect-[6/3] bg-gray-900 max-h-[70vh] relative">
+                {% if "image" in container.data.mime  %}
+                
+                    <img class="p-8 w-full max-h-[75vh] object-contain" src="{{ container.data.path.relative }}" alt="{{ container.data.name }}" srcset="">
+                {% else %}
+
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
+                    <h1 class="text-3xl font-bold">File Type Not Supported to View</h1>
+                <p>{{ container.data.mime }}</p>
+                <div class="py-5">
+                    <a class="btn btn-primary" href="{{ container.data.path.relative }}"  target="_blank" download="{{ container.data.name }}">Click Here to Download</a>
+                </div>
+                </div>
+
+                {% endif %}
+
+                <div class="absolute right-2 top-0 z-20">
+                    <div class="dropdown">
+                        <button data-act-trigger="dropdown" class="dropdown-toggle text-white hover:text-black">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item">
+                                <a type="button" href=""><i class="w-[20px] text-center fa-regular fa-copy"></i> Copy
+                                    Link</a>
+                            </li>
+                            <li class="dropdown-item">
+                                <a type="button" href="{{ container.data.path.relative }}"  target="_blank" download="{{ container.data.name }}"><i class="w-[20px] text-center fa-solid fa-cloud-arrow-down"></i>
+                                    Download</a>
+                            </li>
+                            <li class="dropdown-item">
+                                <a type="button" href=""><i class="w-[20px] text-center fa-solid fa-info"></i> File Info</a>
+                            </li>
+                            <li class="dropdown-item text-red-500 bg-red-600/20">
+                                <a type="button" href=""><i class="w-[20px] text-center fa-solid fa-delete-left"></i>
+                                    Delete</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        {% endif %}
+        {% endblock %}
     </main>
 
 
@@ -68,6 +197,42 @@
     <script src="{{ '@filemanager/assets/dist/view.filemanager.bundle.js' | assets }}"></script>
     <script>
         FileManager.setContainer("{{ container | json_encode }}");
+
+        function createFolder(parent) {
+            const body = $(`<div><small>Parent folder: <b>${parent == '' ? '/' : parent}</b></small><input class='text-input' placeholder="Enter folder name"/></div>`)
+            const modal = MERAPI.createModal('Create New Folder', body);
+            modal.setAction('+', {
+                text: "Create",
+                class: "btn btn-primary",
+                callback: function () {
+                    window.FileManager.createFolder({
+                        endpoint: "{{ 'filemanager/create_folder' | admin_url }}",
+                        name: body.find('input').val(),
+                        parent: parent
+                    });
+                }
+            })
+            modal.show();
+        }
+
+
+        function deleteFile(args) {
+            const opts = Object.assign({ file: null, type: 'directory' }, args);
+            window.FileManager.deleteFolder({
+                file: opts.file,
+                type: opts.type,
+                endpoint: "{{ 'filemanager/delete_file' | admin_url }}"
+            })
+        }
+
+        function renameFile(args) {
+            const opts = Object.assign({ file: null, name: null, type: 'directory', endpoint: "{{ 'filemanager/rename_file' | admin_url }}" }, args);
+            window.FileManager.renameFile(opts);
+        }
+
+        function infoFile(x) {
+            FileManager.infoFile(x);
+        }
     </script>
     {% endblock %}
 

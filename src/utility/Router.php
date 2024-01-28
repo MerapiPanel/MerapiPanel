@@ -360,8 +360,8 @@ class Router extends Component
              * - init controller from class address
              */
             $controllerInstance = $this->box->$controllerClass();
-            $view = $this->box->Module_ViewEngine();
-            $view->addGlobal('request', $request->__toJson());
+            // $view = $this->box->Module_ViewEngine();
+            // $view->addGlobal('request', $request->__toJson());
 
             if ($request->getMethod() === Route::GET) {
 
@@ -370,7 +370,7 @@ class Router extends Component
                 ob_end_clean();
 
                 if ($retrun instanceof View) {
-                    
+
                     $response->setContent("$retrun");
                     return $response;
                 }
@@ -380,16 +380,15 @@ class Router extends Component
                     return $this->handleApiResponse($retrun);
                 } elseif (is_string($retrun)) {
 
-                    return $this->handleViewResponse([
-                        'controller' => $controllerInstance,
-                        'file-view'  => $retrun
-                    ]);
+                    $response->setContent($retrun);
+                    return $response;
+
                 } else {
-                    throw new Exception("Unxpected response type, Controller: $controller Method: $method should return string or array but " . gettype($retrun) . " returned", 400);
+                    throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($retrun) . " returned", 400);
                 }
             } else {
 
-                return $this->handleApiResponse($controllerInstance->$method($view, $request));
+                return $this->handleApiResponse($controllerInstance->$method($request));
             }
 
             return $response;
@@ -401,7 +400,7 @@ class Router extends Component
 
 
 
-    public function handleApiResponse($json = [])
+    public function handleApiResponse($result = [])
     {
 
         $response = new Response();
@@ -409,14 +408,14 @@ class Router extends Component
 
         $content = ["code" => 304, "message" => "No change", "data" => null];
 
-        if (is_array($json)) {
+        if (is_array($result)) {
 
-            $content["code"]    = isset($json['code']) ? $json['code'] : null;
-            $content["message"] = isset($json['message']) ? $json['message'] : null;
-            $content["data"]    = isset($json['data']) ? $json['data'] : null;
-        } elseif (is_string($json)) {
+            $content["code"]    = isset($result['code']) ? $result['code'] : null;
+            $content["message"] = isset($result['message']) ? $result['message'] : null;
+            $content["data"]    = isset($result['data']) ? $result['data'] : null;
+        } elseif (is_string($result)) {
 
-            $json = json_decode($json, true);
+            $json = json_decode($result, true);
 
             if (json_last_error() === JSON_ERROR_NONE) {
 
@@ -426,50 +425,12 @@ class Router extends Component
             } else {
 
                 $content["code"]    = 200;
-                $content["message"] = $json;
-                $content["data"]    = null;
+                $content["message"] = $result;
+                $content["data"]    = [];
             }
         }
 
         header('HTTP/1.1 ' . $content["code"] . ' ' . $content["message"]);
-        $response->setContent($content);
-
-        return $response;
-    }
-
-    public function handleViewResponse($opt = [
-        'file-view' => null,
-        'controller' => null,
-    ])
-    {
-
-        /**
-         * @var object $controller
-         */
-        $controller = $opt['controller'];
-        /**
-         * @var string $fileView
-         */
-        $fileView   = $opt['file-view'];
-
-        /**
-         * @var Response $response
-         */
-        $response = new Response();
-
-
-        $meta   = $controller->__getMeta();
-        $file   = $meta['file'];
-        $zone   = strtolower(basename(pathinfo($file, PATHINFO_BASENAME), ".php"));
-        $module = strtolower(basename($meta['location']));
-
-
-        $view = $this->box->Module_ViewEngine();
-
-        $file = "@$zone>$module" . "/" . ltrim($fileView, "\/");
-        $template = $view->load($file);
-        $content = $template->render($view->getVariables());
-
         $response->setContent($content);
 
         return $response;

@@ -106,6 +106,7 @@ class View
     public function __toString()
     {
 
+        $this->variables['request'] = Box::Get($this)->utility_http_request();
         if(!isset($this->wrapper)) return "Unprepare wrapper or unready view";
         return $this->wrapper->render($this->variables);
     }

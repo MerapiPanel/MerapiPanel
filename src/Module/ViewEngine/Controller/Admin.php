@@ -19,7 +19,7 @@ class Admin extends Module
     }
 
 
-    public function index($view, $request)
+    public function index(Request $request)
     {
 
         $root       = realpath(__DIR__ . "/../../") . "\**\Views\Component.php";
@@ -54,7 +54,7 @@ class Admin extends Module
 
 
 
-    function staticRender($view, $request = null)
+    function staticRender(Request $request)
     {
         ob_start();
 

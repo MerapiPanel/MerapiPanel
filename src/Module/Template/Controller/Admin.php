@@ -123,7 +123,7 @@ class Admin extends Module
 
 
 
-    public function editTemplate($view, $request)
+    public function editTemplate(Request $request)
     {
         $id = $request->getParam("id");
         $service = $this->service();

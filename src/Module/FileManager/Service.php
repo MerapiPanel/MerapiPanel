@@ -106,10 +106,7 @@ class Service extends Module
 
         $ext = pathinfo($file, PATHINFO_EXTENSION);
         if (empty($ext)) {
-            return [
-                "src" => "@filemanager/assets/imgs/open-folder.png",
-                "scale" => "scale-down"
-            ];
+            return "fa-folder-closed";
         }
         switch ($ext) {
             case 'png':
@@ -121,23 +118,23 @@ class Service extends Module
                 ];
 
             case 'pdf':
-                return 'fa-file-pdf-o';
+                return 'fa-file-pdf';
             case 'doc':
-                return 'fa-file-word-o';
+                return 'fa-file-word';
             case 'docx':
-                return 'fa-file-word-o';
+                return 'fa-file-word';
             case 'xls':
-                return 'fa-file-excel-o';
+                return 'fa-file-excel';
             case 'xlsx':
-                return 'fa-file-excel-o';
+                return 'fa-file-excel';
             case 'ppt':
-                return 'fa-file-powerpoint-o';
+                return 'fa-file-powerpoint';
             case 'pptx':
-                return 'fa-file-powerpoint-o';
+                return 'fa-file-powerpoint';
             case 'zip':
-                return 'fa-file-archive-o';
+                return 'fa-file-archive';
             case 'rar':
-                return 'fa-file-archive-o';
+                return 'fa-file-archive';
             default:
                 return 'fa-file';
         }

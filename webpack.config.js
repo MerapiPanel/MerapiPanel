@@ -46,6 +46,14 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
             {
+                test: /\.scss$/,
+                use: [
+                    'style-loader', // Injects styles into the DOM using a <style> tag
+                    'css-loader',   // Translates CSS into CommonJS
+                    'sass-loader'   // Compiles Sass to CSS
+                ],
+            },
+            {
                 test: /\.twig$/,
                 use: 'twig-loader',
             },

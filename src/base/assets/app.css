@@ -156,12 +156,15 @@ input[type="radio"] {
     @apply max-w-[400px] max-h-[600px] shadow-md rounded;
 }
 .dropdown .dropdown-menu .dropdown-item {
-    @apply px-4 py-2 hover:bg-slate-100 cursor-pointer;
+    @apply hover:bg-slate-100 cursor-pointer;
     min-width: max-content;
+}
+.dropdown .dropdown-menu .dropdown-item > * {
+    @apply px-4 py-2 w-full text-left;
 }
 [data-act-trigger="dropdown"] {
     @apply cursor-pointer rounded-full p-[0.3rem] m-[0.3rem] hover:scale-125 hover:bg-white transition-all flex align-middle justify-center hover:shadow;
-} 
+}
 
 .img-scale-down {
     @apply object-scale-down;
@@ -173,20 +176,14 @@ input[type="radio"] {
     @apply object-cover;
 }
 
-
-
 .flex-item-sticky {
     align-self: flex-start;
     position: sticky;
     top: 0;
 }
 .offcanvas {
-
-    @apply opacity-0 w-0 max-w-[400px] h-full z-[260] bg-transparent;
+    @apply overflow-hidden max-w-[400px] z-[260];
 }
-.offcanvas.offcanvas-end {
-    @apply left-auto right-0;
-}
-.offcanvas.show {
-    @apply min-w-[350px] w-full opacity-100;
+.offcanvas-body {
+    @apply overflow-auto w-full break-words;
 }

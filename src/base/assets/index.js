@@ -1,3 +1,4 @@
+// import './app.scss'
 require('./app.css')
 require('./fontawesome/css/all.min.css');
 const $ = require('jquery');
