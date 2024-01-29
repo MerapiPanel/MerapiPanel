@@ -2,6 +2,9 @@
 
 namespace MerapiPanel\Module\FileManager\Controller;
 
+use Dilab\Network\SimpleRequest;
+use Dilab\Network\SimpleResponse;
+use Dilab\Resumable;
 use Exception;
 use finfo;
 use MerapiPanel\Core\Abstract\Module;
@@ -24,6 +27,7 @@ class Admin extends Module
         $router->post("/filemanager/create_folder", "createFolder", self::class);
         $router->post("/filemanager/delete_file", "deleteFile", self::class);
         $router->post("/filemanager/rename_file", "renameFile", self::class);
+        $router->get("/filemanager/upload_file", "uploadFile", self::class);
         $router->post("/filemanager/upload_file", "uploadFile", self::class);
 
         $route = $router->get("/filemanager", "index", self::class);
@@ -288,6 +292,30 @@ class Admin extends Module
         if (!is_file($root)) {
             $data = [];
             $files = scandir($root);
+
+            usort($files, function ($a, $b) use ($root) {
+                $pathA = $root . '/' . $a;
+                $pathB = $root . '/' . $b;
+
+                $isDirA = is_dir($pathA);
+                $isDirB = is_dir($pathB);
+
+                // Both are directories or both are files
+                if ($isDirA && $isDirB) {
+                    // Sort directories alphabetically in descending order
+                    return strcasecmp($b, $a);
+                } elseif ($isDirA) {
+                    // Directory comes before file
+                    return -1;
+                } elseif ($isDirB) {
+                    // Directory comes before file
+                    return 1;
+                }
+
+                // Sort files alphabetically in descending order
+                return strcasecmp($b, $a);
+            });
+
             foreach ($files as $f) {
 
                 if ($f == '.' || $f == '..') {
@@ -329,8 +357,75 @@ class Admin extends Module
     }
 
 
-    function uploadFile(Request $req) {
+    function uploadFile(Request $req)
+    {
 
-        
+        $tempUploadDirectory = __DIR__ . '/../temp/';
+        if (!is_dir($tempUploadDirectory)) {
+            mkdir($tempUploadDirectory, 0755, true);
+        }
+
+        // Ensure a directory exists to store the uploaded files
+        $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (!empty($req->parent()) ? '/' . ltrim($req->parent(), "\\/") : "");
+        if (!is_dir($uploadDirectory)) {
+            mkdir($uploadDirectory, 0755, true);
+        }
+
+        // Check if the required parameters are present
+        if (!isset($_FILES['file']) || !isset($_POST['resumableIdentifier']) || !isset($_POST['resumableFilename']) || !isset($_POST['resumableChunkNumber'])) {
+            header("HTTP/1.1 400 Invalid Request");
+            die('Invalid request');
+        }
+
+        // Assign variables for easy access
+        $file = $_FILES['file'];
+        $temporaryFilePath = $file['tmp_name'];
+        $resumableIdentifier = $_POST['resumableIdentifier'];
+        $resumableFilename = $_POST['resumableFilename'];
+        $resumableChunkNumber = $_POST['resumableChunkNumber'];
+
+        // Create a unique file path
+        $filePath = rtrim($tempUploadDirectory, "\\/") . "/" . $resumableIdentifier . '.' . $resumableFilename;
+
+        // Handle the upload
+        if (!move_uploaded_file($temporaryFilePath, "{$filePath}.part{$resumableChunkNumber}")) {
+            header("HTTP/1.1 500 Internal Server Error");
+            die('Error moving uploaded chunk');
+        }
+
+        // Check if all chunks are uploaded
+        // You might need to adjust this to your needs
+        $allChunksUploaded = true;
+        for ($i = 1; $i <= $_POST['resumableTotalChunks']; $i++) {
+            if (!file_exists("{$filePath}.part{$i}")) {
+                $allChunksUploaded = false;
+                break;
+            }
+        }
+
+        // Combine chunks into a single file
+        if ($allChunksUploaded) {
+
+            $outputFilePath = rtrim($uploadDirectory, "\\/") . "/" . $resumableFilename;
+            $out = fopen($outputFilePath, "wb");
+            if ($out) {
+                for ($i = 1; $i <= $_POST['resumableTotalChunks']; $i++) {
+                    $in = fopen("{$filePath}.part{$i}", "rb");
+                    if ($in) {
+                        while ($buff = fread($in, 4096)) {
+                            fwrite($out, $buff);
+                        }
+                    }
+                    fclose($in);
+                    unlink("{$filePath}.part{$i}"); // Delete the chunk
+                }
+                fclose($out);
+            }
+        }
+
+        return [
+            "code" => 200,
+            "message" => "File uploaded successfully",
+        ];
     }
 }

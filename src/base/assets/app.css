@@ -1,4 +1,49 @@
 @tailwind base;
+
+
+
+/* For WebKit browsers (Chrome, Safari) */
+/* You can customize the scrollbar styles as needed */
+/* Remember to use vendor prefixes for cross-browser compatibility */
+
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Change to your desired track color */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: #888; /* Change to your desired handle color */
+    border-radius: 100px; /* Rounded corners */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Change to your desired handle color on hover */
+}
+
+/* For Firefox */
+/* You can customize the scrollbar width and color */
+/* Note: Firefox supports scrollbar-width and scrollbar-color properties */
+
+/* Track */
+/* You may need to customize scrollbar-track-color for Firefox */
+/* as scrollbar-track-color is not supported */
+/* in ::-webkit-scrollbar-track */
+* {
+    scrollbar-width: thin; /* Change to your desired width */
+    scrollbar-color: #888 #f1f1f1; /* Change to your desired handle and track colors */
+}
+
+/* Track on hover */
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Change to your desired handle color on hover */
+}
+
+
+
+
+
 @tailwind components;
 @tailwind utilities;
 
@@ -119,7 +164,7 @@ input[type="radio"] {
     backdrop-filter: blur(4px);
 }
 .modal-dialog {
-    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] mx-auto bg-white shadow rounded pt-2;
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full mx-auto bg-white shadow rounded pt-2 max-w-[95%] md:max-w-[600px];
 }
 .modal-header {
     @apply flex justify-between items-center py-3 px-5;
@@ -136,6 +181,7 @@ input[type="radio"] {
 .modal-footer button {
     @apply ms-3;
 }
+
 
 .btn-close {
     @apply absolute px-2 py-2 top-2 right-4 scale-100 hover:scale-[1.5] hover:text-red-400 transition-all;

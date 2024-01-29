@@ -8,6 +8,18 @@ function isNumeric(str) {
         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
 
+function formatFileSize(bytes) {
+    if (bytes < 1024) {
+        return bytes + ' bytes';
+    } else if (bytes < 1024 * 1024) {
+        return (bytes / 1024).toFixed(2) + ' KB';
+    } else if (bytes < 1024 * 1024 * 1024) {
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    } else {
+        return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+    }
+}
+
 const FileManager = {}
 FileManager.container = {
     "root": null,
@@ -31,7 +43,6 @@ FileManager.ItemFocusHandle = (element) => {
 FileManager.infoFile = (x) => {
 
     const item = isNumeric(x) ? FileManager.container.data[x] : x;
-
     const data = Object.assign({ name: "", path: "", size: 0, time: "", type: "unknown" }, item);
 
     hide($(".offcanvas"))
@@ -57,7 +68,7 @@ FileManager.infoFile = (x) => {
         </tr>
         <tr class='align-baseline'>
             <td class='text-left whitespace-nowrap pr-5 pb-2'>Size</td>
-            <td class='break-all pb-2'>${Math.floor(data.size / 1024)}Kb</td>
+            <td class='break-all pb-2'>${formatFileSize(data.size)}</td>
         </tr>
         <tr class='align-baseline'>
             <td class='text-left whitespace-nowrap pr-5 pb-2'>Last modify</td>
@@ -227,12 +238,17 @@ FileManager.renameFile = (args) => {
 
 FileManager.uploadFile = (args) => {
 
-    const opts = Object.assign({ endpoint: null, parent: null}, args);
+    const opts = Object.assign({ endpoint: null, parent: null }, args);
 
     return new Promise((resolve, reject) => {
 
-        const body = $(`<div>
-        <div class="border-dashed border border-sky-400 rounded w-full aspect-[4/6]" id="dropped-receiver"><button class='btn btn-primary' id='add-file'>Add File</button></div>
+        const body = $(`<div class='px-4 md:px-8'>
+            <button class="sticky -top-3 z-10 bg-sky-50 border-dashed border border-sky-400 rounded w-full aspect-[3/2] sm:aspect-[8/3] flex items-center justify-center" id="dropped-receiver">
+                <div class='text-center'>
+                    <i class="text-sky-400 fas fa-cloud-upload-alt fa-4x opacity-30"></i><br>Drag & drop files here or click here to pick files
+                </div>
+            </button>
+            <div class="w-full pt-5" id="progressbars"></div>
         </div>`);
 
         const modal = Merapi.createModal('Upload File', body);
@@ -240,50 +256,83 @@ FileManager.uploadFile = (args) => {
 
 
         var r = new Resumable({
-            target: 'upload.php',
-            testChunks: true
+            target: opts.endpoint,
+            testChunks: false,
+            query: { 
+                parent: opts.parent
+            }
         });
 
-        r.assignBrowse(body.find("#add-file")[0])
+        r.assignBrowse(body.find("#dropped-receiver")[0])
         r.assignDrop(body.find("#dropped-receiver")[0])
 
 
-        // var progressBar = new ProgressBar($('#upload-progress'));
-        // r.on('fileAdded', function(file, event){
-        //     progressBar.fileAdded();
-        // });
-     
-        // r.on('fileSuccess', function(file, message){
-        //     progressBar.finish();
-        // });
-     
-        // r.on('progress', function(){
-        //     progressBar.uploading(r.progress()*100);
-        //     $('#pause-upload-btn').find('.glyphicon').removeClass('glyphicon-play').addClass('glyphicon-pause');
-        // });
-     
-        // r.on('pause', function(){
-        //     $('#pause-upload-btn').find('.glyphicon').removeClass('glyphicon-pause').addClass('glyphicon-play');
-        // });
+        var progressBar = new ProgressBar($('#progressbars'));
 
 
-        // function ProgressBar(ele) {
-        //     this.thisEle = $(ele);
-     
-        //     this.fileAdded = function() {
-        //         (this.thisEle).removeClass('hide').find('.progress-bar').css('width','0%');
-        //     },
-     
-        //     this.uploading = function(progress) {
-        //         (this.thisEle).find('.progress-bar').attr('style', "width:"+progress+'%');
-        //     },
-     
-        //     this.finish = function() {
-        //         (this.thisEle).addClass('hide').find('.progress-bar').css('width','0%');
-        //     }
-        // }
-    
+        r.on('fileAdded', function (resumableFile, event) {
+            console.log("File added: ", resumableFile);
+            progressBar.fileAdded(resumableFile);
+        });
 
+        // Listen to fileProgress event
+        r.on('fileProgress', function (resumableFile) {
+            // Update the progress bar for this file
+            progressBar.uploading(resumableFile)
+        });
+
+
+        function ProgressBar(ele) {
+            this.holder = $(ele);
+
+            this.fileAdded = function (resumableFile) {
+
+                const fileId = resumableFile.uniqueIdentifier;
+
+                var icon = $(`<div class='w-[35px] h-[44px] aspect-square rounded overflow-hidden mr-5 text-center flex items-center justify-center'><i class="fa-regular fa-file-lines fa-2x"></i></div>`);
+                const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+
+                if (validImageTypes.includes(resumableFile.file.type)) {
+                    const objectUrl = URL.createObjectURL(resumableFile.file);
+                    icon.html($(`<img src="${objectUrl}" class="bg-black/50 w-full h-full object-cover" />`));
+                }
+
+                const itemView = $(`<div id="item-${fileId}" class='mb-4 bg-blue-500/20 py-3 pl-3 pr-2 rounded flex'></div>`)
+                    .append(icon)
+                    .append($(`<div class='w-full'><p class='text-sm'>${resumableFile.fileName}</p></div>`)
+                        .append($(`<div class="bg-white rounded-xl shadow-sm overflow-hidden mt-2">
+                                <div id="progress-${fileId}" class="relative h-5 flex items-center justify-center">
+                                <div id="progress_bar-${fileId}" class="absolute top-0 bottom-0 left-0 rounded-lg w-[0%] bg-blue-200"></div>
+                                <div id="progress_text-${fileId}" class="relative text-blue-900 font-medium text-sm">0%</div>
+                                </div>
+                            </div>`)))
+
+                this.holder.prepend(itemView);
+                r.upload();
+            }
+
+            this.uploading = function (file) {
+
+                const fileId = file.uniqueIdentifier;
+
+                const progressBar = $(`#progress_bar-${fileId}`);
+                const progressText = $(`#progress_text-${fileId}`);
+
+                var progress = Math.floor(file.progress() * 100);
+
+                if (progressBar) progressBar.css({ width: `${progress}%` });
+                if (progressText) progressText.text(`${progress}%`);
+
+                if (progress == 100) {
+                    progressBar.css({ width: `100%`, background: `#2dd0b2` });
+                    progressText.text(`success`);
+                }
+            }
+
+            this.finish = function () {
+                //(this.holder).addClass('hide').find('.progress-bar').css('width', '0%');
+            }
+        }
     })
 }
 

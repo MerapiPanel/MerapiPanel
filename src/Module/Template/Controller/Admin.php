@@ -135,7 +135,7 @@ class Admin extends Module
 
 
 
-    public function saveTemplate($view, Request $request)
+    public function saveTemplate(Request $request)
     {
 
         $panel = $this->box->Module_Panel();

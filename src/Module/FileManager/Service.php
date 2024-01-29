@@ -117,26 +117,74 @@ class Service extends Module
                     "scale" => "cover"
                 ];
 
+            case 'mp4':
+            case 'avi':
+            case 'mov':
+            case 'wmv':
+            case 'flv':
+            case 'mkv':
+            case 'webm':
+            case 'm4v':
+            case '3gp':
+            case 'mpeg':
+            case 'mpg':
+                return "fa-regular fa-file-video";
+
+            case 'mp3':
+            case 'wav':
+            case 'ogg':
+            case 'aac':
+            case 'wma':
+            case 'flac':
+            case 'amr':
+                return "fa-regular fa-file-audio";
+
+            case 'gif':
+                return "fa-regular fa-file-image";
+
             case 'pdf':
                 return 'fa-file-pdf';
             case 'doc':
-                return 'fa-file-word';
             case 'docx':
                 return 'fa-file-word';
             case 'xls':
-                return 'fa-file-excel';
             case 'xlsx':
                 return 'fa-file-excel';
+
+            case 'csv':
+                return 'fa-solid fa-file-csv';
+
             case 'ppt':
-                return 'fa-file-powerpoint';
             case 'pptx':
                 return 'fa-file-powerpoint';
+
+            case 'txt':
+                return 'fa-file-alt';
+
             case 'zip':
-                return 'fa-file-archive';
             case 'rar':
                 return 'fa-file-archive';
+
+            case 'php':
+            case 'html':
+            case 'js':
+            case 'css':
+            case 'py':
+            case 'json':
+            case 'sql':
+            case 'xml':
+            case 'yaml':
+            case 'yml':
+            case 'ini':
+            case 'sh':
+            case 'bat':
+            case 'ps1':
+            case 'md':
+            case 'vue':
+                return 'fa-file-code';
+
             default:
-                return 'fa-file';
+                return 'fa-solid fa-file-circle-question';
         }
     }
 }

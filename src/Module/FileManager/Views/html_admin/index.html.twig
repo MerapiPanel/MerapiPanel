@@ -9,7 +9,7 @@
 
     {% include "@parts::panel/navigation.html.twig" %}
 
-    <main class="transition-all duration-300 ms-0 lg:ms-[260px] max-w-[1440px] mx-auto px-4 py-4 pb-24">
+    <main class="transition-all duration-300 ms-0 lg:ms-[260px] mx-auto px-4 py-4 pb-24">
 
         {% block header %}
         <header class="py-3 pb-4 ps-2">
@@ -64,7 +64,7 @@
         {% if container.data | length > 0 %}
         <div class="flex">
             <div class="mb-[15rem]">
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
+                <div class="flex flex-wrap gap-4">
                     {% for key, item in container.data %}
                     <div data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
                         class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
@@ -144,6 +144,11 @@
 
             <img class="p-8 w-full max-h-[75vh] object-contain" src="{{ container.data.path.full }}"
                 alt="{{ container.data.name }}">
+
+            {% elseif "video" in container.data.mime %}
+
+            <video class="w-full max-h-[75vh] object-contain" src="{{ container.data.path.full }}" controls></video>
+
             {% else %}
 
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
@@ -202,10 +207,6 @@
         {% endif %}
         {% endblock %}
     </main>
-
-
-    <div class="border-dashed border border-sky-500 rounded w-full h-[500px]" id="dropped-receiver"><button class='btn btn-primary' id='add-file'>Add File</button></div>
-
 
     {% block javascripts %}
 

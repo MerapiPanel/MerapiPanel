@@ -97,6 +97,7 @@ class Service extends Module
     public function addMenu($menu = [
         'order' => 100,
         'name' => '',
+        'icon' => '',
         'link' => '',
 
     ])
@@ -113,7 +114,38 @@ class Service extends Module
             $menu['order'] = count($this->ListMenu) + 1;
         }
 
+        if (isset($menu['icon'])) {
+            $icon = $menu['icon'];
+            if (strpos($icon, 'fa-') !== false) {
+                $menu['icon'] = '<i class="w-[14] ' . $icon . '"></i>';
+            } elseif (strpos(trim($icon), '<svg') !== false) {
+                // SVG code
+                $icon  = str_replace('<svg', '<svg width="15" height="16" class="inline-block"', $icon);
+                $menu['icon'] = $icon;
+            }
+        }
         $this->ListMenu[] = $menu;
+    }
+
+
+    function fullPathToRelativePath($fullPath, $basePath)
+    {
+        // Normalize directory separators and remove trailing slashes
+        $fullPath = rtrim(str_replace('\\', '/', $fullPath), '/');
+        $basePath = rtrim(str_replace('\\', '/', $basePath), '/');
+
+        // Split the paths into arrays
+        $fullPathArray = explode('/', $fullPath);
+        $basePathArray = explode('/', $basePath);
+
+        // Find the first differing element
+        while (count($basePathArray) && $fullPathArray[0] == $basePathArray[0]) {
+            array_shift($fullPathArray);
+            array_shift($basePathArray);
+        }
+
+        // For each remaining element in the base path, prepend '../'
+        return str_repeat('../', count($basePathArray)) . implode('/', $fullPathArray);
     }
 
 

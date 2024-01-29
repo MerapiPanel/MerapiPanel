@@ -26,8 +26,7 @@ class Admin extends Module
     {
 
         $stack  = [];
-        $result = $this->getBox()->getEvent()
-                    ->notify("module:editor:loadcomponent", $stack);
+        $result = $this->getBox()->getEvent()->notify("module:editor:loadcomponent", $stack);
         
         return [
             "code" => 200,

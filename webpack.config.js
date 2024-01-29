@@ -23,7 +23,7 @@ const entry = () => {
 
         acc[`..\\..\\..\\..\\${directoryPath}\\dist\\${name}`] = file; // Use full file path as key
 
-        console.log(acc)
+        // console.log(acc)
         return acc;
     }, {});
     

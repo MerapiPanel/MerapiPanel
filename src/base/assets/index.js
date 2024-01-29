@@ -5,11 +5,9 @@ import Merapi from './merapi';
 
 window.$ = $;
 window.MERAPI = Merapi;
-const acts = {}
+const acts = {} 
 
 $(document).on('DOMContentLoaded', function () {
-
-    console.log("hallo")
 
     $('[onload]').each(function () {
         const $this = $(this);

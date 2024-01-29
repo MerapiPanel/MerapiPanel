@@ -12,14 +12,14 @@
             <img width="110" height="65" src="{{ '@panel/assets/logo.svg?v=1' | assets }}" alt="">
         </a>
 
-        <ul class="nav-menu block w-full mt-0 text-slate-400">
+        <ul class="nav-menu block w-full mt-0 text-slate-400 overflow-y-auto">
 
             {% for item in admin.Panel_ListMenu %}
 
             <li class="mx-2 mb-4">
 
                 <a href="{{ item.link }}" class="{{ item.active ? ' active' : '' }}">
-                    {{(item.icon?("<i class=\""~item.icon~" pe-2\"></i>"):'')|raw}}{{item.name}}
+                    {{ item.icon | raw }} {{item.name}}
                 </a>
 
                 {% if item.childs %}
@@ -28,7 +28,7 @@
                     {% for child in item.childs %}
                     <li class="mb-2">
                         <a href="{{ child.link }}" class="{{ child.active ? ' active' : '' }}">
-                            {{(child.icon?("<i class=\""~child.icon~" pe-2\"></i>"):'')|raw}}{{child.name}}
+                            {{ child.icon| raw }} {{child.name}}
                         </a>
 
                         {% if child.childs %}
@@ -37,7 +37,7 @@
                             {% for child in child.childs %}
                             <li class="mb-2">
                                 <a href="{{ child.link }}" class="{{ child.active ? ' active' : '' }}">
-                                    {{(child.icon?("<i class=\""~child.icon~" pe-2\"></i>"):'')|raw}}{{child.name}}
+                                    {{ child.icon | raw }} {{child.name}}
                                 </a>
                             </li>
                             {% endfor %}
