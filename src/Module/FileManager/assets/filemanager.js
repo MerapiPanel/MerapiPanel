@@ -26,6 +26,7 @@ const uploadFiles = (files) => {
 }
 
 
+
 const RenderAssets = (container, data) => {
 
     container.html('');
@@ -101,7 +102,6 @@ const RenderAssets = (container, data) => {
     })
 
 }
-
 
 
 

@@ -167,7 +167,7 @@ class Admin extends Module
 
         $name = $request->name();
         $parent = $request->parent();
-        $newdirectory = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . rtrim($parent, "\\/") . "/" . trim($name, "\\/");
+        $newdirectory = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (empty(rtrim($parent, "\\/")) ? "/" : "/" . ltrim($parent, "\\/")) . "/" . trim($name, "\\/");
 
         try {
 
@@ -254,6 +254,10 @@ class Admin extends Module
 
         return [
             'code' => 200,
+            'data' => [
+                "old_path" => str_replace($_SERVER['DOCUMENT_ROOT'] . '/public/upload/', '', $old_path),
+                "new_path" => str_replace($_SERVER['DOCUMENT_ROOT'] . '/public/upload/', '', $new_path)
+            ],
             'message' => 'File renamed successfully.'
         ];
     }
@@ -307,8 +311,8 @@ class Admin extends Module
                 "size" => filesize($root),
                 "time" => date("Y-M-d H:i:s", filemtime($root)),
                 "path" => [
-                    "relative" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $root),
-                    "full" => $root
+                    "relative" => trim(str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload", '', $root), '\\/'),
+                    "full" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $root)
                 ]
             ];
             $container['type'] = "open";

@@ -1,5 +1,12 @@
+import { reject } from 'lodash';
 import Merapi from '../../../base/assets/merapi';
 const { parseHTML } = require("jquery");
+
+function isNumeric(str) {
+    if (typeof str != "string") return false // we only process strings!  
+    return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+        !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
 
 const FileManager = {}
 FileManager.container = {
@@ -23,7 +30,9 @@ FileManager.ItemFocusHandle = (element) => {
 
 FileManager.infoFile = (x) => {
 
-    const data = FileManager.container.data[x]
+    const item = isNumeric(x) ? FileManager.container.data[x] : x;
+
+    const data = Object.assign({ name: "", path: "", size: 0, time: "", type: "unknown" }, item);
 
     hide($(".offcanvas"))
 
@@ -93,22 +102,42 @@ FileManager.infoFile = (x) => {
  * @param {object} opts - The options for creating the folder, including the name and endpoint.
  * @return {Promise} A Promise that resolves with the response from the server.
  */
-FileManager.createFolder = (opts) => {
+FileManager.createFolder = (args) => {
 
-    let fm = new FormData();
-    fm.append("name", opts.name);
-    fm.append("parent", opts.parent);
+    const opts = Object.assign({ parent: null, endpoint: null }, args)
 
-    Merapi.post(opts.endpoint, fm).then((res, status, xhr) => {
-        if (xhr.status === 200) {
-            Merapi.toast(res.message, 5, 'text-success');
-            window.location.reload();
-        } else {
-            Merapi.toast(res.message, 5, 'text-danger');
-        }
-    }).catch((err) => {
+    return new Promise((resolve, reject) => {
 
-        Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+        const body = $(`<div><small>Parent folder: <b>${opts.parent == '' ? '/' : opts.parent}</b></small><input class='text-input' placeholder="Enter folder name"/></div>`)
+        const modal = MERAPI.createModal('Create New Folder', body);
+        modal.setAction('+', {
+            text: "Create",
+            class: "btn btn-primary",
+            callback: function () {
+                window.FileManager.createFolder({
+                    endpoint: opts.endpoint,
+                    name: body.find('input').val(),
+                    parent: opts.parent
+                });
+                let fm = new FormData();
+                fm.append("name", body.find('input').val());
+                fm.append("parent", opts.parent);
+
+                Merapi.post(opts.endpoint, fm).then((res, status, xhr) => {
+                    if (xhr.status === 200) {
+                        Merapi.toast(res.message, 5, 'text-success');
+                        resolve(res)
+                    } else {
+                        Merapi.toast(res.message, 5, 'text-danger');
+                        reject(res)
+                    }
+                }).catch((err) => {
+                    Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+                    reject(err)
+                })
+            }
+        })
+        modal.show();
     })
 }
 
@@ -121,66 +150,90 @@ FileManager.createFolder = (opts) => {
  * @param {Object} args - An object containing file, type, and endpoint information
  * @return {void}
  */
-FileManager.deleteFolder = (args) => {
+FileManager.deleteFile = (args) => {
+
     const opts = Object.assign({ file: null, type: 'directory', endpoint: null }, args);
-    Merapi.confirmDelete("Confirm deletion", `<p>Are you sure you want to delete this ${opts.type}?<br/><i>${opts.file}</i></p>This action cannot be undone!!!.`)
-        .then((result) => {
 
-            if (result) {
-                const fm = new FormData();
-                fm.append("file", opts.file);
+    return new Promise((resolve, reject) => {
 
-                Merapi.post(args.endpoint, fm).then((res, status, xhr) => {
-                    if (xhr.status === 200) {
-                        Merapi.toast(res.message, 5, 'text-success');
-                        window.location.reload();
-                    } else {
-                        Merapi.toast(res.message, 5, 'text-danger');
-                    }
-                }).catch((err) => {
-                    Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
-                });
-            }
-        })
+        Merapi.confirmDelete("Confirm deletion", `<p>Are you sure you want to delete this ${opts.type}?<br/><i>${opts.file}</i></p>This action cannot be undone!!!.`)
+            .then((result) => {
+                if (result) {
+                    const fm = new FormData();
+                    fm.append("file", opts.file);
+
+                    Merapi.post(args.endpoint, fm).then((res, status, xhr) => {
+                        if (xhr.status === 200) {
+                            Merapi.toast(res.message, 5, 'text-success');
+                            resolve(res);
+                        } else {
+                            Merapi.toast(res.message, 5, 'text-danger');
+                            reject(res);
+                        }
+                    }).catch((err) => {
+                        Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+                        reject(err);
+                    });
+                }
+            })
+    })
 }
 
 
 
 FileManager.renameFile = (args) => {
+
     const opts = Object.assign({ file: null, type: 'directory', name: null, endpoint: null }, args);
 
-    const element = $(`<div><input class='text-input' value="${opts.name}"/><small class='text-yellow-400 bg-yellow-500/20 px-2 py-1 mt-1'><b>Noted :</b> Changing file name may break other content that used this file!.</small></div>`);
-    const modal = Merapi.createModal(`Rename ${opts.type}`, element, {
-        positive: {
-            text: 'Rename',
-            class: 'btn btn-primary',
-            callback: () => {
-                const fm = new FormData();
-                fm.append("file", opts.file);
-                fm.append("old_name", opts.name);
-                fm.append("new_name", element.find("input").val())
-                Merapi.post(opts.endpoint, fm).then((res, status, xhr) => {
-                    if (xhr.status === 200) {
-                        Merapi.toast(res.message, 5, 'text-success');
-                        window.location.reload();
-                    } else {
-                        Merapi.toast(res.message, 5, 'text-danger');
-                    }
-                }).catch(err => {
-                    Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
-                })
-            }
-        },
-        negative: {
-            text: 'Close',
-            class: 'btn btn-secondary',
-            callback: null
-        }
-    });
+    return new Promise((resolve, reject) => {
 
-    modal.show();
+        const element = $(`<div><input class='text-input' value="${opts.name}"/><small class='text-yellow-400 bg-yellow-500/20 px-2 py-1 mt-1'><b>Noted :</b> Changing file name may break other content that used this file!.</small></div>`);
+        const modal = Merapi.createModal(`Rename ${opts.type}`, element, {
+            positive: {
+                text: 'Rename',
+                class: 'btn btn-primary',
+                callback: () => {
+                    const fm = new FormData();
+                    fm.append("file", opts.file);
+                    fm.append("old_name", opts.name);
+                    fm.append("new_name", element.find("input").val())
+                    Merapi.post(opts.endpoint, fm).then((res, status, xhr) => {
+                        if (xhr.status === 200) {
+                            Merapi.toast(res.message, 5, 'text-success');
+                            resolve(res)
+                        } else {
+                            Merapi.toast(res.message, 5, 'text-danger');
+                            reject(res)
+                        }
+                    }).catch(err => {
+                        Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+                        reject(err)
+                    })
+                }
+            },
+            negative: {
+                text: 'Close',
+                class: 'btn btn-secondary',
+                callback: null
+            }
+        });
+
+        modal.show();
+    })
 }
 
+
+
+FileManager.uploadFile = (args) => {
+    const opts = Object.assign({ endpoint: null, parent: null}, args);
+
+    return new Promise((resolve, reject) => {
+        const body = $(``);
+
+        const modal = Merapi.createModal('Upload File', body);
+        modal.show();
+    })
+}
 
 // assign to global
 window.FileManager = FileManager;

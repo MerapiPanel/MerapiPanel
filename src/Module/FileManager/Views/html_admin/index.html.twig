@@ -1,6 +1,7 @@
 {% extends "@admin::panel/base.html.twig" %}
 
 
+{% set directory = request.getQuery("directory") %}
 {% block body %}
 
 <body class="min-h-screen min-w-screen bg-slate-100 text-slate-700">
@@ -18,8 +19,8 @@
                 <a class="text-blue-400 px-3 py-0 border border-blue-400/20" href="?directory="><i
                         class="fa-solid fa-house"></i></a>
 
-                {% if request.getQuery("directory") %}
-                {% set paths = request.getQuery("directory") | split('/') %}
+                {% if directory %}
+                {% set paths = directory | split('/') %}
                 {% set link = "" %}
                 {% for key, item in paths %}
 
@@ -40,10 +41,10 @@
             {% block subheader_search %}
 
             <div class="ml-auto pr-5">
-                <button class="btn btn-secondary" onclick="createFolder('{{ request.getQuery('directory') }}')">
+                <button class="btn btn-secondary" onclick="createFolder('{{ directory }}')">
                     <i class="fa-solid fa-folder-plus"></i> new folder
                 </button>
-                <button class="btn btn-secondary">
+                <button class="btn btn-secondary" onclick="uploadFile()">
                     <i class="fa-solid fa-file-arrow-up"></i> upload file
                 </button>
             </div>
@@ -60,131 +61,143 @@
 
         {% if container.type == 'navigate' %}
 
-            {% if container.data | length > 0 %}
-            <div class="flex">
-                <div class="mb-[15rem]">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
-                        {% for key, item in container.data %}
-                        <div data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
-                            class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
+        {% if container.data | length > 0 %}
+        <div class="flex">
+            <div class="mb-[15rem]">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
+                    {% for key, item in container.data %}
+                    <div data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
+                        class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
 
-                            {% if item.icon is iterable %}
-                            <img class="rounded overflow-hidden img-{{ item.icon.scale }}"
-                                src="{{ item.icon.src | assets }}" />
-                            {% else %}
-                            <div class="h-full w-full flex items-center justify-center"><i
-                                    class="fa-solid {{ item.icon }} fa-2x"></i></div>
-                            {% endif %}
+                        {% if item.icon is iterable %}
+                        <img class="rounded overflow-hidden img-{{ item.icon.scale }}"
+                            src="{{ item.icon.src | assets }}" />
+                        {% else %}
+                        <div class="h-full w-full flex items-center justify-center"><i
+                                class="fa-solid {{ item.icon }} fa-2x"></i></div>
+                        {% endif %}
 
 
-                            <div
-                                class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">
-                                {{ item.name }}
-                            </div>
+                        <div
+                            class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">
+                            {{ item.name }}
+                        </div>
 
-                            {% set contentType = item.type == "directory" ? "directory" : "file" %}
-                            {% set contentFile = item.path %}
+                        {% set contentType = item.type == "directory" ? "directory" : "file" %}
+                        {% set contentFile = item.path %}
 
-                            <div class="absolute hidden right-2 top-0 z-20">
-                                <div class="dropdown">
-                                    <button data-act-trigger="dropdown" class="dropdown-toggle">
-                                        <i class="fa-solid fa-ellipsis"></i>
-                                    </button>
-                                    <ul class="dropdown-menu text-sm">
-                                        <li class="dropdown-item">
-                                            <a type="button" href="?directory={{ item.path }}">
-                                                <i
-                                                    class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
-                                                Open {% if item.type ==
-                                                "directory" %}folder{% else %}file{% endif %}
-                                            </a>
-                                        </li>
-                                        <li class="dropdown-item">
-                                            <button type="button" class="" onclick="infoFile('{{ key }}')">
-                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
-                                            </button>
-                                        </li>
-                                        <li class="dropdown-item">
-                                            <button type="button" class="" onclick="renameFile({
-                                                                file: '{{ contentFile }}',
-                                                                name: '{{ item.name }}',
-                                                                type: '{{ contentType }}'
-                                                        })">
-                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
-                                            </button>
-                                        </li>
-                                        <li class="dropdown-item">
-
-                                            <button type="button" class="text-red-500" onclick="deleteFile({
-                                                                    file: '{{ contentFile }}',
-                                                                    type: '{{ contentType }}'
-                                                                })">
-                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
+                        <div class="absolute hidden right-2 top-0 z-20">
+                            <div class="dropdown">
+                                <button data-act-trigger="dropdown" class="dropdown-toggle">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                                <ul class="dropdown-menu text-sm">
+                                    <li class="dropdown-item">
+                                        <a type="button" href="?directory={{ item.path }}">
+                                            <i
+                                                class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
+                                            Open {% if item.type == "directory" %}folder{% else %}file{% endif %}
+                                        </a>
+                                    </li>
+                                    <li class="dropdown-item">
+                                        <button type="button" class="" onclick="infoFile('{{ key }}')">
+                                            <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
+                                        </button>
+                                    </li>
+                                    <li class="dropdown-item">
+                                        <button type="button" class=""
+                                            onclick="renameFile({ file: '{{ contentFile }}', name: '{{ item.name }}', type: '{{ contentType }}' })">
+                                            <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
+                                        </button>
+                                    </li>
+                                    <li class="dropdown-item">
+                                        <button type="button" class="text-red-500"
+                                            onclick="deleteFile({ file: '{{ contentFile }}', type: '{{ contentType }}' })">
+                                            <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                        {% endfor %}
-
                     </div>
+                    {% endfor %}
+
                 </div>
             </div>
-            {% else %}
-            <div class="flex flex-wrap justify-center items-center h-[60vh] w-full">
-                <div class="text-center">
-                    <div class="opacity-50 p-5"><i class="fa-regular fa-folder-open fa-6x"></i></div>
-                    <h2 class="text-3xl font-bold">Directory Empty</h2>
-                </div>
+        </div>
+        {% else %}
+        <div class="flex flex-wrap justify-center items-center h-[60vh] w-full">
+            <div class="text-center">
+                <div class="opacity-50 p-5"><i class="fa-regular fa-folder-open fa-6x"></i></div>
+                <h2 class="text-3xl font-bold">Directory Empty</h2>
             </div>
-            {% endif %}
+        </div>
+        {% endif %}
 
         {% else %}
 
-            <div class="w-full aspect-[6/3] bg-gray-900 max-h-[70vh] relative">
-                {% if "image" in container.data.mime  %}
-                
-                    <img class="p-8 w-full max-h-[75vh] object-contain" src="{{ container.data.path.relative }}" alt="{{ container.data.name }}" srcset="">
-                {% else %}
+        {% set contentType = container.data.mime == "directory" ? "directory" : "file" %}
+        {% set contentFile = container.data.path.relative %}
 
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
-                    <h1 class="text-3xl font-bold">File Type Not Supported to View</h1>
+        <div class="w-full aspect-[6/3] bg-gray-900 max-h-[70vh] relative">
+            {% if "image" in container.data.mime %}
+
+            <img class="p-8 w-full max-h-[75vh] object-contain" src="{{ container.data.path.full }}"
+                alt="{{ container.data.name }}">
+            {% else %}
+
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
+                <h1 class="text-3xl font-bold">File Type Not Supported to View</h1>
                 <p>{{ container.data.mime }}</p>
                 <div class="py-5">
-                    <a class="btn btn-primary" href="{{ container.data.path.relative }}"  target="_blank" download="{{ container.data.name }}">Click Here to Download</a>
+                    <a class="btn btn-primary" href="{{ container.data.path.full }}" target="_blank"
+                        download="{{ container.data.name }}">Click Here to Download</a>
                 </div>
-                </div>
-
-                {% endif %}
-
-                <div class="absolute right-2 top-0 z-20">
-                    <div class="dropdown">
-                        <button data-act-trigger="dropdown" class="dropdown-toggle text-white hover:text-black">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-item">
-                                <a type="button" href=""><i class="w-[20px] text-center fa-regular fa-copy"></i> Copy
-                                    Link</a>
-                            </li>
-                            <li class="dropdown-item">
-                                <a type="button" href="{{ container.data.path.relative }}"  target="_blank" download="{{ container.data.name }}"><i class="w-[20px] text-center fa-solid fa-cloud-arrow-down"></i>
-                                    Download</a>
-                            </li>
-                            <li class="dropdown-item">
-                                <a type="button" href=""><i class="w-[20px] text-center fa-solid fa-info"></i> File Info</a>
-                            </li>
-                            <li class="dropdown-item text-red-500 bg-red-600/20">
-                                <a type="button" href=""><i class="w-[20px] text-center fa-solid fa-delete-left"></i>
-                                    Delete</a>
-                            </li>
-
-                        </ul>
-                    </div>
-                </div>
-
             </div>
+
+            {% endif %}
+
+            <div class="absolute right-2 top-0 z-20">
+                <div class="dropdown">
+                    <button data-act-trigger="dropdown" class="dropdown-toggle text-white hover:text-black">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a type="button" href="javascript: copyToClipboard('{{ container.data.path.full }}')">
+                                <i class="w-[20px] text-center fa-regular fa-copy"></i> Copy Link
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a type="button" href="{{ container.data.path.full }}" target="_blank"
+                                download="{{ container.data.name }}">
+                                <i class="w-[20px] text-center fa-solid fa-cloud-arrow-down"></i> Download
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a type="button"
+                                href="javascript: infoFile({ name: '{{ container.data.name }}', path: '{{ contentFile }}', size: '{{ container.data.size }}', time: '{{ container.data.time }}', type: '{{ container.data.mime }}'})">
+                                <i class="w-[20px] text-center fa-solid fa-info"></i> File Info
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a type="button"
+                                href="javascript: renameFile({ file: '{{ contentFile }}', name: '{{ container.data.name }}', type: '{{ contentType }}' })">
+                                <i class="w-[20px] text-center fa-solid fa-pen"></i> Rename
+                            </a>
+                        </li>
+                        <li class="dropdown-item text-red-500 bg-red-600/20">
+                            <a type="button"
+                                href="javascript: deleteFile({ file: '{{contentFile}}', type: '{{contentType}}' }, true)">
+                                <i class="w-[20px] text-center fa-solid fa-delete-left"></i> Delete
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
 
         {% endif %}
         {% endblock %}
@@ -196,42 +209,106 @@
 
     <script src="{{ '@filemanager/assets/dist/view.filemanager.bundle.js' | assets }}"></script>
     <script>
+
         FileManager.setContainer("{{ container | json_encode }}");
 
         function createFolder(parent) {
-            const body = $(`<div><small>Parent folder: <b>${parent == '' ? '/' : parent}</b></small><input class='text-input' placeholder="Enter folder name"/></div>`)
-            const modal = MERAPI.createModal('Create New Folder', body);
-            modal.setAction('+', {
-                text: "Create",
-                class: "btn btn-primary",
-                callback: function () {
-                    window.FileManager.createFolder({
-                        endpoint: "{{ 'filemanager/create_folder' | admin_url }}",
-                        name: body.find('input').val(),
-                        parent: parent
-                    });
-                }
+
+            window.FileManager.createFolder({
+                parent: parent,
+                endpoint: "{{ 'filemanager/create_folder' | admin_url }}"
+            }).then((result) => {
+                window.location.reload();
             })
-            modal.show();
         }
 
-
-        function deleteFile(args) {
-            const opts = Object.assign({ file: null, type: 'directory' }, args);
-            window.FileManager.deleteFolder({
-                file: opts.file,
-                type: opts.type,
-                endpoint: "{{ 'filemanager/delete_file' | admin_url }}"
+        function deleteFile(args, popback = false) {
+            const opts = Object.assign({ file: null, type: 'directory', endpoint: "{{ 'filemanager/delete_file' | admin_url }}" }, args);
+            window.FileManager.deleteFile(opts).then((result) => {
+                if (popback) {
+                    const urlObj = new URL(window.location.href);
+                    const directoryParam = urlObj.searchParams.get('directory');
+                    if (directoryParam) {
+                        let pathSegments = directoryParam.split('/');
+                        pathSegments.pop();
+                        let newPath = pathSegments.join('/');
+                        urlObj.searchParams.set('directory', newPath);
+                        window.location.href = urlObj.toString();
+                    }
+                } else {
+                    window.location.reload();
+                }
             })
         }
 
         function renameFile(args) {
             const opts = Object.assign({ file: null, name: null, type: 'directory', endpoint: "{{ 'filemanager/rename_file' | admin_url }}" }, args);
-            window.FileManager.renameFile(opts);
+            // console.log(opts)
+            window.FileManager.renameFile(opts).then((result) => {
+                const urlObj = new URL(window.location.href);
+                const directoryParam = urlObj.searchParams.get('directory');
+                if (directoryParam) {
+                    if (directoryParam == opts.file && result.data.new_path) {
+                        urlObj.searchParams.set('directory', result.data.new_path);
+                        window.location.href = urlObj.toString();
+                    } else {
+                        window.location.reload();
+                    }
+                } else {
+                    window.location.reload();
+                }
+            })
         }
 
         function infoFile(x) {
             FileManager.infoFile(x);
+        }
+
+        function uploadFile() {
+            FileManager.uploadFile({
+                parent: "{{ directory }}",
+                endpoint: "{{ 'filemanager/upload_file' | admin_url }}",
+            });
+        }
+
+        function copyToClipboard(text) {
+
+            if (text.charAt(0) === '/') text = text.substring(1);
+            const urlObject = new URL(`${window.location.protocol}//${window.location.hostname}/${text}`);
+            const url = urlObject.toString();
+
+            // Use the modern Clipboard API if available
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url)
+                    .then(() => {
+                        window.MERAPI.toast("Link copied to clipboard", 5, "text-success");
+                    })
+                    .catch(err => {
+                        window.MERAPI.toast('Failed to copy link', 5, 'text-danger');
+                    });
+            } else {
+                // Fallback to the older method for browsers that don't support the Clipboard API
+                var textArea = document.createElement("textarea");
+                textArea.value = url;
+
+                // Avoid scrolling to bottom
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                    window.MERAPI.toast(msg + " copied to clipboard", 5, successful ? "text-success" : "text-danger");
+                } catch (err) {
+                    window.MERAPI.toast(err, 5, 'text-danger');
+                }
+                document.body.removeChild(textArea);
+            }
         }
     </script>
     {% endblock %}
