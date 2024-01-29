@@ -24,6 +24,7 @@ class Admin extends Module
         $router->post("/filemanager/create_folder", "createFolder", self::class);
         $router->post("/filemanager/delete_file", "deleteFile", self::class);
         $router->post("/filemanager/rename_file", "renameFile", self::class);
+        $router->post("/filemanager/upload_file", "uploadFile", self::class);
 
         $route = $router->get("/filemanager", "index", self::class);
         $panel = $this->getBox()->Module_Panel();
@@ -325,5 +326,11 @@ class Admin extends Module
         return View::render("index.html.twig", [
             'container' => $container
         ]);
+    }
+
+
+    function uploadFile(Request $req) {
+
+        
     }
 }

@@ -3,33 +3,43 @@ const webpack = require('webpack');
 const LodashModule = require("lodash-webpack-plugin");
 const glob = require('glob');
 
+
+const entry = () => {
+    
+    const entryFiles = glob.sync('./src/base/assets/*.js').reduce((acc, item) => {
+        
+        const file = `./${item}`;
+        const name = path.basename(file).replace(".js", "");
+        acc[name] = file;
+
+        return acc;
+    }, {});
+    
+    const entryModule = glob.sync("./src/module/**/assets/*.js").reduce((acc, item) => {
+        
+        const directoryPath = path.dirname(item);
+        const name = path.basename(item).replace(".js", "");
+        const file = `./${item}`;
+
+        acc[`..\\..\\..\\..\\${directoryPath}\\dist\\${name}`] = file; // Use full file path as key
+
+        console.log(acc)
+        return acc;
+    }, {});
+    
+
+    return { ...entryModule, ...entryFiles };
+};
+
+
 module.exports = {
     mode: 'development',
-    entry: () => {
-        const entryFiles = glob.sync('./src/base/assets/*.js').reduce((acc, item) => {
-            const filename = item.replace(/^.*[\\\/]/, '').replace(/\.js$/, '');
-            const path = item.split("/");
-            path.pop();
-            const name = "../../../../" + path.join('/') + '/dist/' + filename;
-            acc[name] = "./" + item;
-            return acc;
-        }, {});
-
-        const entryModule = glob.sync("./src/module/**/assets/*.js").reduce((acc, item) => {
-            const filename = item.replace(/^.*[\\\/]/, '').replace(/\.js$/, '');
-            const path = item.split("/");
-            path.pop();
-            const name = "../../../../" + path.join('/') + '/dist/' + filename;
-            acc[name] = "./" + item;
-            return acc;
-        }, {});
-
-        return Object.assign({}, entryFiles, entryModule);
-    },
+    entry: entry(),
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, './src/base/assets/dist'),
+        path: path.resolve(__dirname, "./src/base/assets/dist"),
     },
+
     plugins: [
         new webpack.ProvidePlugin({
             $: "jquery",
@@ -42,7 +52,7 @@ module.exports = {
         rules: [
             {
                 test: /\.css$/i,
-                //include: path.resolve(__dirname, 'src'),
+                // include: path.resolve(__dirname, './src/module/*'),
                 use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
             {

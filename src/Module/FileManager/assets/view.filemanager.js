@@ -1,6 +1,6 @@
-import { reject } from 'lodash';
 import Merapi from '../../../base/assets/merapi';
 const { parseHTML } = require("jquery");
+import Resumable from 'resumablejs';
 
 function isNumeric(str) {
     if (typeof str != "string") return false // we only process strings!  
@@ -224,14 +224,66 @@ FileManager.renameFile = (args) => {
 
 
 
+
 FileManager.uploadFile = (args) => {
+
     const opts = Object.assign({ endpoint: null, parent: null}, args);
 
     return new Promise((resolve, reject) => {
-        const body = $(``);
+
+        const body = $(`<div>
+        <div class="border-dashed border border-sky-400 rounded w-full aspect-[4/6]" id="dropped-receiver"><button class='btn btn-primary' id='add-file'>Add File</button></div>
+        </div>`);
 
         const modal = Merapi.createModal('Upload File', body);
         modal.show();
+
+
+        var r = new Resumable({
+            target: 'upload.php',
+            testChunks: true
+        });
+
+        r.assignBrowse(body.find("#add-file")[0])
+        r.assignDrop(body.find("#dropped-receiver")[0])
+
+
+        // var progressBar = new ProgressBar($('#upload-progress'));
+        // r.on('fileAdded', function(file, event){
+        //     progressBar.fileAdded();
+        // });
+     
+        // r.on('fileSuccess', function(file, message){
+        //     progressBar.finish();
+        // });
+     
+        // r.on('progress', function(){
+        //     progressBar.uploading(r.progress()*100);
+        //     $('#pause-upload-btn').find('.glyphicon').removeClass('glyphicon-play').addClass('glyphicon-pause');
+        // });
+     
+        // r.on('pause', function(){
+        //     $('#pause-upload-btn').find('.glyphicon').removeClass('glyphicon-pause').addClass('glyphicon-play');
+        // });
+
+
+        // function ProgressBar(ele) {
+        //     this.thisEle = $(ele);
+     
+        //     this.fileAdded = function() {
+        //         (this.thisEle).removeClass('hide').find('.progress-bar').css('width','0%');
+        //     },
+     
+        //     this.uploading = function(progress) {
+        //         (this.thisEle).find('.progress-bar').attr('style', "width:"+progress+'%');
+        //     },
+     
+        //     this.finish = function() {
+        //         (this.thisEle).addClass('hide').find('.progress-bar').css('width','0%');
+        //     }
+        // }
+    
+
     })
 }
 
