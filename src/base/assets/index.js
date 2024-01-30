@@ -5,7 +5,7 @@ import Merapi from './merapi';
 
 window.$ = $;
 window.MERAPI = Merapi;
-const acts = {} 
+const acts = {}
 
 $(document).on('DOMContentLoaded', function () {
 
@@ -19,14 +19,24 @@ $(document).on('DOMContentLoaded', function () {
     });
 
     $('[data-act-target]').each(function () {
-        
-        let target = $this.attr('data-act-target');
 
-        console.log(target);
+        let target = $this.attr('data-act-target');
     });
 
+    liveReload();
+})
+
+
+function liveReload() {
     $('.dropdown').each(function () {
         const $this = $(this);
+        
+        // Check if the element already has the event listener attached
+        if ($this.data('listener-attached')) {
+            return; // Exit the loop for this element
+        }
+        
+        // Attach the event listener
         $this.find('[data-act-trigger=dropdown]').on('click', function () {
             $('.dropdown').not($this).removeClass('open');
             $this.toggleClass('open');
@@ -36,6 +46,13 @@ $(document).on('DOMContentLoaded', function () {
             if (!$(e.target).closest($this).length) {
                 $this.removeClass('open');
             }
-        })
+        });
+
+        // Mark the element as having the event listener attached
+        $this.data('listener-attached', true);
     });
-})
+
+    setTimeout(() => {
+        window.requestAnimationFrame(liveReload);
+    }, 800);
+}

@@ -30,7 +30,7 @@ class Service extends Module
     function adminLink($path = "")
     {
         $AppConfig = $this->box->getConfig();
-        return rtrim($AppConfig['admin'], "/") . "/" . ltrim($path, "/");
+        return rtrim($AppConfig['admin'], "\\/") . "/" . ltrim($path, "\\/");
     }
 
 

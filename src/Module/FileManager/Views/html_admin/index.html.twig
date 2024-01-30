@@ -61,78 +61,78 @@
 
         {% if container.type == 'navigate' %}
 
-        {% if container.data | length > 0 %}
-        <div class="flex">
-            <div class="mb-[15rem]">
-                <div class="flex flex-wrap gap-4">
-                    {% for key, item in container.data %}
-                    <div data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
-                        class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
+        
+        <div class="flex w-full">
+            <div class="mb-[15rem] w-full">
+                <div class="flex flex-wrap gap-4" id="container-filemanager">
+                    {% if container.data | length > 0  %}
+                        {% for key, item in container.data %}
+                        <div data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
+                            class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
 
-                        {% if item.icon is iterable %}
-                        <img class="rounded overflow-hidden img-{{ item.icon.scale }}"
-                            src="{{ item.icon.src | assets }}" />
-                        {% else %}
-                        <div class="h-full w-full flex items-center justify-center"><i
-                                class="fa-solid {{ item.icon }} fa-2x"></i></div>
-                        {% endif %}
+                            {% if item.icon is iterable %}
+                            <img {% if item.icon.scale == "scale-down" %}width="35px" height="35px"{% endif %} class="rounded overflow-hidden img-{{ item.icon.scale }}" src="{{ item.icon.src }}" />
+                            {% else %}
+                            <div class="h-full w-full flex items-center justify-center"><i
+                                    class="fa-solid {{ item.icon }} fa-2x"></i></div>
+                            {% endif %}
 
 
-                        <div
-                            class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">
-                            {{ item.name }}
-                        </div>
+                            <div
+                                class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">
+                                {{ item.name }}
+                            </div>
 
-                        {% set contentType = item.type == "directory" ? "directory" : "file" %}
-                        {% set contentFile = item.path %}
+                            {% set contentType = item.type == "directory" ? "directory" : "file" %}
+                            {% set contentFile = item.path %}
 
-                        <div class="absolute hidden right-2 top-0 z-20">
-                            <div class="dropdown">
-                                <button data-act-trigger="dropdown" class="dropdown-toggle">
-                                    <i class="fa-solid fa-ellipsis"></i>
-                                </button>
-                                <ul class="dropdown-menu text-sm">
-                                    <li class="dropdown-item">
-                                        <a type="button" href="?directory={{ item.path }}">
-                                            <i
-                                                class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
-                                            Open {% if item.type == "directory" %}folder{% else %}file{% endif %}
-                                        </a>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <button type="button" class="" onclick="infoFile('{{ key }}')">
-                                            <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
-                                        </button>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <button type="button" class=""
-                                            onclick="renameFile({ file: '{{ contentFile }}', name: '{{ item.name }}', type: '{{ contentType }}' })">
-                                            <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
-                                        </button>
-                                    </li>
-                                    <li class="dropdown-item">
-                                        <button type="button" class="text-red-500"
-                                            onclick="deleteFile({ file: '{{ contentFile }}', type: '{{ contentType }}' })">
-                                            <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
-                                        </button>
-                                    </li>
-                                </ul>
+                            <div class="absolute hidden right-2 top-0 z-20">
+                                <div class="dropdown">
+                                    <button data-act-trigger="dropdown" class="dropdown-toggle">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </button>
+                                    <ul class="dropdown-menu text-sm">
+                                        <li class="dropdown-item">
+                                            <a type="button" href="?directory={{ item.path }}">
+                                                <i
+                                                    class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
+                                                Open {% if item.type == "directory" %}folder{% else %}file{% endif %}
+                                            </a>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <button type="button" class="" onclick="infoFile('{{ key }}')">
+                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
+                                            </button>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <button type="button" class=""
+                                                onclick="renameFile({ file: '{{ contentFile }}', name: '{{ item.name }}', type: '{{ contentType }}' })">
+                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
+                                            </button>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <button type="button" class="text-red-500"
+                                                onclick="deleteFile({ file: '{{ contentFile }}', type: '{{ contentType }}' })">
+                                                <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="flex flex-wrap justify-center items-center h-[60vh] w-full" id="filemanager-directory-empty">
+                        <div class="text-center">
+                            <div class="opacity-50 p-5"><i class="fa-regular fa-folder-open fa-6x"></i></div>
+                            <h2 class="text-3xl font-bold">Directory Empty</h2>
+                        </div>
                     </div>
-                    {% endfor %}
-
+                    {% endif %}
                 </div>
             </div>
         </div>
-        {% else %}
-        <div class="flex flex-wrap justify-center items-center h-[60vh] w-full">
-            <div class="text-center">
-                <div class="opacity-50 p-5"><i class="fa-regular fa-folder-open fa-6x"></i></div>
-                <h2 class="text-3xl font-bold">Directory Empty</h2>
-            </div>
-        </div>
-        {% endif %}
+        
 
         {% else %}
 

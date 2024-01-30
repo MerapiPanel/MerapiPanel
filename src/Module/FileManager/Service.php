@@ -100,23 +100,52 @@ class Service extends Module
 
 
 
+
+
     function getIconName($file)
     {
 
 
         $ext = pathinfo($file, PATHINFO_EXTENSION);
-        if (empty($ext)) {
-            return "fa-folder-closed";
-        }
+
         switch ($ext) {
             case 'png':
             case 'jpg':
             case 'jpeg':
                 return [
-                    "src" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $file),
+                    "src" => "/public/filemanager/image_viewer/" . str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload/", '', $file),
                     "scale" => "cover"
                 ];
 
+            default:
+                return [
+                    "src" => "/public/filemanager/image_viewer/" . str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload/", '', $file) . "?icon=1",
+                    "scale" => "scale-down"
+                ];
+        }
+    }
+
+
+
+    public function getIcon($file)
+    {
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+        if (empty($ext)) {
+            if ($this->isDirectoryNotEmpty($file)) {
+                return __DIR__ . "/assets/icon/folder-file.png";
+            } else {
+                return __DIR__ . "/assets/icon/folder-empty.png";
+            }
+        }
+
+        switch ($ext) {
+            case 'png':
+            case 'jpg':
+            case 'jpeg':
+                $file = "image";
+                break;
             case 'mp4':
             case 'avi':
             case 'mov':
@@ -128,7 +157,8 @@ class Service extends Module
             case '3gp':
             case 'mpeg':
             case 'mpg':
-                return "fa-regular fa-file-video";
+                $file = "video";
+                break;
 
             case 'mp3':
             case 'wav':
@@ -137,34 +167,42 @@ class Service extends Module
             case 'wma':
             case 'flac':
             case 'amr':
-                return "fa-regular fa-file-audio";
+                $file = "audio";
+                break;
 
             case 'gif':
-                return "fa-regular fa-file-image";
+                $file = "image";
+                break;
 
             case 'pdf':
-                return 'fa-file-pdf';
+                $file = "pdf";
+                break;
             case 'doc':
             case 'docx':
-                return 'fa-file-word';
+                $file = "docs";
+                break;
             case 'xls':
             case 'xlsx':
-                return 'fa-file-excel';
+                $file = "sheet";
+                break;
 
             case 'csv':
-                return 'fa-solid fa-file-csv';
+                $file = "sheet";
+                break;
 
             case 'ppt':
             case 'pptx':
-                return 'fa-file-powerpoint';
+                $file = "powerpoint";
+                break;
 
             case 'txt':
-                return 'fa-file-alt';
+                $file = "alt";
+                break;
 
             case 'zip':
             case 'rar':
-                return 'fa-file-archive';
-
+                $file = 'zip';
+                break;
             case 'php':
             case 'html':
             case 'js':
@@ -181,10 +219,31 @@ class Service extends Module
             case 'ps1':
             case 'md':
             case 'vue':
-                return 'fa-file-code';
+                $file = 'coding';
+                break;
 
             default:
-                return 'fa-solid fa-file-circle-question';
+                $file = 'unknown';
         }
+
+        return __DIR__ . "/assets/icon/$file.png";
+    }
+
+
+    function isDirectoryNotEmpty($dir)
+    {
+        if (!is_readable($dir)) return null; // Check if directory is readable
+
+        $handle = opendir($dir);
+        if ($handle) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry != "." && $entry != "..") {
+                    closedir($handle);
+                    return true; // Directory is not empty
+                }
+            }
+            closedir($handle);
+        }
+        return false; // Directory is empty
     }
 }

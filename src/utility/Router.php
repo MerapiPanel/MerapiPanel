@@ -196,6 +196,8 @@ class Router extends Component
             throw new Exception("Unsupported HTTP method: $method", 405);
         }
 
+
+       // print_r($this->routeStack);
         /**
          * @var Route $route
          */
@@ -373,17 +375,20 @@ class Router extends Component
 
                     $response->setContent("$retrun");
                     return $response;
+
                 }
 
                 if (is_object($retrun) || is_array($retrun)) {
 
                     return $this->handleApiResponse($retrun);
+                    
                 } elseif (is_string($retrun)) {
 
                     $response->setContent($retrun);
                     return $response;
 
                 } else {
+
                     throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($retrun) . " returned", 400);
                 }
             } else {

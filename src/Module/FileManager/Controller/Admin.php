@@ -2,15 +2,10 @@
 
 namespace MerapiPanel\Module\FileManager\Controller;
 
-use Dilab\Network\SimpleRequest;
-use Dilab\Network\SimpleResponse;
-use Dilab\Resumable;
 use Exception;
-use finfo;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Http\Request;
-use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 class Admin extends Module
 {
@@ -29,6 +24,7 @@ class Admin extends Module
         $router->post("/filemanager/rename_file", "renameFile", self::class);
         $router->get("/filemanager/upload_file", "uploadFile", self::class);
         $router->post("/filemanager/upload_file", "uploadFile", self::class);
+        // $router->get("/filemanager/image_viewer/{path}", "imageViewer", self::class);
 
         $route = $router->get("/filemanager", "index", self::class);
         $panel = $this->getBox()->Module_Panel();
@@ -286,6 +282,8 @@ class Admin extends Module
     public function index($req)
     {
 
+        $showHidden = $req->showHidden();
+
         $root = $_SERVER['DOCUMENT_ROOT'] . '/public/upload/' . (!empty($req->getQuery("directory")) ? ltrim($req->getQuery("directory"), "\\/") : "");
         $container = [];
 
@@ -318,7 +316,7 @@ class Admin extends Module
 
             foreach ($files as $f) {
 
-                if ($f == '.' || $f == '..') {
+                if ($f == '.' || $f == '..' || (!$showHidden && strpos($f, '.') === 0)) {
                     continue;
                 }
                 $filePath = $root . "/{$f}";
@@ -379,9 +377,9 @@ class Admin extends Module
 
         // Assign variables for easy access
         $file = $_FILES['file'];
-        $temporaryFilePath = $file['tmp_name'];
-        $resumableIdentifier = $_POST['resumableIdentifier'];
-        $resumableFilename = $_POST['resumableFilename'];
+        $temporaryFilePath    = $file['tmp_name'];
+        $resumableIdentifier  = $_POST['resumableIdentifier'];
+        $resumableFilename    = $_POST['resumableFilename'];
         $resumableChunkNumber = $_POST['resumableChunkNumber'];
 
         // Create a unique file path
@@ -407,6 +405,31 @@ class Admin extends Module
         if ($allChunksUploaded) {
 
             $outputFilePath = rtrim($uploadDirectory, "\\/") . "/" . $resumableFilename;
+
+            $x = 0;
+            while (file_exists($outputFilePath)) {
+                $x++;
+
+                $fileName = pathinfo($resumableFilename, PATHINFO_FILENAME);
+                $extension = pathinfo($resumableFilename, PATHINFO_EXTENSION);
+
+                // Check if the filename already contains a number at the end
+                $pattern = "/\\(\\d+\\." . preg_quote($extension) . "\\)$/";
+                if (preg_match($pattern, $fileName)) {
+                    $outputFileName = preg_replace_callback($pattern, function ($match) use ($x) {
+                        return '-' . ($x + intval($match[0])) . '.';
+                    }, $fileName);
+                } else {
+                    // Append the auto-incremented number to the end of the filename
+                    $outputFileName = "{$fileName} ({$x}).{$extension}";
+                }
+
+                $outputFilePath = rtrim($uploadDirectory, "\\/") . "/" . $outputFileName;
+            }
+
+            // Now $outputFilePath contains the unique file path
+
+
             $out = fopen($outputFilePath, "wb");
             if ($out) {
                 for ($i = 1; $i <= $_POST['resumableTotalChunks']; $i++) {
@@ -421,11 +444,143 @@ class Admin extends Module
                 }
                 fclose($out);
             }
+
+
+            return [
+                "code" => 200,
+                "message" => "File uploaded successfully",
+                "data" => [
+                    "path" => [
+                        "relative" => trim(str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload", '', $outputFilePath), '\\/'),
+                        "full" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $outputFilePath)
+                    ],
+                    "name" => basename($outputFilePath),
+                    "size" => file_exists($outputFilePath) ? filesize($outputFilePath) : 0,
+                    "icon" => $this->service()->getIconName($outputFilePath),
+                    "time" => date("Y-M-d H:i:s", filemtime($outputFilePath)),
+                    "type" => mime_content_type($outputFilePath)
+                ]
+            ];
         }
 
         return [
             "code" => 200,
-            "message" => "File uploaded successfully",
+            "message" => "Ok",
         ];
+    }
+
+
+
+    public function imageViewer(Request $req)
+    {
+
+        $path = urldecode($req->path());
+        $file = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (!empty($path) ? '/' . ltrim($path, "\\/") : "");
+        $destination = $_SERVER['DOCUMENT_ROOT'] . '/public/upload/.resize';
+        if (!file_exists($destination)) {
+            mkdir($destination);
+        }
+
+
+        if (!file_exists($file)) {
+            return [
+                "code" => 404,
+                "message" => "File not found "
+            ];
+        }
+
+        if (!str_contains(mime_content_type($file), 'image')) {
+
+            if ($req->icon() != 1) {
+                return [
+                    "code" => 400,
+                    "message" => "File is not an image"
+                ];
+            } else {
+
+                header("Content-Type: image/png");
+                return file_get_contents($this->service()->getIcon($file));
+            }
+        }
+
+        $maxWidth = 200;
+        $maxHeight = 200;
+        $targetDirectory = preg_replace('/[^a-z0-9]+/', '', dirname(str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload/", "", $file)));
+        $targetFileName  = ($targetDirectory ? $targetDirectory . "_" : "") . basename($file, "." . strtolower(pathinfo($file, PATHINFO_EXTENSION))) . "-$maxWidth" . 'x' . "$maxHeight." . strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $destinationFile = $destination . '/' . $targetFileName;
+
+        ob_start();
+        if (!file_exists($destinationFile)) {
+            $this->resizeImage($file, $destinationFile, $maxWidth, $maxHeight);
+        }
+        if (dirname($destinationFile) == dirname($file)) {
+            echo file_get_contents($file);
+        } else {
+            echo file_get_contents($destinationFile);
+        }
+        $output = ob_get_clean();
+
+        header("Content-Type: image/webp");
+
+        return $output;
+    }
+
+    function resizeImage($sourcePath, $destinationPath, $maxWidth, $maxHeight)
+    {
+        // Get original image dimensions
+        list($originalWidth, $originalHeight) = getimagesize($sourcePath);
+
+        // Calculate aspect ratio
+        $ratio = $originalWidth / $originalHeight;
+
+        // Determine new dimensions based on max width and height
+        if ($originalWidth > $originalHeight) {
+            // Landscape orientation
+            $newWidth = $maxWidth;
+            $newHeight = $newWidth / $ratio;
+            if ($newHeight > $maxHeight) {
+                $newHeight = $maxHeight;
+                $newWidth = $newHeight * $ratio;
+            }
+        } else {
+            // Portrait or square orientation
+            $newHeight = $maxHeight;
+            $newWidth = $newHeight * $ratio;
+            if ($newWidth > $maxWidth) {
+                $newWidth = $maxWidth;
+                $newHeight = $newWidth / $ratio;
+            }
+        }
+
+        // Load the source image
+        $sourceImage = imagecreatefromstring(file_get_contents($sourcePath));
+        if (!$sourceImage) {
+            return false; // Unable to create image
+        }
+
+        // Create a new true color image with the new dimensions
+        $destinationImage = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Copy and resize the original image into the new image
+        imagecopyresampled($destinationImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
+
+        // Save the resized image to the destination path
+        switch (exif_imagetype($sourcePath)) {
+            case IMAGETYPE_JPEG:
+            case IMAGETYPE_PNG:
+                imagewebp($destinationImage, $destinationPath, 75);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($destinationImage, $destinationPath);
+                break;
+            default:
+                return false; // Unsupported image type
+        }
+
+        // Free up memory
+        imagedestroy($sourceImage);
+        imagedestroy($destinationImage);
+
+        return true;
     }
 }

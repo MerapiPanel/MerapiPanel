@@ -20,6 +20,29 @@ function formatFileSize(bytes) {
     }
 }
 
+function formatDate(time) {
+    const date = new Date(time);
+
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // getMonth() returns 0-11
+    const day = date.getDate();
+
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    // Pad single digit minutes and seconds with a leading zero
+    const paddedMonth = month.toString().padStart(2, '0');
+    const paddedDay = day.toString().padStart(2, '0');
+    const paddedHours = hours.toString().padStart(2, '0');
+    const paddedMinutes = minutes.toString().padStart(2, '0');
+    const paddedSeconds = seconds.toString().padStart(2, '0');
+
+    return `${year}-${paddedMonth}-${paddedDay} ${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+}
+
+
+
 const FileManager = {}
 FileManager.container = {
     "root": null,
@@ -117,19 +140,17 @@ FileManager.createFolder = (args) => {
 
     const opts = Object.assign({ parent: null, endpoint: null }, args)
 
+    const body = $(`<div><small>Parent folder: <b>${opts.parent == '' ? '/' : opts.parent}</b></small><input class='text-input' placeholder="Enter folder name"/></div>`)
+    const modal = Merapi.createModal('Create New Folder', body);
+
     return new Promise((resolve, reject) => {
 
-        const body = $(`<div><small>Parent folder: <b>${opts.parent == '' ? '/' : opts.parent}</b></small><input class='text-input' placeholder="Enter folder name"/></div>`)
-        const modal = MERAPI.createModal('Create New Folder', body);
+       
         modal.setAction('+', {
             text: "Create",
             class: "btn btn-primary",
             callback: function () {
-                window.FileManager.createFolder({
-                    endpoint: opts.endpoint,
-                    name: body.find('input').val(),
-                    parent: opts.parent
-                });
+            
                 let fm = new FormData();
                 fm.append("name", body.find('input').val());
                 fm.append("parent", opts.parent);
@@ -139,7 +160,7 @@ FileManager.createFolder = (args) => {
                         Merapi.toast(res.message, 5, 'text-success');
                         resolve(res)
                     } else {
-                        Merapi.toast(res.message, 5, 'text-danger');
+                       Merapi.toast(res.message, 5, 'text-danger');
                         reject(res)
                     }
                 }).catch((err) => {
@@ -148,7 +169,9 @@ FileManager.createFolder = (args) => {
                 })
             }
         })
+
         modal.show();
+        
     })
 }
 
@@ -258,7 +281,7 @@ FileManager.uploadFile = (args) => {
         var r = new Resumable({
             target: opts.endpoint,
             testChunks: false,
-            query: { 
+            query: {
                 parent: opts.parent
             }
         });
@@ -279,6 +302,12 @@ FileManager.uploadFile = (args) => {
         r.on('fileProgress', function (resumableFile) {
             // Update the progress bar for this file
             progressBar.uploading(resumableFile)
+        });
+
+        // Add event listeners
+        r.on('fileSuccess', function (fileObj, response) {
+            // Handle server response here
+            progressBar.finish(fileObj, response);
         });
 
 
@@ -311,26 +340,80 @@ FileManager.uploadFile = (args) => {
                 r.upload();
             }
 
-            this.uploading = function (file) {
+            this.uploading = function (resumableFile) {
 
-                const fileId = file.uniqueIdentifier;
+                const fileId = resumableFile.uniqueIdentifier;
 
                 const progressBar = $(`#progress_bar-${fileId}`);
                 const progressText = $(`#progress_text-${fileId}`);
 
-                var progress = Math.floor(file.progress() * 100);
+                var progress = Math.floor(resumableFile.progress() * 100);
 
                 if (progressBar) progressBar.css({ width: `${progress}%` });
                 if (progressText) progressText.text(`${progress}%`);
-
-                if (progress == 100) {
-                    progressBar.css({ width: `100%`, background: `#2dd0b2` });
-                    progressText.text(`success`);
-                }
             }
 
-            this.finish = function () {
-                //(this.holder).addClass('hide').find('.progress-bar').css('width', '0%');
+            this.finish = function (resumableFile, serverResponse) {
+
+
+                const fileId = resumableFile.uniqueIdentifier;
+                const progressBar = $(`#progress_bar-${fileId}`);
+                const progressText = $(`#progress_text-${fileId}`);
+                progressBar.css({ width: `100%`, background: `#2dd0b2` });
+                progressText.text(`success`);
+
+
+                if (!FileManager.container.data) FileManager.container.data = [];
+
+                const response = JSON.parse(serverResponse);
+                const data = {
+                    name: response.data.name,
+                    size: response.data.size,
+                    type: response.data.type,
+                    time: response.data.time,
+                    path: response.data.path.full,
+                };
+                const key = FileManager.container.data.length;
+
+                FileManager.container.data.push(data)
+
+                const element = $(`<div data-fm-key="${key}" onclick="FileManager.ItemFocusHandle(this);" class="w-[140px] cursor-pointer [&amp;.active>.file-info]:to-slate-500/80 [&amp;.active>.file-info]:text-white [&amp;.active>.hidden]:block [&amp;.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative active">
+                    <img ${(response.data.icon.scale == 'scale-down' ? "width='35px' height='35px'" : "")} class="rounded overflow-hidden img-${response.data.icon.scale}" src="${response.data.icon.src}">          
+                    <div class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">${data.name}</div>
+                    <div class="absolute hidden right-2 top-0 z-20">
+                        <div class="dropdown">
+                            <button data-act-trigger="dropdown" class="dropdown-toggle">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                            <ul class="dropdown-menu text-sm">
+                                <li class="dropdown-item">
+                                    <a type="button" href="?directory=${response.data.path.relative}">
+                                        <i class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
+                                        Open file                                        </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <button type="button" class="" onclick="infoFile('${key}')">
+                                        <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
+                                    </button>
+                                </li>
+                                <li class="dropdown-item">
+                                    <button type="button" class="" onclick="renameFile({ file: '${response.data.path.relative}', name: '${data.name}', type: 'file' })">
+                                        <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
+                                    </button>
+                                </li>
+                                <li class="dropdown-item">
+                                    <button type="button" class="text-red-500" onclick="deleteFile({ file: '${response.data.path.relative}', type: 'file' })">
+                                        <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>`);
+
+                $("#container-filemanager").find('#filemanager-directory-empty').remove();
+                $("#container-filemanager").append(element);
+
             }
         }
     })
