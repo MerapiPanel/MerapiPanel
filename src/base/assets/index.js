@@ -1,11 +1,15 @@
 require('./app.css')
 require('./fontawesome/css/all.min.css');
 const $ = require('jquery');
-import Merapi from './merapi';
+//import merapi from './merapi';
 
-window.$ = $;
-window.MERAPI = Merapi;
-const acts = {}
+
+if (!window.merapi) {
+    window.merapi = require("./merapi");
+    // console.log(window)
+}
+
+
 
 $(document).on('DOMContentLoaded', function () {
 
@@ -27,15 +31,16 @@ $(document).on('DOMContentLoaded', function () {
 })
 
 
+
 function liveReload() {
     $('.dropdown').each(function () {
         const $this = $(this);
-        
+
         // Check if the element already has the event listener attached
         if ($this.data('listener-attached')) {
             return; // Exit the loop for this element
         }
-        
+
         // Attach the event listener
         $this.find('[data-act-trigger=dropdown]').on('click', function () {
             $('.dropdown').not($this).removeClass('open');

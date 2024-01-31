@@ -1,6 +1,8 @@
-import Merapi from '../../../base/assets/merapi';
+
 const { parseHTML } = require("jquery");
 import Resumable from 'resumablejs';
+
+
 
 function isNumeric(str) {
     if (typeof str != "string") return false // we only process strings!  
@@ -141,7 +143,7 @@ FileManager.createFolder = (args) => {
     const opts = Object.assign({ parent: null, endpoint: null }, args)
 
     const body = $(`<div><small>Parent folder: <b>${opts.parent == '' ? '/' : opts.parent}</b></small><input class='text-input' placeholder="Enter folder name"/></div>`)
-    const modal = Merapi.createModal('Create New Folder', body);
+    const modal = merapi.createModal('Create New Folder', body);
 
     return new Promise((resolve, reject) => {
 
@@ -155,16 +157,16 @@ FileManager.createFolder = (args) => {
                 fm.append("name", body.find('input').val());
                 fm.append("parent", opts.parent);
 
-                Merapi.post(opts.endpoint, fm).then((res, status, xhr) => {
+                merapi.http.post(opts.endpoint, fm).then((res, status, xhr) => {
                     if (xhr.status === 200) {
-                        Merapi.toast(res.message, 5, 'text-success');
+                        merapi.toast(res.message, 5, 'text-success');
                         resolve(res)
                     } else {
-                       Merapi.toast(res.message, 5, 'text-danger');
+                       merapi.toast(res.message, 5, 'text-danger');
                         reject(res)
                     }
                 }).catch((err) => {
-                    Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+                    merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
                     reject(err)
                 })
             }
@@ -190,22 +192,22 @@ FileManager.deleteFile = (args) => {
 
     return new Promise((resolve, reject) => {
 
-        Merapi.confirmDelete("Confirm deletion", `<p>Are you sure you want to delete this ${opts.type}?<br/><i>${opts.file}</i></p>This action cannot be undone!!!.`)
+        merapi.dialog.confirmDanger("Confirm deletion", `<p>Are you sure you want to delete this ${opts.type}?<br/><i>${opts.file}</i></p>This action cannot be undone!!!.`)
             .then((result) => {
                 if (result) {
                     const fm = new FormData();
                     fm.append("file", opts.file);
 
-                    Merapi.post(args.endpoint, fm).then((res, status, xhr) => {
+                    merapi.http.post(args.endpoint, fm).then((res, status, xhr) => {
                         if (xhr.status === 200) {
-                            Merapi.toast(res.message, 5, 'text-success');
+                            merapi.toast(res.message, 5, 'text-success');
                             resolve(res);
                         } else {
-                            Merapi.toast(res.message, 5, 'text-danger');
+                            merapi.toast(res.message, 5, 'text-danger');
                             reject(res);
                         }
                     }).catch((err) => {
-                        Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+                        merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
                         reject(err);
                     });
                 }
@@ -222,7 +224,7 @@ FileManager.renameFile = (args) => {
     return new Promise((resolve, reject) => {
 
         const element = $(`<div><input class='text-input' value="${opts.name}"/><small class='text-yellow-400 bg-yellow-500/20 px-2 py-1 mt-1'><b>Noted :</b> Changing file name may break other content that used this file!.</small></div>`);
-        const modal = Merapi.createModal(`Rename ${opts.type}`, element, {
+        const modal = merapi.createModal(`Rename ${opts.type}`, element, {
             positive: {
                 text: 'Rename',
                 class: 'btn btn-primary',
@@ -231,16 +233,16 @@ FileManager.renameFile = (args) => {
                     fm.append("file", opts.file);
                     fm.append("old_name", opts.name);
                     fm.append("new_name", element.find("input").val())
-                    Merapi.post(opts.endpoint, fm).then((res, status, xhr) => {
+                    merapi.http.post(opts.endpoint, fm).then((res, status, xhr) => {
                         if (xhr.status === 200) {
-                            Merapi.toast(res.message, 5, 'text-success');
+                            merapi.toast(res.message, 5, 'text-success');
                             resolve(res)
                         } else {
-                            Merapi.toast(res.message, 5, 'text-danger');
+                            merapi.toast(res.message, 5, 'text-danger');
                             reject(res)
                         }
                     }).catch(err => {
-                        Merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+                        merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
                         reject(err)
                     })
                 }
@@ -274,7 +276,7 @@ FileManager.uploadFile = (args) => {
             <div class="w-full pt-5" id="progressbars"></div>
         </div>`);
 
-        const modal = Merapi.createModal('Upload File', body);
+        const modal = merapi.createModal('Upload File', body);
         modal.show();
 
 
@@ -377,7 +379,7 @@ FileManager.uploadFile = (args) => {
 
                 FileManager.container.data.push(data)
 
-                const element = $(`<div data-fm-key="${key}" onclick="FileManager.ItemFocusHandle(this);" class="w-[140px] cursor-pointer [&amp;.active>.file-info]:to-slate-500/80 [&amp;.active>.file-info]:text-white [&amp;.active>.hidden]:block [&amp;.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative active">
+                const element = $(`<div data-fm-key="${key}" onclick="merapi.FileManager.ItemFocusHandle(this);" class="w-[140px] cursor-pointer [&amp;.active>.file-info]:to-slate-500/80 [&amp;.active>.file-info]:text-white [&amp;.active>.hidden]:block [&amp;.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative active">
                     <img ${(response.data.icon.scale == 'scale-down' ? "width='35px' height='35px'" : "")} class="rounded overflow-hidden img-${response.data.icon.scale}" src="${response.data.icon.src}">          
                     <div class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">${data.name}</div>
                     <div class="absolute hidden right-2 top-0 z-20">
@@ -420,4 +422,5 @@ FileManager.uploadFile = (args) => {
 }
 
 // assign to global
-window.FileManager = FileManager;
+merapi.assign('FileManager', FileManager)
+// window.FileManager = FileManager;

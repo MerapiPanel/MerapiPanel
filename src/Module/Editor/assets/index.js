@@ -1,6 +1,5 @@
-import $ from "jquery";
+// import $ from "jquery";
 import grapesjs from "grapesjs";
-
 import gjsBasic from 'grapesjs-blocks-basic';
 import gjsForms from 'grapesjs-plugin-forms';
 import gjsTailwind from "grapesjs-tailwind";
@@ -8,11 +7,8 @@ import ModuleLoader from "./plugins/moduleLoader/index.js";
 import AssetPlugin from "./plugins/Asset/index.js";
 import StoragePlugin from "./plugins/Storage/index.js";
 import CommandPlugin from "./plugins/Command/index.js";
-
 import 'grapesjs/dist/css/grapes.min.css';
-import Merapi from "../../../base/assets/merapi.js";
-
-
+// import Merapi from "../../../base/assets/merapi.js";
 
 
 
@@ -82,10 +78,10 @@ const ControlPanel = (editor, args = {}) => {
             }
         }
     ]);
-
-
-
 }
+
+
+
 
 const initEditor = (args = {}) => {
 
@@ -116,7 +112,7 @@ const initEditor = (args = {}) => {
 
     if (!option.holder) {
 
-        Merapi.toast('Holder for editor mount is not defined', null, 'text-danger');
+        merapi.toast('Holder for editor mount is not defined', null, 'text-danger');
         return;
     }
 
@@ -158,7 +154,6 @@ const initEditor = (args = {}) => {
 
 
 
-const Editor = {
+merapi.assign('editor', {
     init: initEditor
-}
-Merapi.assign('Editor', Editor);
+});

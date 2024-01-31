@@ -33,7 +33,8 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li class="dropdown-item">
-                        <a href="{{ ('template/view/' ~ template.id) | admin_url }}" target="_blank"><i class="fa-regular fa-eye"></i>
+                        <a href="{{ ('template/view/' ~ template.id) | admin_url }}" target="_blank"><i
+                                class="fa-regular fa-eye"></i>
                             View template</a>
                     </li>
                     <li class="dropdown-item">
@@ -54,24 +55,30 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
+
+    // console.log(window.merapi)
+
     function drawView(id) {
+
         const url = "{{ '/template/view/' | admin_url }}" + id;
-        MERAPI.Template.renderTemplate(url, id);
+        merapi.template.renderTemplate(url, id);
+
+
     }
     function deleteTemplate(id) {
-        const modal = MERAPI.createModal('Delete template', 'Are you sure you want to delete this template?');
+        const modal = merapi.createModal('Delete template', 'Are you sure you want to delete this template?');
         modal.setAction('+', {
             text: "Yes",
             class: "btn btn-danger",
             callback: function () {
                 modal.hide();
                 const url = "{{ '/template/delete/' | admin_url }}";
-                MERAPI.delete(url, { id: id }).then(function (data, status, xhr) {
+                xMerapi.delete(url, { id: id }).then(function (data, status, xhr) {
                     if (xhr.status === 200) {
-                        MERAPI.toast(data.message || "Template deleted", 5, 'text-success');
+                        merapi.toast(data.message || "Template deleted", 5, 'text-success');
                         window.location.reload();
                     } else {
-                        MERAPI.toast(data.message || "Failed to deleted template", 5, 'text-danger');
+                        merapi.toast(data.message || "Failed to deleted template", 5, 'text-danger');
                     }
                 });
             }

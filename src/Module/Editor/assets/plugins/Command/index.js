@@ -1,6 +1,6 @@
 
-import $ from "jquery";
-import Merapi from "../../../../../base/assets/merapi";
+// import $ from "jquery";
+// import merapi from "../../../../../base/assets/merapi";
 
 const CommandPlugin = (editor, args = {}) => {
 
@@ -35,7 +35,7 @@ const CommandPlugin = (editor, args = {}) => {
                 editor.CssComposer.clear();  // Clear styles
                 editor.UndoManager.clear();
                 editor.runCommand('clear-storage');
-                Merapi.toast('Action completed', 5, 'text-success');
+                merapi.toast('Action completed', 5, 'text-success');
             })
         }
     })
@@ -147,7 +147,7 @@ const CommandPlugin = (editor, args = {}) => {
 
                 for (let i in params) {
                     if (params[i].required && (params[i].value == '' || params[i].value == null)) {
-                        Merapi.toast(`${params[i].label} fields are required`, 5, 'text-warning');
+                        merapi.toast(`${params[i].label} fields are required`, 5, 'text-warning');
                         content.find(`#${params[i].name}`).focus();
                         return;
                     }
@@ -186,11 +186,11 @@ const CommandPlugin = (editor, args = {}) => {
             form.append(option.params[i].name, option.params[i].value);
         }
 
-        Merapi.post(option.endpoint, form).then(function (data, textStatus, xhr) {
+        merapi.http.post(option.endpoint, form).then(function (data, textStatus, xhr) {
 
             if (xhr.status === 200) {
 
-                Merapi.toast(data.message, 5, 'text-success');
+                merapi.toast(data.message, 5, 'text-success');
                 editor.runCommand('clear-storage');
                 if (option.callback) {
                     option.callback(data.data);
@@ -200,7 +200,7 @@ const CommandPlugin = (editor, args = {}) => {
 
         }).catch(function (error) {
 
-            Merapi.toast(error.message ?? error, 5, 'text-warning');
+            merapi.toast(error.message ?? error, 5, 'text-warning');
         })
     }
 
@@ -209,7 +209,7 @@ const CommandPlugin = (editor, args = {}) => {
         run: function (editor, sender, options = {}) {
 
             if (!options.endpoint) {
-                Merapi.toast('Save endpoint is not defined', 5, 'text-warning');
+                merapi.toast('Save endpoint is not defined', 5, 'text-warning');
                 return;
             }
 

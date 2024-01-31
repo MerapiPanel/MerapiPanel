@@ -3,12 +3,12 @@
 namespace MerapiPanel\Mod\Interface;
 
 use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Utility\Router;
 
-interface Box_Controller {
-    
-    public function setBox(Box $box);
-    public function getBox(): ?Box;
-    public function register(Router $router);
+abstract class Box_Controller extends Module
+{
 
+    abstract function register(Router $router);
+    
 }

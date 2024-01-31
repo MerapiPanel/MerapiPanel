@@ -2,8 +2,8 @@ import grapesjs from "grapesjs";
 import gjsBasic from 'grapesjs-blocks-basic';
 import gjsForms from 'grapesjs-plugin-forms';
 import tailwind from 'grapesjs-tailwind';
-import $ from "jquery";
-import merapi from "../../../base/assets/merapi.js";
+// import $ from "jquery";
+// import merapi from "../../../base/assets/merapi.js";
 import CodeBlock from "../../CodeBlock/assets/codeBlock.js";
 
 function templateEditor(options = {
@@ -361,7 +361,9 @@ function templateEditor(options = {
 
 
 
-const Template = {
-    editor: templateEditor
-}
-merapi.assign('Template', Template);
+
+
+console.log(window.merapi)
+    // merapi.assign('template', {
+    //     editor: templateEditor
+    // });

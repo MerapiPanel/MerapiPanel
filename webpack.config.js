@@ -2,21 +2,22 @@ const path = require('path');
 const webpack = require('webpack');
 const LodashModule = require("lodash-webpack-plugin");
 const glob = require('glob');
+// import Merapi from './src/base/assets/merapi.js';
 
 
 const entry = () => {
-    
+
     const entryFiles = glob.sync('./src/base/assets/*.js').reduce((acc, item) => {
-        
+
         const file = `./${item}`;
         const name = path.basename(file).replace(".js", "");
         acc[name] = file;
 
         return acc;
     }, {});
-    
+
     const entryModule = glob.sync("./src/module/**/assets/*.js").reduce((acc, item) => {
-        
+
         const directoryPath = path.dirname(item);
         const name = path.basename(item).replace(".js", "");
         const file = `./${item}`;
@@ -26,7 +27,7 @@ const entry = () => {
         // console.log(acc)
         return acc;
     }, {});
-    
+
 
     return { ...entryModule, ...entryFiles };
 };
@@ -50,6 +51,30 @@ module.exports = {
     ],
     module: {
         rules: [
+            {
+                test: require.resolve('./src/base/assets/merapi.js'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: {
+                        exposes: {
+                            globalName: 'merapi',
+                            override: true,
+                        },
+                    },
+                }],
+            },
+            {
+                test: require.resolve("jquery"),
+                use: [{
+                    loader: 'expose-loader',
+                    options: {
+                        exposes: {
+                            globalName: '$',
+                            override: true,
+                        }
+                    },
+                }]
+            },
             {
                 test: /\.css$/i,
                 // include: path.resolve(__dirname, './src/module/*'),

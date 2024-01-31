@@ -125,7 +125,7 @@ class Box
 
             $class  = $controller["class"];
             $object = $this->$class();
-            $object->register($this->utility_router());
+            $object->register($this->utility_router()->getRealInstance());
         }
     }
 

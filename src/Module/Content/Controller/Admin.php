@@ -59,7 +59,7 @@ class Admin extends Module
 
     function config(Request $req) {
 
-        return View::render("index.html.twig");
+        return View::render("config.html.twig");
     }
 
     function initMeta($reflection)

@@ -1,5 +1,5 @@
-import $, { data } from 'jquery';
-import Merapi from '../../../../../base/assets/merapi';
+// import $, { data } from 'jquery';
+// import Merapi from '../../../../../base/assets/merapi';
 import { random, tail, trim, trimEnd, uniqueId } from 'lodash';
 
 export default (editor, opts = {}) => {
@@ -77,7 +77,7 @@ export default (editor, opts = {}) => {
         return Object.assign({}, typeList[typeof args.default], { name: args.name });
     }
 
-    const endpoint = trimEnd(decodeURIComponent(Merapi.getCookie("fm-adm-pth")), "/") + "/view-engine/components";
+    const endpoint = trimEnd(decodeURIComponent(merapi.cookie.get("fm-adm-pth")), "/") + "/view-engine/components";
 
     const createType = (editor, args = {}) => {
 

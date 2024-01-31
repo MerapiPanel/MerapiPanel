@@ -67,7 +67,7 @@
                 <div class="flex flex-wrap gap-4" id="container-filemanager">
                     {% if container.data | length > 0  %}
                         {% for key, item in container.data %}
-                        <div data-fm-key="{{ key }}" onclick="FileManager.ItemFocusHandle(this);"
+                        <div data-fm-key="{{ key }}" onclick="merapi.FileManager.ItemFocusHandle(this);"
                             class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
 
                             {% if item.icon is iterable %}
@@ -213,11 +213,12 @@
     <script src="{{ '@filemanager/assets/dist/view.filemanager.bundle.js' | assets }}"></script>
     <script>
 
-        FileManager.setContainer("{{ container | json_encode }}");
+
+        merapi.FileManager.setContainer("{{ container | json_encode }}");
 
         function createFolder(parent) {
 
-            window.FileManager.createFolder({
+            merapi.FileManager.createFolder({
                 parent: parent,
                 endpoint: "{{ 'filemanager/create_folder' | admin_url }}"
             }).then((result) => {
@@ -227,7 +228,7 @@
 
         function deleteFile(args, popback = false) {
             const opts = Object.assign({ file: null, type: 'directory', endpoint: "{{ 'filemanager/delete_file' | admin_url }}" }, args);
-            window.FileManager.deleteFile(opts).then((result) => {
+            merapi.FileManager.deleteFile(opts).then((result) => {
                 if (popback) {
                     const urlObj = new URL(window.location.href);
                     const directoryParam = urlObj.searchParams.get('directory');
@@ -247,7 +248,7 @@
         function renameFile(args) {
             const opts = Object.assign({ file: null, name: null, type: 'directory', endpoint: "{{ 'filemanager/rename_file' | admin_url }}" }, args);
             // console.log(opts)
-            window.FileManager.renameFile(opts).then((result) => {
+            merapi.FileManager.renameFile(opts).then((result) => {
                 const urlObj = new URL(window.location.href);
                 const directoryParam = urlObj.searchParams.get('directory');
                 if (directoryParam) {
@@ -264,11 +265,11 @@
         }
 
         function infoFile(x) {
-            FileManager.infoFile(x);
+            merapi.FileManager.infoFile(x);
         }
 
         function uploadFile() {
-            FileManager.uploadFile({
+            merapi.FileManager.uploadFile({
                 parent: "{{ directory }}",
                 endpoint: "{{ 'filemanager/upload_file' | admin_url }}",
             });
@@ -276,6 +277,7 @@
 
         function copyToClipboard(text) {
 
+            
             if (text.charAt(0) === '/') text = text.substring(1);
             const urlObject = new URL(`${window.location.protocol}//${window.location.hostname}/${text}`);
             const url = urlObject.toString();
@@ -284,10 +286,11 @@
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(url)
                     .then(() => {
-                        window.MERAPI.toast("Link copied to clipboard", 5, "text-success");
+                        window.merapi.toast("Link copied to clipboard", 5, "text-success");
+                        //console.log(window.merapi.toast)
                     })
                     .catch(err => {
-                        window.MERAPI.toast('Failed to copy link', 5, 'text-danger');
+                        window.merapi.toast('Failed to copy link', 5, 'text-danger');
                     });
             } else {
                 // Fallback to the older method for browsers that don't support the Clipboard API
@@ -306,9 +309,9 @@
                 try {
                     var successful = document.execCommand('copy');
                     var msg = successful ? 'successful' : 'unsuccessful';
-                    window.MERAPI.toast(msg + " copied to clipboard", 5, successful ? "text-success" : "text-danger");
+                    window.merapi.toast(msg + " copied to clipboard", 5, successful ? "text-success" : "text-danger");
                 } catch (err) {
-                    window.MERAPI.toast(err, 5, 'text-danger');
+                    window.merapi.toast(err, 5, 'text-danger');
                 }
                 document.body.removeChild(textArea);
             }

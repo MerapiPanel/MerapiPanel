@@ -36,7 +36,7 @@
     {% if template %}
     <script>
         $(() => {
-            MERAPI.Editor.init({
+            merapi.editor.init({
                 holder: "#gjs",
                 id: "{{ template.id }}",
                 params: [
@@ -74,7 +74,10 @@
     {% else %}
     <script>
         $(() => {
-            MERAPI.Editor.init({
+
+            console.log(window.merapi)
+
+            window.merapi.editor.init({
                 holder: "#gjs",
                 params: [
                     {

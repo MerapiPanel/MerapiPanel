@@ -34,7 +34,10 @@
     {{ parent() }}
     <script>
         $(() => {
-            MERAPI.Editor.init({
+
+            console.log(merapi);
+            
+            merapi.editor.init({
                 id: null,
                 endpoint: {
                     load: "{{ ('template/view') | admin_url }}",

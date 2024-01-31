@@ -3,7 +3,7 @@
 namespace MerapiPanel\Module\Editor\View;
 
 use Options;
-use MerapiPanel\Module\ViewEngine\Abstract\ViewComponent;
+use MerapiPanel\Core\View\Abstract\ViewComponent;
 
 class Component extends ViewComponent
 {

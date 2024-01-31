@@ -1,4 +1,4 @@
-import Merapi from "../../../../../base/assets/merapi";
+// import Merapi from "../../../../../base/assets/merapi";
 
 const StoragePlugin = (editor, args = {}) => {
 
@@ -30,7 +30,7 @@ const StoragePlugin = (editor, args = {}) => {
 
             if (args.id && args.endpoint) {
 
-                Merapi.get(urlWithParams(args.endpoint, { id: args.id, editor: 1 })).then(res => {
+                merapi.http.get(urlWithParams(args.endpoint, { id: args.id, editor: 1 })).then(res => {
 
                     editor.setComponents(res);
                     console.log("Load finish");
