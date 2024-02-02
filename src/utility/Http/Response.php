@@ -20,11 +20,10 @@ class Response
      */
     public function __construct(string|array|object $content = '', int $statusCode = 200, array $headers = [])
     {
-        
+
         $this->content    = $content;
         $this->statusCode = $statusCode;
         $this->headers    = $headers;
-
     }
 
 
@@ -39,11 +38,10 @@ class Response
     {
 
         $this->content = $content;
-
     }
 
 
-    
+
 
     /**
      * Retrieves the content of the object.
@@ -54,12 +52,11 @@ class Response
     {
 
         return $this->content;
-
     }
 
 
 
-    
+
     /**
      * Set the status code for this object.
      *
@@ -70,12 +67,11 @@ class Response
     {
 
         $this->statusCode = $statusCode;
-
     }
 
 
 
-    
+
     /**
      * Returns the status code of the PHP function.
      *
@@ -85,7 +81,6 @@ class Response
     {
 
         return $this->statusCode;
-
     }
 
 
@@ -102,13 +97,12 @@ class Response
     {
 
         $this->headers[$name] = $value;
-
     }
 
 
 
 
-    
+
     /**
      * Retrieves the header value associated with the given name.
      *
@@ -119,12 +113,11 @@ class Response
     {
 
         return $this->headers[$name] ?? null;
-
     }
 
 
 
-    
+
     /**
      * Get the headers.
      *
@@ -134,12 +127,11 @@ class Response
     {
 
         return $this->headers;
-
     }
 
 
 
-    
+
     /**
      * Sends the HTTP response with the specified status code and headers.
      *
@@ -149,29 +141,68 @@ class Response
     public function send(): void
     {
 
-        http_response_code($this->statusCode);
-
-        foreach ($this->headers as $name => $value) 
-        {
-
-            header("$name: $value");
-
-        }
-
-    }
-
-
-    public function __toString() {
-
-        if(gettype($this->content) !== "string") {
+        if (gettype($this->content) !== "string") {
             $this->setHeader("Content-Type", "application/json");
         }
 
-        foreach($this->headers as $name => $value) {
+        header("X-Powered-By: MerapiPanel 1.0.0; PHP " . PHP_VERSION);
+
+        http_response_code($this->statusCode);
+        
+        if (isset($this->headers['location'])) {
+            $redirect = $this->headers['location'];
+            unset($this->headers['location']);
+        }
+
+        foreach ($this->headers as $name => $value) {
             header("$name: $value");
         }
 
+        if (isset($redirect)) {
+            header("Location: $redirect");
+        }
+
+        header("Content-Length: " . strlen(gettype($this->content) == "string" ? $this->content : json_encode($this->content)));
+    }
+
+
+    public function __toString()
+    {
+
+        $this->send();
         return !is_string($this->content) ? json_encode($this->content) : $this->content;
     }
 
+
+
+    public static function with(string $content): Action
+    {
+
+        $action = new Action(new self());
+
+        return $action;
+    }
+}
+
+
+class Action
+{
+    private Response $res;
+
+    public function __construct(Response $res)
+    {
+        $this->res = $res;
+    }
+
+    public function redirect($target)
+    {
+        $this->res->setHeader("Location", $target);
+        $this->res->setStatusCode(301);
+
+        return $this->res;
+    }
+
+    public function json()
+    {
+    }
 }

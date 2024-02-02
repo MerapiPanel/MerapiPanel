@@ -3,6 +3,7 @@
 namespace MerapiPanel\Core\View\Extension;
 
 use MerapiPanel\Box;
+use MerapiPanel\Core\Token\parser\FormToken;
 use \Twig\TwigFunction;
 use \Twig\TwigFilter;
 
@@ -15,11 +16,20 @@ class Bundle extends \Twig\Extension\AbstractExtension
         $this->box = $box;
     }
 
+    public function getTokenParsers()
+    {
+        return [
+            new FormToken(),
+        ];
+    }
+    
     function getFunctions()
     {
 
         return [
-            new TwigFunction('setJsModule', [$this, 'setJsModule'])
+            new TwigFunction('setJsModule', [$this, 'setJsModule']),
+            new TwigFunction('begin_merapi_token', [$this, 'beginMerapiToken']),
+            new TwigFunction('end_merapi_token', [$this, 'endMerapiToken']),
         ];
     }
 
@@ -82,5 +92,21 @@ class Bundle extends \Twig\Extension\AbstractExtension
         $_module = isset($_COOKIE["_module"]) ? json_decode($_COOKIE["_module"], true) : [];
         $module = array_unique(array_merge($_module, [$module]));
         setcookie("_module", json_encode($module), time() + (86400 * 30), "/");
+    }
+
+
+
+    public function beginMerapiToken($content) {
+
+        
+        return $content;
+        return $this->box->getConfig()->get("merapi_token");
+    }
+
+    public function endMerapiToken($content) {
+
+        
+        return $content;
+        return $this->box->getConfig()->get("merapi_token");
     }
 }

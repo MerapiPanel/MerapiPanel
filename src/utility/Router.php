@@ -197,7 +197,7 @@ class Router extends Component
         }
 
 
-       // print_r($this->routeStack);
+        // print_r($this->routeStack);
         /**
          * @var Route $route
          */
@@ -301,19 +301,19 @@ class Router extends Component
         $callback        = $route->getController();
         $middlewareStack = $route->getMiddlewareStack();
 
-        // $response =
-        //     $middlewareStack->handle(
-        //         $request,
-        //         function (Request $request) use ($callback) {
-        //             return $this->callCallback($request, $callback);
-        //         }
-        //     );
+        $response = $middlewareStack->handle(
+            $request,
+            function (Request $request) use ($callback) {
+                return $this->callCallback($request, $callback);
+            }
+        );        
 
+        if ($response instanceof Response) {
 
-        // if ($response instanceof Response) {
+            return $response;
+        }
 
-        //     return $response;
-        // }
+        // print_r($this->routeStack);
 
         // Jika tidak ada middleware atau middleware telah selesai dieksekusi,
         // jalankan callback untuk mendapatkan responsnya.
@@ -335,6 +335,7 @@ class Router extends Component
     protected function callCallback(Request $request, $callback): Response
     {
 
+        // echo "call callback ". $callback;
 
         $response = new Response();
         if (is_callable($callback)) {
@@ -356,6 +357,7 @@ class Router extends Component
                 $controllerClass = $controller;
             }
 
+            /// echo $controllerClass;
 
             /**
              * @var $controllerInstance
@@ -375,18 +377,15 @@ class Router extends Component
 
                     $response->setContent("$retrun");
                     return $response;
-
                 }
 
                 if (is_object($retrun) || is_array($retrun)) {
 
                     return $this->handleApiResponse($retrun);
-                    
                 } elseif (is_string($retrun)) {
 
                     $response->setContent($retrun);
                     return $response;
-
                 } else {
 
                     throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($retrun) . " returned", 400);

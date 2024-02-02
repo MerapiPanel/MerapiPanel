@@ -7,7 +7,7 @@
         Merapi Panel
     </div>
 
-    <div class="py-5 max-w-[600px] mx-auto">
+    <div class="py-5 max-w-[600px] mx-auto p-5 md:p-0">
         <header>
             <h1 class="text-3xl font-bold mb-4">Welcome to merapi panel</h1>
         </header>
@@ -15,6 +15,8 @@
 
             <div class="max-w-[800px] w-full mx-auto py-3">
                 <form action="{{ 'login' }}" method="post">
+
+                    {% form_token %}
 
                     <div class="mb-3">
                         <label for="email">Email</label>
@@ -32,6 +34,9 @@
                         <input class="text-white bg-blue-400 hover:bg-blue-600 rounded-sm px-4 py-2" type="submit" value="Login">
                     </div>
 
+                    <button type="submit" class="btn btn-primary">Login</button>
+
+                    {% end_form_token %}
                 </form>
             </div>
 

@@ -4,6 +4,8 @@ namespace MerapiPanel\Module\Auth\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\View;
+use MerapiPanel\Module\Auth\Middleware\Login;
 
 class Guest extends Module {
 
@@ -18,15 +20,16 @@ class Guest extends Module {
     public function register($router)
     {
 
-        $router->get("/login",  "index", self::class);
-        $router->post("/login",  "login", self::class);
+        // $router->get("/login",  "index", self::class);
+        ($router->get("/login",  "index", self::class))->addMiddleware(new Login());
+        ($router->post("/login",  "login", self::class))->addMiddleware(new Login());
     }
 
 
     public function index($entity)
     {
 
-        return $entity->render("login.html.twig");
+        return View::render("login.html.twig");
     }
 
 

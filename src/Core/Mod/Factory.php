@@ -34,7 +34,7 @@ class Factory
         // Get a list of all PHP files in the directory
         $phpFiles = glob($directory . '/*');
 
-        $namespacePattern = 'Mp\\Module\\';
+        $namespacePattern = 'MerapiPanel\\Module\\';
         $controllers = [];
 
         foreach ($phpFiles as $file) {

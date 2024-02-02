@@ -17,8 +17,9 @@ abstract class Component {
         return $this->middleware;
     }
 
-    public function addMiddleware(Middleware $middleware): void{
+    public function addMiddleware(Middleware | string $middleware): void{
 
+        // if()
         $this->middleware->addMiddleware($middleware);
     }
 }

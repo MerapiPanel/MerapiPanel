@@ -1,0 +1,26 @@
+version: 1.0.1
+engine: InnoDB
+collation: utf8mb4_unicode_ci
+tables: 
+  token:
+    columns: 
+      id:
+        type: integer
+        unsigned: true
+        notnull: true
+        autoincrement: true
+      user_id:
+        type: int
+        unsigned: true
+        notnull: true
+      token:
+        type: varchar
+        length: 255
+        notnull: true
+      created_at:
+        type: timestamp
+        defaultcurrent: true
+        notnull: true
+        nullable: false
+    indexes:  
+       PRIMARY KEY: id

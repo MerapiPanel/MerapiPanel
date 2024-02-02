@@ -28,6 +28,16 @@ class Request
         $this->headers = $this->getAllHeaders();
         $this->body    = $this->getRequestBody();
         $this->params  = [];
+
+        // Unset all $_GET parameters
+        foreach ($_GET as $key => $value) {
+            unset($_GET[$key]);
+        }
+
+        // Unset all $_POST parameters
+        foreach ($_POST as $key => $value) {
+            unset($_POST[$key]);
+        }
     }
 
     /**
@@ -234,19 +244,19 @@ class Request
     function __call($name, $arguments)
     {
 
-        if(isset($this->query[$name])) {
+        if (isset($this->query[$name])) {
             return $this->query[$name];
         }
 
-        if(isset($this->params[$name])) {
+        if (isset($this->params[$name])) {
             return $this->params[$name];
         }
 
-        if(isset($this->body[$name])) {
+        if (isset($this->body[$name])) {
             return $this->body[$name];
         }
 
-        if(isset($_POST[$name])) {
+        if (isset($_POST[$name])) {
             return $_POST[$name];
         }
     }

@@ -9,11 +9,15 @@
 
 namespace MerapiPanel;
 
-ini_set("error_log", __DIR__ ."/php-error.log");
-
+ini_set("error_log", __DIR__ . "/php-error.log");
 use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);
+
+$conf = [];
+$conf['root'] = $_SERVER['DOCUMENT_ROOT'];
+$GLOBALS["conf"] = $conf;
+$GLOBALS["debug"] = false;
 
 class App extends Box
 {
@@ -31,7 +35,6 @@ class App extends Box
     {
 
         setcookie('auth', 'admin', time() + 3600, "/");
-
 
         parent::setConfig(self::app_config);
         // ob_start();
@@ -60,9 +63,6 @@ class App extends Box
             // Send the response
             echo $this->utility_router()->dispatch($request->getRealInstance());
         } catch (Throwable $e) {
-
-            // print_r($e);
-
             $this->core_exception()->catch_error($e);
         }
     }

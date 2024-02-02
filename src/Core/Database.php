@@ -17,6 +17,7 @@ class Database
      */
     public function __construct($dbFile)
     {
+
         $file = rtrim($dbFile, '/') . '/' . strtolower(basename($dbFile)) . '.db';
 
         // Create a PDO connection

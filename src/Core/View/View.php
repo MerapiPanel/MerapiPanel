@@ -32,6 +32,8 @@ class View
         $this->loader = new Loader(realpath(__DIR__ . "/../../base/views"));
         $this->twig   = new Twig($this->loader, ['cache' => false]);
 
+        $this->twig->enableDebug();
+
         // Load our own Twig extensions
         $files = glob(__DIR__ . "/extension/*.php");
         foreach ($files as $file) {
