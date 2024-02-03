@@ -4,13 +4,129 @@ namespace MerapiPanel\Database;
 
 use Exception;
 use PDO;
+
 use Symfony\Component\Yaml\Yaml;
 
-class DB
+final class DB
 {
 
-
+    private static array $instances = [];
+    private $identify;
     protected \PDO $dbh;
+
+
+
+
+    private final function __construct($identify)
+    {
+        $this->identify = $identify;
+        $this->initialize();
+    }
+
+
+
+
+
+    public static function getInstance()
+    {
+        $yamlFile = self::findYmlConfig();
+        $dbFile   = self::generateDbFileName($yamlFile);
+        $identify = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '', $dbFile));
+
+        self::log('YAML file: ' . $yamlFile);
+        self::log('DB file: ' . $dbFile);
+        self::log('Identify: ' . $identify);
+
+        if (!isset(self::$instances[$identify])) {
+            self::log('Creating new instance for: ' . $identify);
+            self::$instances[$identify] = new self($identify);
+        }
+
+        self::log('Returning instance for: ' . $identify);
+        return self::$instances[$identify];
+    }
+
+
+
+
+
+
+
+    public function getIdentifier()
+    {
+        return $this->identify;
+    }
+
+
+
+
+
+
+
+    private static function findYmlConfig(): string | false
+    {
+        self::log("Finding YAML config file...");
+        $filePath = null;
+
+        for ($x = 0; $x < count(debug_backtrace()); $x++) {
+            $callStack = debug_backtrace()[$x]; // stack trace starts at 1
+            $filePath = $callStack['file']; // get the file path
+            if (preg_replace('/[^a-zA-Z0-9]+/', '', $callStack['file']) !== preg_replace('/[^a-zA-Z0-9]+/', '', __FILE__)) {
+                $filePath = $callStack['file']; // get the file path
+                break;
+            }
+        }
+        self::log("File path: $filePath");
+
+        // Define the file name and the current directory
+        $fileName = 'database.yml';
+        $currentDir = dirname($filePath);
+        self::log("Current directory: $currentDir");
+
+        // Loop through the directory hierarchy to find the database configuration file
+        while ($currentDir !== '/' && !file_exists("$currentDir/$fileName")) {
+            $currentDir = realpath("$currentDir/..");
+            self::log("Checking directory: $currentDir");
+        }
+
+        // If the file is found, prepare the database using the file path
+        if ($currentDir !== '/') {
+            $configFilePath = "$currentDir/$fileName";
+            self::log("YAML config file found at: $configFilePath");
+            return $configFilePath;
+        }
+        self::log("YAML config file not found");
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Generates a database file name based on the provided YAML file.
+     *
+     * @param string $yamlFile description
+     * @return string
+     */
+    protected static function generateDbFileName($yamlFile)
+    {
+        $documentRoot = $_SERVER['DOCUMENT_ROOT'];
+        $fileDirectory = str_replace(PHP_OS == "WINNT" ? "\\" : "/", "/", dirname(realpath($yamlFile)));
+        $dbName = strtolower(preg_replace('/(^src|^\/src|[^a-z0-9]+)/im', '-', str_replace($documentRoot, '', $fileDirectory)));
+        return trim($dbName, "-");
+    }
+
+
+
+
+
+
+
 
 
     /**
@@ -18,29 +134,25 @@ class DB
      *
      * @throws Exception if the file 'database.yml' is not found in any directory in the project hierarchy
      */
-    protected function initialize()
+    private function initialize(): void
     {
-        // Get the file path of the calling script
-        $callStack = debug_backtrace()[1]; // stack trace starts at 1
-        $filePath = $callStack['file']; // get the file path
-
-        // Define the file name and the current directory
-        $fileName = 'database.yml';
-        $currentDir = dirname($filePath);
-
-        // Loop through the directory hierarchy to find the database configuration file
-        while ($currentDir !== '/' && !file_exists("$currentDir/$fileName")) {
-            $currentDir = realpath("$currentDir/..");
-        }
+        
+        $yamlFile = self::findYmlConfig();
 
         // If the file is found, prepare the database using the file path
-        if ($currentDir !== '/') {
-            $this->prepareDatabase("$currentDir/$fileName");
+        if ($yamlFile !== false) {
+            $this->prepare($yamlFile);
         } else {
             // If the file is not found, throw an exception
-            throw new Exception("File configuration database.yml not found in " . dirname($filePath));
+            throw new Exception("File configuration database.yml not found in " . dirname($yamlFile));
         }
     }
+
+
+
+
+
+
 
 
 
@@ -51,9 +163,9 @@ class DB
      * @throws Exception Invalid Config: please provide version in the YAML file
      * @return void
      */
-    protected function prepareDatabase($yamlFile)
+    private function prepare($yamlFile): void
     {
-        $dbFileName = $this->generateDbFileName($yamlFile);
+        $dbFileName = self::generateDbFileName($yamlFile);
         $dbFile = __DIR__ . "/data/$dbFileName";
         $config = Yaml::parseFile($yamlFile);
 
@@ -73,32 +185,22 @@ class DB
         $dbFile .= "/$config[version].sqlite";
 
         // Add logging statement for debugging
-        $this->log("Preparing database at: " . $dbFile);
+        self::log("Preparing database at: " . $dbFile);
 
         if (!file_exists($dbFile)) {
             $this->upgradeDatabase($dbFile, $config);
         } else {
             // Add logging statement for debugging
-            $this->log("Initializing connection to existing database at: " . $dbFile);
+            self::log("Initializing connection to existing database at: " . $dbFile);
             $this->initializeConnection($dbFile);
         }
     }
 
 
 
-    /**
-     * Generates a database file name based on the provided YAML file.
-     *
-     * @param string $yamlFile description
-     * @return string
-     */
-    protected function generateDbFileName($yamlFile)
-    {
-        $documentRoot = $_SERVER['DOCUMENT_ROOT'];
-        $fileDirectory = str_replace(PHP_OS == "WINNT" ? "\\" : "/", "/", dirname(realpath($yamlFile)));
-        $dbName = strtolower(preg_replace('/(^src|^\/src|[^a-z0-9]+)/', '-', str_replace($documentRoot, '', $fileDirectory)));
-        return trim($dbName, "-");
-    }
+
+
+
 
 
 
@@ -115,6 +217,9 @@ class DB
 
 
 
+
+
+
     /**
      * Upgrades the database to a new version.
      *
@@ -127,24 +232,27 @@ class DB
         $newDatabase = $this->createDatabaseConnection($newVersionFile);
         $this->initializeTables($newDatabase, $config['tables']);
         // Add logging statement
-        $this->log("Tables initialized for new database version");
+        self::log("Tables initialized for new database version");
 
         $latestVersionFile = $this->findLatestVersionFile($newVersionFile);
         if ($latestVersionFile && file_exists($latestVersionFile)) {
             $oldDatabase = $this->createDatabaseConnection($latestVersionFile);
-            $this->log("Database connection established for old version: $latestVersionFile");
+            self::log("Database connection established for old version: $latestVersionFile");
             $oldTables = $this->getTableNames($oldDatabase);
             foreach ($oldTables as $table) {
                 $this->importBetweenDatabase($table, $oldDatabase, $newDatabase);
                 // Add logging statement
-                $this->log("Imported data from table: $table");
+                self::log("Imported data from table: $table");
             }
         }
 
         $this->dbh = $newDatabase;
         // Add logging statement
-        $this->log("Database upgrade complete");
+        self::log("Database upgrade complete");
     }
+
+
+
 
 
 
@@ -161,7 +269,7 @@ class DB
         $dsn = 'sqlite:' . $dbFile;
 
         // Add logging statement
-        $this->log('Connecting to SQLite database at ' . $dbFile);
+        self::log('Connecting to SQLite database at ' . $dbFile);
 
         // Create a new PDO instance for the SQLite connection
         $dbh = new \PDO($dsn);
@@ -170,11 +278,16 @@ class DB
         $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         // Add logging statement
-        $this->log('Connected to SQLite database');
+        self::log('Connected to SQLite database');
 
         // Return the PDO database connection
         return $dbh;
     }
+
+
+
+
+
 
 
 
@@ -207,6 +320,10 @@ class DB
 
 
 
+
+
+
+
     /**
      * Finds the latest version file in the given directory.
      *
@@ -222,28 +339,33 @@ class DB
 
         foreach ($files as $currentFile) {
             $fileName = pathinfo($currentFile, PATHINFO_FILENAME);
-            error_log("Checking file: $fileName");
+            self::log("Checking file: $fileName");
 
             if (preg_match('/(\d+)\.(\d+)\.(\d+)/', $fileName, $matches)) {
                 $version = $matches[0];
-                error_log("Found version: $version");
+                self::log("Found version: $version");
 
                 if (version_compare($version, $latestVersion, '>')) {
                     $latestVersion = $version;
                     $latestVersionFile = $currentFile;
-                    error_log("Updating latest version to: $latestVersion");
+                    self::log("Updating latest version to: $latestVersion");
                 }
             }
         }
 
         if ($latestVersionFile != null) {
             $latestVersionFileFullPath = $directory . '/' . $latestVersionFile . '.sqlite';
-            error_log("Latest version file found: $latestVersionFileFullPath");
+            self::log("Latest version file found: $latestVersionFileFullPath");
             return $latestVersionFileFullPath;
         }
-        error_log("Latest version file not found");
+        self::log("Latest version file not found");
         return false;
     }
+
+
+
+
+
 
 
 
@@ -309,6 +431,13 @@ class DB
 
 
 
+
+
+
+
+
+
+
     /**
      * Imports data from one database to another for a specific table.
      * 
@@ -354,17 +483,35 @@ class DB
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Logs a message if the global debug flag is set.
      *
      * @param string $message The message to be logged
      */
-    protected function log(string $message): void
+    private static function log(string $message): void
     {
         if (isset($GLOBALS['debug']) && $GLOBALS['debug']) {
             error_log($message);
         }
     }
+
+
+
+
+
+
+
 
 
 
@@ -397,6 +544,15 @@ class DB
 
 
 
+
+
+
+
+
+
+
+
+
     /**
      * Execute an SQL statement and return the number of affected rows
      *
@@ -411,6 +567,15 @@ class DB
 
 
 
+
+
+
+
+
+
+
+
+
     /**
      * Create a table connection
      *
@@ -420,12 +585,18 @@ class DB
     public static function table($table)
     {
         // Create a new database instance
-        $db = new self();
-        $db->initialize();
-
-        // Return a new table instance
+        $db = DB::getInstance();
         return new Table($db, $table);
     }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -437,14 +608,15 @@ class DB
     public static function instance(): PDO
     {
 
-        $db = new self();
-        $db->initialize();
+        $db = self::getInstance();
         return $db->dbh;
     }
+
+    
 }
 
 
-class Table
+final class Table
 {
 
     protected $name;
@@ -547,7 +719,7 @@ enum ORDER
 }
 
 
-class Where
+final class Where
 {
 
     public $column;
@@ -1215,7 +1387,7 @@ class WhereQueryBuilder
 
 
 
-class InsertQuery
+final class InsertQuery
 {
 
 
@@ -1307,7 +1479,7 @@ class InsertQuery
 
 
 
-class SelectQuery extends WhereQueryBuilder
+final class SelectQuery extends WhereQueryBuilder
 {
 
 
@@ -1388,7 +1560,7 @@ class SelectQuery extends WhereQueryBuilder
 }
 
 
-class UpdateQuery extends WhereQueryBuilder
+final class UpdateQuery extends WhereQueryBuilder
 {
 
 
@@ -1472,7 +1644,7 @@ class UpdateQuery extends WhereQueryBuilder
 
 
 
-class DeleteQuery extends WhereQueryBuilder
+final class DeleteQuery extends WhereQueryBuilder
 {
 
 

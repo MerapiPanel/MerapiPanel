@@ -17,7 +17,7 @@ $GLOBALS['time_start'] = microtime(true);
 $conf = [];
 $conf['root'] = $_SERVER['DOCUMENT_ROOT'];
 $GLOBALS["conf"] = $conf;
-$GLOBALS["debug"] = false;
+$GLOBALS["debug"] = true;
 
 class App extends Box
 {
