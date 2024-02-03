@@ -27,7 +27,7 @@ final class DB
 
 
 
-    public static function getInstance()
+    private static function getInstance()
     {
         $yamlFile = self::findYmlConfig();
         $dbFile   = self::generateDbFileName($yamlFile);
@@ -65,7 +65,7 @@ final class DB
 
     private static function findYmlConfig(): string | false
     {
-        
+
         $filePath = null;
 
         foreach (debug_backtrace() as $call) {
@@ -149,7 +149,7 @@ final class DB
 
         // If the file is found, prepare the database using the file path
         if ($yamlFile !== false) {
-            $this->prepare($yamlFile);
+            $this->prepareDatabase($yamlFile);
         } else {
             // If the file is not found, throw an exception
             throw new Exception("File configuration database.yml not found in " . dirname($yamlFile));
@@ -171,7 +171,7 @@ final class DB
      * @throws Exception Invalid Config: please provide version in the YAML file
      * @return void
      */
-    private function prepare($yamlFile): void
+    private function prepareDatabase($yamlFile): void
     {
         $dbFileName = self::generateDbFileName($yamlFile);
         $dbFile = __DIR__ . "/data/$dbFileName";
@@ -548,7 +548,7 @@ final class DB
         // Execute the SQL query
         $res = $this->dbh->exec($sql);
         // If the query is a SELECT statement and no rows were affected, return the result of the query
-        if ($res == 0 && strtolower(substr($sql, 0, 6)) == 'select') {
+        if (gettype($res) == 'integer' && strtolower(substr($sql, 0, 6)) == 'select') {
             return $this->dbh->query($sql);
         } else {
             return $res;
@@ -582,6 +582,13 @@ final class DB
 
 
 
+
+
+
+    public function prepare($sql): \PDOStatement |false
+    {
+        return $this->dbh->prepare($sql);
+    }
 
 
 
@@ -670,6 +677,30 @@ final class Table
         }
         return $this->name;
     }
+
+
+
+
+
+    public function isExist()
+    {
+
+        // Query to check if the table exists
+        $query = "SELECT name FROM sqlite_master WHERE type='table' AND name=:table_name";
+
+        // Prepare the statement
+        $stmt = $this->getDB()->prepare($query);
+        $stmt->bindValue(':table_name', $this->getName());
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Fetch the result
+        $tableExists = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return isset($tableExists['name']);
+    }
+
 
 
     static function containsSpecialChars($string)
@@ -1547,7 +1578,7 @@ final class SelectQuery extends WhereQueryBuilder
      *
      * @return \PDOStatement
      */
-    public function execute(): \PDOStatement
+    public function execute(): \PDOStatement|int
     {
         // Construct the SQL query
         $columns = $this->columns;

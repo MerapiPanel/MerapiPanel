@@ -55,12 +55,11 @@ class Admin extends Module
             "link" => $config
         ]);
 
-
-        $this->getConfig();
     }
 
 
-    function config(Request $req) {
+    function config(Request $req)
+    {
 
         return View::render("config.html.twig");
     }

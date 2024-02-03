@@ -104,6 +104,18 @@ final class Proxy
         }
     }
 
+
+
+
+
+    public function getProperty($name)
+    {
+        return $this->instance->$name;
+    }
+
+
+
+
     public function getRealInstance()
     {
         return $this->instance;

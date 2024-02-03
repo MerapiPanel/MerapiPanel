@@ -4,9 +4,9 @@ namespace MerapiPanel\Core\Abstract;
 
 use Exception;
 use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Component\Config;
 use MerapiPanel\Core\Abstract\Component\Settings;
 use MerapiPanel\Core\Database;
-use MerapiPanel\Database\DB;
 use ReflectionClass;
 
 abstract class Module
@@ -116,9 +116,9 @@ abstract class Module
 
 
 
-    public function getConfig() {
+    final public function getConfig() {
 
-        return DB::table("setting");
+        return new Config();
     }
 
 
