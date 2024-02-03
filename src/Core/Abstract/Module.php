@@ -6,12 +6,17 @@ use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Component\Settings;
 use MerapiPanel\Core\Database;
+use MerapiPanel\Database\DB;
 use ReflectionClass;
 
 abstract class Module
 {
 
+
+
     protected $box;
+
+
 
     public function setBox(Box $box)
     {
@@ -19,10 +24,20 @@ abstract class Module
         $this->box = $box;
     }
 
+
+
+
+
+
     public function getBox()
     {
         return $this->box;
     }
+
+
+
+
+
 
     final public function getDatabase()
     {
@@ -34,11 +49,24 @@ abstract class Module
     }
 
 
+
+
+
+
+
     private function __getChildFile()
     {
         $reflection = new ReflectionClass($this::class);
         return $reflection->getFileName();
     }
+
+
+
+
+
+
+
+
 
     public function __getIndex()
     {
@@ -56,6 +84,14 @@ abstract class Module
 
         return $file;
     }
+
+
+
+
+
+
+
+
 
     public function __call($name, $arguments)
     {
@@ -77,6 +113,16 @@ abstract class Module
     }
 
 
+
+
+
+    public function getConfig() {
+
+        return DB::table("setting");
+    }
+
+
+
     public function __getSettings() {
 
         $db = $this->getDatabase();
@@ -84,4 +130,7 @@ abstract class Module
         return new Settings($db);
         
     }
+
+
+
 }

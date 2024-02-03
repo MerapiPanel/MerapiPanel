@@ -65,37 +65,45 @@ final class DB
 
     private static function findYmlConfig(): string | false
     {
-        self::log("Finding YAML config file...");
+        
         $filePath = null;
 
-        for ($x = 0; $x < count(debug_backtrace()); $x++) {
-            $callStack = debug_backtrace()[$x]; // stack trace starts at 1
-            $filePath = $callStack['file']; // get the file path
-            if (preg_replace('/[^a-zA-Z0-9]+/', '', $callStack['file']) !== preg_replace('/[^a-zA-Z0-9]+/', '', __FILE__)) {
-                $filePath = $callStack['file']; // get the file path
+        foreach (debug_backtrace() as $call) {
+            $filePathFromCall = $call['file'];
+            $filePathFromCallSanitized = preg_replace('/[^a-zA-Z0-9]+/', '', $filePathFromCall);
+            $currentFileSanitized = preg_replace('/[^a-zA-Z0-9]+/', '', __FILE__);
+
+            if (
+                isset($call['file']) &&
+                $filePathFromCallSanitized !== $currentFileSanitized &&
+                !in_array("core", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"),  $filePathFromCall)))
+            ) {
+                $filePath = $filePathFromCall;
                 break;
             }
         }
-        self::log("File path: $filePath");
 
-        // Define the file name and the current directory
+        if ($filePath === null) {
+            return false;
+        }
+
         $fileName = 'database.yml';
         $currentDir = dirname($filePath);
-        self::log("Current directory: $currentDir");
 
-        // Loop through the directory hierarchy to find the database configuration file
         while ($currentDir !== '/' && !file_exists("$currentDir/$fileName")) {
             $currentDir = realpath("$currentDir/..");
-            self::log("Checking directory: $currentDir");
+
+            if (preg_replace('/[^a-zA-Z0-9]+/', '', $_SERVER['DOCUMENT_ROOT']) === preg_replace('/[^a-zA-Z0-9]+/', '', $currentDir)) {
+                $currentDir = false;
+                break;
+            }
         }
 
-        // If the file is found, prepare the database using the file path
-        if ($currentDir !== '/') {
+        if ($currentDir) {
             $configFilePath = "$currentDir/$fileName";
-            self::log("YAML config file found at: $configFilePath");
             return $configFilePath;
         }
-        self::log("YAML config file not found");
+
         return false;
     }
 
@@ -426,6 +434,9 @@ final class DB
             }
 
             $sql .= ");";
+
+
+            self::log("Creating table: $tableName\nCommand: $sql");
 
             $dbConnection->query($sql);
         }

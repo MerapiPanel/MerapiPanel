@@ -1,42 +1,35 @@
 version: 1.0.0
 engine: InnoDB
 collation: utf8mb4_unicode_ci
-
-tables: 
-
-  users:
-    columns: 
-      username:
+tables:
+  contents:
+    columns:
+      id:
         type: varchar
-        length: 255
+        length: 100
         notnull: true
         unique: true
 
-      email:
+      title:
         type: varchar
-        length: 255
+        length: 150
+        notnull: true
+
+      slug:
+        type: varchar
+        length: 150
         notnull: true
         unique: true
-
-      password:
-        type: varchar
-        length: 255
-        notnull: true
-
-      role:
-        type: varchar
-        length: 255
-        notnull: true
-        default: user
 
       created_at:
         type: timestamp
         defaultcurrent: true
         notnull: true
-        nullable: false
 
       updated_at:
         type: timestamp
         defaultcurrent: true
         notnull: true
-        nullable: false
+
+    indexes:
+      PRIMARY KEY: id

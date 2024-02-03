@@ -34,7 +34,7 @@ class App extends Box
     public function __construct()
     {
 
-        setcookie('auth', 'admin', time() + 3600, "/");
+        // setcookie('auth', 'admin', time() + 3600, "/");
 
         parent::setConfig(self::app_config);
         // ob_start();
