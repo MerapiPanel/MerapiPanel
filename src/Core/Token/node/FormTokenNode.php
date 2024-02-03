@@ -15,9 +15,7 @@ class FormTokenNode extends Node
     private static $token;
     public function __construct(Node $node, int $lineno, string $tag = null)
     {
-        if (!isset(self::$token)) {
-            self::$token = Token::generate();
-        }
+        
         // Initialize the node with 'body' and optionally other parts like 'attributes'
         parent::__construct(['body' => $node], [], $lineno, $tag);
     }
@@ -25,8 +23,12 @@ class FormTokenNode extends Node
     public function compile(\Twig\Compiler $compiler)
     {
 
-        $compiler
-            ->addDebugInfo($this)
+        if (!isset(self::$token) && !isset($GLOBALS['is_token_created'])) {
+            self::$token = Token::generate();
+            $GLOBALS['is_token_created'] = true;
+        }
+        
+        $compiler->addDebugInfo($this)
             ->write("\$token = \"" . self::$token . "\";\n")
             ->write("echo \"<input name='m-token' type='hidden' value='\$token' />\";\n")
             ->subcompile($this->getNode('body'));

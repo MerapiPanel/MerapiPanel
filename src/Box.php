@@ -36,6 +36,8 @@ class Box
         if (!isset($this->cog['service'])) {
             throw new \Exception("Cofig error: services not found, check config file the key 'services' is missing, 'services' is array of services");
         }
+
+        $GLOBALS['config'] = $this->cog;
     }
 
 
