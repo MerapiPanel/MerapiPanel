@@ -244,6 +244,8 @@ class Request
     function __call($name, $arguments)
     {
 
+        $name = $this->camelCaseToKebabCase($name);
+
         if (isset($this->query[$name])) {
             return $this->query[$name];
         }
@@ -260,6 +262,19 @@ class Request
             return $_POST[$name];
         }
     }
+
+
+    function camelCaseToKebabCase($string)
+    {
+        // First, split the string at every uppercase letter.
+        $words = preg_split('/(?=[A-Z])/', $string, -1, PREG_SPLIT_NO_EMPTY);
+
+        // Convert the array back to a string, with words separated by a hyphen and converted to lowercase.
+        $kebabCase = strtolower(implode('-', $words));
+
+        return $kebabCase;
+    }
+
 
     public function __toJson()
     {

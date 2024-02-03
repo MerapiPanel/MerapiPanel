@@ -1,18 +1,14 @@
-version: 1.0.1
+version: 1.0.2
 engine: InnoDB
 collation: utf8mb4_unicode_ci
 tables: 
-  token:
+  m-token:
     columns: 
       id:
         type: integer
         unsigned: true
         notnull: true
         autoincrement: true
-      user_id:
-        type: int
-        unsigned: true
-        notnull: true
       token:
         type: varchar
         length: 255

@@ -6,6 +6,7 @@ use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Cog\Config;
 use MerapiPanel\Core\Exception\CodeException;
+use MerapiPanel\Core\Token\Token;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Middleware\Component;
 use MerapiPanel\Utility\Http\Response;
@@ -194,6 +195,17 @@ class Router extends Component
 
         if (!isset($this->routeStack[$method])) {
             throw new Exception("Unsupported HTTP method: $method", 405);
+        } else if (strtoupper($method) !== "GET" && $path !== "/") {
+
+            $token = $request->mToken();
+
+            if (empty($token)) {
+
+                throw new Exception("Request token is empty", 400);
+            } elseif (!Token::validate($token)) {
+
+                throw new Exception("Request token is invalid", 400);
+            }
         }
 
 
@@ -306,7 +318,7 @@ class Router extends Component
             function (Request $request) use ($callback) {
                 return $this->callCallback($request, $callback);
             }
-        );        
+        );
 
         if ($response instanceof Response) {
 

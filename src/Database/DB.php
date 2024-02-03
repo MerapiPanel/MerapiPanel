@@ -136,7 +136,7 @@ final class DB
      */
     private function initialize(): void
     {
-        
+
         $yamlFile = self::findYmlConfig();
 
         // If the file is found, prepare the database using the file path
@@ -354,7 +354,7 @@ final class DB
         }
 
         if ($latestVersionFile != null) {
-            $latestVersionFileFullPath = $directory . '/' . $latestVersionFile . '.sqlite';
+            $latestVersionFileFullPath = $directory . '/' . $latestVersionFile;
             self::log("Latest version file found: $latestVersionFileFullPath");
             return $latestVersionFileFullPath;
         }
@@ -525,7 +525,7 @@ final class DB
     public function query($sql): \PDOStatement|false|null|int
     {
         // Log the SQL query if debug mode is enabled
-        if ($GLOBALS['debug']) {
+        if (isset($GLOBALS['debug']) && $GLOBALS['debug']) {
             $stream = fopen(__DIR__ . "/access.log", "a+");
             fwrite($stream, date("Y-m-d H:i:s") . " " . $sql . "\n");
             fclose($stream);
@@ -611,8 +611,6 @@ final class DB
         $db = self::getInstance();
         return $db->dbh;
     }
-
-    
 }
 
 
@@ -653,9 +651,23 @@ final class Table
      */
     public function getName(): string
     {
+        if (self::containsSpecialChars($this->name)) {
+            return "'$this->name'";
+        }
         return $this->name;
     }
 
+
+    static function containsSpecialChars($string)
+    {
+        // This regular expression matches any character that is not a letter, digit, or whitespace.
+        // Adjust the pattern as needed based on what you consider a special character.
+        if (preg_match('/[^a-zA-Z0-9\s]/', $string)) {
+            return true; // Special char(s) found
+        } else {
+            return false; // No special chars found
+        }
+    }
 
 
     /**
@@ -1527,7 +1539,7 @@ final class SelectQuery extends WhereQueryBuilder
         $columns = $this->columns;
         $table = $this->table->getName();
         $conditions = !empty($this->build()) ? " " . $this->build() : "";
-        $sql = "SELECT $columns FROM `$table`$conditions";
+        $sql = "SELECT $columns FROM $table"."$conditions";
 
         // Execute the SQL query
         return $this->table->getDB()->query($sql);
