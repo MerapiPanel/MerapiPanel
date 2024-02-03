@@ -5,9 +5,13 @@ namespace MerapiPanel\Module\Auth\Controller;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\View;
+use MerapiPanel\Database\DB;
 use MerapiPanel\Module\Auth\Middleware\Login;
+use MerapiPanel\Utility\Http\Response;
+use PDO;
 
-class Guest extends Module {
+class Guest extends Module
+{
 
     protected $box;
     function setBox(Box $box)
@@ -21,24 +25,32 @@ class Guest extends Module {
     {
 
         // $router->get("/login",  "index", self::class);
-        ($router->get("/login",  "index", self::class))->addMiddleware(new Login());
-        ($router->post("/login",  "login", self::class))->addMiddleware(new Login());
+        $router->get("/login",  "index", self::class);
+        $router->post("/login",  "login", self::class);
     }
 
 
-    public function index($entity)
+    public function index($request)
     {
 
         return View::render("login.html.twig");
     }
 
 
-    public function login()
+    public function login($request)
     {
 
-        return [
-            "status" => 203,
-            "response" => "success"
-        ];
+        $email = $request->email();
+        $password = $request->password();
+
+        $user =  Box::Get($this)->Module_Users()->getUserByEmail($email);
+
+        if ($user && password_verify($password, $user['password'])) {
+
+            $this->service()->setAuthSession($user['username']);
+            return Response::with("success")->redirect("/panel/admin");
+        }
+
+        return Response::with("failed!, user or password incorrect")->redirect($_SERVER['HTTP_REFERER']);
     }
 }

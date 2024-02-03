@@ -406,7 +406,10 @@ final class DB
                     } else {
                         $columnSql .= " NULL";
                     }
-                    if (!empty($column['default'])) {
+
+                    if (!empty($column['unique']) && $column['unique']) {
+                        $columnSql .= " UNIQUE";
+                    } else if (!empty($column['default'])) {
                         $columnSql .= " DEFAULT '{$column['default']}'";
                     } else if (!empty($column['defaultcurrent']) && $column['defaultcurrent']) {
                         $columnSql .= " DEFAULT CURRENT_TIMESTAMP";
@@ -1539,7 +1542,7 @@ final class SelectQuery extends WhereQueryBuilder
         $columns = $this->columns;
         $table = $this->table->getName();
         $conditions = !empty($this->build()) ? " " . $this->build() : "";
-        $sql = "SELECT $columns FROM $table"."$conditions";
+        $sql = "SELECT $columns FROM $table" . "$conditions";
 
         // Execute the SQL query
         return $this->table->getDB()->query($sql);

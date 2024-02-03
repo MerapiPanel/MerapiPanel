@@ -6,7 +6,6 @@ use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Component\Settings;
 use MerapiPanel\Core\Database;
-use PDO;
 use ReflectionClass;
 
 abstract class Module

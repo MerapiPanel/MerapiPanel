@@ -178,7 +178,8 @@ class Response
     public static function with(string $content): Action
     {
 
-        $action = new Action(new self());
+        $response = new self($content);
+        $action = new Action($response);
 
         return $action;
     }
@@ -194,7 +195,7 @@ class Action
         $this->res = $res;
     }
 
-    public function redirect($target)
+    public function redirect($target) : Response
     {
         $this->res->setHeader("Location", $target);
         $this->res->setStatusCode(301);

@@ -59,9 +59,14 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
+            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
         }
 
         $route = new Route(Route::GET, $path, $controller . "@$method");
+
+        if (isset($middleware)) {
+            $route->middleware->addMiddleware($middleware);
+        }
 
         return $this->addRoute(Route::GET, $route);
     }
@@ -85,9 +90,13 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
         }
 
         $route = new Route(Route::POST, $path, $controller . "@$method");
+        if (isset($middleware)) {
+            $route->middleware->addMiddleware($middleware);
+        }
 
         return $this->addRoute(Route::POST, $route);
     }
@@ -111,9 +120,13 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
         }
 
         $route = new Route(Route::PUT, $path, $controller . "@$method");
+        if (isset($middleware)) {
+            $route->middleware->addMiddleware($middleware);
+        }
 
         return $this->addRoute(Route::PUT, $route);
     }
@@ -138,9 +151,13 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
+            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
         }
 
         $route = new Route(Route::DELETE, $path, $controller . "@$method");
+        if (isset($middleware)) {
+            $route->middleware->addMiddleware($middleware);
+        }
 
         return $this->addRoute(Route::DELETE, $route);
     }
@@ -404,7 +421,12 @@ class Router extends Component
                 }
             } else {
 
-                return $this->handleApiResponse($controllerInstance->$method($request));
+                $result = $controllerInstance->$method($request);
+                if ($result instanceof Response) {
+
+                    return $result;
+                } else
+                    return $this->handleApiResponse();
             }
 
             return $response;

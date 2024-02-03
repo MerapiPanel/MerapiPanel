@@ -4,16 +4,16 @@ namespace MerapiPanel\Module\Auth\Middleware;
 
 use MerapiPanel\Utility\Http\Request;
 use Closure;
-use Exception;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Middleware\Middleware;
 
-class Login implements Middleware
+class Admin implements Middleware
 {
 
     public function handle(Request $request, Closure $next): Response
     {
 
+        $authCookieData = $_COOKIE[''];
         // return Response::with("Session Expired")->redirect("/");
 
         // return new Response([

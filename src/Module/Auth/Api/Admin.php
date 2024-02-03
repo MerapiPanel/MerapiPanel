@@ -17,14 +17,21 @@ class Admin extends Module
         return $session;
     }
 
-    
+
+
+    function username()
+    {
+        return $this->service()->getLogedInUsername();
+    }
+
+
     function settings()
     {
-        
+
         $container = $this->service()->getSetting()->getContainer();
 
         $map = [];
-        
+
         foreach ($container as $value) {
             $map[$value['name']] = $value['value'];
         }

@@ -4,63 +4,69 @@ namespace MerapiPanel\Module\Users;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Database\DB;
 use PDO;
 
 class Service extends Module
 {
 
     protected $box;
-    protected $db;
+
 
     public function setBox(Box $box)
     {
+
         $this->box = $box;
-        $this->db = $this->getDatabase();
-
-        $SQL = "CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL,
-                role INTEGER NOT NULL
-            );";
-
-        $this->db->runQuery($SQL);
-
-
-        $SQL = "INSERT OR IGNORE INTO users (name, email, password, role) VALUES ('admin', 'admin@user.com', 'password123', 10);";
-        $this->db->runQuery($SQL);
+        $this->tryCreateDefaultAdmin();
     }
 
 
 
-    public function getLogedinUser(): Type
+
+
+    private function tryCreateDefaultAdmin()
     {
-        $SQL = "SELECT * FROM users WHERE email = 'admin@user.com'";
-        $result = $this->db->runQuery($SQL);
-        return new Type(...$result->fetch(PDO::FETCH_ASSOC));
+        $username = 'admin';
+        $email = 'admin@merapi.panel';
+        $password = 'admin123';
+
+        $query = DB::table("users")->select("*")->where("username")->equal($username)->or()->where("email")->equal($email)->execute();
+        if ($query instanceof \PDOStatement) {
+            if (!$query->fetch(PDO::FETCH_ASSOC)) {
+                DB::table("users")->insert([
+                    "username" => $username,
+                    "password" => password_hash($password, PASSWORD_DEFAULT),
+                    "email" => $email,
+                ])->execute();
+            }
+        }
     }
 
 
-    public function getUserById($id)
+
+
+
+    public function getUserByUserName($username)
     {
-        $SQL = "SELECT * FROM users WHERE id = $id";
-        $result = $this->db->runQuery($SQL);
-        return $result;
+        return DB::table("users")->select("*")->where("username")->equal($username)->execute()->fetch(PDO::FETCH_ASSOC);
     }
+
+
+
 
 
     public function getUserByEmail($email)
     {
-        $SQL = "SELECT * FROM users WHERE email = '$email'";
-        $result = $this->db->runQuery($SQL);
-        return $result;
+        return DB::table("users")->select("*")->where("email")->equal($email)->execute()->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAllUser() {
 
-        $SQL = "SELECT * FROM users";
-        $result = $this->db->runQuery($SQL);
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+    public function getAllUser()
+    {
+
+        return DB::table("users")->select(["username", "email", "created_at", "updated_at"])->execute()->fetchAll(PDO::FETCH_ASSOC);
     }
 }
