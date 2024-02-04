@@ -1,11 +1,24 @@
-// import $, { data } from 'jquery';
-// import Merapi from '../../../../../base/assets/merapi';
-import { random, tail, trim, trimEnd, uniqueId } from 'lodash';
+import { trimEnd } from 'lodash';
 
 export default (editor, opts = {}) => {
 
+    Object.assign({
+        endpoint: {
+            fetch: null
+        },
+        token: null
+    }, opts);
+
+    if (!opts.endpoint?.fetch) { merapi.toast("Can't initialize Module Loader without endpoint provided", 5, "text-danger"); return };
+    if (!opts.token) { merapi.toast("Can't initialize Module Loader without token provided", 5, "text-danger"); return; }
+
+
     var comStack = [];
     const bm = editor.BlockManager;
+    const endpoint = opts.endpoint;
+
+
+
 
     editor.Commands.add('get-html-twig', {
         run: function (editor, sender, opts = {}) {
@@ -23,7 +36,7 @@ export default (editor, opts = {}) => {
 
                 }).join(",");
 
-              
+
                 let twig = `{{ guest.${component.model.attributes.type}({${params}}) | raw }}`;
 
                 twigStack.push({
@@ -57,6 +70,14 @@ export default (editor, opts = {}) => {
         }
     });
 
+
+
+
+
+
+
+
+
     const createTrait = (args = {}) => {
 
         const typeList = {
@@ -77,7 +98,22 @@ export default (editor, opts = {}) => {
         return Object.assign({}, typeList[typeof args.default], { name: args.name });
     }
 
-    const endpoint = trimEnd(decodeURIComponent(merapi.cookie.get("fm-adm-pth")), "/") + "/view-engine/components";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     const createType = (editor, args = {}) => {
 
@@ -101,7 +137,7 @@ export default (editor, opts = {}) => {
 
                 handleAttrChange() {
 
-                    let _endpoint = endpoint + "/static/" + args.id;
+                    let _endpoint = endpoint.fetch + "/render/" + args.id + "?m-token=" + opts.token;
 
                     let params = {};
                     this.getTraits().map(trait => {
@@ -157,6 +193,13 @@ export default (editor, opts = {}) => {
         }
     }
 
+
+
+
+
+
+
+
     const createBlock = (editor, args = {}) => {
 
         return {
@@ -188,9 +231,10 @@ export default (editor, opts = {}) => {
         }
     })
 
-    $.get(endpoint).then(res => {
+    $.get(endpoint.fetch).then(res => {
 
         const groupComponent = res.data ?? [];
+
         for (let i = 0; i < groupComponent.length; i++) {
 
             const modComponent = groupComponent[i];
@@ -198,17 +242,19 @@ export default (editor, opts = {}) => {
 
             for (let x in modComponent.components) {
 
-                const component = Object.assign({
+                const component = modComponent.components[x];
+                Object.assign({
                     id: null,
                     model: {},
                     params: []
-                }, modComponent.components[x]);
+                }, component);
 
                 editor.Components.addType(component.id, createType(editor, component));
                 component.category = category;
                 bm.add(component.id, createBlock(editor, component));
             }
         }
+
 
         setTimeout(() => {
             editor.runCommand('loaded-components');

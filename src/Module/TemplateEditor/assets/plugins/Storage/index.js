@@ -2,6 +2,7 @@
 
 const StoragePlugin = (editor, args = {}) => {
 
+    console.log(args);
     function urlWithParams(baseUrl, params) {
         // Parse the existing URL
         const url = new URL(baseUrl);
@@ -30,12 +31,13 @@ const StoragePlugin = (editor, args = {}) => {
 
             if (args.id && args.endpoint) {
 
-                merapi.http.get(urlWithParams(args.endpoint, { id: args.id, editor: 1 })).then(res => {
-
-                    editor.setComponents(res);
-                    console.log("Load finish");
-
-                })
+                $.ajax({
+                    url: urlWithParams(args.endpoint, { id: args.id, editor: 1 }), 
+                    headers: { 'template-edit': 'initial' },
+                    success: (data) => {
+                        editor.setComponents(data);
+                    }
+                });
             } else if (window.localStorage.getItem(storageKey)) {
 
                 const project = JSON.parse(window.localStorage.getItem(storageKey));

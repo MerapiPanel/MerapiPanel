@@ -1,7 +1,7 @@
 {% extends "@admin::panel/base.html.twig" %}
 
 {% block head_javascripts %}
-<script src="{{ '@editor/assets/dist/index.bundle.js' | assets }}"></script>
+<script src="{{ '@templateEditor/assets/dist/index.bundle.js' | assets }}"></script>
 {% endblock %}
 
 
@@ -37,36 +37,45 @@
     <script>
         $(() => {
             merapi.editor.init({
-                holder: "#gjs",
-                id: "{{ template.id }}",
-                params: [
-                    {
-                        type: "input",
-                        label: "Title",
-                        name: "name",
-                        required: true,
-                        placeholder: "Enter template title",
-                        value: "{{ template.name }}"
-                    },
-                    {
-                        type: "textarea",
-                        label: "Description",
-                        name: "description",
-                        required: false,
-                        placeholder: "Enter template description",
-                        value: "{{ template.description }}"
-                    },
-                    {
-                        label: "Template Id",
-                        value: "{{ template.id }}",
-                        name: "id"
-                    }
-                ],
-                endpoint: "{{ 'template/endpoint' | admin_url | url }}",
+                token: "{{ merapi_token() }}",
+                editor: {
+                    holder: "#gjs",
+                    id: "{{ template.id }}",
+                    params: [
+                        {
+                            type: "input",
+                            label: "Title",
+                            name: "name",
+                            required: true,
+                            placeholder: "Enter template title",
+                            value: "{{ template.name }}"
+                        },
+                        {
+                            type: "textarea",
+                            label: "Description",
+                            name: "description",
+                            required: false,
+                            placeholder: "Enter template description",
+                            value: "{{ template.description }}"
+                        },
+                        {
+                            label: "Template Id",
+                            value: "{{ template.id }}",
+                            name: "id"
+                        }
+                    ],
+                    endpoint: "{{ 'template/endpoint' | admin_url | url }}",
+                },
                 assets: {
                     url: "{{ admin.FileManager_fetchJsonEndpoint }}",
                     name: "files",
                     upload: "{{ admin.FileManager_uploadEndpoint }}",
+                },
+                component: {
+                    endpoint: {
+                        fetch: "{{ 'template/component/fetch' | admin_url | url }}",
+                        render: "{{ 'template/component/render' | admin_url | url }}"
+                    }
                 }
             });
         })

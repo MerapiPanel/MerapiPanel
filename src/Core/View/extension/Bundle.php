@@ -10,11 +10,25 @@ use \Twig\TwigFilter;
 class Bundle extends \Twig\Extension\AbstractExtension
 {
 
+
+
     protected $box;
+
+
+
+
     public function __construct(Box $box)
     {
         $this->box = $box;
     }
+
+
+
+
+
+
+
+
 
     public function getTokenParsers()
     {
@@ -22,16 +36,29 @@ class Bundle extends \Twig\Extension\AbstractExtension
             new FormToken(),
         ];
     }
-    
+
+
+
+
+
+
+
+
     function getFunctions()
     {
 
         return [
             new TwigFunction('setJsModule', [$this, 'setJsModule']),
-            new TwigFunction('begin_merapi_token', [$this, 'beginMerapiToken']),
-            new TwigFunction('end_merapi_token', [$this, 'endMerapiToken']),
+            new TwigFunction('merapi_token', [$this, 'merapiToken']),
         ];
     }
+
+
+
+
+
+
+
 
 
     public function getFilters()
@@ -42,6 +69,13 @@ class Bundle extends \Twig\Extension\AbstractExtension
             new TwigFilter('url', [$this, 'url'])
         ];
     }
+
+
+
+
+
+
+
 
 
     function assets($file = null)
@@ -65,6 +99,13 @@ class Bundle extends \Twig\Extension\AbstractExtension
     }
 
 
+
+
+
+
+
+
+
     function url($path)
     {
         $parse = parse_url($path);
@@ -78,12 +119,23 @@ class Bundle extends \Twig\Extension\AbstractExtension
         return $parse['scheme'] . "://" . $parse['host'] . "/" . ltrim($parse['path'], "/");
     }
 
+
+
+
+
+
+
+
+
     function admin_url($path)
     {
 
         $AppConfig = $this->box->getConfig();
         return rtrim($AppConfig['admin'], "/") . "/" . ltrim($path, "/");
     }
+
+
+
 
 
     function setJsModule($module)
@@ -96,17 +148,12 @@ class Bundle extends \Twig\Extension\AbstractExtension
 
 
 
-    public function beginMerapiToken($content) {
 
-        
-        return $content;
-        return $this->box->getConfig()->get("merapi_token");
-    }
 
-    public function endMerapiToken($content) {
 
-        
-        return $content;
-        return $this->box->getConfig()->get("merapi_token");
+    public function merapiToken()
+    {
+
+        return $this->box->Core_Token_Token()->generate();
     }
 }

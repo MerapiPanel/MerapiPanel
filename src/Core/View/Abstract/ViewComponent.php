@@ -10,15 +10,29 @@ class ViewComponent extends AbstractExtension
 
     protected $payLoad = false;
 
+
+
+
+
+
     public function setPayload($payload)
     {
         $this->payLoad = $payload;
     }
 
+
+
+
+
     public function getPayload()
     {
         return $this->payLoad;
     }
+
+
+
+
+
 
     public function getFunctions()
     {
@@ -33,6 +47,13 @@ class ViewComponent extends AbstractExtension
 
         return $regs;
     }
+
+
+
+
+
+
+
 
     public function getAvailableMethods()
     {
@@ -72,6 +93,12 @@ class ViewComponent extends AbstractExtension
     }
 
 
+
+
+
+
+
+
     function getHtmlDoc($comment)
     {
 
@@ -85,6 +112,12 @@ class ViewComponent extends AbstractExtension
             return trim($htmlContent);
         }
     }
+
+
+
+
+
+
 
 
     function extractDoc($comment)
@@ -109,4 +142,6 @@ class ViewComponent extends AbstractExtension
 
         return $docs;
     }
+
+    
 }

@@ -47,7 +47,7 @@ const ControlPanel = (editor, args = {}) => {
                                     }
 
                                     if (response.state) {
-                                        
+
                                         const state = Object.assign({}, {
                                             data: {},
                                             title: '',
@@ -85,32 +85,68 @@ const ControlPanel = (editor, args = {}) => {
 
 const initEditor = (args = {}) => {
 
-    const option = Object.assign({}, {
-        holder: null,
-        id: null,
-        params: [
-            {
-                type: "input",
-                label: "Text",
-                name: "text",
-                required: true
-            },
-            {
-                type: "textarea",
-                label: "Description",
-                name: "description",
-                required: false
-            }
-        ],
-        endpoint: null,
+    Object.assign({
+        token: null,
+        editor: {
+            holder: null,
+            id: null,
+            params: [
+                {
+                    type: "input",
+                    label: "Text",
+                    name: "text",
+                    required: true
+                },
+                {
+                    type: "textarea",
+                    label: "Description",
+                    name: "description",
+                    required: false
+                }
+            ],
+            endpoint: null
+        },
         assets: {
             url: null,
             name: null,
             upload: null
+        },
+        component: {
+            fetch: null,
+            render: null
         }
     }, args);
 
-    if (!option.holder) {
+    // console.log(args);
+
+    // const option = Object.assign({}, {
+    //     holder: null,
+    //     id: null,
+    //     params: [
+    //         {
+    //             type: "input",
+    //             label: "Text",
+    //             name: "text",
+    //             required: true
+    //         },
+    //         {
+    //             type: "textarea",
+    //             label: "Description",
+    //             name: "description",
+    //             required: false
+    //         }
+    //     ],
+    //     endpoint: null,
+    //     assets: {
+    //         url: null,
+    //         name: null,
+    //         upload: null
+    //     }
+    // }, args);
+
+
+
+    if (!args.editor.holder) {
 
         merapi.toast('Holder for editor mount is not defined', null, 'text-danger');
         return;
@@ -126,21 +162,27 @@ const initEditor = (args = {}) => {
         height: '100vh',
         plugins: [ModuleLoader, gjsBasic, gjsForms, gjsTailwind, AssetPlugin, StoragePlugin, CommandPlugin],
         pluginsOpts: {
-            [AssetPlugin]: {
-                url: option.assets.url,
-                name: option.assets.name,
-                upload: option.assets.upload
+            [ModuleLoader]: {
+                endpoint: {
+                    fetch: args.component.endpoint.fetch,
+                },
+                token: args.token
             },
-            [StoragePlugin]: option,
+            [AssetPlugin]: {
+                url: args.assets.url,
+                name: args.assets.name,
+                upload: args.assets.upload
+            },
+            [StoragePlugin]: args.editor,
             [CommandPlugin]: {
-                id: option.id,
-                params: option.params
+                id: args.editor.id,
+                params: args.editor.params
             }
         },
         storageManager: {
             autoload: false,
             options: {
-                local: { key: `editing${args.id ? '-' + args.id : ''}` }
+                local: { key: `editing${args.editor.id ? '-' + args.editor.id : ''}` }
             }
         },
         commands: {
@@ -148,7 +190,7 @@ const initEditor = (args = {}) => {
         }
     });
 
-    ControlPanel(editor, option);
+    ControlPanel(editor, args);
 }
 
 

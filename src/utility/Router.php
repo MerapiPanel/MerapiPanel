@@ -5,14 +5,12 @@ namespace MerapiPanel\Utility;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Cog\Config;
-use MerapiPanel\Core\Exception\CodeException;
 use MerapiPanel\Core\Token\Token;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Middleware\Component;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Exceptions\Error;
-use MerapiPanel\Module\Users\Custom\Extension;
 
 class Router extends Component
 {
@@ -26,6 +24,10 @@ class Router extends Component
     protected Box $box;
     protected $adminPrefix = '/panel/admin';
     protected Config $config;
+    protected $controller = [
+        "class" => "",
+        "method" => ""
+    ];
 
 
     public function setBox(Box $box)
@@ -214,7 +216,7 @@ class Router extends Component
             throw new Exception("Unsupported HTTP method: $method", 405);
         } else if (strtoupper($method) !== "GET" && $path !== "/") {
 
-            $token = $request->mToken();
+            $token = urldecode($request->mToken());
 
             if (empty($token)) {
 
@@ -226,9 +228,9 @@ class Router extends Component
         }
 
 
-        // print_r($this->routeStack);
         /**
          * @var Route $route
+         * find route from route stack
          */
         foreach ($this->routeStack[$method] as $route) {
 
@@ -370,9 +372,12 @@ class Router extends Component
         if (is_callable($callback)) {
 
             return call_user_func($callback, $request);
+
         } else if (is_string($callback) && strpos($callback, '@') !== false) {
 
             list($controller, $method) = explode('@', $callback);
+
+            
 
             if (!class_exists($controller)) {
                 $controllerClass = 'Mp\\Controllers\\' . $controller;
@@ -385,6 +390,9 @@ class Router extends Component
             } else {
                 $controllerClass = $controller;
             }
+
+            $this->controller['class'] = $controllerClass;
+            $this->controller['method'] = $method;
 
             /// echo $controllerClass;
 
@@ -426,7 +434,7 @@ class Router extends Component
 
                     return $result;
                 } else
-                    return $this->handleApiResponse();
+                    return $this->handleApiResponse($result);
             }
 
             return $response;

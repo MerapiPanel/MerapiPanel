@@ -18,7 +18,7 @@ class Token
             "origin" => self::getCurrentUrl(),
             "time"   => time(),
         ];
-        $token = AES::encrypt(json_encode($jwt));
+        $token = rawurlencode(AES::encrypt(json_encode($jwt)));
 
         return $token;
     }
@@ -30,7 +30,10 @@ class Token
     public static function validate($token)
     {
 
-        $jwt = json_decode(AES::decrypt($token), true);
+        error_log("Validate token: " . $token);
+
+        $jwt = json_decode(AES::decrypt(rawurldecode($token)), true);
+
         if (!$jwt) {
             error_log("Invalid token: " . json_encode($jwt));
             return false;

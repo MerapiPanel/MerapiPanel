@@ -12,6 +12,9 @@ class Request
     protected $body;
     protected $params;
 
+    protected $_POST;
+    protected $_GET;
+
 
 
     /**
@@ -21,6 +24,9 @@ class Request
      */
     public function __construct()
     {
+
+        $this->_POST = $_POST;
+        $this->_GET  = $_GET;
 
         $this->method  = $_SERVER['REQUEST_METHOD'];
         $this->path    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -122,9 +128,9 @@ class Request
     {
         $phpin = [];
 
-        if (!empty($_POST)) {
+        if (!empty($this->_POST)) {
 
-            $phpin = $_POST;
+            $phpin = $this->_POST;
         } elseif (!empty(file_get_contents('php://input'))) {
 
             $this->parse_raw_http_request($phpin);

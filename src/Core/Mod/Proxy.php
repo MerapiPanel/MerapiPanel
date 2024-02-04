@@ -15,6 +15,7 @@ final class Proxy
     protected string $classInstance;
     protected ?Object $instance = null;
     protected $meta = [];
+    protected $reflection;
 
 
     function __construct($classInstance, $arguments)
@@ -48,8 +49,8 @@ final class Proxy
             throw new \Exception("Module " . $this->classInstance . " not found");
         } else {
 
-            $reflection = new \ReflectionClass($this->classInstance);
-            $construct = $reflection->getConstructor();
+            $this->reflection = new \ReflectionClass($this->classInstance);
+            $construct = $this->reflection->getConstructor();
 
             if ($construct) {
 
@@ -86,19 +87,19 @@ final class Proxy
                 }
 
                 if (!empty($passedParams)) {
-                    $this->instance = $reflection->newInstanceArgs($passedParams);
+                    $this->instance = $this->reflection->newInstanceArgs($passedParams);
                 } else {
-                    $this->instance = $reflection->newInstance();
+                    $this->instance = $this->reflection->newInstance();
                 }
             } else {
-                $this->instance = $reflection->newInstanceWithoutConstructor();
+                $this->instance = $this->reflection->newInstanceWithoutConstructor();
             }
 
             if (method_exists($this->instance, "setBox")) {
                 call_user_func([$this->instance, "setBox"], $this->box);
             }
 
-            $this->initMeta($reflection);
+            $this->initMeta($this->reflection);
 
             return $this->instance;
         }
@@ -106,11 +107,25 @@ final class Proxy
 
 
 
+    public function getClassName()
+    {
+        return $this->classInstance;
+    }
+
 
 
     public function getProperty($name)
     {
-        return $this->instance->$name;
+
+        
+        $reflectionClass = $this->reflection;
+        if ($reflectionClass->hasProperty($name)) {
+            $property = $reflectionClass->getProperty($name);
+            $property->setAccessible(true);
+            return $property->getValue($this->instance);
+        } else {
+            return null; // Property does not exist
+        }
     }
 
 
@@ -121,6 +136,11 @@ final class Proxy
         return $this->instance;
     }
 
+
+    public function getInstance()
+    {
+        return $this->instance;
+    }
 
 
     public function __call($name, $arguments)

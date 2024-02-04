@@ -28,27 +28,66 @@ final class Config implements ArrayAccess
 
 
 
+    /**
+     * Initialize the configuration table and populate it with default values if necessary
+     */
     private function initialize()
     {
-
+        // Check if the config table exists, if not, create it
         if (!DB::table("config")->isExist()) {
-
             $SQL = "CREATE TABLE IF NOT EXISTS config (`name` TEXT PRIMARY KEY,`value` TEXT UNIQUE NOT NULL);";
             DB::instance()->query($SQL);
+        } else {
+            // Check if the config table structure matches the expected columns
+            $sql = "PRAGMA table_info(config)";
+            $stmt = DB::instance()->prepare($sql);
+            $stmt->execute();
+            $tableInfo = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $expectedColumns = [
+                ["name" => "key", "type" => "varchar(255)"],
+                ["name" => "value", "type" => "varchar(255)"]
+            ];
+
+            $columnsMatch = true;
+
+            foreach ($expectedColumns as $expectedColumn) {
+                $columnExists = false;
+                foreach ($tableInfo as $info) {
+                    if ($info['name'] === $expectedColumn['name'] && $info['type'] === $expectedColumn['type']) {
+                        $columnExists = true;
+                        break;
+                    }
+                }
+                if (!$columnExists) {
+                    $columnsMatch = false;
+                    break;
+                }
+            }
+
+            // If the table structure does not match, drop the table and reinitialize
+            if (!$columnsMatch) {
+                $SQL = "DROP TABLE config;";
+                DB::instance()->query($SQL);
+                return $this->initialize();
+            }
         }
 
+        // Retrieve the configuration data from the database
         $this->container = DB::table("config")->select("*")->execute()->fetchAll(PDO::FETCH_ASSOC);
 
-
+        // Get the default configuration values
         $defaultConfig = $this->getDefaultConfig();
 
+        // If the number of configuration items does not match the default, update or insert default values
         if (is_array($defaultConfig) && count($this->container) != count($defaultConfig)) {
-
             $arrayKeys = array_keys($defaultConfig);
             foreach ($arrayKeys as $key) {
                 if (!(DB::table('config')->select("value")->where("name")->equal($key)->execute()->fetch(PDO::FETCH_ASSOC))) {
+                    // Insert default value if the config does not exist
                     DB::table("config")->insert(["name" => $key, "value" => $defaultConfig[$key]])->execute();
                 } else {
+                    // Update value if the config exists
                     DB::table('config')->update(["value" => $defaultConfig[$key]])->where("name")->equal($key)->execute();
                 }
             }
@@ -91,10 +130,8 @@ final class Config implements ArrayAccess
         $file = false;
 
         foreach (debug_backtrace() as $call) {
-            if (
-                isset($call['file']) &&
-                !in_array("core", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"),  $call['file'])))
-            ) {
+            // only in module
+            if (isset($call['file']) && in_array("module", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"),  $call['file'])))) {
                 $file = $call['file'];
                 break;
             }
@@ -185,5 +222,4 @@ final class Config implements ArrayAccess
         $stmt = DB::instance()->prepare($SQL);
         $stmt->bindParam(':name', $value);
     }
-    
 }

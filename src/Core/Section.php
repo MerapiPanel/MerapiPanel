@@ -3,6 +3,7 @@
 namespace MerapiPanel\Core;
 
 use MerapiPanel\Box;
+use MerapiPanel\Core\View\Abstract\ViewComponent;
 
 class Section
 {
@@ -33,6 +34,8 @@ class Section
 
 
 
+
+
     /**
      * Magic method to retrieve a property.
      *
@@ -54,36 +57,45 @@ class Section
         return $instance->$method();
     }
 
+
+
+
+
+
+
     public function __isset($name)
     {
         return true;
     }
 
+
+
+
+
     public function __call($name, $arguments)
     {
-
-        $fetchMode = $_SERVER["HTTP_SEC_FETCH_MODE"] ?? "navigate";
-
         [$module, $class, $method] = explode('_', $name);
-        $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Views\\" . ucfirst($class);
+        $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\template\\" . ucfirst($class);
+        $moduleInstance = $this->getBox()->$classNames();
 
-        $module = $this->getBox()->$classNames();
-        $module->setPayload($arguments[0]);
+        if ($moduleInstance->getInstance() instanceof ViewComponent) {
+            $moduleInstance->setPayload($arguments[0]);
+            $output = $moduleInstance->$method();
 
-        $output = $module->$method();
+            if (isset($_SERVER['HTTP_TEMPLATE_EDIT']) && $_SERVER['HTTP_TEMPLATE_EDIT'] == 'initial') {
+                $controller = $this->getBox()->Utility_router()->getProperty('controller');
+                $controllerClass  = $controller['class'] ?? null;
+                $controllerMethod = $controller['method'] ?? null;
 
-        if (!isset($_GET['editor']) || (isset($_GET['editor']) && $_GET['editor'] != 1)) {
-
-            return $output;
-
-        } elseif (isset($_GET['editor']) && $_GET['editor'] == 1) {
-
-            $params = $module->getPayload();
-            $param = "";
-            foreach ($params as $key => $value) {
-                $param .= " $key=\"$value\"";
+                if ($controllerClass == "MerapiPanel\\Module\\Editor\\Controller\\Admin") {
+                    $params = $moduleInstance->getPayload();
+                    $paramString = "";
+                    foreach ($params as $key => $value) {
+                        $paramString .= " $key=\"$value\"";
+                    }
+                    $output = "<div data-gjs-type=\"$name\" $paramString></div>";
+                }
             }
-            $output = "<div data-gjs-type=\"$name\" $param></div>";
 
             return $output;
         }
