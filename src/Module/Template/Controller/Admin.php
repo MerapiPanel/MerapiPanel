@@ -190,9 +190,8 @@ class Admin extends Module
     public function viewTemplate(Request $request)
     {
 
-        $id = $request->getParam("id");
+        $id = $request->id();
         $service = $this->service();
-
         $template = $service->getTemplate($id);
 
         if (!$template) {

@@ -13,4 +13,20 @@ class Admin extends Module
         $service = $this->service();
         return $service->getAllTemplate();
     }
+
+
+
+    public function getStylesheets()
+    {
+
+        $scripts =  $this->service()->getInitialScript();
+        return $scripts['css'];
+    }
+
+    public function getJavascripts()
+    {
+
+        $scripts =  $this->service()->getInitialScript();
+        return $scripts['js'];
+    }
 }
