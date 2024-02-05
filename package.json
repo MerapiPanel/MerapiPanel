@@ -23,7 +23,6 @@
     "tailwind:watch": "npx tailwindcss -i ./src/base/assets/app.css -o ./src/base/assets/output.css --watch"
   },
   "dependencies": {
-    "@truenorthtechnology/grapesjs-code-editor": "^0.1.4",
     "autoprefixer": "^10.4.16",
     "bootstrap": "^5.3.2",
     "grapesjs": "^0.21.7",

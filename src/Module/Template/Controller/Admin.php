@@ -18,12 +18,14 @@ class Admin extends Module
     function setBox(Box $box)
     {
         $this->box = $box;
-        $this->box->Module_ViewEngine()->addExtension(new TemplateFunction());
+        View::AddExtension(new TemplateFunction());
     }
 
 
     public function register($router)
     {
+
+        $router->get("/template/initial-scripts/", "getInitialScripts", self::class);
 
         $router->get("/template/view/{id}/", "viewTemplate", self::class);
         $router->get("/template/edit/{id}/", "editTemplate", self::class);
@@ -52,6 +54,13 @@ class Admin extends Module
         ]);
     }
 
+
+    function getInitialScripts() {
+        return [
+            "code" => 200,
+            "data" => $this->service()->getInitialScript()
+        ];
+    }
 
 
 
@@ -138,7 +147,7 @@ class Admin extends Module
 
 
 
-    public function createNewTemplate($req)
+    public function createNewTemplate(Request $req)
     {
         return View::render("editor.html.twig");
     }
@@ -311,11 +320,10 @@ class Admin extends Module
 
 
 
-    function deleteTemplate($view, $request)
+    function deleteTemplate(Request $request)
     {
 
-        $BODY = $request->getRequestBody();
-        $id = $BODY['id'];
+        $id = $request->id();
 
         if (!$this->service()->deleteTemplate($id)) {
             return [

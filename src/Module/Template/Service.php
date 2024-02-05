@@ -161,4 +161,29 @@ class Service extends Module
 
         $db->runQuery($SQL);
     }
+
+
+
+
+    public function getInitialScript()
+    {
+        $scripts = [
+            "css" => [],
+            "js" => [],
+        ];
+        $jsonFile = __DIR__ . "/initial-scripts.json";
+        if (file_exists($jsonFile)) {
+            $assets = json_decode(file_get_contents($jsonFile), true);
+            foreach ($assets as $asset) {
+                $extension = pathinfo($asset, PATHINFO_EXTENSION);
+                if ($extension == "css") {
+                    $scripts["css"][] = $asset;
+                }
+                if ($extension == "js") {
+                    $scripts["js"][] = $asset;
+                }
+            }
+        }
+        return $scripts;
+    }
 }

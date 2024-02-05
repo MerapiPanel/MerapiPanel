@@ -5,4 +5,5 @@ vendor/
 *.db
 *.pem
 public/upload/
-src/Database/data/*
+src/database/data/*
+public/assets/plugins/*

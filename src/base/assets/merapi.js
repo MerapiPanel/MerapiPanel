@@ -316,60 +316,118 @@ const toast = function (text, seconds = 3, textColor = "#0000ff45") {
 }
 
 const http = {
-    get: function (url) {
+    get: function (url, data, headers = {}) {
+
+        const oUrl = new URL(url);
+
+        if (data instanceof FormData) {
+
+            for (let pair of data.entries()) {
+                oUrl.searchParams.append(pair[0], pair[1]);
+            }
+        } else {
+            // Add query parameters from the data object
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    oUrl.searchParams.append(key, data[key]);
+                }
+            }
+        }
 
         return $.ajax({
             xhr: createXmlHttpRequest,
-            url: url,
+            url: oUrl.toString(),
             method: 'GET',
             processData: false,
             contentType: false,
-            cache: false
-        })
+            cache: false,
+            headers: headers
+        });
     },
-    post: function (url, data) {
+
+
+    post: function (url, data, headers = { }) {
+        let form = new FormData();
+        if (data instanceof FormData) {
+            form = data;
+        } else {
+            Object.keys(data).forEach(key => {
+                form.append(key, data[key]);
+            })
+        }
         return $.ajax({
             xhr: createXmlHttpRequest,
             url: url,
             method: 'POST',
-            data: data,
+            data: form,
             processData: false,
             contentType: false,
-            cache: false
+            cache: false,
+            headers: headers
         })
     },
-    put: function (url, data) {
+
+
+    put: function (url, data, headers = {}) {
+        let form = new FormData();
+        if (data instanceof FormData) {
+            form = data;
+        } else {
+            Object.keys(data).forEach(key => {
+                form.append(key, data[key]);
+            })
+        }
         return $.ajax({
             xhr: createXmlHttpRequest,
             url: url,
             method: 'PUT',
-            data: data,
+            data: form,
             processData: false,
             contentType: false,
-            headers: { 'X-HTTP-Method-Override': 'PUT' },
+            headers: Object.assign(headers, { 'X-HTTP-Method-Override': 'PUT' }),
             cache: false
         })
     },
-    patch: function (url, data) {
+
+
+    patch: function (url, data, headers = {}) {
+        let form = new FormData();
+        if (data instanceof FormData) {
+            form = data;
+        } else {
+            Object.keys(data).forEach(key => {
+                form.append(key, data[key]);
+            })
+        }
         return $.ajax({
             xhr: createXmlHttpRequest,
             url: url,
             method: 'PATCH',
-            data: data,
+            data: form,
             processData: false,
             contentType: false,
-            headers: { 'X-HTTP-Method-Override': 'PATCH' }
+            headers: Object.assign(headers, { 'X-HTTP-Method-Override': 'PATCH' }),
         })
     },
-    delete: function (url, data) {
+
+    
+    delete: function (url, data, headers = {}) {
+        let form = new FormData();
+        if (data instanceof FormData) {
+            form = data;
+        } else {
+            Object.keys(data).forEach(key => {
+                form.append(key, data[key]);
+            })
+        }
         return $.ajax({
             xhr: createXmlHttpRequest,
             url: url,
             method: 'DELETE',
-            data: data,
+            data: form,
             processData: false,
             contentType: false,
-            headers: { 'X-HTTP-Method-Override': 'DELETE' }
+            headers: Object.assign(headers, { 'X-HTTP-Method-Override': 'DELETE' }),
         })
     }
 }

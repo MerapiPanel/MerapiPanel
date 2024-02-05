@@ -38,6 +38,7 @@
         $(() => {
             merapi.editor.init({
                 token: "{{ merapi_token() }}",
+                
                 editor: {
                     holder: "#gjs",
                     id: "{{ template.id }}",
@@ -64,7 +65,11 @@
                             name: "id"
                         }
                     ],
-                    endpoint: "{{ 'template/endpoint' | admin_url | url }}",
+                    endpoint: {
+                        fetch: "{{ 'template/endpoint' | admin_url | url }}",
+                        script: "{{ 'template/initial-scripts' | admin_url | url }}",
+                        save: "{{ 'template/endpoint' | admin_url | url }}"
+                    },
                 },
                 assets: {
                     url: "{{ admin.FileManager_fetchJsonEndpoint }}",
@@ -84,31 +89,42 @@
     <script>
         $(() => {
 
-            console.log(window.merapi)
-
             window.merapi.editor.init({
-                holder: "#gjs",
-                params: [
-                    {
-                        type: "input",
-                        label: "Title",
-                        name: "name",
-                        required: true,
-                        placeholder: "Enter template title"
-                    },
-                    {
-                        type: "textarea",
-                        label: "Description",
-                        name: "description",
-                        required: false,
-                        placeholder: "Enter template description"
+                token: "{{ merapi_token() }}",
+                editor: {
+                    holder: "#gjs",
+                    params: [
+                        {
+                            type: "input",
+                            label: "Title",
+                            name: "name",
+                            required: true,
+                            placeholder: "Enter template title"
+                        },
+                        {
+                            type: "textarea",
+                            label: "Description",
+                            name: "description",
+                            required: false,
+                            placeholder: "Enter template description"
+                        }
+                    ],
+                    endpoint: {
+                        save: "{{ 'template/endpoint' | admin_url | url }}",
+                        script: "{{ 'template/initial-scripts' | admin_url | url }}",
+                        fetch: "{{ 'template/endpoint' | admin_url | url }}"
                     }
-                ],
-                endpoint: "{{ 'template/endpoint' | admin_url | url }}",
+                },
                 assets: {
                     url: "{{ admin.FileManager_fetchJsonEndpoint }}",
                     name: "files",
                     upload: "{{ admin.FileManager_uploadEndpoint }}",
+                },
+                component: {
+                    endpoint: {
+                        fetch: "{{ 'template/component/fetch' | admin_url | url }}",
+                        render: "{{ 'template/component/render' | admin_url | url }}"
+                    }
                 }
             });
         })

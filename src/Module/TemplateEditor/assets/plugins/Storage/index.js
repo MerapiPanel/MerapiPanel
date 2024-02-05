@@ -29,10 +29,12 @@ const StoragePlugin = (editor, args = {}) => {
 
         editor.on("run:loaded-components", function () {
 
-            if (args.id && args.endpoint) {
+            // console.log(args);
+
+            if (args.id && args.endpoint.fetch) {
 
                 $.ajax({
-                    url: urlWithParams(args.endpoint, { id: args.id, editor: 1 }), 
+                    url: urlWithParams(args.endpoint.fetch, { id: args.id }), 
                     headers: { 'template-edit': 'initial' },
                     success: (data) => {
                         editor.setComponents(data);

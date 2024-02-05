@@ -83,18 +83,13 @@ class Section
             $output = $moduleInstance->$method();
 
             if (isset($_SERVER['HTTP_TEMPLATE_EDIT']) && $_SERVER['HTTP_TEMPLATE_EDIT'] == 'initial') {
-                $controller = $this->getBox()->Utility_router()->getProperty('controller');
-                $controllerClass  = $controller['class'] ?? null;
-                $controllerMethod = $controller['method'] ?? null;
 
-                if ($controllerClass == "MerapiPanel\\Module\\Editor\\Controller\\Admin") {
-                    $params = $moduleInstance->getPayload();
-                    $paramString = "";
-                    foreach ($params as $key => $value) {
-                        $paramString .= " $key=\"$value\"";
-                    }
-                    $output = "<div data-gjs-type=\"$name\" $paramString></div>";
+                $params = $moduleInstance->getPayload();
+                $paramString = "";
+                foreach ($params as $key => $value) {
+                    $paramString .= " $key=\"$value\"";
                 }
+                $output = "<div data-gjs-type=\"$name\" $paramString></div>";
             }
 
             return $output;

@@ -42,8 +42,7 @@
                                 class="fa-solid fa-pen-to-square"></i> Edit template</a>
                     </li>
                     <li class="dropdown-item">
-                        <a onclick="deleteTemplate('{{ template.id }}')"><i class="fa-regular fa-trash-can"></i> Delete
-                            template</a>
+                        <a onclick="deleteTemplate('{{ template.id }}')"><i class="fa-regular fa-trash-can"></i> Delete template</a>
                     </li>
                 </ul>
             </div>
@@ -73,7 +72,7 @@
             callback: function () {
                 modal.hide();
                 const url = "{{ '/template/delete/' | admin_url }}";
-                xMerapi.delete(url, { id: id }).then(function (data, status, xhr) {
+                merapi.http.delete(url, { id: id, 'm-token': "{{ merapi_token() }}" }).then(function (data, status, xhr) {
                     if (xhr.status === 200) {
                         merapi.toast(data.message || "Template deleted", 5, 'text-success');
                         window.location.reload();

@@ -1,19 +1,35 @@
 // import $ from "jquery";
 import grapesjs from "grapesjs";
 import gjsBasic from 'grapesjs-blocks-basic';
-import gjsForms from 'grapesjs-plugin-forms';
-import gjsTailwind from "grapesjs-tailwind";
+// import gjsForms from 'grapesjs-plugin-forms';
+// import gjsTailwind from "grapesjs-tailwind";
 import ModuleLoader from "./plugins/moduleLoader/index.js";
 import AssetPlugin from "./plugins/Asset/index.js";
 import StoragePlugin from "./plugins/Storage/index.js";
 import CommandPlugin from "./plugins/Command/index.js";
 import 'grapesjs/dist/css/grapes.min.css';
+import codeEdit from "./plugins/codeEdit/index.js";
 // import Merapi from "../../../base/assets/merapi.js";
 
 
 
 const ControlPanel = (editor, args = {}) => {
 
+
+    Object.assign({
+        editor: {
+            holder: null,
+            id: null,
+            params: []
+        },
+        plugins: []
+    }, args);
+
+
+    // for (let i in args.plugins) {
+    //     let plugin = args.plugins[i];
+    //     editor.
+    // }
     editor.Panels.addButton('options',
         [{
             id: 'save',
@@ -21,16 +37,17 @@ const ControlPanel = (editor, args = {}) => {
             command: {
                 run: (editor) => {
                     editor.runCommand('open-save-modal', {
-                        params: args.params,
+                        params: args.editor.params,
                         callback: (response) => {
                             editor.runCommand('call-endpoint', {
-                                endpoint: args.endpoint,
+                                endpoint: args.editor.endpoint.save,
+                                token: args.token,
                                 params: response,
                                 callback: (response) => {
 
                                     const params = response.params;
 
-                                    args.params.forEach((param) => {
+                                    args.editor.params.forEach((param) => {
                                         param.value = params[param.name] || param.value;
                                         delete params[param.name];
                                     });
@@ -38,7 +55,7 @@ const ControlPanel = (editor, args = {}) => {
                                     if (Object.keys(params).length > 0) {
                                         for (let x in params) {
                                             let val = params[x];
-                                            args.params.push({
+                                            args.editor.params.push({
                                                 label: x,
                                                 name: x,
                                                 value: val
@@ -104,7 +121,11 @@ const initEditor = (args = {}) => {
                     required: false
                 }
             ],
-            endpoint: null
+            endpoint: {
+                fetch: null,
+                script: null,
+                save: null
+            }
         },
         assets: {
             url: null,
@@ -117,33 +138,14 @@ const initEditor = (args = {}) => {
         }
     }, args);
 
-    // console.log(args);
 
-    // const option = Object.assign({}, {
-    //     holder: null,
-    //     id: null,
-    //     params: [
-    //         {
-    //             type: "input",
-    //             label: "Text",
-    //             name: "text",
-    //             required: true
-    //         },
-    //         {
-    //             type: "textarea",
-    //             label: "Description",
-    //             name: "description",
-    //             required: false
-    //         }
-    //     ],
-    //     endpoint: null,
-    //     assets: {
-    //         url: null,
-    //         name: null,
-    //         upload: null
-    //     }
-    // }, args);
-
+    $(document.head).append(`<style>
+    :root {
+        --edt-color-primary: #64b7fe;
+        --gjs-quaternary-color: #64b7fe;
+    }
+    .gjs-four-color { color: var(--edt-color-primary); }
+    </style>`);
 
 
     if (!args.editor.holder) {
@@ -160,7 +162,8 @@ const initEditor = (args = {}) => {
         fromElement: true,
         container: '#gjs',
         height: '100vh',
-        plugins: [ModuleLoader, gjsBasic, gjsForms, gjsTailwind, AssetPlugin, StoragePlugin, CommandPlugin],
+        protectedCss: '',
+        plugins: [ModuleLoader, codeEdit, gjsBasic, AssetPlugin, StoragePlugin, CommandPlugin],
         pluginsOpts: {
             [ModuleLoader]: {
                 endpoint: {
@@ -187,10 +190,44 @@ const initEditor = (args = {}) => {
         },
         commands: {
 
-        }
+        },
+        // canvas: {
+        //     scripts: [
+        //       "assets/jquery.min.js"
+        //     ],
+        //     styles: [
+        //       "assets/bootstrap.min.css",
+        //       "assets/ms-print-pdf.css"
+        //     ]
+        //  },
     });
 
+    // initial cutom control to control grapesjs editor
     ControlPanel(editor, args);
+
+
+    merapi.http.get(args.editor.endpoint.script).then(function (data, textStatus, xhr) {
+       
+        const cssData = data.data.css;
+        const jsData = data.data.js;
+
+        console.log(cssData, jsData);
+
+        console.log(editor.Canvas.getDocument());
+
+        for (let x = 0; x < cssData.length; x++) {
+            const css = cssData[x];
+            console.log(css);
+            $(editor.Canvas.getDocument().head).append($(`<link rel="stylesheet" href="${css}">`));
+        }
+        for (let x2 = 0; x2 < jsData.length; x2++) {
+            const js = jsData[x2];
+            console.log(js);
+            $(editor.Canvas.getDocument().body).append($(`<script src="${js}"></script>`));
+        }
+
+        
+    })
 }
 
 

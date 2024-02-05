@@ -120,6 +120,11 @@ const CommandPlugin = (editor, args = {}) => {
 
         run: function (editor, sender, args = {}) {
 
+            Object.assign({
+                params: [],
+                callback: null
+            }, args);
+
             const params = args.params || [];
             const content = $(`<div class='py-4'><div class='mb-3' id="container"></div><div class='flex'><button class='ms-auto btn btn-primary'>Save</button></div></div>`);
 
@@ -167,11 +172,51 @@ const CommandPlugin = (editor, args = {}) => {
     })
 
 
+    editor.Commands.add('call-endpoint', {
+        run: function (editor, sender, options = {}) {
+
+            Object.assign({
+                token: null,
+                endpoint: null,
+                params: [],
+            }, options);
+
+
+            if (!options.endpoint) {
+                merapi.toast('Save endpoint is not defined', 5, 'text-warning');
+                return;
+            }
+            if (!options.token) {
+                merapi.toast('Save token is not defined', 5, 'text-warning');
+                return;
+            }
+
+
+            editor.runCommand('get-html-twig', {
+                callback: (twig) => {
+
+                    editor.store();
+
+                    sendToEndpoint({
+                        endpoint: options.endpoint,
+                        htmldata: twig,
+                        cssdata: editor.getCss(),
+                        params: options.params,
+                        callback: options.callback,
+                        token: options.token
+
+                    })
+                }
+            });
+        }
+    });
+
 
     function sendToEndpoint(args = {}) {
 
-        const option = Object.assign({}, {
+        Object.assign({}, {
             endpoint: null,
+            token: null,
             params: [],
             htmldata: null,
             cssdata: null,
@@ -179,61 +224,33 @@ const CommandPlugin = (editor, args = {}) => {
         }, args);
 
         var form = new FormData();
-        form.append("htmldata", option.htmldata);
-        form.append("cssdata", option.cssdata);
+        form.append("htmldata", args.htmldata);
+        form.append("cssdata", args.cssdata);
+        form.append("m-token", args.token);
 
-        for (let i in option.params) {
-            form.append(option.params[i].name, option.params[i].value);
+        for (let i in args.params) {
+            form.append(args.params[i].name, args.params[i].value);
         }
 
-        merapi.http.post(option.endpoint, form).then(function (data, textStatus, xhr) {
+        merapi.http.post(args.endpoint, form).then(function (data, textStatus, xhr) {
 
             if (xhr.status === 200) {
 
                 merapi.toast(data.message, 5, 'text-success');
                 editor.runCommand('clear-storage');
-                if (option.callback) {
-                    option.callback(data.data);
+                if (args.callback) {
+                    args.callback(data.data);
                 }
 
             } else throw new Error(textStatus, xhr.status);
 
         }).catch(function (error) {
 
+            console.error(error);
             merapi.toast(error.message ?? error, 5, 'text-warning');
         })
     }
 
-
-    editor.Commands.add('call-endpoint', {
-        run: function (editor, sender, options = {}) {
-
-            if (!options.endpoint) {
-                merapi.toast('Save endpoint is not defined', 5, 'text-warning');
-                return;
-            }
-
-            editor.runCommand('get-tailwindCss', {
-                callback(css) {
-
-                    editor.runCommand('get-html-twig', {
-                        callback: (twig) => {
-
-                            editor.store();
-
-                            sendToEndpoint({
-                                endpoint: options.endpoint,
-                                htmldata: twig,
-                                cssdata: css,
-                                params: options.params,
-                                callback: options.callback
-                            })
-                        }
-                    })
-                }
-            });
-        }
-    });
 }
 
 export default CommandPlugin;
