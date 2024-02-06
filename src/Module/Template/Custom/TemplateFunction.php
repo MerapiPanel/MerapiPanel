@@ -2,9 +2,9 @@
 
 namespace MerapiPanel\Module\Template\Custom;
 
-use MerapiPanel\Core\View\Abstract\FunctionAbstract;
+use MerapiPanel\Core\View\Abstract\ViewFunction;
 
-class TemplateFunction extends FunctionAbstract
+class TemplateFunction extends ViewFunction
 {
 
 

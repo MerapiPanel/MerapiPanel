@@ -29,26 +29,26 @@ class Admin extends Module
     }
 
 
-    public function index($view)
+    public function index($req)
     {
 
         return View::render("index.html.twig");
     }
 
-    public function all($view)
+    public function all($req)
     {
 
         return View::render("all.html.twig");
     }
 
-    public function new($view)
+    public function new($req)
     {
         return View::render("new.html.twig");
     }
 
 
 
-    public function save($view, $request)
+    public function save($request)
     {
 
         $BODY = $request->getRequestBody();
@@ -95,7 +95,7 @@ class Admin extends Module
     }
 
 
-    function assignTemplate($view, $request)
+    function assignTemplate($request)
     {
 
         $BODY = $request->getRequestBody();

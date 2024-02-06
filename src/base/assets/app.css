@@ -8,18 +8,18 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background-color: #f1f1f1; /* Change to your desired track color */
+    background: #ffffff00; /* Change to your desired track color */
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background-color: #888; /* Change to your desired handle color */
-    border-radius: 100px; /* Rounded corners */
+    background: #4fa1ff99; /* Change to your desired handle color */
+    border-radius: 10px; /* Rounded corners */
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* Change to your desired handle color on hover */
+    background: #4fa1ff; /* Change to your desired handle color on hover */
 }
 
 /* For Firefox */
@@ -32,12 +32,13 @@
 /* in ::-webkit-scrollbar-track */
 * {
     scrollbar-width: thin; /* Change to your desired width */
-    scrollbar-color: #888 #f1f1f1; /* Change to your desired handle and track colors */
+    scrollbar-color: #4fa1ff99 #ffffff00; /* Change to your desired handle and track colors */
+    scrollbar-track-color: #00000088;
 }
 
 /* Track on hover */
 *::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* Change to your desired handle color on hover */
+    background-color: #4fa1ff; /* Change to your desired handle color on hover */
 }
 
 

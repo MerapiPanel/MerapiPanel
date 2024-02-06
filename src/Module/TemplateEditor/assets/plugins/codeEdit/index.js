@@ -1,3 +1,12 @@
+import { EditorView, basicSetup } from 'codemirror';
+import { EditorState } from '@codemirror/state';
+import { indentOnInput } from '@codemirror/language';
+import { html } from '@codemirror/lang-html';
+import { css } from '@codemirror/lang-css';
+import { oneDark } from '@codemirror/theme-one-dark';
+import beautify from 'js-beautify';
+import { drawSelection, highlightActiveLine } from '@codemirror/view';
+
 export default (editor, opts = {}) => {
 
 
@@ -30,40 +39,64 @@ export default (editor, opts = {}) => {
     }
 
     .divider-horizontal {
-        width: 15px;
-        max-width: 15px;
+        width: 100%;
+        max-width: 10px !important;
         background: #474747;
         cursor: ew-resize;
     }
     .divider-horizontal:hover {
         background-color: var(--edt-color-primary);
     }
-    
-    .code-wraped {
+    .divider-horizontal.active {
+        background-color: var(--edt-color-primary);
+    }
+    .code-container {
         width: 100%;
         max-height: 300px;
+        min-width: 30px !important;
         height: 100%;
         position: relative;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-    }
-
-    .code-wraped .code-title {
         background-color: #1f1f1f;
-        padding: 2px 10px;
     }
-    .code-wraped .CodeMirror {
-        min-width: max-content;
-    }
-    .CodeMirror-gutters {
-        background-color: #1f1f1f !important;
-    }
-    .CodeMirror-scroll {
-        background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,0,0,1) 0%, rgba(31,31,31,1) 100%);
-    }
-    </style>`));
 
+    .code-head {
+        background-color: #1f1f1f;
+        padding: 2px 7px;
+        display: flex;
+    }
+    .code-head .corner {
+        min-width: 20px;
+        min-height: 20px;
+        background-color: #1f1f1f;
+    }
+    .code-head .code-title {
+        transition: 0.3s;
+        transform: rotate(0);
+        transform-origin: top left;
+        height: 20px;
+        width: 100%;
+        font-size: 14px;
+    }
+    .code-container.close { position: relative; }
+    .code-container.close .code-title {
+        transform: rotate(90deg);
+     }
+    .code-container.close .code-body { opacity: 0; }
+    
+    .code-body { transition: 0.3s; overflow: auto; opacity: 1; } 
+    .code-body > div { min-height: 275px; min-width: max-content; }
+
+    .code-body::-webkit-scrollbar-track {
+        background: transparent !important; 
+    }
+    ::-webkit-scrollbar-track {
+        background: #ffffff00; /* Change to your desired track color */
+    }
+
+    </style>`));
 
 
     editor.Panels.addButton("options", {
@@ -76,52 +109,29 @@ export default (editor, opts = {}) => {
     })
 
 
-    const htmlCodeViewer = editor.CodeManager.getViewer('CodeMirror').clone();
-    const cssCodeViewer = editor.CodeManager.getViewer('CodeMirror').clone();
-
-    htmlCodeViewer.set({
-        codeName: 'htmlmixed',
-        readOnly: 0,
-        theme: 'hopscotch',
-        autoBeautify: true,
-        autoCloseTags: true,
-        autoCloseBrackets: true,
-        lineWrapping: true,
-        styleActiveLine: true,
-        smartIndent: true,
-        indentWithTabs: true
-    });
-
-    cssCodeViewer.set({
-        codeName: 'css',
-        readOnly: 0,
-        theme: 'hopscotch',
-        autoBeautify: true,
-        autoCloseTags: true,
-        autoCloseBrackets: true,
-        lineWrapping: true,
-        styleActiveLine: true,
-        smartIndent: true,
-        indentWithTabs: true
-    });
-
-
-    var container = $(`
-    <div class='flex code-parent'>
-    <div class="code-wraped">
-        <h3 class='code-title'>HTML</h3>
-        <textarea id="html-code-editor"></textarea>
-    </div>
-    <div class="divider-horizontal"></div>
-    <div class="code-wraped">
-        <h3 class='code-title'>CSS</h3>
-        <textarea id="css-code-editor"></textarea>
+    const container = $(`<div class='flex code-parent'>
+        <div class="code-container">
+            <div class="code-head">
+                <div class="corner"></div>
+                <h3 class='code-title'>HTML</h3>
+            </div>
+            <div class="code-body" id="html-code-editor"></div>
+        </div>
+        <div class="divider-horizontal"></div>
+        <div class="code-container">
+            <div class="code-head">
+                <div class="corner"></div>
+                <h3 class='code-title'>CSS</h3>
+            </div>
+            <div class="code-body" id="css-code-editor"></div>
         </div>
     </div>`);
 
 
-    let leftPane = container.find('.code-wraped')[0];
-    let rightPane = container.find('.code-wraped')[1];
+    let htmlEditorElement = container.find('#html-code-editor')[0];
+    let cssEditorElement = container.find('#css-code-editor')[0];
+    let leftPane = container.find('.code-container')[0];
+    let rightPane = container.find('.code-container')[1];
     let divider = container.find('.divider-horizontal')[0];
     let isDragging = false;
 
@@ -134,64 +144,111 @@ export default (editor, opts = {}) => {
             if (!isDragging) return;
 
             const rect = container[0].getBoundingClientRect();
-            const deltaX = e.clientX - prevX;
+            if (rect.width === 0) {
+                console.warn("Container width is 0, skipping resize");
+                return; // Skip resizing as we cannot divide by zero
+            }
+
+            const deltaX = (e.clientX - prevX);
             prevX = e.clientX;
 
-            const leftWidth = leftPane.offsetWidth + deltaX;
-            const rightWidth = rightPane.offsetWidth - deltaX;
+            const leftWidth = (leftPane.offsetWidth + deltaX);
+            const rightWidth = (rightPane.offsetWidth - deltaX);
 
-            // Set new widths as a percentage of the container width to maintain flexibility
-            leftPane.style.width = `${(leftWidth / rect.width) * 100}%`;
-            rightPane.style.width = `${(rightWidth / rect.width) * 100}%`;
+
+            // Check to avoid dividing by zero
+            if (rect.width > 0) {
+                var leftPaneWidth = `${((leftWidth / rect.width) * 100)}%`;
+                var rightPaneWidth = `${((rightWidth / rect.width) * 100)}%`;
+
+                // Set new widths as a percentage of the container width to maintain flexibility
+                $(leftPane).css({ width: leftPaneWidth });
+                $(rightPane).css({ width: rightPaneWidth });
+
+                if (leftPane.offsetWidth < 40) {
+                    $(leftPane).addClass('close');
+                } else {
+                    $(leftPane).removeClass('close');
+                }
+                if (rightPane.offsetWidth < 40) {
+                    $(rightPane).addClass('close');
+                } else {
+                    $(rightPane).removeClass('close');
+                }
+
+            }
         };
+
 
         const onMouseUp = function () {
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
             isDragging = false;
+            $(divider).removeClass('active');
         };
 
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
+        $(divider).addClass('active');
     });
+
+    const extensions = [
+        basicSetup,
+        oneDark,
+        indentOnInput(),
+        drawSelection(true),
+        highlightActiveLine(),
+        EditorView.lineWrapping
+    ];
+
+    const htmlEditor = new EditorView({
+        parent: htmlEditorElement,
+        state: EditorState.create({
+            doc: beautify.html('<html><head></head><body></body></html>'),
+            extensions: [html()].concat(extensions),
+        }),
+    });
+    const cssEditor = new EditorView({
+        parent: cssEditorElement,
+        state: EditorState.create({
+            doc: beautify.css('* { box-sizing: border-box; }'),
+            extensions: [css()].concat(extensions),
+        })
+    })
+
 
 
     editor.Commands.add("open-code-editor", {
         run: (editor, sender) => {
 
-            let htmlViewer = htmlCodeViewer.editor;
-            let cssViewer = cssCodeViewer.editor;
+            let htmlContent = beautify.html(cleanHtmlBody(editor.getHtml()));
+            htmlEditor.setState(EditorState.create({
+                doc: htmlContent,
+                extensions: [
+                    html(),
+                    EditorView.updateListener.of((v) => {
+                        if (v.docChanged) {
+                            const content = htmlEditor.state.doc.toString();
+                            editor.setComponents(content.trim());
+                        }
+                    }),
+                ].concat(extensions),
+            }));
 
-            if (!htmlViewer) {
 
-                htmlCodeViewer.init(container.find('.code-wraped>textarea')[0]);
-                htmlViewer = htmlCodeViewer.editor;
-            }
-            if (!cssViewer) {
-                cssCodeViewer.init(container.find('.code-wraped>textarea')[1]);
-                cssViewer = cssCodeViewer.editor;
-            }
-
-
-            let InnerHtml = editor.getHtml();
-            let Css = editor.getCss();
-
-            htmlCodeViewer.setContent(InnerHtml);
-            cssCodeViewer.setContent(Css);
-
-            htmlViewer.refresh();
-            cssViewer.refresh();
-
-            console.log(htmlViewer, cssViewer);
-
-            htmlViewer.on('change', function () {
-                editor.setComponents(htmlViewer.getValue().trim());
-                // editor.CssComposer.clear();
-            })
-            cssViewer.on('change', function () {
-                editor.setStyle(cssViewer.getValue().trim());
-
-            })
+            let cssContent = beautify.css(editor.getCss());
+            cssEditor.setState(EditorState.create({
+                doc: cssContent,
+                extensions: [
+                    css(),
+                    EditorView.updateListener.of((v) => {
+                        if (v.docChanged) {
+                            const content = cssEditor.state.doc.toString();
+                            editor.setStyle(content.trim());
+                        }
+                    }),
+                ].concat(extensions),
+            }))
 
             editor.Modal.open({
                 title: 'Code Editor',
@@ -201,42 +258,25 @@ export default (editor, opts = {}) => {
                 },
             });
 
-
-            // Function to merge duplicate CSS selectors
-            function mergeDuplicateSelectors(cssString) {
-                // Parse CSS string into a structure
-                const cssRules = {};
-                cssString.split('}').forEach(rule => {
-                    const selector = rule.split('{')[0].trim();
-                    const declarations = rule.split('{')[1];
-                    if (selector && declarations) {
-                        if (!cssRules[selector]) {
-                            cssRules[selector] = [];
-                        }
-                        cssRules[selector].push(declarations);
-                    }
-                });
-
-                // Reconstruct CSS string with merged selectors
-                let mergedCSS = '';
-                for (const selector in cssRules) {
-                    if (cssRules.hasOwnProperty(selector)) {
-                        const mergedDeclarations = cssRules[selector].join(';');
-                        mergedCSS += `${selector} {${mergedDeclarations}}`;
-                    }
-                }
-
-                return mergedCSS;
-            }
         }
     })
 
 
-    // const codeMirror = editor.CodeManager.defViewers.CodeMirror;
-    // codeMirror.attributes.readOnly = false;
+    function cleanHtmlBody(htmlString) {
 
-    // codeMirror.on("change", function (e) {
-    //     console.log(e);
-    // });
-    // console.log(codeMirror);
+        // Create a DOMParser instance
+        const parser = new DOMParser();
+
+        // Parse the HTML string
+        const doc = parser.parseFromString(htmlString, 'text/html');
+
+        // Remove all meta, link, and script elements
+        doc.querySelectorAll('meta, link, script').forEach(element => {
+            element.remove();
+        });
+
+        //        console.log(doc.body.outerHTML);
+        // Get the cleaned HTML string
+        return doc.body.outerHTML;
+    }
 }

@@ -191,42 +191,28 @@ const initEditor = (args = {}) => {
         commands: {
 
         },
-        // canvas: {
-        //     scripts: [
-        //       "assets/jquery.min.js"
-        //     ],
-        //     styles: [
-        //       "assets/bootstrap.min.css",
-        //       "assets/ms-print-pdf.css"
-        //     ]
-        //  },
     });
 
     // initial cutom control to control grapesjs editor
     ControlPanel(editor, args);
 
 
+    /**
+     * load template initial scripts
+     */
     merapi.http.get(args.editor.endpoint.script).then(function (data, textStatus, xhr) {
        
         const cssData = data.data.css;
         const jsData = data.data.js;
 
-        console.log(cssData, jsData);
-
-        console.log(editor.Canvas.getDocument());
-
         for (let x = 0; x < cssData.length; x++) {
             const css = cssData[x];
-            console.log(css);
             $(editor.Canvas.getDocument().head).append($(`<link rel="stylesheet" href="${css}">`));
         }
         for (let x2 = 0; x2 < jsData.length; x2++) {
             const js = jsData[x2];
-            console.log(js);
             $(editor.Canvas.getDocument().body).append($(`<script src="${js}"></script>`));
         }
-
-        
     })
 }
 

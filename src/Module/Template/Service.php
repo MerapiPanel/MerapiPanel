@@ -5,7 +5,9 @@ namespace MerapiPanel\Module\Template;
 use Exception;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\Database;
+use MerapiPanel\Core\View\View;
 use PDO;
+use Twig\Loader\ArrayLoader;
 
 class Service extends Module
 {
@@ -185,5 +187,14 @@ class Service extends Module
             }
         }
         return $scripts;
+    }
+
+
+    public function getTemplateData($id)
+    {
+        $template = $this->getTemplate($id);
+        $template['scripts'] = $this->getInitialScript();
+
+        return $template;
     }
 }

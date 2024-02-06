@@ -1,30 +1,50 @@
-{% extends "base.html.twig" %}
+{% extends "@guest::template/view.html.twig" %}
 
+{% set template = getTemplate(page.template_id) %}
+
+{% block meta_title %}{{ page.title }}{% endblock %}
+
+{% block stylesheet %}
+{% if template.css is not empty %}
+{% for css in template.scripts.css %}
+<link rel="stylesheet" href="{{ css }}">
+{% endfor %}
+{{ "<style>" | raw }}{% include "@module::template" ~ template.css | trim %}{{ "</style>" | raw }}
+{% endif %}
+{% endblock %}
 
 
 {% block body %}
-    {% if template %} 
-        {% block stylesheets %}
-            {{ parent() }}
-            {% if template.css %}
-            <style>{% include "@module::template" ~ template.css %}</style>
-            {% endif %} 
-        {% endblock %}
-        {% include "@module::template" ~ template.html %}
+
+<body>
+
+    {% if template.html is not empty %}
+    
+    {% include "@module::template" ~ template.html %}
+
+
+    {% block javascript %}
+    {% for js in template.scripts.js %}
+    <script src="{{ js }}"></script>
+    {% endfor %}
+    {% endblock %}
+
     {% else %}
 
-        {% block content %}
-        <div class="flex items-center justify-center h-screen w-screen">
-            <section class="text-center">
-                <header class="mb-3">
-                    <h1 class="text-3xl font-medium">This Page Is Empty</h1>
-                </header>
-                <article>
-                    <p>Welcome, you have access the empty page</p>
-                </article>
-            </section>
-        </div>
-        {% endblock %}
+    <script src="/src/base/assets/dist/index.bundle.js"></script>
+
+    <div class="flex items-center justify-center h-screen w-screen">
+        <section class="text-center">
+            <header class="mb-3">
+                <h1 class="text-3xl font-medium">This Page Is Empty</h1>
+            </header>
+            <article>
+                <p>Welcome, you have access the empty page</p>
+            </article>
+        </section>
+    </div>
 
     {% endif %}
+
+</body>
 {% endblock %}

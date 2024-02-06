@@ -1,7 +1,10 @@
 <!DOCTYPE html>
+
 <html>
+{% block html %}
 
 <head>
+	{% block head %}
 	<title>{% block page_title %}Merapi panel{% endblock %}</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +12,16 @@
 	{% block stylesheets %}{% endblock %}
 	<script src="/src/base/assets/dist/index.bundle.js"></script>
 	{% block head_javascripts %}{% endblock %}
+	{% endblock %}
 </head>
-{% block body %}
 
-<body class="min-h-screen min-w-screen">
 
-	{% block content %}
+<body>
+	{% block body %}
+
+
 	<main class="h-[100vh] w-[100vw] flex justify-center items-center text-white bg-black">
+		{% block content %}
 		<div clas="text-center">
 			<h1 class="text-6xl font-bold mb-4">This is the base template</h1>
 			<p class="text-lg text-center">You need to replace this view by add
@@ -23,10 +29,13 @@
 						class="text-blue-300">content</span> {{ "%}" }}</span> in you template
 			</p>
 		</div>
+		{% endblock %}
 	</main>
-	{% endblock %}
+
 
 	{% block javascripts %}{% endblock %}
+	{% endblock %}
 </body>
+
 {% endblock %}
 </html>

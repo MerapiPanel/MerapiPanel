@@ -146,6 +146,7 @@ class View
             $file_path = $caller['file'];
             $metadata['file_caller'] = $file_path;
             $env = rtrim(basename($file_path, ".php"), "\\/");
+            if(!in_array(strtolower($env), ["admin", "guest"])) $env = "guest";
 
             $module_index = strpos($file_path, "\\Module");
             if ($module_index !== false) {
