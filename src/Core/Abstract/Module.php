@@ -97,7 +97,7 @@ abstract class Module
     {
 
         $index    = $this->__getIndex();
-        $basename = "\\".basename($index);
+        $basename = "\\" . basename($index);
         $class    = $this::class;
         $pos      = strpos($class, $basename);
 
@@ -116,21 +116,31 @@ abstract class Module
 
 
 
-    final public function getConfig() {
+    final public function getConfig()
+    {
 
         return new Config();
     }
 
 
 
-    public function __getSettings() {
+    public function __getSettings()
+    {
 
         $db = $this->getDatabase();
 
         return new Settings($db);
-        
     }
 
 
 
+    public static function getModuleName($pathOrClassName)
+    {
+
+        if (preg_match("/module\\\\([^\\\\]+)/i", $pathOrClassName, $matches)) {
+            $moduleName = $matches[1];
+            return $moduleName;
+        }
+        return false;
+    }
 }

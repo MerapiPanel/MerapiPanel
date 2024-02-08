@@ -4,6 +4,7 @@ namespace MerapiPanel\Core\Exception;
 // MerapiPanel\Module\Exception\Service
 
 use MerapiPanel\Box;
+use MerapiPanel\Core\View\View;
 use Throwable;
 
 class Service extends ErrorAbstract
@@ -88,20 +89,20 @@ class Service extends ErrorAbstract
         $error            = $this->toArray();
         $error['snippet'] = $this->getSnippet();
 
-        $view = $this->box->Module_viewEngine();
-        $view = $view->__reBuild();
+        $view = View::newInstance();
+        // $view = $view->__reBuild();
 
         $view->addGlobal('error', $error);
         $template = null;
 
-        if ($view->templateExists("/error/error$error[code].html.twig")) {
+        // if ($view->templateExists("/error/error$error[code].html.twig")) {
 
-            $template = $view->load("/error/error$error[code].html.twig");
-        } else {
+        //     $template = $view->load("/error/error$error[code].html.twig");
+        // } else {
 
-            $template = $view->load("/error/error.html.twig");
-        }
+        //     $template = $view->load("/error/error.html.twig");
+        // }
 
-        echo $template->render([]);
+        echo $view->load("/error/error.html.twig")->render([]);
     }
 }

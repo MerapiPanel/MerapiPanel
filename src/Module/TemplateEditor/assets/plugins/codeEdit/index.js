@@ -221,6 +221,16 @@ export default (editor, opts = {}) => {
     editor.Commands.add("open-code-editor", {
         run: (editor, sender) => {
 
+
+
+
+
+            // editor.runCommand('get-code-data', {
+            //     callback: function (e) {
+            //         console.log(e)
+            //     }
+            // });
+
             let htmlContent = beautify.html(cleanHtmlBody(editor.getHtml()));
             htmlEditor.setState(EditorState.create({
                 doc: htmlContent,

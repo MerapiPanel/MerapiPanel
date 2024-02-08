@@ -114,12 +114,16 @@ const CommandPlugin = (editor, args = {}) => {
                 wrapper.append($(`<input class='text-input' type="text" name="${param.name}" value="${param.value || ''}" id="${param.name}" disabled/>`))
             }
 
+            
 
             return wrapper;
         },
 
         run: function (editor, sender, args = {}) {
 
+
+            console.log(editor.getHtml());
+            
             Object.assign({
                 params: [],
                 callback: null
@@ -192,6 +196,8 @@ const CommandPlugin = (editor, args = {}) => {
             }
 
 
+            console.log(editor.getHtml());
+            return;
             editor.runCommand('get-html-twig', {
                 callback: (twig) => {
 

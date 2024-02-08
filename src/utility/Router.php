@@ -5,6 +5,7 @@ namespace MerapiPanel\Utility;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Cog\Config;
+use MerapiPanel\Core\Mod\Proxy;
 use MerapiPanel\Core\Token\Token;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Middleware\Component;
@@ -61,7 +62,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
-            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
+            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::GET, $path, $controller . "@$method");
@@ -92,7 +93,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
+            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::POST, $path, $controller . "@$method");
@@ -122,7 +123,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
+            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::PUT, $path, $controller . "@$method");
@@ -153,7 +154,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            $middleware = $this->box->Module_Auth_Middleware_Admin()->getRealInstance();
+            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::DELETE, $path, $controller . "@$method");
@@ -170,12 +171,12 @@ class Router extends Component
     function validateController($controller)
     {
 
-        if (
-            strtolower(basename($controller)) !== "admin" &&
-            strtolower(basename($controller)) !== "guest"
-        ) {
-            throw new Exception("Controller must be Admin or Guest");
-        }
+        // if (
+        //     strtolower(basename($controller)) !== "admin" &&
+        //     strtolower(basename($controller)) !== "guest"
+        // ) {
+        //     throw new Exception("Controller must be Admin or Guest");
+        // }
     }
 
 
@@ -212,20 +213,20 @@ class Router extends Component
 
         $path = $request->getPath();
 
-        if (!isset($this->routeStack[$method])) {
-            throw new Exception("Unsupported HTTP method: $method", 405);
-        } else if (strtoupper($method) !== "GET" && $path !== "/") {
+        // if (!isset($this->routeStack[$method])) {
+        //     throw new Exception("Unsupported HTTP method: $method", 405);
+        // } else if (strtoupper($method) !== "GET" && $path !== "/") {
 
-            $token = urldecode($request->mToken());
+        //     $token = urldecode($request->mToken());
 
-            if (empty($token)) {
+        //     if (empty($token)) {
 
-                throw new Exception("Request token is empty", 400);
-            } elseif (!Token::validate($token)) {
+        //         throw new Exception("Request token is empty", 400);
+        //     } elseif (!Token::validate($token)) {
 
-                throw new Exception("Request token is invalid", 400);
-            }
-        }
+        //         throw new Exception("Request token is invalid", 400);
+        //     }
+        // }
 
 
         /**

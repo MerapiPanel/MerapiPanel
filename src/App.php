@@ -10,6 +10,8 @@
 namespace MerapiPanel;
 
 ini_set("error_log", __DIR__ . "/php-error.log");
+
+use MerapiPanel\Core\Mod\Proxy;
 use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);
@@ -59,9 +61,9 @@ class App extends Box
 
         try {
 
-            $request = $this->utility_http_request();
+            $request = Proxy::Real($this->utility_http_request());
             // Send the response
-            echo $this->utility_router()->dispatch($request->getRealInstance());
+            echo $this->utility_router()->dispatch($request);
         } catch (Throwable $e) {
             $this->core_exception()->catch_error($e);
         }

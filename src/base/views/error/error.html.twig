@@ -2,9 +2,9 @@
 
 {% block page_title %}
 {% if error.code == 999 %}
-{{ 'Fatal Error' | trans}}
+{{ 'Fatal Error'}}
 {% else %}
-{{ error.type | trans }} {{ error.code }}
+{{ error.type }} {{ error.code }}
 {% endif %}
 {% endblock %}
 
@@ -119,8 +119,8 @@
 		<nav>
 			<div class="container">
 
-				<span>{{ 'Error' | trans }}
-					{{ 'Debug' | trans }}</span>
+				<span>{{ 'Error' }}
+					{{ 'Debug' }}</span>
 
 				<div style="margin-left: auto;">
 					<?xml
@@ -153,7 +153,7 @@
 
 					{% if error.stack_trace %}
 					<div>
-						<h2>{{'Stack trace'|trans}}</h2>
+						<h2>{{'Stack trace' }}</h2>
 						<ol style="list-style: none; margin: 0; padding: 0; margin-left: 0.8rem;">
 							{% for err in error.stack_trace %}
 							<li style="margin-bottom: 0.8rem;">
@@ -169,10 +169,10 @@
 			<div class="col" style="background-color: #1b1b1b;">
 				<div class="content">
 					{% if error.code == 999 %}
-					<h1>{{ 'Fatal Error' | trans }}</h1>
-					<h2>{{ error.type | trans}}</h2>
+					<h1>{{ 'Fatal Error' }}</h1>
+					<h2>{{ error.type}}</h2>
 					{% else %}
-					<h1>{{ error.type | trans}} {{ error.code }}</h1>
+					<h1>{{ error.type}} {{ error.code }}</h1>
 					{% endif %}
 					<p>{{( error.message | length <= 800 ? error.message : ('<p>'~error.message | slice(0, 800)
 							~ '<span id="dots">...</span><span id="more">' ~ error.message | slice(800, -1)

@@ -6,6 +6,7 @@ use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\Section;
 use MerapiPanel\Core\View\View;
+use MerapiPanel\Event;
 use MerapiPanel\Module\Template\Custom\TemplateFunction;
 use MerapiPanel\Utility\Http\Request;
 use Twig\Loader\ArrayLoader;
@@ -55,7 +56,8 @@ class Admin extends Module
     }
 
 
-    function getInitialScripts() {
+    function getInitialScripts()
+    {
         return [
             "code" => 200,
             "data" => $this->service()->getInitialScript()
@@ -104,8 +106,6 @@ class Admin extends Module
     public function componentRender(Request $req)
     {
         $addr = $req->addr();
-
-
         ob_start();
 
         $body = $req->getRequestBody();
@@ -156,7 +156,7 @@ class Admin extends Module
     public function fetchTemplate(Request $req)
     {
 
-        $id = $req->getQuery("id");
+        $id = $req->id();
         $service = $this->service();
 
         $template = $service->getTemplate($id);
@@ -168,6 +168,31 @@ class Admin extends Module
             ];
         }
 
+        $html = $template['html'];
+        $css  = $template['css'];
+
+
+        Event::on(Section::class, Section::EVENT_AFTER_CALL, function ($name, $arg, &$output) {
+            
+            $attributes = [];
+            foreach ($arg[0] as $key => $value) {
+                $attributes[] = "$key=\"$value\"";
+            }
+            $output = "<$name " . implode(" ", $attributes) . "></$name>";
+
+        });
+
+        $htmlString = View::newInstance(new ArrayLoader([
+            "template" => file_get_contents(__DIR__ . "/../$html")
+        ]))->load("template")->render();
+
+
+        return [
+            "data" => [
+                "html" => $htmlString,
+                "css" => $css
+            ]
+        ];
         return View::render("view.html.twig", [
             "template" => $template
         ]);

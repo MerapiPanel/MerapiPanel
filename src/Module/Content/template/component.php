@@ -52,7 +52,7 @@ class Component extends ViewComponent
      * @category Content
      * @return string
      */
-    public function ContentTitle() {
+    public function Title() {
 
         return "<h1>Content Title</h1>";
     }
@@ -71,7 +71,7 @@ class Component extends ViewComponent
      * @arg limit | false | How many articles should be shown? Default is 3
      * 
      */
-    public function ContentArticle() {
+    public function Article() {
 
 
         

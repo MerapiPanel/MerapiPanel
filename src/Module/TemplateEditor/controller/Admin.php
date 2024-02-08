@@ -14,6 +14,8 @@ class Admin extends Module
     function register($router)
     {
 
+
+
         $router->get("/editor", "index", self::class);
         $router->get("/editor/load-component", "loadComponent", self::class);
         $router->get("/template/component/fetch", "componentFetch", self::class);
@@ -62,8 +64,9 @@ class Admin extends Module
 
     public function componentRender(Request $req)
     {
-        $addr = $req->addr();
 
+        [$comp, $module, $method] = explode(":", rawurldecode($req->addr()));
+        $addr = implode("_", [$module, "component", $method]);
 
         ob_start();
 

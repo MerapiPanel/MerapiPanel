@@ -11,6 +11,7 @@ use MerapiPanel\Core\Mod;
 use MerapiPanel\Core\Section;
 use MerapiPanel\Module\Users\Custom\Extension;
 use Twig\Extension\AbstractExtension;
+use Twig\Loader\ArrayLoader;
 use Twig\TemplateWrapper;
 
 class View
@@ -25,11 +26,16 @@ class View
     protected $variables = [];
     private $file;
 
-
-    public function __construct()
+    public function __construct(array | ArrayLoader $loader = [])
     {
 
-        $this->loader = new Loader(realpath(__DIR__ . "/../../base/views"));
+        if (gettype($loader) == "array") {
+            $loader = array_merge([realpath(__DIR__ . "/../../base/views")], gettype($loader) == "array" ? $loader : [$loader]);
+            $this->loader = new Loader($loader);
+        } else {
+            $this->loader = $loader;
+        }
+
         $this->twig   = new Twig($this->loader, ['cache' => false]);
 
         $this->twig->enableDebug();
@@ -70,18 +76,18 @@ class View
 
 
 
-    protected TemplateWrapper $wrapper;
+    private TemplateWrapper $wrapper;
     public function load($file)
     {
 
         $this->file = $file;
         $this->wrapper = $this->twig->load($this->file);
+        return $this->wrapper;
     }
 
 
     private function addVariable(array $data = [])
     {
-
         $this->variables = array_merge($this->variables, $data);
     }
 
@@ -109,9 +115,11 @@ class View
     {
 
         $this->variables['request'] = Box::Get($this)->utility_http_request();
-        if(!isset($this->wrapper)) return "Unprepare wrapper or unready view";
+        if (!isset($this->wrapper)) return "Unprepare wrapper or unready view";
         return $this->wrapper->render($this->variables);
     }
+
+
 
 
 
@@ -124,10 +132,31 @@ class View
         return self::$instance;
     }
 
+    public static function newInstance($data = []): View
+    {
+        return new View($data);
+    }
+
+
+
+
+    public static function AddSection(Section $section)
+    {
+        $e = self::getInstance();
+        $e->twig->addGlobal($section->getName(), $section);
+    }
+
+
+
+
+
     public static function AddExtension(AbstractExtension $extension)
     {
         self::getInstance()->twig->addExtension($extension);
     }
+
+
+
 
 
     public static function render(string $file, array $data = []): View
@@ -146,7 +175,7 @@ class View
             $file_path = $caller['file'];
             $metadata['file_caller'] = $file_path;
             $env = rtrim(basename($file_path, ".php"), "\\/");
-            if(!in_array(strtolower($env), ["admin", "guest"])) $env = "guest";
+            if (!in_array(strtolower($env), ["admin", "guest"])) $env = "guest";
 
             $module_index = strpos($file_path, "\\Module");
             if ($module_index !== false) {

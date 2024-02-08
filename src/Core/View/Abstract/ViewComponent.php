@@ -2,6 +2,8 @@
 
 namespace MerapiPanel\Core\View\Abstract;
 
+use MerapiPanel\Core\Abstract\Module;
+use ReflectionClass;
 use ReflectionMethod;
 use Twig\Extension\AbstractExtension;
 
@@ -82,8 +84,10 @@ class ViewComponent extends AbstractExtension
                 $params[] = $option;
             }
 
+            $moduleName = Module::getModuleName($this::class);
+
             $stack[] = [
-                "id"     => explode("\\", trim(str_replace("merapipanel\\module", "", strtolower($this::class)), '\\'))[0] . "_component_" . strtolower($method),
+                "id"     => strtolower("comp:{$moduleName}:{$method}"),
                 "params" => $params,
                 "model"  => $this->extractDoc($r->getDocComment()),
             ];
@@ -142,6 +146,4 @@ class ViewComponent extends AbstractExtension
 
         return $docs;
     }
-
-    
 }

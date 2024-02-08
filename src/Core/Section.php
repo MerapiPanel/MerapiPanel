@@ -2,13 +2,17 @@
 
 namespace MerapiPanel\Core;
 
+use Closure;
 use MerapiPanel\Box;
+use MerapiPanel\Core\Mod\Proxy;
 use MerapiPanel\Core\View\Abstract\ViewComponent;
+use MerapiPanel\Event;
 
 class Section
 {
 
     protected $name = '';
+    const EVENT_AFTER_CALL = 'after_call';
 
     /**
      * Constructor for the section.
@@ -21,7 +25,6 @@ class Section
     }
 
 
-
     /**
      * Get the Box object.
      *
@@ -31,6 +34,7 @@ class Section
     {
         return Box::Get($this);
     }
+
 
 
 
@@ -54,6 +58,7 @@ class Section
         $module = "MerapiPanel\\Module\\" . ucfirst($module) .  "\\Api\\" . ucfirst($this);
         // Get the instance of the module and call the method
         $instance = $this->getBox()->$module();
+
         return $instance->$method();
     }
 
@@ -74,11 +79,17 @@ class Section
 
     public function __call($name, $arguments)
     {
+
         [$module, $class, $method] = explode('_', $name);
         $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\template\\" . ucfirst($class);
+
+        error_log("call " . $classNames . "::" . $method);
+
         $moduleInstance = $this->getBox()->$classNames();
 
-        if ($moduleInstance->getInstance() instanceof ViewComponent) {
+        if (!$moduleInstance) return null;
+
+        if (($moduleInstance instanceof Proxy) && (Proxy::Real($moduleInstance) instanceof ViewComponent)) {
             $moduleInstance->setPayload($arguments[0]);
             $output = $moduleInstance->$method();
 
@@ -91,6 +102,9 @@ class Section
                 }
                 $output = "<div data-gjs-type=\"$name\" $paramString></div>";
             }
+
+
+            Event::fire(self::EVENT_AFTER_CALL, [$name, $arguments, &$output]);
 
             return $output;
         }

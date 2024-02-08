@@ -93,17 +93,18 @@ class Box
     {
 
         // Directory where your PHP files are located
-        $directory = realpath(__DIR__ . "/Module"); // You may need to specify your project's directory here
+        $directory = realpath(__DIR__ . "/module"); // You may need to specify your project's directory here
 
         // Get a list of all PHP files in the directory
         $phpFiles = glob($directory . '/*');
 
-        $namespacePattern = __NAMESPACE__ . '\\Module\\';
+        $namespacePattern = __NAMESPACE__ . '\\module\\';
         $controllers = [];
 
         $zones = ['guest'];
         if ($this->Module_Auth()->isAdmin()) {
             $zones[] = 'admin';
+            error_log("section: admin");
         }
 
         foreach ($phpFiles as $file) {
@@ -127,7 +128,7 @@ class Box
 
             $class  = $controller["class"];
             $object = $this->$class();
-            $object->register($this->utility_router()->getRealInstance());
+            $object->register(Proxy::Real($this->utility_router()));
         }
     }
 

@@ -1,5 +1,3 @@
-import { trimEnd } from 'lodash';
-
 export default (editor, opts = {}) => {
 
     Object.assign({
@@ -16,59 +14,60 @@ export default (editor, opts = {}) => {
     var comStack = [];
     const bm = editor.BlockManager;
     const endpoint = opts.endpoint;
+    const componentIds = [];
 
 
 
 
-    editor.Commands.add('get-html-twig', {
-        run: function (editor, sender, opts = {}) {
+    // editor.Commands.add('get-html-twig', {
+    //     run: function (editor, sender, opts = {}) {
 
-            let twigStack = [];
+    //         let twigStack = [];
 
-            comStack.forEach(function (component) {
+    //         comStack.forEach(function (component) {
 
-                let attr = component.model.getAttributes();
-                let traits = component.model.getTraits();
+    //             let attr = component.model.getAttributes();
+    //             let traits = component.model.getTraits();
 
-                let params = traits.map(trait => {
+    //             let params = traits.map(trait => {
 
-                    return `"${trait.getName()}":"${trait.getValue()}"`;
+    //                 return `"${trait.getName()}":"${trait.getValue()}"`;
 
-                }).join(",");
+    //             }).join(",");
 
 
-                let twig = `{{ guest.${component.model.attributes.type}({${params}}) | raw }}`;
+    //             let twig = `{{ guest.${component.model.attributes.type}({${params}}) | raw }}`;
 
-                twigStack.push({
-                    id: attr.id,
-                    twig: twig
-                });
-            });
+    //             twigStack.push({
+    //                 id: attr.id,
+    //                 twig: twig
+    //             });
+    //         });
 
-            comStack = [];
+    //         comStack = [];
 
-            editor.store();
-            let doc = new DOMParser().parseFromString(editor.getHtml(), "text/html");
+    //         editor.store();
+    //         let doc = new DOMParser().parseFromString(editor.getHtml(), "text/html");
 
-            twigStack.forEach(function (twig) {
+    //         twigStack.forEach(function (twig) {
 
-                let div = doc.getElementById(twig.id);
-                if (!div) return;
-                let parent = div.parentNode;
-                div.parentNode.insertBefore(doc.createTextNode(twig.twig), div);
-                parent.removeChild(div);
-            })
+    //             let div = doc.getElementById(twig.id);
+    //             if (!div) return;
+    //             let parent = div.parentNode;
+    //             div.parentNode.insertBefore(doc.createTextNode(twig.twig), div);
+    //             parent.removeChild(div);
+    //         })
 
-            let htmlstr = doc.body.outerHTML;
+    //         let htmlstr = doc.body.outerHTML;
 
-            if (opts.callback) {
-                opts.callback(htmlstr);
-            } else {
-                console.log(htmlstr);
-            }
+    //         if (opts.callback) {
+    //             opts.callback(htmlstr);
+    //         } else {
+    //             console.log(htmlstr);
+    //         }
 
-        }
-    });
+    //     }
+    // });
 
 
 
@@ -115,21 +114,27 @@ export default (editor, opts = {}) => {
 
 
 
-    const createType = (editor, args = {}) => {
+    const createType = (comp = {}) => {
 
 
         return {
 
-            isComponent: el => el.classList?.contains(args.id),
+            isComponent: (el) => {
+
+                console.log(el, el.tagName, String(comp.id).toUpperCase());
+                return el.tagName == String(comp.id).toUpperCase();
+            },
             model: {
                 default: {
-                    name: args.id,
+                    name: comp.id,
                     content: "",
                     droppable: false,
                     styleable: false
                 },
                 init() {
 
+
+                    console.log(this);
                     // Listen to any attribute change
                     this.on('change:attributes', this.handleAttrChange);
 
@@ -137,7 +142,9 @@ export default (editor, opts = {}) => {
 
                 handleAttrChange() {
 
-                    let _endpoint = endpoint.fetch + "/render/" + args.id + "?m-token=" + opts.token;
+                    let _endpoint = endpoint.fetch + "/render/" + encodeURIComponent(comp.id) + "?m-token=" + opts.token;
+
+                    // console.log(this);
 
                     let params = {};
                     this.getTraits().map(trait => {
@@ -152,12 +159,15 @@ export default (editor, opts = {}) => {
                     $.post(_endpoint, params).then(res => {
 
                         let obj = Object.assign({ data: { output: "" } }, res);
+                        // console.log(obj);
+                       // this.view.el.innerHTML = obj.data.output;
                         this.set("content", obj.data.output);
                     })
                 }
             },
 
             view: {
+
                 generateRandomStringByTime() {
                     var timestamp = new Date().getTime();
                     var randomString = timestamp.toString();
@@ -167,7 +177,7 @@ export default (editor, opts = {}) => {
                 traits: [],
                 init() {
 
-                    const typeFind = bm.get(args.id);
+                    const typeFind = bm.get(comp.id);
                     this.traits = typeFind.attributes.content.traits;
                     this.model.attributes.traits = this.traits;
 
@@ -180,13 +190,33 @@ export default (editor, opts = {}) => {
                     this.model.handleAttrChange();
 
 
-                    console.log(this)
+                    // console.log(this)
 
 
                     editor.store();
 
                     editor.on("run:get-html-twig:before", () => {
                         comStack.push(this);
+                    })
+
+                    editor.on("run:open-save-modal:before", () => {
+                        this.model.attributes.content = "";
+
+                        // console.log(this.el);
+
+                        $("hallo world").insertBefore($(this.el));
+
+                        parent.insertBefore
+
+                    })
+
+                    editor.on("run:open-code-editor:before", () => {
+
+                        this.model.attributes.content = "";
+                        // if (this.el.tagName != String(args.id).toUpperCase()) {
+                        //     this.model.attributes.attributes['data-gjs-type'] = args.id;
+                        // }
+                        return this;
                     })
                 },
             }
@@ -200,26 +230,26 @@ export default (editor, opts = {}) => {
 
 
 
-    const createBlock = (editor, args = {}) => {
+    const createBlock = (comp = {}) => {
 
         return {
-            label: args.model.label,
-            media: args.model.media,
+            label: comp.model.label,
+            media: comp.model.media,
             content: {
                 droppable: false,
-                type: args.id,
-                content: args.model.content,
+                type: "component",
+                content: "",
                 traits: (() => {
                     const traits = [];
-                    for (let i in args.params) {
-                        traits.push(createTrait(args.params[i]));
+                    for (let i in comp.params) {
+                        traits.push(createTrait(comp.params[i]));
                     }
 
                     return traits;
                 })()
 
             },
-            category: args.category
+            category: comp.category
         }
     }
 
@@ -230,6 +260,8 @@ export default (editor, opts = {}) => {
             console.log("Components loaded successful");
         }
     })
+
+
 
     $.get(endpoint.fetch).then(res => {
 
@@ -249,9 +281,9 @@ export default (editor, opts = {}) => {
                     params: []
                 }, component);
 
-                editor.Components.addType(component.id, createType(editor, component));
+                editor.Components.addType(component.id, createType(component));
                 component.category = category;
-                bm.add(component.id, createBlock(editor, component));
+                bm.add(component.id, createBlock(component));
             }
         }
 

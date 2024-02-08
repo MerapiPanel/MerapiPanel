@@ -36,8 +36,9 @@ const StoragePlugin = (editor, args = {}) => {
                 $.ajax({
                     url: urlWithParams(args.endpoint.fetch, { id: args.id }), 
                     headers: { 'template-edit': 'initial' },
-                    success: (data) => {
-                        editor.setComponents(data);
+                    success: (response) => {
+                        editor.setComponents(response.data.html);
+                        editor.setStyle(response.data.css);
                     }
                 });
             } else if (window.localStorage.getItem(storageKey)) {

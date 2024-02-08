@@ -4,25 +4,33 @@ namespace MerapiPanel\Core\Mod;
 
 use Exception;
 use MerapiPanel\Box;
+use MerapiPanel\Core\Exception\CodeException;
+use MerapiPanel\Utility\Util;
+use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use Symfony\Component\Yaml\Yaml;
+use  MerapiPanel\Core\Mod\Cache\Cache;
 
 final class Proxy
 {
 
     protected Box $box;
-    protected string $classInstance;
-    protected ?Object $instance = null;
+    protected string $className;
+    private ?Object $instance = null;
+    protected $args = [];
+    protected $identify;
     protected $meta = [];
-    protected $reflection;
+    // protected $reflection;
 
 
-    function __construct($classInstance, $arguments)
+    function __construct($className, $arguments)
     {
 
-        $this->classInstance = $classInstance;
-        $this->meta['arguments'] = $arguments;
+        $this->identify = Cache::getIdentify($className);
+        $this->className = $className;
+        $this->args = $arguments;
     }
 
 
@@ -30,7 +38,7 @@ final class Proxy
     {
 
         $this->box = $box;
-        $this->instance = $this->createInstance();
+        $this->instance = $this->initialInstance($this->className, $this->args);
     }
 
     public function getBox()
@@ -40,76 +48,228 @@ final class Proxy
 
 
 
+    // public function initial()
+    // {
 
-    private function createInstance()
+    //     if (Cache::isExist($this->identify)) {
+    //         $className = Cache::get($this->identify);
+    //     }
+
+    //     // $reflection = new \ReflectionClass($this->className);
+    //     // $classDefinitionString = $this->createStringInstance($reflection);
+
+    //     $className = Cache::set($this->className, $this->identify);
+
+    //     return $this->initialInstance($className, $this->args);
+
+    //     // $construct  = $reflection->getConstructor();
+
+    //     // if ($construct) {
+
+    //     //     $classParams     = $construct->getParameters();
+    //     //     $passedParams    = [];
+
+    //     //     foreach ($classParams as $key => $param) {
+
+    //     //         $paramType = $param->getType();
+
+    //     //         if ($paramType && (ltrim($paramType, "?") == self::class ||
+    //     //             ltrim($paramType, "?") == $this::class
+    //     //         )) {
+
+    //     //             throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
+    //     //         } else {
+
+    //     //             $paramName = $param->getName();
+    //     //             if (isset($arguments[$paramName])) {
+
+    //     //                 $passedParams[] = $arguments[$paramName];
+    //     //             } elseif (isset($arguments[$key])) {
+
+    //     //                 $passedParams[] = $arguments[$key];
+    //     //             } else {
+
+    //     //                 if (count($this->meta['arguments']) === count($classParams)) {
+    //     //                     $passedParams = $this->meta['arguments'];
+    //     //                 } else {
+    //     //                     throw new \Exception("Missing argument: $paramName at key: $key");
+    //     //                 }
+    //     //             }
+    //     //         }
+    //     //     }
+
+    //     //     if (!empty($passedParams)) {
+    //     //         $instance = $reflection->newInstanceArgs($passedParams);
+    //     //     } else {
+    //     //         $instance = $reflection->newInstance();
+    //     //     }
+    //     // } else {
+    //     //     $instance = $reflection->newInstanceWithoutConstructor();
+    //     // }
+
+    //     // if (method_exists($instance, "setBox")) {
+    //     //     call_user_func([$instance, "setBox"], $this->box);
+    //     // }
+
+    //     // $this->initMeta($reflection);
+
+    //     // return $instance;
+    // }
+
+
+    public function initialInstance($className, $arguments = [])
     {
 
-        if (!class_exists($this->classInstance)) {
+        $reflection = new \ReflectionClass($className);
+        $construct  = $reflection->getConstructor();
+        $instance = null;
 
-            throw new \Exception("Module " . $this->classInstance . " not found");
-        } else {
+        if ($construct) {
 
-            $this->reflection = new \ReflectionClass($this->classInstance);
-            $construct = $this->reflection->getConstructor();
+            $classParams     = $construct->getParameters();
+            $passedParams    = [];
 
-            if ($construct) {
+            foreach ($classParams as $key => $param) {
 
-                $classParams     = $construct->getParameters();
-                $passedParams    = [];
+                $paramType = $param->getType();
 
-                foreach ($classParams as $key => $param) {
+                if ($paramType && (ltrim($paramType, "?") == self::class ||
+                    ltrim($paramType, "?") == $this::class
+                )) {
 
-                    $paramType = $param->getType();
+                    throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
+                } else {
 
-                    if ($paramType && (ltrim($paramType, "?") == self::class ||
-                        ltrim($paramType, "?") == $this::class
-                    )) {
+                    $paramName = $param->getName();
+                    if (isset($arguments[$paramName])) {
 
-                        throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
+                        $passedParams[] = $arguments[$paramName];
+                    } elseif (isset($arguments[$key])) {
+
+                        $passedParams[] = $arguments[$key];
                     } else {
 
-                        $paramName = $param->getName();
-                        if (isset($arguments[$paramName])) {
-
-                            $passedParams[] = $arguments[$paramName];
-                        } elseif (isset($arguments[$key])) {
-
-                            $passedParams[] = $arguments[$key];
+                        if (count($arguments) === count($classParams)) {
+                            $passedParams = $arguments;
                         } else {
-
-                            if (count($this->meta['arguments']) === count($classParams)) {
-                                $passedParams = $this->meta['arguments'];
-                            } else {
-                                throw new \Exception("Missing argument: $paramName at key: $key");
-                            }
+                            throw new \Exception("Missing argument: $paramName at key: $key");
                         }
                     }
                 }
+            }
 
-                if (!empty($passedParams)) {
-                    $this->instance = $this->reflection->newInstanceArgs($passedParams);
-                } else {
-                    $this->instance = $this->reflection->newInstance();
-                }
+            if (!empty($passedParams)) {
+                $instance = $reflection->newInstanceArgs($passedParams);
             } else {
-                $this->instance = $this->reflection->newInstanceWithoutConstructor();
+                $instance = $reflection->newInstance();
             }
-
-            if (method_exists($this->instance, "setBox")) {
-                call_user_func([$this->instance, "setBox"], $this->box);
-            }
-
-            $this->initMeta($this->reflection);
-
-            return $this->instance;
+        } else {
+            $instance = $reflection->newInstanceWithoutConstructor();
         }
+
+        if (method_exists($instance, "setBox")) {
+            call_user_func([$instance, "setBox"], $this->box);
+        }
+
+        $this->initMeta($reflection);
+
+        return $instance;
     }
+
+
+
+
+
+    // public function createStringInstance(ReflectionClass $reflector)
+    // {
+    //     $classDefinitionString = $this->getIntierCode($reflector);
+
+    //     // Regular expression to remove parameter types
+    //     $pattern = '/\bfunction\s+\w+\s*\(([^)]*)\)/';
+    //     preg_match_all($pattern, $classDefinitionString, $matches, PREG_SET_ORDER);
+
+    //     foreach ($matches as $match) {
+    //         // Adjusted to match optional nullable indicator `?` before type
+    //         $modifiedParameters = preg_replace('/\??\w+\s+\&?\$/', '$', $match[1]);
+    //         $newFunctionDef = str_replace($match[1], $modifiedParameters, $match[0]);
+    //         $classDefinitionString = str_replace($match[0], $newFunctionDef, $classDefinitionString);
+    //     }
+
+    //     $modifiedClassName = "proxy_" . Util::uniq();
+    //     $classDefinitionString = preg_replace('/\bclass\s+' . ($$reflector->getShortName()) . '\b/', "class $modifiedClassName", $classDefinitionString);
+
+    //     $classDefinitionString = $this->getHeader($reflector) . "\r\n" . $classDefinitionString;
+
+    //     return $classDefinitionString;
+    // }
+
+
+
+
+    // private function createInstance($className)
+    // {
+
+
+    //     $reflection = new \ReflectionClass($className);
+    //     $construct  = $reflection->getConstructor();
+
+    //     if ($construct) {
+
+    //         $classParams     = $construct->getParameters();
+    //         $passedParams    = [];
+
+    //         foreach ($classParams as $key => $param) {
+
+    //             $paramType = $param->getType();
+
+    //             if ($paramType && (ltrim($paramType, "?") == self::class ||
+    //                 ltrim($paramType, "?") == $this::class
+    //             )) {
+
+    //                 throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
+    //             } else {
+
+    //                 $paramName = $param->getName();
+    //                 if (isset($arguments[$paramName])) {
+
+    //                     $passedParams[] = $arguments[$paramName];
+    //                 } elseif (isset($arguments[$key])) {
+
+    //                     $passedParams[] = $arguments[$key];
+    //                 } else {
+
+    //                     if (count($this->meta['arguments']) === count($classParams)) {
+    //                         $passedParams = $this->meta['arguments'];
+    //                     } else {
+    //                         throw new \Exception("Missing argument: $paramName at key: $key");
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         if (!empty($passedParams)) {
+    //             $instance = $reflection->newInstanceArgs($passedParams);
+    //         } else {
+    //             $instance = $reflection->newInstance();
+    //         }
+    //     } else {
+    //         $instance = $reflection->newInstanceWithoutConstructor();
+    //     }
+
+    //     if (method_exists($instance, "setBox")) {
+    //         call_user_func([$instance, "setBox"], $this->box);
+    //     }
+
+    //     $this->initMeta($reflection);
+
+    //     return $instance;
+    // }
 
 
 
     public function getClassName()
     {
-        return $this->classInstance;
+        return $this->className;
     }
 
 
@@ -117,8 +277,8 @@ final class Proxy
     public function getProperty($name)
     {
 
-        
-        $reflectionClass = $this->reflection;
+
+        $reflectionClass = new ReflectionClass($this->className);
         if ($reflectionClass->hasProperty($name)) {
             $property = $reflectionClass->getProperty($name);
             $property->setAccessible(true);
@@ -137,35 +297,94 @@ final class Proxy
     }
 
 
-    public function getInstance()
-    {
-        return $this->instance;
-    }
-
 
     public function __call($name, $arguments)
     {
 
+        if (!$this->instance) {
+            return null;
+        }
+        //ini_set("error_log", __DIR__ . "/proxy.log");
 
-        $classInstance = str_replace("merapipanel", "", strtolower($this->classInstance));
+        $classInstance = str_replace("merapipanel", "", strtolower($this->className));
         $eventKey = strtolower(ltrim(rtrim(str_replace("\\", ":", $classInstance . "\\" . $name), ":"), ":"));
 
         $this->box->getEvent()->notify($eventKey);
 
         if (method_exists($this->instance, $name)) {
+            $reflectionMethod = new ReflectionMethod($this->instance, $name);
+            $parameters = $reflectionMethod->getParameters();
+
+            if (count($parameters) > 0) {
+                $invocationArgs = [];
+
+                foreach ($parameters as $key => $param) {
+                    if (isset($arguments[$key])) {
+                        $argument = $arguments[$key];
+                        if ($param->hasType()) {
+                            $paramType = $param->getType();
+                            assert($paramType instanceof ReflectionNamedType);
+
+
+                            error_log(strtolower(get_class($argument)) . "::" . strtolower($paramType->getName()));
+                            // For class types, check if the argument is an instance of the parameter type
+                            if (strtolower(get_class($argument)) == strtolower($paramType->getName())) {
+                                // Attempt conversion or handling for class types here
+                                // For now, we'll skip conversion and assume proper types are passed
+                                $invocationArgs[] = $argument;
+                            } else {
+                                // Attempt to convert scalar types
+                                $convertedArg = $this->convertScalarType($argument, $paramType->getName());
+                                $invocationArgs[] = $convertedArg !== null ? $convertedArg : $argument;
+                            }
+                        } else {
+                            // No type hint; use the argument as is
+                            $invocationArgs[] = $argument;
+                        }
+                    } elseif ($param->isDefaultValueAvailable()) {
+                        $invocationArgs[] = $param->getDefaultValue();
+                    } else {
+                        // Missing argument without a default value
+                        throw new CodeException("Missing argument for parameter '$param->name' at position $key");
+                    }
+                }
+
+                return $reflectionMethod->invokeArgs($this->instance, $invocationArgs);
+            }
 
             return call_user_func_array([$this->instance, $name], $arguments);
         }
 
-        throw new Exception("Method $name not found in " . $this->classInstance);
+        throw new Exception("Method $name not found in " . get_class($this->instance));
     }
+
+
+
+
+
+    private function convertScalarType($value, $toType)
+    {
+
+        if($value instanceof self) {
+            return self::Real($value);
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
 
 
     private function initMeta(ReflectionClass $reflection)
     {
 
         if (!isset($this->instance)) {
-            $this->createInstance($this->classInstance);
+            $this->createInstance($this->className);
         }
 
         $file = $reflection->getFileName();
@@ -215,24 +434,34 @@ final class Proxy
     }
 
 
-    public function __getMeta()
-    {
-        return $this->meta;
-    }
+    // public function __getMeta()
+    // {
+    //     return $this->meta;
+    // }
 
 
     public function __reBuild(...$arguments)
     {
-        $this->meta['arguments'] = $arguments;
-        $this->createInstance($this->classInstance);
+        //$this->meta['arguments'] = $arguments;
+        $this->instance = $this->initialInstance($this->className, $arguments);
         return $this;
     }
+
+
+
+    public static function Real(Proxy $proxy)
+    {
+
+        return $proxy->instance;
+    }
+
+
     public final function __toString()
     {
 
         if (method_exists($this->instance, "__toString")) {
             return $this->instance->__toString();
         }
-        return "(Module)" . $this->classInstance;
+        return "(Module)" . $this->className;
     }
 }
