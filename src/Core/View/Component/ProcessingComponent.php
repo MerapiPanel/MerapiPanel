@@ -10,16 +10,19 @@ use Twig\Source;
 class ProcessingComponent implements \Twig\Loader\LoaderInterface
 {
 
-
     const ON_BEFORE_PROCESSING = "on_before_processing";
     const ON_AFTER_PROCESSING = "on_after_processing";
 
     private $loader;
 
+
+
     public function __construct(\Twig\Loader\LoaderInterface $loader)
     {
         $this->loader = $loader;
     }
+
+
 
 
 
@@ -33,6 +36,10 @@ class ProcessingComponent implements \Twig\Loader\LoaderInterface
 
         return new \Twig\Source($processedContent, $sourceContext->getName(), $sourceContext->getPath());
     }
+
+
+
+
 
 
     protected function processComponentTags($content)
@@ -53,7 +60,9 @@ class ProcessingComponent implements \Twig\Loader\LoaderInterface
 
             $output = "";
             if ($instance instanceof Proxy && (method_exists(Proxy::Real($instance), $method))) {
-                $output = $instance->$method(...self::parseAttributesToAssocArray($attributes));
+
+                $argumentsAttribute = self::parseAttributesToAssocArray($attributes);
+                $output = $instance->$method(...array_values($argumentsAttribute));
             }
 
             Event::fire(self::ON_AFTER_PROCESSING, [$module, $method, $attributes, &$output]);
@@ -63,20 +72,6 @@ class ProcessingComponent implements \Twig\Loader\LoaderInterface
         }, $content);
     }
 
-
-
-    static function parseAttributesToAssocArray($attributesString) {
-        $attributesArray = [];
-        $pattern = '/(\w+)="([^"]*)"/';
-    
-        if (preg_match_all($pattern, $attributesString, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $attributesArray[$match[1]] = $match[2];
-            }
-        }
-    
-        return $attributesArray;
-    }
 
 
     public function getCacheKey($name): string
@@ -101,5 +96,37 @@ class ProcessingComponent implements \Twig\Loader\LoaderInterface
     public function exists($name): bool
     {
         return $this->loader->exists($name);
+    }
+
+
+
+
+
+
+
+    static function isMookRender(): bool
+    {
+
+        if (isset($_SERVER['HTTP_MOOK_RENDER']) || isset($_SERVER['HTTP_TEMPLATE_EDIT'])) {
+
+            return true;
+        }
+        return false;
+    }
+
+
+
+    static function parseAttributesToAssocArray($attributesString)
+    {
+        $attributesArray = [];
+        $pattern = '/(\w+)="([^"]*)"/';
+
+        if (preg_match_all($pattern, $attributesString, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $attributesArray[$match[1]] = $match[2];
+            }
+        }
+
+        return $attributesArray;
     }
 }

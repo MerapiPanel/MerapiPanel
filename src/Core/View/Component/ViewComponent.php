@@ -9,34 +9,34 @@ use MerapiPanel\Event;
 class ViewComponent
 {
 
-    const EVENT_AFTER_CALL = 'after_call';
+//     const EVENT_AFTER_CALL = 'after_call';
 
-    public function __call($name, $arguments)
-    {
+//     public function __call($name, $arguments)
+//     {
 
-        $output = $this->selfProcessCall($name, $arguments);
-        Event::fire(self::EVENT_AFTER_CALL, [$name, $arguments, &$output]);
+//         $output = $this->selfProcessCall($name, $arguments);
+//         Event::fire(self::EVENT_AFTER_CALL, [$name, $arguments, &$output]);
 
-        return $output;
-    }
-
-
-    private function selfProcessCall($name, $arguments)
-    {
-
-        [$module, $class, $method] = explode('_', $name);
-        $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Views\\" . ucfirst($class);
-        $moduleInstance = Box::$classNames();
-        if (!$moduleInstance) return null;
-
-        return $moduleInstance->$method();
-    }
+//         return $output;
+//     }
 
 
-    public static function isRenderRequest() {
+//     private function selfProcessCall($name, $arguments)
+//     {
+
+//         [$module, $class, $method] = explode('_', $name);
+//         $classNames = "MerapiPanel\\Module\\" . ucfirst($module) . "\\Views\\" . ucfirst($class);
+//         $moduleInstance = Box::$classNames();
+//         if (!$moduleInstance) return null;
+
+//         return $moduleInstance->$method();
+//     }
+
+
+//     public static function isRenderRequest() {
         
-        return !(isset($_SERVER['HTTP_TEMPLATE_EDIT']) && $_SERVER['HTTP_TEMPLATE_EDIT'] == 'initial');
-    }
+//         return !(isset($_SERVER['HTTP_TEMPLATE_EDIT']) && $_SERVER['HTTP_TEMPLATE_EDIT'] == 'initial');
+//     }
 
 
     public static function from(string $className): ComponentProvider

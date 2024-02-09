@@ -39,7 +39,7 @@ const ControlPanel = (editor, args = {}) => {
                     editor.runCommand('open-save-modal', {
                         params: args.editor.params,
                         callback: (response) => {
-                            editor.runCommand('call-endpoint', {
+                            editor.runCommand('save-template', {
                                 endpoint: args.editor.endpoint.save,
                                 token: args.token,
                                 params: response,

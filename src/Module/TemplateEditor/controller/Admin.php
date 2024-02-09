@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\TemplateEditor\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\View\Component\ProcessingComponent;
 use MerapiPanel\Core\View\Component\ViewComponent;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Http\Request;
@@ -61,23 +62,19 @@ class Admin extends Module
     public function componentRender(Request $req)
     {
 
-        [$comp, $module, $method] = explode(":", rawurldecode($req->addr()));
-        $addr = implode("_", [$module, "component", $method]);
+        $addr = rawurldecode($req->addr());
 
         ob_start();
 
         $body = $req->getRequestBody();
-        $params = json_encode($body);
+
+        $attr = implode(" ", array_map(function ($k, $v) {
+            return "{$k}=\"{$v}\"";
+        }, array_keys($body), $body));
 
         $loader = new ArrayLoader([
-            "template" => "{{ comp.$addr($params, {edit: true}) | raw }}"
+            "template" => "<$addr {$attr}></$addr>"
         ]);
-
-        // Initialize the Twig environment
-        $twig = new \Twig\Environment($loader, []);
-
-        $twig->addGlobal("comp", new ViewComponent());
-        $htmlString = $twig->render('template', []);
         ob_end_clean();
 
 
@@ -85,7 +82,7 @@ class Admin extends Module
             "code"    => 200,
             "message" => "Ok",
             "data"    => [
-                'output' => $htmlString
+                'output' => View::newInstance($loader)->load("template", [])->render([]),
             ]
         ];
     }

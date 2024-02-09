@@ -304,12 +304,6 @@ final class Proxy
         if (!$this->instance) {
             return null;
         }
-        //ini_set("error_log", __DIR__ . "/proxy.log");
-
-        $classInstance = str_replace("merapipanel", "", strtolower($this->className));
-        $eventKey = strtolower(ltrim(rtrim(str_replace("\\", ":", $classInstance . "\\" . $name), ":"), ":"));
-
-        $this->box->getEvent()->notify($eventKey);
 
         if (method_exists($this->instance, $name)) {
             $reflectionMethod = new ReflectionMethod($this->instance, $name);
@@ -319,8 +313,12 @@ final class Proxy
                 $invocationArgs = [];
 
                 foreach ($parameters as $key => $param) {
+
+
                     if (isset($arguments[$key])) {
+
                         $argument = $arguments[$key];
+
                         if ($param->hasType()) {
                             $paramType = $param->getType();
                             assert($paramType instanceof ReflectionNamedType);
@@ -342,7 +340,9 @@ final class Proxy
                             $invocationArgs[] = $argument;
                         }
                     } elseif ($param->isDefaultValueAvailable()) {
+
                         $invocationArgs[] = $param->getDefaultValue();
+
                     } else {
                         // Missing argument without a default value
                         throw new CodeException("Missing argument for parameter '$param->name' at position $key");
@@ -365,7 +365,7 @@ final class Proxy
     private function convertScalarType($value, $toType)
     {
 
-        if($value instanceof self) {
+        if ($value instanceof self) {
             return self::Real($value);
         }
         return null;

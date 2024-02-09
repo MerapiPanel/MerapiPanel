@@ -114,16 +114,13 @@ const CommandPlugin = (editor, args = {}) => {
                 wrapper.append($(`<input class='text-input' type="text" name="${param.name}" value="${param.value || ''}" id="${param.name}" disabled/>`))
             }
 
-            
+
 
             return wrapper;
         },
 
         run: function (editor, sender, args = {}) {
 
-
-            console.log(editor.getHtml());
-            
             Object.assign({
                 params: [],
                 callback: null
@@ -176,7 +173,7 @@ const CommandPlugin = (editor, args = {}) => {
     })
 
 
-    editor.Commands.add('call-endpoint', {
+    editor.Commands.add('save-template', {
         run: function (editor, sender, options = {}) {
 
             Object.assign({
@@ -195,25 +192,16 @@ const CommandPlugin = (editor, args = {}) => {
                 return;
             }
 
+            editor.store();
 
-            console.log(editor.getHtml());
-            return;
-            editor.runCommand('get-html-twig', {
-                callback: (twig) => {
-
-                    editor.store();
-
-                    sendToEndpoint({
-                        endpoint: options.endpoint,
-                        htmldata: twig,
-                        cssdata: editor.getCss(),
-                        params: options.params,
-                        callback: options.callback,
-                        token: options.token
-
-                    })
-                }
-            });
+            sendToEndpoint({
+                endpoint: options.endpoint,
+                htmldata: editor.getHtml(),
+                cssdata: editor.getCss(),
+                params: options.params,
+                callback: options.callback,
+                token: options.token
+            })
         }
     });
 

@@ -120,8 +120,6 @@ export default (editor, opts = {}) => {
         return {
 
             isComponent: (el) => {
-
-                console.log(el, el.tagName, String(comp.id).toUpperCase());
                 return el.tagName == String(comp.id).toUpperCase();
             },
             model: {
@@ -133,8 +131,6 @@ export default (editor, opts = {}) => {
                 },
                 init() {
 
-
-                    console.log(this);
                     // Listen to any attribute change
                     this.on('change:attributes', this.handleAttrChange);
 
@@ -143,8 +139,6 @@ export default (editor, opts = {}) => {
                 handleAttrChange() {
 
                     let _endpoint = endpoint.fetch + "/render/" + encodeURIComponent(comp.id) + "?m-token=" + opts.token;
-
-                    // console.log(this);
 
                     let params = {};
                     this.getTraits().map(trait => {
@@ -156,11 +150,9 @@ export default (editor, opts = {}) => {
                         return null;
                     });
 
-                    $.post(_endpoint, params).then(res => {
+                    merapi.http.post(_endpoint, params, {"mook-render":1}).then(res => {
 
                         let obj = Object.assign({ data: { output: "" } }, res);
-                        // console.log(obj);
-                       // this.view.el.innerHTML = obj.data.output;
                         this.set("content", obj.data.output);
                     })
                 }
@@ -189,34 +181,14 @@ export default (editor, opts = {}) => {
                     this.model.set("styleable", false);
                     this.model.handleAttrChange();
 
-
-                    // console.log(this)
-
-
                     editor.store();
 
-                    editor.on("run:get-html-twig:before", () => {
-                        comStack.push(this);
-                    })
-
-                    editor.on("run:open-save-modal:before", () => {
+                    editor.on("run:save-template:before", () => {
                         this.model.attributes.content = "";
-
-                        // console.log(this.el);
-
-                        $("hallo world").insertBefore($(this.el));
-
-                        parent.insertBefore
-
                     })
 
                     editor.on("run:open-code-editor:before", () => {
-
                         this.model.attributes.content = "";
-                        // if (this.el.tagName != String(args.id).toUpperCase()) {
-                        //     this.model.attributes.attributes['data-gjs-type'] = args.id;
-                        // }
-                        return this;
                     })
                 },
             }
@@ -237,7 +209,8 @@ export default (editor, opts = {}) => {
             media: comp.model.media,
             content: {
                 droppable: false,
-                type: "component",
+                type: comp.id,
+                tagName: comp.id,
                 content: "",
                 traits: (() => {
                     const traits = [];
@@ -265,11 +238,11 @@ export default (editor, opts = {}) => {
 
     $.get(endpoint.fetch).then(res => {
 
-        const groupComponent = res.data ?? [];
+        const components = res.data ?? [];
 
-        for (let i = 0; i < groupComponent.length; i++) {
+        for (let i = 0; i < components.length; i++) {
 
-            const modComponent = groupComponent[i];
+            const modComponent = components[i];
             const category = modComponent.name;
 
             for (let x in modComponent.components) {

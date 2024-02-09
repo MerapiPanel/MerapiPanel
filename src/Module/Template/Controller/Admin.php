@@ -157,9 +157,8 @@ class Admin extends Module
     public function fetchTemplate(Request $req)
     {
 
-        $id = $req->id();
-        $service = $this->service();
-
+        $id       = $req->id();
+        $service  = $this->service();
         $template = $service->getTemplate($id);
 
         if (!$template) {
