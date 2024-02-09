@@ -37,6 +37,10 @@ class Section
 
 
 
+    public function getName()
+    {
+        return $this->name;
+    }
 
 
 
@@ -89,25 +93,25 @@ class Section
 
         if (!$moduleInstance) return null;
 
-        if (($moduleInstance instanceof Proxy) && (Proxy::Real($moduleInstance) instanceof ViewComponent)) {
-            $moduleInstance->setPayload($arguments[0]);
-            $output = $moduleInstance->$method();
+        // if (($moduleInstance instanceof Proxy) && (Proxy::Real($moduleInstance) instanceof ViewComponent)) {
+        //     $moduleInstance->setPayload($arguments[0]);
+        //     $output = $moduleInstance->$method();
 
-            if (isset($_SERVER['HTTP_TEMPLATE_EDIT']) && $_SERVER['HTTP_TEMPLATE_EDIT'] == 'initial') {
+        //     if (isset($_SERVER['HTTP_TEMPLATE_EDIT']) && $_SERVER['HTTP_TEMPLATE_EDIT'] == 'initial') {
 
-                $params = $moduleInstance->getPayload();
-                $paramString = "";
-                foreach ($params as $key => $value) {
-                    $paramString .= " $key=\"$value\"";
-                }
-                $output = "<div data-gjs-type=\"$name\" $paramString></div>";
-            }
+        //         $params = $moduleInstance->getPayload();
+        //         $paramString = "";
+        //         foreach ($params as $key => $value) {
+        //             $paramString .= " $key=\"$value\"";
+        //         }
+        //         $output = "<div data-gjs-type=\"$name\" $paramString></div>";
+        //     }
 
 
-            Event::fire(self::EVENT_AFTER_CALL, [$name, $arguments, &$output]);
+        //     Event::fire(self::EVENT_AFTER_CALL, [$name, $arguments, &$output]);
 
-            return $output;
-        }
+        //     return $output;
+        // }
     }
 
 

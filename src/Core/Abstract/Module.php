@@ -136,11 +136,11 @@ abstract class Module
 
     public static function getModuleName($pathOrClassName)
     {
-
-        if (preg_match("/module\\\\([^\\\\]+)/i", $pathOrClassName, $matches)) {
-            $moduleName = $matches[1];
-            return $moduleName;
+        // Combining both Unix and Windows style paths in one pattern
+        if (preg_match("/module[\\\\\/]([^\\\\\/]+)/i", $pathOrClassName, $matches)) {
+            return $matches[1]; // Return the module name directly
         }
         return false;
     }
+    
 }

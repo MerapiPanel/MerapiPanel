@@ -1,27 +1,20 @@
 <?php
 
-namespace MerapiPanel\Module\Editor\View;
+namespace MerapiPanel\Module\TemplateEditor\Views;
 
-use Options;
-use MerapiPanel\Core\View\Abstract\ViewComponent;
 
-class Component extends ViewComponent
+class Component
 {
 
 
 
     /**
-     * @content
-     *   <ul>
-     *      <li>Content 1</li>
-     *      <li>Content 2</li>
-     *  </ul>
      * @label Content list
      * @media <i class='fa-solid fa-bars-staggered'></i>
      * @category Content
      * @return string
      */
-    public function someMethod($options = [
+    public final function someMethod($options = [
         ['id' => 'text', 'name' => 'Text'],
         ['id' => 'email', 'name' => 'Email'],
         ['id' => 'password', 'name' => 'Password'],

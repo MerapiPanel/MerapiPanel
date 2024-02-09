@@ -5,6 +5,7 @@ namespace MerapiPanel\Module\Template\Controller;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\Section;
+use MerapiPanel\Core\View\Component\ProcessingComponent;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Event;
 use MerapiPanel\Module\Template\Custom\TemplateFunction;
@@ -172,15 +173,15 @@ class Admin extends Module
         $css  = $template['css'];
 
 
-        Event::on(Section::class, Section::EVENT_AFTER_CALL, function ($name, $arg, &$output) {
-            
-            $attributes = [];
-            foreach ($arg[0] as $key => $value) {
-                $attributes[] = "$key=\"$value\"";
-            }
-            $output = "<$name " . implode(" ", $attributes) . "></$name>";
-
+        // prevent rendering for initial editing
+        $element = null;
+        Event::on(ProcessingComponent::class, ProcessingComponent::ON_BEFORE_PROCESSING, function ($matches) use (&$element) {
+            $element = $matches;
         });
+        Event::on(ProcessingComponent::class, ProcessingComponent::ON_AFTER_PROCESSING, function ($module, $method, $arguments, &$output) use (&$element) {
+            $output = $element;
+        });
+
 
         $htmlString = View::newInstance(new ArrayLoader([
             "template" => file_get_contents(__DIR__ . "/../$html")

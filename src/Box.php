@@ -82,6 +82,29 @@ class Box
     }
 
 
+
+    final static function __callStatic($name, $arguments)
+    {
+        if(!isset(self::$instance)) self::$instance = new Box();
+        return self::$instance->__call($name, $arguments);
+    }
+
+
+    public function getCaller() {
+
+        $call = null;
+        foreach(debug_backtrace() as $trace) {
+            if(isset($trace['file']) && realpath($trace['file']) != realpath(__FILE__)) {
+                $call = $trace['file'];
+            }
+        }
+
+        return $call;
+    }
+
+    
+
+
     final public function getEvent()
     {
         if (!isset($this->event)) $this->event = new Event();

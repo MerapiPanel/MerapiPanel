@@ -5,11 +5,9 @@ namespace MerapiPanel\Core\View;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\View\Loader;
-use MerapiPanel\Module\ViewEngine\Zone;
-use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use MerapiPanel\Core\Mod;
 use MerapiPanel\Core\Section;
-use MerapiPanel\Module\Users\Custom\Extension;
+use MerapiPanel\Core\View\Component\ProcessingComponent;
+use MerapiPanel\Core\View\Component\ViewComponent;
 use Twig\Extension\AbstractExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\TemplateWrapper;
@@ -30,13 +28,13 @@ class View
     {
 
         if (gettype($loader) == "array") {
-            $loader = array_merge([realpath(__DIR__ . "/../../base/views")], gettype($loader) == "array" ? $loader : [$loader]);
+            $loader = array_merge([realpath(__DIR__ . "/../../base/views")], $loader);
             $this->loader = new Loader($loader);
         } else {
             $this->loader = $loader;
         }
 
-        $this->twig   = new Twig($this->loader, ['cache' => false]);
+        $this->twig   = new Twig(new ProcessingComponent($this->loader), ['cache' => false]);
 
         $this->twig->enableDebug();
 
@@ -59,6 +57,7 @@ class View
 
         $this->twig->addGlobal("admin", $admin);
         $this->twig->addGlobal("guest", $guest);
+        // $this->twig->addGlobal("comp", new ViewComponent());
     }
 
 
