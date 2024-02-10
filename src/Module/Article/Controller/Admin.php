@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\Content\Controller;
+namespace MerapiPanel\Module\Articel\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
@@ -18,10 +18,16 @@ class Admin extends Module
         $this->box = $box;
     }
 
+
+
+
     function register($router)
     {
 
         $this->getBox()->getEvent()->addListener("module:editor:loadcomponent", [$this, "initMeta"]);
+
+
+        // Box::module("panel");
 
         $panel = $this->box->Module_Panel();
 

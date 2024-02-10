@@ -5,8 +5,20 @@ namespace MerapiPanel;
 use MerapiPanel\Core\Cog\Config;
 use MerapiPanel\Core\Mod\Proxy;
 
+ /**
+ * Description: Box is an instance used for communication between instances in MerapiPanel, especially for modules. With a box, it allows for communication between modules.
+ *
+ * For more information, see the Class Box at https://github.com/MerapiPanel/MerapiPanel/wiki/Class-Box.
+ *
+ * @author      ilham b <durianbohong@gmail.com>
+ * @copyright   Copyright (c) 2022 MerapiPanel
+ * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+ * @lastUpdate  2024-02-10
+ */
+
 class Box
 {
+
 
     protected bool $debug;
     protected $stack = [];
@@ -14,11 +26,14 @@ class Box
     protected Event $event;
     private static Box $instance;
 
+
     public static function Get(Object $object): Box
     {
         if (!isset(self::$instance)) self::$instance = new Box();
         return self::$instance;
     }
+
+
 
 
     final public function setConfig(string $fileYml)
@@ -41,6 +56,8 @@ class Box
     }
 
 
+
+
     final public function getConfig(): Config
     {
 
@@ -48,8 +65,13 @@ class Box
     }
 
 
+
+
     final public function __call($name, $arguments)
     {
+
+        if (strtolower($name) == "module") return $this->callModule($arguments);
+
 
         // assign current instance to sure that not null
         if (!isset(self::$instance)) self::$instance = $this;
@@ -83,18 +105,62 @@ class Box
 
 
 
+
+    public static function module($args)
+    {
+
+
+        if (!isset(self::$instance)) self::$instance = new Box();
+        return self::$instance->callModule($args);
+    }
+
+
+
+
+    public function callModule($args)
+    {
+
+        if (is_array($args) && count($args) > 1) {
+
+            $module = BoxModule::with($args[0]);
+            $ouput = [];
+
+            $arguments = $args[1];
+            $methods = array_keys($arguments);
+
+            foreach ($methods as $method) {
+
+                try {
+                    $ouput[$method] = $module->$method($arguments[$method]);
+                } catch (\Exception $e) {
+                    throw new \Exception($e->getMessage());
+                }
+            }
+            return $ouput;
+        }
+
+
+        return BoxModule::with((is_string($args) ? $args : $args[0]));
+    }
+
+
+
+
     final static function __callStatic($name, $arguments)
     {
-        if(!isset(self::$instance)) self::$instance = new Box();
+        if (!isset(self::$instance)) self::$instance = new Box();
         return self::$instance->__call($name, $arguments);
     }
 
 
-    public function getCaller() {
+
+
+    public function getCaller()
+    {
 
         $call = null;
-        foreach(debug_backtrace() as $trace) {
-            if(isset($trace['file']) && realpath($trace['file']) != realpath(__FILE__)) {
+        foreach (debug_backtrace() as $trace) {
+            if (isset($trace['file']) && realpath($trace['file']) != realpath(__FILE__)) {
                 $call = $trace['file'];
             }
         }
@@ -102,7 +168,7 @@ class Box
         return $call;
     }
 
-    
+
 
 
     final public function getEvent()
@@ -110,6 +176,8 @@ class Box
         if (!isset($this->event)) $this->event = new Event();
         return $this->event;
     }
+
+
 
 
     public function __registerController()
@@ -155,6 +223,8 @@ class Box
         }
     }
 
+
+    
     public function __getZone()
     {
 
@@ -165,5 +235,74 @@ class Box
         setcookie('auth', 'admin', time() + 3600, "/");
 
         return isset($_COOKIE['auth']) ? "admin" : "guest";
+    }
+}
+
+
+
+
+
+class BoxModule
+{
+
+    private $baseModule;
+    public function __construct($baseModule)
+    {
+        $this->baseModule = $baseModule;
+    }
+
+
+    public function __call($name, $arguments)
+    {
+        $serviceInstance = $this->service();
+        if ($name == "service") {
+            $serviceInstance = $this->service($arguments[0]);
+        }
+
+
+        error_log("serviceInstance: " . $serviceInstance);
+    }
+
+
+
+
+    private function service($name = null)
+    {
+
+        $serviceClassName = $this->baseModule . "/service";
+
+        if (!empty($name)) {
+
+            if (class_exists("{$this->baseModule}\\$name")) {
+                $serviceClassName = "{$this->baseModule}\\$name";
+            } elseif (class_exists("{$this->baseModule}\\{$name}Service")) {
+                $serviceClassName = "{$this->baseModule}\\{$name}Service";
+            } else if (class_exists("{$this->baseModule}\\service{ucfirst($name)}")) {
+                $serviceClassName = "{$this->baseModule}\\service{ucfirst($name)}";
+            } else {
+                throw new \Exception("Service $name not found");
+            }
+        }
+
+        return $serviceClassName;
+    }
+
+
+
+    public static function findModuleBaseClassName($moduleName)
+    {
+
+        $path = realpath(__DIR__ . "/module/" . $moduleName);
+        if (!file_exists($path)) {
+            throw new \Exception("Module $moduleName not found");
+        }
+
+        return "\\MerapiPanel\\module\\{$moduleName}";
+    }
+
+
+    public static function with($moduleName)
+    {
+        return new self(self::findModuleBaseClassName($moduleName));
     }
 }

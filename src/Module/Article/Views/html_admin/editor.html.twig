@@ -1,0 +1,146 @@
+{% extends "@admin::panel/base.html.twig" %}
+{% block header_title %}New Content{% endblock %}
+
+{% block head_javascripts %}
+<script src="{{ '@content/assets/dist/editor.bundle.js' | assets }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+
+{% endblock %}
+
+
+{% block body %}
+
+<body>
+
+    <style>
+        html,
+        body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        #editor *[placeholder]:empty:after {
+            content: attr(placeholder);
+            opacity: .5;
+        }
+
+        #editor .ce-settings svg {
+            stroke-width: 0px;
+        }
+
+        .content-sidebar {
+            transition: .5s;
+            height: 100%;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .content-sidebar {
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 100;
+                height: 100%;
+                overflow: hidden;
+                max-width: 350px;
+                width: 100%;
+            }
+
+            .content-sidebar.close {
+                max-width: 0px;
+                padding: 0;
+            }
+        }
+    </style>
+
+    <main>
+        <section>
+            <header class="sticky top-0 shadow-md bg-white p-3 h-[60px] flex z-10 items-center">
+                <a href="{{ 'content' | admin_url }}" class="flex items-center justify-center w-[80px] h-[35px] border aspect-square rounded">Back</a>
+                <h1 class="ms-3 text-xl font-bold">Content Editor</h1>
+                <button
+                    class="lg:hidden ms-auto sidebar-toggle w-[35px] h-[35px] flex items-center justify-center border aspect-square rounded"><i
+                        class="fa-solid fa-chevron-left"></i></button>
+            </header>
+
+            <div class="flex h-[calc(100vh-60px)]">
+
+                <div class="w-full overflow-auto p-3 md:p-0">
+                    <div id="editor" class="h-auto border-0"></div>
+                </div>
+
+                <div class="shadow-md lg:shadow-none content-sidebar close bg-white w-full max-w-[350px]">
+                    <div class="flex flex-col h-full px-4 py-6 min-w-[350px]">
+                        <div class="w-full">
+                            <header class="flex items-center gap-4 mb-4">
+                                <button
+                                    class="lg:hidden sidebar-toggle w-[35px] h-[35px] flex items-center justify-center border aspect-square rounded">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                                <h2 class="text-2xl font-bold">Content Property</h2>
+                            </header>
+                            <div class="mb-3">
+                                <label for="" class="block text-sm font-medium text-gray-700">Title of Content</label>
+                                <input type="text" class="text-input" placeholder="Enter title">
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label for="" class="block text-sm font-medium text-gray-700">Category</label>
+                                <select class="text-input">
+                                    <option>Category 1</option>
+                                    <option>Category 2</option>
+                                    <option>Category 3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-auto w-full">
+                            <button class="btn btn-primary w-full">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+    {% block javascript %}
+    <script>
+        $(document).ready(function () {
+            merapi.editor.init({
+                editor: {
+                    holder: "#editor"
+                },
+            })
+
+
+            // Function to handle click events on the document
+            function handleDocumentClick(e) {
+                // Check if the clicked element is not within the .content-sidebar or .sidebar-toggle
+                if (!$(e.target).closest('.content-sidebar, .sidebar-toggle').length) {
+                    // Clicked outside, add the "close" class to .content-sidebar
+                    $(".content-sidebar").addClass("close");
+                    // Remove the click event listener from the document
+                    $(document).off("click", handleDocumentClick);
+                }
+            }
+
+            // Click event handler for .sidebar-toggle
+            $(".sidebar-toggle").on("click", function (e) {
+                // Toggle the "close" class on .content-sidebar
+                $(".content-sidebar").toggleClass("close");
+                // Stop the click event from bubbling up to the document
+                e.stopPropagation();
+                // Add a click event listener to the document
+                $(document).on("click", handleDocumentClick);
+            });
+        })
+    </script>
+    {% endblock %}
+
+
+</body>
+{% endblock %}

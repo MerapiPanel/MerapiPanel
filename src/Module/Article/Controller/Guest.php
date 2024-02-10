@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\Content\Controller;
+namespace MerapiPanel\Module\Article\Controller;
 
 use MerapiPanel\Core\Mod\Mod_Controller;
 use MerapiPanel\Core\View\View;
