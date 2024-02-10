@@ -2,13 +2,13 @@
 > This repo is under development 
 
 # MerapiPanel: Open Source CMS for Web Applications
-MerapiQu is an open-source blueprint that empowers developers to effortlessly build dynamic, scalable web applications. With its modular architecture, dynamic components, and active community, MerapiQu provides the tools you need to create, customize, and scale your web projects with confidence.
+MerapiPanel is an open-source blueprint that empowers developers to effortlessly build dynamic, scalable web applications. With its modular architecture, dynamic components, and active community, MerapiPanel provides the tools you need to create, customize, and scale your web projects with confidence.
 
 ## Installation
 
-You can install MerapiQu using Composer. If you haven't installed Composer yet, you can do so by following the instructions [here](https://getcomposer.org/download/).
+You can install MerapiPanel using Composer. If you haven't installed Composer yet, you can do so by following the instructions [here](https://getcomposer.org/download/).
 
-Run the following command in your project directory to install MerapiQu:
+Run the following command in your project directory to install MerapiPanel:
 
 ```bash
 composer require il4mb/mpanel
@@ -29,7 +29,7 @@ composer require il4mb/mpanel
 7. Comprehensive Documentation: Access clear instructions, code examples, and best practices to accelerate your development.
 
 ## Getting Started
-To get started with MerapiQu, follow these steps:
+To get started with MerapiPanel, follow these steps:
 
 1. Installation: If you haven't already, install MerapiQu using Composer as shown above.
 
