@@ -14,20 +14,21 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: php:8.2
-      options: --user 0:0
-
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setup PHP, with Composer
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, xml # Add any other extensions you need
-        tools: composer:v2 # Specify Composer version if needed, v2 is recommended
-        
+    - name: Setup PHP
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y php8.2-cli
+        sudo update-alternatives --set php /usr/bin/php8.2
+
+    - name: Install Composer
+      run: |
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+        php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+        php -r "unlink('composer-setup.php');"
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
@@ -35,7 +36,6 @@ jobs:
       id: composer-cache
       uses: actions/cache@v3
       with:
-        
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
@@ -44,7 +44,7 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Optional: Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     # - name: Run test suite
