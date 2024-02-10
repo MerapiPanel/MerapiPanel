@@ -13,7 +13,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     container:
       image: php:8.2
       options: --user 0:0
@@ -21,6 +21,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup PHP, with Composer
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, xml # Add any other extensions you need
+        tools: composer:v2 # Specify Composer version if needed, v2 is recommended
+        
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
