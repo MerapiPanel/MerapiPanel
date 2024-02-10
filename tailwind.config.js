@@ -2,6 +2,8 @@
 
 export const content = [
   "./src/*.{html,js,twig}",
+  "./src/**/*.{html,js,twig}",
+  "./src/**/**/*.{html,js,twig}",
   "./src/base/views/**/*.{html,js,twig}",
   "./src/module/**/html_admin/*.{html,js,twig}",
   "./src/module/**/html_public/*.{html,js,twig}",

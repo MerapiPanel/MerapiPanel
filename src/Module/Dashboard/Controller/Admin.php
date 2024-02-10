@@ -13,24 +13,28 @@ class Admin extends Module
     {
 
 
+
         $route = $router->get("/", "index", self::class);
 
 
+
         // will  call default service in module panel
-        Box::module("panel", [
-            "getadmin" => [1, 2]
-        ]);
+        //$output = Box::module("panel")->service("foo");
 
-        // will call service in module panel
-        Box::module("panel")->service("");
 
-        // will call Other || OtherService || ServiceOther in module panel
-        Box::module("panel")->service("Other");
+        //error_log("output: " . json_encode($output));
 
-        // will call Other || OtherService || ServiceOther in module panel and execute getadmin with parameters
-        Box::module("panel")->service("Other", [
-            "getadmin" => [1, 2]
-        ]);
+
+        // // will call service in module panel
+        // Box::module("panel")->service("");
+
+        // // will call Other || OtherService || ServiceOther in module panel
+        // Box::module("panel")->service("Other");
+
+        // // will call Other || OtherService || ServiceOther in module panel and execute getadmin with parameters
+        // Box::module("panel")->service("Other", [
+        //     "getadmin" => [1, 2]
+        // ]);
 
 
         $panel = $this->getBox()->Module_Panel();

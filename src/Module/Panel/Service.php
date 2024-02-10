@@ -11,6 +11,13 @@ class Service extends Module
 
     protected $ListMenu = [];
 
+
+
+    public function foo() {
+
+        return "foo";
+    }
+
     public function setBox($box)
     {
 

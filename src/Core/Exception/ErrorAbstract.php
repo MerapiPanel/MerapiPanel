@@ -80,23 +80,23 @@ abstract class ErrorAbstract extends Exception
         }
     }
 
-    public function setStackTrace(array $stack_trace)
-    {
+    // public function setStackTrace(array $stack_trace)
+    // {
 
-        $this->stack_trace = [];
-        foreach ($stack_trace as $key => $trace) {
-            if (gettype($trace) == "string") {
-                $this->stack_trace = $stack_trace;
-                break;
-            }
-            $this->stack_trace[] = "#" . $key . " " . (isset($trace['file']) ? $trace['file'] : $trace['function']) . ':' . (isset($trace['line']) ? $trace['line'] : "()");
-        }
-    }
+    //     $this->stack_trace = [];
+    //     foreach ($stack_trace as $key => $trace) {
+    //         if (gettype($trace) == "string") {
+    //             $this->stack_trace = $stack_trace;
+    //             break;
+    //         }
+    //         $this->stack_trace[] = "#" . $key . " " . (isset($trace['file']) ? $trace['file'] : $trace['function']) . ':' . (isset($trace['line']) ? $trace['line'] : "()");
+    //     }
+    // }
 
-    function getStackTrace()
-    {
-        return $this->stack_trace;
-    }
+    // function getStackTrace()
+    // {
+    //     return $this->stack_trace;
+    // }
 
 
     public function getSnippet()
@@ -111,12 +111,12 @@ abstract class ErrorAbstract extends Exception
     {
 
         return [
-            'type' => $this->getType(),
+            'type'    => $this->getType(),
             'message' => $this->getMessage(),
-            'code' => $this->getCode(),
-            'file' => $this->getFile(),
-            'line' => $this->getLine(),
-            'stack_trace' => $this->getStackTrace()
+            'code'    => $this->getCode(),
+            'file'    => $this->getFile(),
+            'line'    => $this->getLine(),
+            // 'stack_trace' => $this->getStackTrace()
         ];
     }
 

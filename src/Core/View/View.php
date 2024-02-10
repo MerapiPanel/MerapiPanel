@@ -131,9 +131,9 @@ class View
         return self::$instance;
     }
 
-    public static function newInstance($data = []): View
+    public static function newInstance($loader = []): View
     {
-        return new View($data);
+        return new View($loader);
     }
 
 
