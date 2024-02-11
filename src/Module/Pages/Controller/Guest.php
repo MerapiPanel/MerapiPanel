@@ -2,6 +2,7 @@
 
 namespace MerapiPanel\Module\Pages\Controller;
 
+use MerapiPanel\BoxModule;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Module\Pages\Views\PageViewFunction;
@@ -24,18 +25,6 @@ class Guest extends Module {
         $page = $this->service()->getPageBySlug($slug);
 
         if($page) {
-
-            // if($page['template_id']) {
-
-            //     $template = $this->box->Module_Template()->getTemplate($page['template_id']);
-            //     if($template) {
-
-            //         return View::render("page.html.twig", [
-            //             "page" => $page,
-            //             "template" => $template
-            //         ]);
-            //     }
-            // }
 
             return View::render("page.html.twig", [
                 "page" => $page

@@ -2,6 +2,7 @@
 
 namespace MerapiPanel\Module\Pages\Controller;
 
+use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\View;
 
@@ -13,18 +14,19 @@ class Admin extends Module
 
         $router->post('pages/endpoint', 'save', self::class);
         $router->post('pages/endpoint/assign', 'assignTemplate', self::class);
-
-        $router->get('pages', 'index', self::class);
+        $pages = $router->get('pages', 'index', self::class);
         $router->get('pages/all', 'all', self::class);
         $router->get('pages/new', 'new', self::class);
 
-        $panel = $this->getBox()->Module_Panel();
-        $site  = $this->box->module_site();
-        $panel->addMenu([
-            'order' => 1,
-            'name' => 'Pages',
-            'icon' => 'fa-solid fa-pager',
-            'link' => $site->adminLink('pages')
+        Box::module("panel", [
+            "addMenu" => [
+                [
+                    'order' => 1,
+                    'name'  => 'Pages',
+                    'icon'  => 'fa-solid fa-pager',
+                    'link'  => $pages
+                ]
+            ]
         ]);
     }
 
@@ -51,24 +53,22 @@ class Admin extends Module
     public function save($request)
     {
 
-        $BODY = $request->getRequestBody();
-        if (!isset($BODY['title']) || empty($BODY['title'])) {
+        $title = $request->title();
+        $slug = $request->slug();
+
+        if (empty($this)) {
             return [
                 "code" => 400,
                 "message" => "Title is required"
             ];
         }
 
-        if (!isset($BODY['slug']) || empty($BODY['slug'])) {
+        if (empty($slug)) {
             return [
                 "code" => 400,
                 "message" => "Slug is required"
             ];
         }
-
-
-        $title = $BODY['title'];
-        $slug = $BODY['slug'];
 
         $service = $this->service();
         $id = $service->createPage($title, $slug);
@@ -114,13 +114,13 @@ class Admin extends Module
         }
 
         $service = $this->service();
-        if($service->assignTemplate($BODY['page_id'], $BODY['template_id'])) {
+        if ($service->assignTemplate($BODY['page_id'], $BODY['template_id'])) {
 
             return [
                 "code" => 200,
                 "message" => "Template assigned successfully"
             ];
-        } 
+        }
 
         return [
             "code" => 400,

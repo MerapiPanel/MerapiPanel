@@ -29,7 +29,8 @@ class Handler
         $error = error_get_last();
 
         if ($this->isErrorHandled) return;
-
+        if ($error === null) return;
+        
         $errorString = $error['message'];
 
         $message    = $this->extractMessageFromString($errorString);

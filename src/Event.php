@@ -4,7 +4,6 @@ namespace MerapiPanel;
 
 use Closure;
 use MerapiPanel\Event\EventClient;
-use MerapiPanel\Event\EventOwner;
 use MerapiPanel\Utility\Util;
 
 class Event

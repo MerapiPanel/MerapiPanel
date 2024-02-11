@@ -62,7 +62,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
-            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
+          //  $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::GET, $path, $controller . "@$method");
@@ -93,7 +93,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
+            // $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::POST, $path, $controller . "@$method");
@@ -128,7 +128,7 @@ class Router extends Component
 
         $route = new Route(Route::PUT, $path, $controller . "@$method");
         if (isset($middleware)) {
-            $route->middleware->addMiddleware($middleware);
+            // $route->middleware->addMiddleware($middleware);
         }
 
         return $this->addRoute(Route::PUT, $route);
@@ -154,7 +154,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
+            // $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::DELETE, $path, $controller . "@$method");

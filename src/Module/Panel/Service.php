@@ -13,7 +13,8 @@ class Service extends Module
 
 
 
-    public function foo() {
+    public function foo()
+    {
 
         return "foo";
     }
@@ -106,33 +107,46 @@ class Service extends Module
         'name' => '',
         'icon' => '',
         'link' => '',
-
     ])
     {
-
-        if (!isset($menu['name'])) {
+        if (empty($menu['name'])) {
             throw new \Exception("The name of the menu is required");
         }
-        if (!isset($menu['link'])) {
+        if (empty($menu['link'])) {
             throw new \Exception("The link of the menu is required");
         }
 
-        if (!isset($menu['order'])) {
-            $menu['order'] = count($this->ListMenu) + 1;
-        }
+        $menu['order'] = $menu['order'] ?? count($this->ListMenu) + 1;
 
-        if (isset($menu['icon'])) {
+        if (!empty($menu['icon'])) {
             $icon = $menu['icon'];
             if (strpos($icon, 'fa-') !== false) {
                 $menu['icon'] = '<i class="w-[14] ' . $icon . '"></i>';
             } elseif (strpos(trim($icon), '<svg') !== false) {
-                // SVG code
-                $icon  = str_replace('<svg', '<svg width="15" height="16" class="inline-block"', $icon);
+                $icon = str_replace('<svg', '<svg width="15" height="16" class="inline-block"', $icon);
                 $menu['icon'] = $icon;
             }
         }
+
+        if (!empty($menu['childs'])) {
+            $childItems = $menu['childs'];
+            assert(is_array($childItems));
+
+            $childrens = array_map(function ($item) use ($menu) {
+                $item['parent'] = $menu['name'];
+                return $item;
+            }, $childItems);
+
+            foreach ($childrens as $child) {
+                $this->addMenu($child);
+            }
+        }
+
         $this->ListMenu[] = $menu;
     }
+
+
+
 
 
     function fullPathToRelativePath($fullPath, $basePath)

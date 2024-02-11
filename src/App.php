@@ -51,6 +51,9 @@ class App extends Box
         $this->setConfig(self::app_config);
         $this->__registerController();
 
+
+        
+
         if ($this->getConfig()->get("service")) {
 
             $service = $this->getConfig()->get("service");

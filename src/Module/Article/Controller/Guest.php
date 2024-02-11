@@ -13,11 +13,11 @@ class Guest extends Mod_Controller
     function register(Router $router)
     {
 
-        $router->get("/content/{date}/{id}/{title}", "showContent", self::class);
+        $router->get("/article/{date}/{id}/{title}", "showarticle", self::class);
     }
 
 
-    public function showContent(Request $req)
+    public function showarticle(Request $req)
     {
 
         $date  = $req->date();

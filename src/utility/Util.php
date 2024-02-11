@@ -41,6 +41,7 @@ class Util
 
     public static function getClassNameFromFile($filePath)
     {
+        
         $fileContent = file_get_contents($filePath);
         if ($fileContent === false) {
             throw new \Exception("Unable to read the file: $filePath");

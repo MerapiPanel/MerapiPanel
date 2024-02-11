@@ -5,7 +5,6 @@ namespace MerapiPanel\Module\Users\Custom;
 class Extension
 {
 
-
     public function getAvatar($email, $size = 120)
     {
 

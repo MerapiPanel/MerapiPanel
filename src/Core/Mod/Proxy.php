@@ -6,6 +6,7 @@ use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Exception\CodeException;
 use MerapiPanel\Core\Exception\MethodNotFoud;
+use MerapiPanel\Core\Exception\MissingArgument;
 use MerapiPanel\Utility\Util;
 use Reflection;
 use ReflectionClass;
@@ -346,7 +347,7 @@ final class Proxy
 
                     } else {
                         // Missing argument without a default value
-                        throw new CodeException("Missing argument for parameter '$param->name' at position $key");
+                        throw new MissingArgument("Missing argument for parameter '$param->name' at position $key");
                     }
                 }
 
@@ -358,9 +359,6 @@ final class Proxy
 
         throw new MethodNotFoud("Method $name not found in " . get_class($this->instance));
     }
-
-
-
 
 
     private function convertScalarType($value, $toType)
@@ -435,15 +433,9 @@ final class Proxy
     }
 
 
-    // public function __getMeta()
-    // {
-    //     return $this->meta;
-    // }
-
 
     public function __reBuild(...$arguments)
     {
-        //$this->meta['arguments'] = $arguments;
         $this->instance = $this->initialInstance($this->className, $arguments);
         return $this;
     }

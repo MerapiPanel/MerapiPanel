@@ -63,7 +63,6 @@ class Box
 
     final public function getConfig(): Config
     {
-
         return $this->cog;
     }
 
@@ -72,31 +71,35 @@ class Box
 
     final public function __call($name, $arguments)
     {
-        if (strtolower($name) == "module") {
+
+        if (!isset(self::$instance)) self::$instance = $this;
+
+        // if call a module
+        if (strtolower($name) === "module") {
             return $this->callModule($arguments);
+        } 
+        // if call a module with snake case
+        elseif(preg_match('/^module(_|$)/i', $name) === 1) {
+            $moduleName = preg_replace('/^module(_|$)/i', '', $name);
+            return self::module($moduleName, $arguments);
         }
 
-        if (!isset(self::$instance)) {
-            self::$instance = $this;
-        }
 
         $name = str_replace(__NAMESPACE__, "", $name);
         $name = strtolower(str_replace(["\\", "/"], "_", $name));
         $name = ltrim(str_replace(strtolower(trim(__NAMESPACE__)) . "_", "", $name), "_");
 
         $className = __NAMESPACE__ . "\\" . str_replace("_", "\\", ucfirst($name));
-        if (!class_exists($className)) {
-            $className .= "\\Service";
-        }
         $theKey = strtolower(preg_replace("/[^A-Za-z0-9]+/", "", $className));
 
         $instance = &$this->stack;
+
+        // if instance is exist return it
         if (isset($instance[$theKey])) {
             return $instance[$theKey];
         }
 
         $instance = &$instance[$theKey];
-
         if (class_exists($className)) {
             $instance = new Proxy($className, $arguments);
             if (method_exists($instance, "setBox")) {
@@ -110,11 +113,10 @@ class Box
 
 
 
+
     public static function module(string $moduleName, array $args = [])
     {
         if (!isset(self::$instance)) self::$instance = new Box();
-
-        error_log("begin call module: " . $moduleName);
         return self::$instance->callModule($moduleName, $args);
     }
 
@@ -139,22 +141,19 @@ class Box
 
                         $method = $args[$method];
                         $ouput[$method] = $module->$method();
-
-                        error_log("call module " . $moduleName . " method: " . $method);
                     }
                     // call method with argument 
                     elseif (is_string($method) && is_array($args[$method])) {
 
                         $arguments = is_array($args[$method]) ? $args[$method] : [$args[$method]];
                         $ouput[$method] = $module->$method(...$arguments);
-
-                        error_log("call module " . $moduleName . " method: " . $method . " with args: " . json_encode($arguments));
                     }
                 } catch (\Exception $e) {
 
                     throw new \MerapiPanel\Core\Exception\MethodNotFoud($e->getMessage());
                 }
             }
+
             return $ouput;
         }
 
@@ -224,6 +223,8 @@ class Box
 
                 $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst($zone);
 
+                error_log("className: " . $className);
+
                 if (class_exists($className)) {
                     $controllers[] = [
                         "name" => $mod,
@@ -240,6 +241,7 @@ class Box
             $object->register(Proxy::Real($this->utility_router()));
         }
     }
+
 
 
 

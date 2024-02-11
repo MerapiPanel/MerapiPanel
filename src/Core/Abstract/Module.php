@@ -9,13 +9,11 @@ use MerapiPanel\Core\Abstract\Component\Settings;
 use MerapiPanel\Core\Database;
 use ReflectionClass;
 
+
 abstract class Module
 {
 
-
-
     protected $box;
-
 
 
     public function setBox(Box $box)

@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\Content;
+namespace MerapiPanel\Module\Articel;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
@@ -8,9 +8,10 @@ use MerapiPanel\Core\Abstract\Module;
 class Service extends Module
 {
 
+
     public array $config = [
-        "name" => "Content",
-        "slug" => "content",
+        "name" => "Article",
+        "slug" => "article",
         
     ];
 
