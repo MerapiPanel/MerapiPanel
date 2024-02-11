@@ -2,18 +2,28 @@
 {% block header_title %}Modules{% endblock %}
 
 {% block content %}
-<span>Total {{ admin.modules_ListModule|length }}</span>
 
-<div class="grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-5">
-    {% for mod in admin.modules_ListModule %}
 
-    <div class="relative">
-        <div class="rounded bg-blue-300 text-center">
-            <img class="mx-auto" width="200" height="125" src="{{ mod.image }}" alt="{{ mod.name }}">
+<div>
+
+    <span>Total {{ admin.modules_ListModule|length }}</span>
+
+    {% for module in admin.modules_ListModule %}
+
+    <div class="rounded-sm shadow mb-5 p-5 flex">
+        <div class="flex">
+            <div
+                class="aspect-square bg-black/5 w-[35px] h-[35px] rounded-sm overflow-hidden flex items-center justify-center">
+                <img class="w-full h-full max-w-[80%] max-h-[80%] object-cover"
+                    src="/src/base/assets/img/default-box.svg" srcset="{{ module.icon }}" alt="{{ module.name }} icon">
+            </div>
+            <div class="ms-3">
+                <h1>{{ module.name }}</h1>
+            </div>
         </div>
-        <h3 class="text-slate-600">{{ mod.name }}</h3>
-        <p class="text-slate-400 text-sm">{{ mod.description }}</p>
-        <span class="absolute top-0 right-0 mt-2 mr-3">{{ mod.version }}</span>
+        <div class="ms-auto">
+
+        </div>
     </div>
 
     {% endfor %}

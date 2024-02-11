@@ -2,7 +2,6 @@
 
 namespace MerapiPanel\Mod;
 
-use MerapiPanel\AppAware;
 use MerapiPanel\Box;
 
 class Factory

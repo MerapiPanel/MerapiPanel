@@ -2,38 +2,35 @@
 
 namespace MerapiPanel\Module\Modules;
 
+use MerapiPanel\BoxModule;
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Box;
 
 class Service extends Module
 {
 
+    private $stack_module = [];
+
     public function getListModule()
     {
 
-        $stack = [];
+        if (!empty($this->stack_module)) {
+            return $this->stack_module;
+        }
+
+        $this->stack_module = [];
 
         foreach (scandir(realpath(__DIR__ . '/..')) as $path) {
+
             if ($path == '.' || $path == '..') {
                 continue;
             }
 
-            $mod = "Module_" . ucfirst($path);
-            $module  = $this->getBox()->$mod();
-            $meta = [
-                'name' => ucfirst($path),
-                'description' => "",
-                'version' => "",
-                'author' => "",
-                'license' => "",
-                'homepage' => "",
-            ];
-            if ($module) {
-                $meta    = $module->__getMeta();
-            }
+            $info = Box::module($path)->getInfo();
 
-            $stack[] = $meta;
+            $this->stack_module[] = $info;
         }
 
-        return $stack;
+        return $this->stack_module;
     }
 }

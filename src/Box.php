@@ -6,7 +6,8 @@ use MerapiPanel\Core\Cog\Config;
 use MerapiPanel\Core\Exception\ModuleNotFound;
 use MerapiPanel\Core\Exception\ServiceNotFound;
 use MerapiPanel\Core\Exception\MethodNotFoud;
-use MerapiPanel\Core\Mod\Proxy;
+use MerapiPanel\Core\Proxy;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Description: Box is an instance used for communication between instances in MerapiPanel, especially for modules. With a box, it allows for communication between modules.
@@ -77,9 +78,9 @@ class Box
         // if call a module
         if (strtolower($name) === "module") {
             return $this->callModule($arguments);
-        } 
+        }
         // if call a module with snake case
-        elseif(preg_match('/^module(_|$)/i', $name) === 1) {
+        elseif (preg_match('/^module(_|$)/i', $name) === 1) {
             $moduleName = preg_replace('/^module(_|$)/i', '', $name);
             return self::module($moduleName, $arguments);
         }
@@ -223,7 +224,7 @@ class Box
 
                 $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst($zone);
 
-                error_log("className: " . $className);
+                //  error_log("className: " . $className);
 
                 if (class_exists($className)) {
                     $controllers[] = [
@@ -265,7 +266,11 @@ class Box
 class BoxModule
 {
 
+    // is a base className of module
     private $baseModule;
+
+
+
     public function __construct($baseModule)
     {
         $this->baseModule = $baseModule;
@@ -280,34 +285,42 @@ class BoxModule
         if ($name === "service") {
 
             if (isset($args[0]) && is_string($args[0])) {
+
                 $className = $this->findServiceClassName($args[0]);
+                return Box::$className();
             } else {
                 throw new ServiceNotFound("The name of the service is required");
             }
         }
 
         $proxy = Box::$className();
-        if (isset($args[1]) && is_array($args[1])) {
 
-            $arguments = $args[1];
-            $methods = array_keys($arguments);
 
-            $ouput = [];
-            foreach ($methods as $method) {
-                $ouput[$method] = $this->call($proxy, $method, $arguments[$method]);
+        if ($proxy instanceof \MerapiPanel\Core\Proxy) {
+
+
+            if (isset($args[1]) && is_array($args[1])) {
+
+                $arguments = $args[1];
+                $methods = array_keys($arguments);
+
+                $ouput = [];
+                foreach ($methods as $method) {
+                    $ouput[$method] = $this->call($proxy, $method, $arguments[$method]);
+                }
+                return $ouput;
             }
-            return $ouput;
+
+            if (method_exists(Proxy::Real($proxy), $name)) {
+                return $proxy->$name(...$args);
+            }
+
+            if ($name === "service" && $className == $this->findServiceClassName()) {
+                return $proxy;
+            }
         }
 
-        if (method_exists(Proxy::Real($proxy), $name)) {
-            return $proxy->$name(...$args);
-        }
-
-        if ($name === "service" && $className == $this->findServiceClassName()) {
-            return $proxy;
-        }
-
-        throw new MethodNotFoud("Module " . $this->getModuleName() . " doesn't have method: " . $name);
+        throw new MethodNotFoud("Module " . $this->getModuleName() . " doesn't have method " . $name);
     }
 
 
@@ -361,6 +374,43 @@ class BoxModule
         }
 
         return "\\MerapiPanel\\module\\{$moduleName}";
+    }
+
+
+
+    public function getInfo()
+    {
+        $info = [
+            "name" => $this->getModuleName(),
+            "icon" => null,
+            "baseModule" => $this->baseModule,
+            "version" => "1.0.0",
+            "description" => "The base module of MerapiPanel",
+            "author" => "Il4mb",
+            "license" => "MIT",
+            "url" => "https://github.com/Il4mb/MerapiPanel"
+        ];
+
+        $yamlFile = __DIR__ . "/module/" . $this->getModuleName() . "/info.yml";
+
+        if (file_exists($yamlFile)) {
+            $yamlData = Yaml::parseFile($yamlFile);
+
+            // Loop through each key in $info
+            foreach ($info as $key => $value) {
+                // If the key exists in the YAML data, replace the value in $info
+                if (array_key_exists($key, $yamlData)) {
+                    if ($key == "icon") {
+                        $pathToIcon = str_replace("\\", "/", realpath(__DIR__ . "/module/" . $this->getModuleName() . "/" . ltrim($yamlData[$key], "\\/")));
+                        $info[$key] = str_replace($_SERVER['DOCUMENT_ROOT'], "", $pathToIcon);
+                    } else {
+                        $info[$key] = $yamlData[$key];
+                    }
+                }
+            }
+        }
+
+        return $info;
     }
 
 

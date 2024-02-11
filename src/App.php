@@ -7,7 +7,7 @@ namespace MerapiPanel;
 ini_set("error_log", __DIR__ . "/php-error.log");
 
 use Exception;
-use MerapiPanel\Core\Mod\Proxy;
+use MerapiPanel\Core\Proxy;
 use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);

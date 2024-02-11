@@ -15,39 +15,40 @@
 
     <main class="transition-all duration-300 ms-0 lg:ms-[260px] mx-auto px-4 py-4 pb-24">
 
-        {% block header %}
-        <header class="py-3 pb-4 ps-2">
-            <h1 class="font-bold text-3xl">{% block header_title %}Dashboard{% endblock %}</h1>
-        </header>
-        {% endblock %}
+        <div class="max-w-7xl mx-auto">
+            {% block header %}
+            <header class="py-3 pb-4 ps-2">
+                <h1 class="font-bold text-3xl">{% block header_title %}Dashboard{% endblock %}</h1>
+            </header>
+            {% endblock %}
 
-        {% block subheader %}
-        <div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
+            {% block subheader %}
+            <div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
 
-            {% block subheader_search %}
-            <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
-                <input class="text-input" type="text" placeholder="Search">
-                <button
-                    class="ms-2 bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                {% block subheader_search %}
+                <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
+                    <input class="text-input" type="text" placeholder="Search">
+                    <button
+                        class="ms-2 bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                {% endblock %}
+
+                {% block subheader_actions %}{% endblock %}
+
             </div>
             {% endblock %}
 
-            {% block subheader_actions %}{% endblock %}
-
-        </div>
-        {% endblock %}
-
-        {% block content %}
-        <div class="flex flex-wrap justify-center items-center h-[80vh] w-full">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold">Coming soon</h2>
-                <p>this is base template, you should not see this</p>
+            {% block content %}
+            <div class="flex flex-wrap justify-center items-center h-[80vh] w-full">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold">Coming soon</h2>
+                    <p>this is base template, you should not see this</p>
+                </div>
             </div>
+            {% endblock %}
         </div>
-        {% endblock %}
-
     </main>
 
 

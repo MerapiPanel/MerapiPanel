@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Core\Mod;
+namespace MerapiPanel\Core;
 
 use Exception;
 use MerapiPanel\Box;
