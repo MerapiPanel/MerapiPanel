@@ -35,7 +35,7 @@
 	.code-snippet tr th {
 		word-break: keep-all;
 		white-space: pre;
-		padding: 0px 25px 0 0px;
+		padding: 2.5px 25px 2.5px 0px;
 	}
 
 	.code-snippet .line-number {
@@ -131,6 +131,14 @@
 		<div class="px-5 py-1 flex items-end">
 			<a class="font-bold align-baseline" href="#">Error Debug</a>
 		</div>
+		<div class="ms-auto flex items-center">
+			<a class="rounded-sm border border-blue-500/10 text-blue-500 p-2 hover:bg-blue-500 hover:text-white" href="https://github.com/merapipanel/merapipanel">
+				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+					<path
+						d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
+				</svg>
+			</a>
+		</div>
 	</div>
 </nav>
 
@@ -138,12 +146,21 @@
 
 <div class="w-full h-full max-w-[1400px] mx-auto">
 
-	<div class="mb-5">
-		<div class="grid grid-cols-1 align-top md:grid-cols-5 gap-8 py-10 px-2">
+	<div class="mb-5 pt-5 px-3">
+
+		<h1 class="break-all text-2xl font-bold mb-5">
+			<span class="text-red-500 inline-block transform rotate-[40deg]">
+				<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+					<path
+						d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A5 5 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A5 5 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623M4 7v4a4 4 0 0 0 3.5 3.97V7zm4.5 0v7.97A4 4 0 0 0 12 11V7zM12 6a4 4 0 0 0-1.334-2.982A3.98 3.98 0 0 0 8 2a3.98 3.98 0 0 0-2.667 1.018A4 4 0 0 0 4 6z" />
+				</svg>
+			</span>
+			{{ error.type}} {{ error.code == 0 ? "" : error.code }}
+		</h1>
+
+		<div class="grid grid-cols-1 align-top md:grid-cols-5 gap-8">
 
 			<div class="order-2 md:order-1 col-span-1 md:col-span-3 row-span-2">
-				<h1 class="break-words text-2xl font-bold mb-5">{{ error.type}} { {{ error.code == 0 ? "Null" :
-					error.code }} }</h1>
 
 				<section class="snippet-section">
 					<header>
@@ -157,21 +174,23 @@
 
 			<div class="order-1 md:order-2 col-span-1 md:col-span-2">
 				<p class="pt-4 text-xl font-semibold break-words">{{ error.message }}</p>
-				at line {{ error.line }}
+				<span class="font-bold italic text-yellow-400 py-3 block">at line {{ error.line }}</span>
 			</div>
 
 			<div class="order-last col-span-1 md:col-span-2 w-full h-full min-h-max">
-				<h3>{{'Stack trace' }}</h3>
+				<h3 class="font-bold text-lg mb-3">{{'Stack trace' }}</h3>
 
 				<div class="h-full min-h-max w-full break-words">
 					<div class="stack-trace h-full w-full">
 
-						{% set saturation = 80 %}
+						{% set saturation = 90 %}
 						{% set hue = 204 %}
+						{% set steps = error.stack_trace | length %}
+						{% set decreamentSteps = (saturation - 30) / steps %}
 
 						{% for x,err in error.stack_trace %}
 
-						{% set saturation = saturation - (x + 2) %}
+						{% set saturation = saturation - decreamentSteps %}
 
 						{% if x == ( error.stack_trace | length - 1) %}
 						{% set hue = 0 %}
@@ -180,7 +199,11 @@
 						<div class="lines">
 							<div class="line-number" bulet-hue="{{ hue }}" bulet-saturation="{{ saturation }}">{{ x }}
 							</div>
-							<div class="line-content">{{ err }}</div>
+							<div class="line-content">
+								<h4>{{ err.file }} {% if err.line %}[{{ err.line }}]{% endif %}
+								</h4>
+								<p class="text-yellow-500"><i>{{ err.function }}</i></p>
+							</div>
 						</div>
 						{% endfor %}
 					</div>

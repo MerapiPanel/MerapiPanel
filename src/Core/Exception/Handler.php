@@ -4,9 +4,15 @@ namespace MerapiPanel\Core\Exception;
 
 use MerapiPanel\Core\View\View;
 
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
+
 class Handler
 {
 
+
+    private $isErrorHandled = false;
 
     public function __construct()
     {
@@ -14,17 +20,21 @@ class Handler
     }
 
 
-
+    /**
+     * Description: Handle and display the uncaught fatal error
+     */
     public function handleFatalError()
     {
+
         $error = error_get_last();
+
+        if ($this->isErrorHandled) return;
 
         $errorString = $error['message'];
 
         $message    = $this->extractMessageFromString($errorString);
-        $stackTrace = $this->extractTracerFromString($errorString);
-
-        $snippet = $this->getCodeSnippet($error['file'], $error['line']);
+        $stackTrace = $this->extractTracerFromString($errorString, $error['file']);
+        $snippet    = $this->getCodeSnippet($error['file'], $error['line']);
 
         $type = "Fatal Error";
         if ($this->extractTypeFromString($errorString)) {
@@ -45,31 +55,28 @@ class Handler
 
 
 
-    public function getCss()
+    /**
+     * Description: Handle and display the error
+     * @param Throwable $error
+     */
+    function handle_error(\Throwable $error)
     {
+        $this->isErrorHandled = true;
+        header("HTTP/1.1 " . $error->getCode() . " " . $error->getMessage());
 
-        return ".code-snippet { 
-            font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
-            font-size: 10px;
-            border-spacing: 0;
-            background-color: #f5f5f5;
-            border: 1px solid #e3e3e3;
-            width: 200px;
-        }
-        .code-snippet tr td, .code-snippet tr th {
-            word-break: keep-all;
-            white-space: pre;
-        }
-        .code-snippet .line-number {
-            text-align: right;
-            padding: 0 10px;
-        }
-        .code-snippet .highlight {
-            background-color: #ffff00;
-            color: #ff0000;
-        }
-        ";
+        $errorData = [
+            "file" => $error->getFile(),
+            "line" => $error->getLine(),
+            "message" => $error->getMessage(),
+            "code" => $error->getCode(),
+            "type" => get_class($error),
+            "stack_trace" => $this->transformTracerFromArray($error->getTrace()),
+            "snippet" => $this->getCodeSnippet($error->getFile(), $error->getLine()),
+        ];
+
+        echo $this->view($errorData);
     }
+
 
 
     private function extractTypeFromString($errorString)
@@ -84,6 +91,8 @@ class Handler
     }
 
 
+
+
     private function extractMessageFromString($errorString)
     {
         $stackTracePosition = strpos($errorString, 'Stack trace:');
@@ -95,22 +104,75 @@ class Handler
     }
 
 
-    private function extractTracerFromString($errorString)
+
+    private function transformTracerFromArray(array $traceData = [])
     {
+
+        $tracer = [];
+
+        foreach ($traceData as $trace) {
+            $tracer[] = [
+                "file" => $trace['file'] ?? $trace['class'] ?? '',
+                "line" => $trace['line'] ?? null,
+                "function" => $trace['function']
+            ];
+        }
+
+        $reversed = array_reverse($tracer);
+        return $reversed;
+    }
+
+
+    private function extractTracerFromString($errorString, $errorFile): array
+    {
+
         preg_match('/Stack trace:(.*)/s', $errorString, $matches);
-        $stackTrace = isset($matches[1]) ? array_values(array_filter(array_map(function ($trace) {
-
+        $stackTrace = isset($matches[1]) ? array_values(array_filter(array_map(function ($trace) use (&$isEnd) {
             $trace = trim(preg_replace('/^#\d\s+/', '', $trace));
-
             if ($trace == "{main}" || $trace == "thrown") return "";
-
-            return $trace;
+            $traceData = $this->splitTraceDataFromString($trace);
+            return $traceData;
         }, explode("\n", $matches[1])))) : [];
 
         $reversed = array_reverse($stackTrace);
         array_pop($reversed);
+
+        $reversed = array_slice($reversed, 0, array_search($errorFile, array_column($reversed, "file")) + 1);
+
         return $reversed;
     }
+
+
+
+
+    private function splitTraceDataFromString($traceString)
+    {
+        $matches = [];
+
+        // Extracting file more robustly, accounting for different path formats
+        preg_match('/.*\.php|\[(.*)\]/', $traceString, $matches);
+        $file = $matches[0] ?? '';
+
+        // Extracting line
+        preg_match('/\((\d+)\)/', $traceString, $matches);
+        $line = $matches[1] ?? '';
+
+        // Extracting class with improved pattern to handle backslashes in namespaces
+        preg_match('/:\s*([^->]+)->/', $traceString, $matches);
+        $class = str_replace("\\\\", "\\", $matches[1] ?? '');
+
+        // Extracting method with a pattern that captures method names accurately
+        preg_match('/->(\w+)\(/', $traceString, $matches);
+        $method = $matches[1] ?? '';
+
+        return [
+            "file" => $file,
+            "line" => $line,
+            "class" => $class,
+            "method" => $method
+        ];
+    }
+
 
 
     private function getCodeSnippet(string $file, int $line, int $maxLines = 25)

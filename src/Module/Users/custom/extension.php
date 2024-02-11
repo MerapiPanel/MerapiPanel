@@ -2,9 +2,7 @@
 
 namespace MerapiPanel\Module\Users\Custom;
 
-use MerapiPanel\Core\View\Abstract\FunctionAbstract;
-
-class Extension extends FunctionAbstract
+class Extension
 {
 
 

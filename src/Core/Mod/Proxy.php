@@ -5,6 +5,7 @@ namespace MerapiPanel\Core\Mod;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Exception\CodeException;
+use MerapiPanel\Core\Exception\MethodNotFoud;
 use MerapiPanel\Utility\Util;
 use Reflection;
 use ReflectionClass;
@@ -355,7 +356,7 @@ final class Proxy
             return call_user_func_array([$this->instance, $name], $arguments);
         }
 
-        throw new Exception("Method $name not found in " . get_class($this->instance));
+        throw new MethodNotFoud("Method $name not found in " . get_class($this->instance));
     }
 
 

@@ -25,9 +25,4 @@ abstract class Error extends Exception
             $this->line = $trace['line'];
         }
     }
-
-
-    private function view() {
-
-    }
 }

@@ -3,7 +3,9 @@
 namespace MerapiPanel;
 
 use MerapiPanel\Core\Cog\Config;
+use MerapiPanel\Core\Exception\ModuleNotFound;
 use MerapiPanel\Core\Exception\ServiceNotFound;
+use MerapiPanel\Core\Exception\MethodNotFoud;
 use MerapiPanel\Core\Mod\Proxy;
 
 /**
@@ -70,19 +72,22 @@ class Box
 
     final public function __call($name, $arguments)
     {
+        if (strtolower($name) == "module") {
+            return $this->callModule($arguments);
+        }
 
-        if (strtolower($name) == "module") return $this->callModule($arguments);
-
-
-        // assign current instance to sure that not null
-        if (!isset(self::$instance)) self::$instance = $this;
+        if (!isset(self::$instance)) {
+            self::$instance = $this;
+        }
 
         $name = str_replace(__NAMESPACE__, "", $name);
-        $name = strtolower(str_replace("\\", "_", str_replace("/", "_", $name)));
+        $name = strtolower(str_replace(["\\", "/"], "_", $name));
         $name = ltrim(str_replace(strtolower(trim(__NAMESPACE__)) . "_", "", $name), "_");
 
-        $className = __NAMESPACE__ . "\\" . implode("\\", array_map("ucfirst", explode("_", $name)));
-        if (!class_exists($className)) $className .= "\\Service";
+        $className = __NAMESPACE__ . "\\" . str_replace("_", "\\", ucfirst($name));
+        if (!class_exists($className)) {
+            $className .= "\\Service";
+        }
         $theKey = strtolower(preg_replace("/[^A-Za-z0-9]+/", "", $className));
 
         $instance = &$this->stack;
@@ -93,11 +98,9 @@ class Box
         $instance = &$instance[$theKey];
 
         if (class_exists($className)) {
-
             $instance = new Proxy($className, $arguments);
-
             if (method_exists($instance, "setBox")) {
-                call_user_func([$instance, "setBox"], $this);
+                $instance->setBox($this);
             }
         }
 
@@ -120,8 +123,6 @@ class Box
 
     public function callModule(string $moduleName, array $args = [])
     {
-
-        error_log("start call module: " . $moduleName);
 
         if (is_array($args) && count($args) > 0) {
 
@@ -151,15 +152,11 @@ class Box
                     }
                 } catch (\Exception $e) {
 
-                    throw new \Exception($e->getMessage());
+                    throw new \MerapiPanel\Core\Exception\MethodNotFoud($e->getMessage());
                 }
             }
             return $ouput;
         }
-
-
-        error_log("call module without call any method");
-
 
         return BoxModule::with($moduleName);
     }
@@ -278,7 +275,7 @@ class BoxModule
 
         $className = $this->findServiceClassName();
 
-        if ($name == "service") {
+        if ($name === "service") {
 
             if (isset($args[0]) && is_string($args[0])) {
                 $className = $this->findServiceClassName($args[0]);
@@ -287,11 +284,7 @@ class BoxModule
             }
         }
 
-        error_log("call module: " . $this->getModuleName() . " method:" . $name . " with args: " . json_encode($args));
-
-
         $proxy = Box::$className();
-
         if (isset($args[1]) && is_array($args[1])) {
 
             $arguments = $args[1];
@@ -304,7 +297,15 @@ class BoxModule
             return $ouput;
         }
 
-        return $proxy->$name(...$args);
+        if (method_exists(Proxy::Real($proxy), $name)) {
+            return $proxy->$name(...$args);
+        }
+
+        if ($name === "service" && $className == $this->findServiceClassName()) {
+            return $proxy;
+        }
+
+        throw new MethodNotFoud("Module " . $this->getModuleName() . " doesn't have method: " . $name);
     }
 
 
@@ -354,7 +355,7 @@ class BoxModule
 
         $path = realpath(__DIR__ . "/module/" . $moduleName);
         if (!file_exists($path)) {
-            throw new \Exception("Module $moduleName not found");
+            throw new ModuleNotFound("Module $moduleName not found");
         }
 
         return "\\MerapiPanel\\module\\{$moduleName}";

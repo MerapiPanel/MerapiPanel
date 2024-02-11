@@ -6,6 +6,7 @@ namespace MerapiPanel;
 
 ini_set("error_log", __DIR__ . "/php-error.log");
 
+use Exception;
 use MerapiPanel\Core\Mod\Proxy;
 use Throwable;
 
@@ -31,7 +32,7 @@ $GLOBALS["debug"] = true;
 class App extends Box
 {
 
-    
+
     const app_config = __DIR__ . "/config/app.yml";
     /**
      * Constructor function for initializing the class.
@@ -44,10 +45,7 @@ class App extends Box
     public function __construct()
     {
 
-        // setcookie('auth', 'admin', time() + 3600, "/");
-
         parent::setConfig(self::app_config);
-        // ob_start();
         $this->Core_Exception_Handler();
         $this->Module_ViewEngine();
         $this->setConfig(self::app_config);
@@ -70,10 +68,10 @@ class App extends Box
         try {
 
             $request = Proxy::Real($this->utility_http_request());
-            // Send the response
             echo $this->utility_router()->dispatch($request);
         } catch (Throwable $e) {
-            $this->core_exception()->catch_error($e);
+            // send to exception handler to find the error
+            $this->core_exception_handler()->handle_error($e);
         }
     }
 }

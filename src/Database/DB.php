@@ -9,6 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class DB
 {
+    
 
     private static array $instances = [];
     private $identify;
