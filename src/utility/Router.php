@@ -5,8 +5,7 @@ namespace MerapiPanel\Utility;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Cog\Config;
-use MerapiPanel\Core\Mod\Proxy;
-use MerapiPanel\Core\Token\Token;
+use MerapiPanel\Core\Proxy;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Middleware\Component;
 use MerapiPanel\Utility\Http\Response;
@@ -62,7 +61,7 @@ class Router extends Component
         if (strtolower(basename($controller)) === "admin") {
 
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
-          //  $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
+            //  $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
         $route = new Route(Route::GET, $path, $controller . "@$method");
@@ -373,12 +372,11 @@ class Router extends Component
         if (is_callable($callback)) {
 
             return call_user_func($callback, $request);
-
         } else if (is_string($callback) && strpos($callback, '@') !== false) {
 
             list($controller, $method) = explode('@', $callback);
 
-            
+
 
             if (!class_exists($controller)) {
                 $controllerClass = 'Mp\\Controllers\\' . $controller;
@@ -457,18 +455,30 @@ class Router extends Component
 
         if (is_array($result)) {
 
-            $content["code"]    = isset($result['code']) ? $result['code'] : null;
-            $content["message"] = isset($result['message']) ? $result['message'] : null;
-            $content["data"]    = isset($result['data']) ? $result['data'] : null;
+            if (isset($result["code"])) {
+                $content["code"] = $result["code"];
+            }
+            if (isset($result["message"])) {
+                $content["message"] = $result["message"];
+            }
+            if (isset($result["data"])) {
+                $content["data"] = $result["data"];
+            }
         } elseif (is_string($result)) {
 
             $json = json_decode($result, true);
 
             if (json_last_error() === JSON_ERROR_NONE) {
 
-                $content["code"]    = isset($json['code']) ? $json['code'] : null;
-                $content["message"] = isset($json['message']) ? $json['message'] : null;
-                $content["data"]    = isset($json['data']) ? $json['data'] : null;
+                if (isset($json["code"])) {
+                    $content["code"] = $json["code"];
+                }
+                if (isset($json["message"])) {
+                    $content["message"] = $json["message"];
+                }
+                if (isset($json["data"])) {
+                    $content["data"] = $json["data"];
+                }
             } else {
 
                 $content["code"]    = 200;
@@ -477,9 +487,10 @@ class Router extends Component
             }
         }
 
-        header('HTTP/1.1 ' . $content["code"] . ' ' . $content["message"]);
-        $response->setContent($content);
+        if (empty($content['data'])) unset($content['data']);
 
+        $response->setContent($content);
+        $response->setStatusCode($content['code']);
         return $response;
     }
 }

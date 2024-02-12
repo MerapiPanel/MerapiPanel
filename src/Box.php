@@ -7,6 +7,7 @@ use MerapiPanel\Core\Exception\ModuleNotFound;
 use MerapiPanel\Core\Exception\ServiceNotFound;
 use MerapiPanel\Core\Exception\MethodNotFoud;
 use MerapiPanel\Core\Proxy;
+use MerapiPanel\Utility\Util;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -389,9 +390,9 @@ class BoxModule
             "icon" => null,
             "baseModule" => $this->baseModule,
             "version" => "1.0.0",
-            "description" => "The base module of MerapiPanel",
+            "description" => "Empty description, the module <b>{$this->getModuleName()}</b> doesnt provide any description.",
             "author" => "Il4mb",
-            "license" => "MIT",
+            "license" => null,
             "website" => "https://github.com/MerapiPanel",
             "controlable" => in_array($this->getModuleName(), self::DEFAULT_MODULES) ? false : true
         ];
@@ -406,10 +407,18 @@ class BoxModule
                 // If the key exists in the YAML data, replace the value in $info
                 if (array_key_exists($key, $yamlData)) {
                     if ($key == "icon") {
+
                         $pathToIcon = str_replace("\\", "/", realpath(__DIR__ . "/module/" . $this->getModuleName() . "/" . ltrim($yamlData[$key], "\\/")));
                         $info[$key] = str_replace($_SERVER['DOCUMENT_ROOT'], "", $pathToIcon);
+
+                    } elseif ($key == "description") {
+
+                       $info[$key] = Util::cleanHtmlString($yamlData[$key]);
+
                     } else {
-                        $info[$key] = $yamlData[$key];
+
+                        $info[$key] = Util::cleanHtmlString($yamlData[$key], []);
+
                     }
                 }
             }

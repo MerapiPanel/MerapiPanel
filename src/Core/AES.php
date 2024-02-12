@@ -4,10 +4,12 @@ namespace MerapiPanel\Core;
 
 class AES
 {
+    private static function getKey(): string|false
+    {
+        return $_ENV['AES_KEY'] ?? false;
+    }
 
-
-    // Encryption function
-    static function encrypt($data)
+    static function encrypt(string $data): string|false
     {
         $key = self::getKey();
         if (!$key) {
@@ -18,26 +20,13 @@ class AES
         return base64_encode($encrypted . '::' . $iv);
     }
 
-
-
-    // Decryption function
-    static function decrypt($data)
+    static function decrypt(string $data): string|false
     {
         $key = self::getKey();
         if (!$key) {
             return false;
         }
-        list($encryptedData, $iv) = explode('::', base64_decode($data), 2);
+        [$encryptedData, $iv] = explode('::', base64_decode($data), 2);
         return openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
-    }
-
-
-
-    private static function getKey(): string|false
-    {
-        if (isset($GLOBALS['config']) && isset($GLOBALS['config']['aes-key'])) {
-            return $GLOBALS['config']['aes-key'];
-        }
-        return false;
     }
 }

@@ -41,7 +41,7 @@ class Util
 
     public static function getClassNameFromFile($filePath)
     {
-        
+
         $fileContent = file_get_contents($filePath);
         if ($fileContent === false) {
             throw new \Exception("Unable to read the file: $filePath");
@@ -73,5 +73,36 @@ class Util
         }
 
         return $fullyQualifiedName;
+    }
+
+
+
+
+
+
+
+
+    public static function cleanHtmlString($htmlString, $allowedTags = ['i', 'b', 'li', 'br', 'span', 'pre', 'strong', 'em', 'p', 'code', 'pre', 'hr'])
+    {
+        // Create a new DOMDocument and load the HTML string into it
+        $dom = new \DOMDocument();
+        @$dom->loadHTML(mb_convert_encoding($htmlString, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Iterate over all nodes
+        $xpath = new \DOMXPath($dom);
+        foreach ($xpath->query('//*') as $node) {
+            // If the node's tag name is not in the list of allowed tags, remove the node
+            if (!in_array($node->nodeName, $allowedTags)) {
+                // Replace the node with its own children
+                while ($node->childNodes->length > 0) {
+                    $child = $node->childNodes->item(0);
+                    $node->parentNode->insertBefore($child, $node);
+                }
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        // Return the cleaned HTML string
+        return $dom->saveHTML();
     }
 }

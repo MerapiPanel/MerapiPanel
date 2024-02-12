@@ -3,6 +3,7 @@
 namespace MerapiPanel\Core\View\Extension;
 
 use MerapiPanel\Box;
+use MerapiPanel\Core\AES;
 use MerapiPanel\Core\Token\parser\FormToken;
 use \Twig\TwigFunction;
 use \Twig\TwigFilter;
@@ -78,26 +79,16 @@ class Bundle extends \Twig\Extension\AbstractExtension
 
 
 
-    function assets($file = null)
+    function assets($absoluteFilePath = null)
     {
-
-        if ($file == null) {
-            return null;
-        }
-        $root = $_SERVER['DOCUMENT_ROOT'];
-        $base = str_replace($root, "", str_replace("\\", '/', realpath(__DIR__ . "/../../../Module")));
-        preg_match_all('/\@\w+/ims', $file, $matches);
-
-
-        if (isset($matches[0][0])) {
-            foreach ($matches[0] as $match) {
-                $file = str_replace($match, rtrim($base, '/') . "/" . substr($match, 1), $file);
-            }
-        }
-
-        return $file;
+        $routeLink = "/public/filemanager/module_assets/" . rawurlencode(AES::encrypt($absoluteFilePath));
+        return $routeLink;
     }
 
+
+    private function getModuleName($absoluteFilePath)
+    {
+    }
 
 
 

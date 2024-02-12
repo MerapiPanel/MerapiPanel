@@ -1,7 +1,5 @@
 @tailwind base;
 
-
-
 /* For WebKit browsers (Chrome, Safari) */
 /* You can customize the scrollbar styles as needed */
 /* Remember to use vendor prefixes for cross-browser compatibility */
@@ -40,10 +38,6 @@
 *::-webkit-scrollbar-thumb:hover {
     background-color: #4fa1ff; /* Change to your desired handle color on hover */
 }
-
-
-
-
 
 @tailwind components;
 @tailwind utilities;
@@ -131,7 +125,6 @@ input[type="radio"] {
     @apply px-6 py-[0.3rem] rounded-sm text-[0.7rem];
 }
 
-
 .btn-xsm {
     @apply px-3 py-[0.25rem] rounded-sm text-[0.6rem];
 }
@@ -191,7 +184,6 @@ input[type="radio"] {
     @apply ms-3;
 }
 
-
 .btn-close {
     @apply absolute px-2 py-2 top-2 right-4 scale-100 hover:scale-[1.5] hover:text-red-400 transition-all;
 }
@@ -241,4 +233,11 @@ input[type="radio"] {
 }
 .offcanvas-body {
     @apply overflow-auto w-full break-words;
+}
+
+code {
+    background: #f3f3f3;
+    color: currentColor;
+    padding: 0 0.4rem;
+    border-radius: 0.25rem;
 }

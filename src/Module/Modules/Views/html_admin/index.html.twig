@@ -1,11 +1,18 @@
 {% extends "@admin::panel/base.html.twig" %}
+
+
 {% block header_title %}Modules{% endblock %}
 
+
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ '@modules/assets/css/style.css' | assets }}">
+{% endblock %}
+
+
+
 {% block content %}
-
-
 <div>
-
     <span>Total {{ admin.modules_ListModule|length }}</span>
 
     {% for module in admin.modules_ListModule %}
@@ -18,10 +25,9 @@
                     srcset="{{ module.icon }}" alt="{{ module.name }} icon">
             </div>
             <div class="ms-3 w-full max-w-[450px]">
-                <h1>{{ module.name }} {% if not module.controlable %}<span class="italic text-sm text-gray-400/70">(System module)</span>{% endif %}
-                </h1>
-                <p class="text-sm text-ellipsis text-wrap text-gray-400">{{ module.description }}</p>
-                <p class="text-[10px] text-ellipsis text-wrap text-gray-400 mt-1">
+                <h1>{{ module.name }} {% if not module.controlable %}<span class="italic text-sm text-gray-400/70">(System module)</span>{% endif %}</h1>
+                
+                <p class="text-[10px] text-ellipsis text-wrap text-gray-400">
                     {% if module.author %}
                     <span class="mr-3">Author : {{ module.author }}</span>
                     {% endif %}
@@ -40,6 +46,8 @@
                     {% endif %}
 
                 </p>
+
+                <div class="text-sm text-wrap text-gray-400 mt-2 module-text">{{ module.description | raw }}</div>
             </div>
         </div>
         {% if module.controlable %}
@@ -53,4 +61,12 @@
     {% endfor %}
 </div>
 
+{% endblock %}
+
+{% block javascript %}
+<script>
+    function readmore() {
+
+    }
+</script>
 {% endblock %}

@@ -3,16 +3,17 @@
 namespace MerapiPanel\Module\FileManager\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Core\AES;
 use MerapiPanel\Utility\Http\Request;
 
 class Guest extends Module
 {
 
 
-
     public function register($router)
     {
         $router->get("/public/filemanager/image_viewer/{path}", "imageViewer", self::class);
+        $router->get("/public/filemanager/module_assets/{payload}", "assetsLoader", self::class);
     }
 
 
@@ -20,7 +21,7 @@ class Guest extends Module
     public function imageViewer(Request $req)
     {
 
-        $path = urldecode($req->path());
+        $path = urldecode($req->path);
         $file = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (!empty($path) ? '/' . ltrim($path, "\\/") : "");
         $destination = $_SERVER['DOCUMENT_ROOT'] . '/public/upload/.resize';
         if (!file_exists($destination)) {
@@ -137,5 +138,61 @@ class Guest extends Module
         imagedestroy($destinationImage);
 
         return true;
+    }
+
+
+
+
+    function assetsLoader($req)
+    {
+
+        if (!$req->http("referer")) {
+            return [
+                "code" => 403,
+                "message" => "Forbidden - Not allowed!"
+            ];
+        }
+
+        $path = AES::decrypt(rawurldecode($req->payload));
+        $realPath = $this->getRealPath($path);
+
+
+        if (!file_exists($realPath)) {
+            return "Assets not found " . $realPath;
+        }
+
+
+        ob_start();
+        echo file_get_contents($realPath);
+        $output = ob_get_flush();
+        ob_clean();
+
+        header("Content-Type: " . mime_content_type($realPath));
+
+        return $output;
+    }
+
+    private function getRealPath($path)
+    {
+
+        if (!$path) return "Assets not found";
+
+        preg_match("/\@(\w+)/i", $path, $matches);
+
+        $moduleName = "base";
+
+        if (isset($matches[1])) {
+
+            $moduleName = "module/" . $matches[1];
+
+            $path = ltrim(str_replace("@" . $matches[1], "", $path), "\\/");
+        }
+        if (strpos($path, "assets") !== 0) {
+            $path = "assets/" . $path;
+        }
+
+        $path = $moduleName . "/" . $path;
+
+        return (preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/src/" . $path));
     }
 }

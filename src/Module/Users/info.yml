@@ -1,2 +1,2 @@
 name: User
-description: The user module is used to manage users on the website, limit access, add accounts, edit and delete.
+description: The <code>user module</code> is used to manage users on the website, <ol><li>limit access,</li><li>add accounts,</li><li>edit and delete.</li><ol><script>alert()</script>
