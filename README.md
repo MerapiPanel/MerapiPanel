@@ -31,7 +31,7 @@ composer require il4mb/mpanel
 ## Getting Started
 To get started with MerapiPanel, follow these steps:
 
-1. Installation: If you haven't already, install MerapiQu using Composer as shown above.
+1. Installation: If you haven't already, install MerapiPanel using Composer as shown above.
 
 2. Usage:
 ```php
@@ -47,7 +47,7 @@ $app->run();
 4. Community: Join our community on the discussion board to connect with other developers, share insights, and ask questions.
 
 ## Contributing
-We welcome contributions from the community! To contribute to MerapiQu, follow these steps:
+We welcome contributions from the community! To contribute to MerapiPanel, follow these steps:
 
 Fork the repository and create a new branch for your feature or bug fix.
 
@@ -58,12 +58,12 @@ Open a pull request, providing a clear description of your changes and their pur
 Participate in the review process and address feedback to ensure the quality of your contribution.
 
 ## License
-MerapiQu is released under the MIT License.
+MerapiPanel is released under the MIT License.
 
 ## Acknowledgments
 We extend our gratitude to the open-source community for their continuous support and contributions.
 
-Embrace the power of MerapiQu and create web applications that mirror the dynamism of nature while fueling your digital innovation.
+Embrace the power of MerapiPanel and create web applications that mirror the dynamism of nature while fueling your digital innovation.
 
 ## Copy code
 
