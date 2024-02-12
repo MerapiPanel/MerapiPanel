@@ -70,7 +70,7 @@ class Request
     /**
      * Retrieves the query parameters.
      *
-     * @return array The query parameters.
+     * @return RequestQuery The query parameters.
      */
     public function getQuery()
     {
