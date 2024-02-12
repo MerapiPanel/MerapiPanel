@@ -2,6 +2,7 @@
 
 namespace MerapiPanel\Module\FileManager\Controller;
 
+use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\AES;
 use MerapiPanel\Utility\Http\Request;
@@ -13,7 +14,7 @@ class Guest extends Module
     public function register($router)
     {
         $router->get("/public/filemanager/image_viewer/{path}", "imageViewer", self::class);
-        $router->get("/public/filemanager/module_assets/{payload}", "assetsLoader", self::class);
+        $router->get(Box::module("FileManager")->service("Assets")->getProperty("routeLink"), "assetsLoader", self::class);
     }
 
 
@@ -53,7 +54,7 @@ class Guest extends Module
         $maxWidth = 200;
         $maxHeight = 200;
         $targetDirectory = preg_replace('/[^a-z0-9]+/', '', dirname(str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload/", "", $file)));
-        $targetFileName  = ($targetDirectory ? $targetDirectory . "_" : "") . basename($file, "." . strtolower(pathinfo($file, PATHINFO_EXTENSION))) . "-$maxWidth" . 'x' . "$maxHeight." . strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $targetFileName = ($targetDirectory ? $targetDirectory . "_" : "") . basename($file, "." . strtolower(pathinfo($file, PATHINFO_EXTENSION))) . "-$maxWidth" . 'x' . "$maxHeight." . strtolower(pathinfo($file, PATHINFO_EXTENSION));
         $destinationFile = $destination . '/' . $targetFileName;
 
         ob_start();
@@ -145,58 +146,6 @@ class Guest extends Module
 
     function assetsLoader($req)
     {
-
-        if (!$req->http("referer")) {
-            return [
-                "code" => 403,
-                "message" => "Forbidden - Not allowed!"
-            ];
-        }
-
-        $path = AES::decrypt(rawurldecode($req->payload));
-        $realPath = $this->getRealPath($path);
-
-
-        if (!file_exists($realPath)) {
-            return "Assets not found " . $realPath;
-        }
-
-
-        ob_start();
-        echo file_get_contents($realPath);
-        $output = ob_get_flush();
-        ob_clean();
-
-        $mimeTypes = json_decode(file_get_contents(__DIR__ . "/../mimeType.json"), true);
-
-        // Set the appropriate Content-Type header
-        $contentType = $mimeTypes[strtolower(pathinfo($realPath, PATHINFO_EXTENSION))] ?? 'application/octet-stream'; // Default to binary if MIME type is unknown
-        header("Content-Type: $contentType");
-
-        return $output;
-    }
-
-    private function getRealPath($path)
-    {
-
-        if (!$path) return "Assets not found";
-
-        preg_match("/\@(\w+)/i", $path, $matches);
-
-        $moduleName = "base";
-
-        if (isset($matches[1])) {
-
-            $moduleName = "module/" . $matches[1];
-
-            $path = ltrim(str_replace("@" . $matches[1], "", $path), "\\/");
-        }
-        if (strpos($path, "assets") !== 0) {
-            $path = "assets/" . $path;
-        }
-
-        $path = $moduleName . "/" . $path;
-
-        return (preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/src/" . $path));
+        return Box::module("FileManager")->service("Assets")->getAssset($req);
     }
 }

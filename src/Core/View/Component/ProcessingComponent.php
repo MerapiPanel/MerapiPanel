@@ -3,7 +3,7 @@
 namespace MerapiPanel\Core\View\Component;
 
 use MerapiPanel\Box;
-use MerapiPanel\Core\Mod\Proxy;
+use MerapiPanel\Core\Proxy;
 use MerapiPanel\Event;
 use Twig\Source;
 
@@ -55,7 +55,7 @@ class ProcessingComponent implements \Twig\Loader\LoaderInterface
             $method = $matches[2];
             $attributes = trim($matches[3]);
 
-            $instanceAddress = "Module_{$module}_Views_Component";
+            $instanceAddress = "\\Module\\{$module}\\Views\\Component";
             $instance = Box::Get($this)->$instanceAddress();
 
             $output = "";

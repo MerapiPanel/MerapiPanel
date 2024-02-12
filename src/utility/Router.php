@@ -16,9 +16,9 @@ class Router extends Component
 {
 
     protected $routeStack = [
-        "GET"    => [],
-        "POST"   => [],
-        "PUT"    => [],
+        "GET" => [],
+        "POST" => [],
+        "PUT" => [],
         "DELETE" => []
     ];
     protected Box $box;
@@ -261,8 +261,10 @@ class Router extends Component
     protected function matchRoute($route, $path)
     {
 
-        if (strlen($path) > 1 && substr($path, -1) !== "/") $path .= "/";
-        if (strlen($route) > 1 && substr($route, -1) !== "/") $route .= "/";
+        if (strlen($path) > 1 && substr($path, -1) !== "/")
+            $path .= "/";
+        if (strlen($route) > 1 && substr($route, -1) !== "/")
+            $route .= "/";
 
         $pattern = preg_replace('/\//', '\/', $route);
         $pattern = '/^' . preg_replace('/\{(.+?)\}/', '(.+?)', $pattern) . '$/';
@@ -295,8 +297,10 @@ class Router extends Component
     protected function extractRouteParams($route, $path)
     {
 
-        if (strlen($path) > 1 && substr($path, -1) !== "/") $path .= "/";
-        if (strlen($route) > 1 && substr($route, -1) !== "/") $route .= "/";
+        if (strlen($path) > 1 && substr($path, -1) !== "/")
+            $path .= "/";
+        if (strlen($route) > 1 && substr($route, -1) !== "/")
+            $route .= "/";
 
         $pattern = preg_replace('/\//', '\/', $route);
         $pattern = '/^' . preg_replace('/\{(.*?)\}/', '(.*?)', $pattern) . '$/';
@@ -329,7 +333,7 @@ class Router extends Component
     protected function handle(Request $request, Route $route): Response
     {
 
-        $callback        = $route->getController();
+        $callback = $route->getController();
         $middlewareStack = $route->getMiddlewareStack();
 
         $response = $middlewareStack->handle(
@@ -400,43 +404,40 @@ class Router extends Component
              * - init controller from class address
              */
             $controllerInstance = $this->box->$controllerClass();
-            // $view = $this->box->Module_ViewEngine();
-            // $view->addGlobal('request', $request->__toJson());
+
+            ob_start();
+            $output = $controllerInstance->$method($request);
+            ob_end_clean();
+
+            if ($output instanceof Response) {
+                return $output;
+            }
 
             if ($request->getMethod() === Route::GET) {
 
-                ob_start();
-                $retrun = $controllerInstance->$method($request);
-                ob_end_clean();
+                if ($output instanceof View) {
 
-                if ($retrun instanceof View) {
+                    $response->setContent("$output");
+                    return $response;
+                } elseif (is_string($output)) {
 
-                    $response->setContent("$retrun");
+                    $response->setContent($output);
                     return $response;
                 }
 
-                if (is_object($retrun) || is_array($retrun)) {
+                throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($output) . " returned", 400);
 
-                    return $this->handleApiResponse($retrun);
-                } elseif (is_string($retrun)) {
-
-                    $response->setContent($retrun);
-                    return $response;
-                } else {
-
-                    throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($retrun) . " returned", 400);
-                }
-            } else {
-
-                $result = $controllerInstance->$method($request);
-                if ($result instanceof Response) {
-
-                    return $result;
-                } else
-                    return $this->handleApiResponse($result);
             }
 
-            return $response;
+
+            if (is_object($output) || is_array($output)) {
+
+                return $this->handleApiResponse($output);
+            }
+
+            return $this->handleApiResponse($output);
+
+
         } else {
 
             return new Response('Internal server error', 500);
@@ -481,13 +482,14 @@ class Router extends Component
                 }
             } else {
 
-                $content["code"]    = 200;
+                $content["code"] = 200;
                 $content["message"] = $result;
-                $content["data"]    = [];
+                $content["data"] = [];
             }
         }
 
-        if (empty($content['data'])) unset($content['data']);
+        if (empty($content['data']))
+            unset($content['data']);
 
         $response->setContent($content);
         $response->setStatusCode($content['code']);

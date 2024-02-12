@@ -30,30 +30,30 @@ class Token
     public static function validate($token)
     {
 
-        error_log("Validate token: " . $token);
+        // error_log("Validate token: " . $token);
 
         $jwt = json_decode(AES::decrypt(rawurldecode($token)), true);
 
         if (!$jwt) {
-            error_log("Invalid token: " . json_encode($jwt));
+            // error_log("Invalid token: " . json_encode($jwt));
             return false;
         }
         if (!isset($jwt['ip']) || !isset($jwt['origin'])) {
 
-            error_log("Invalid ip or origin: " . json_encode($jwt));
+            // error_log("Invalid ip or origin: " . json_encode($jwt));
             return false;
         }
         if ($jwt['ip'] !== self::getClientIP() || $jwt['origin'] !== $_SERVER['HTTP_REFERER']) {
-            error_log("Unmatch ip or origin: " . json_encode($jwt));
+            // error_log("Unmatch ip or origin: " . json_encode($jwt));
             return false;
         }
 
         if (!isset($jwt['time']) || $jwt['time'] + 3600 < time()) {
-            error_log("Expired token: " . json_encode($jwt));
+            // error_log("Expired token: " . json_encode($jwt));
             return false;
         }
 
-        error_log("Valid token: " . json_encode($jwt));
+        // error_log("Valid token: " . json_encode($jwt));
         return true;
     }
 

@@ -346,7 +346,7 @@ const http = {
     },
 
 
-    post: function (url, data, headers = { }) {
+    post: function (url, data, headers = {}) {
         let form = new FormData();
         if (data instanceof FormData) {
             form = data;
@@ -410,7 +410,7 @@ const http = {
         })
     },
 
-    
+
     delete: function (url, data, headers = {}) {
         let form = new FormData();
         if (data instanceof FormData) {
@@ -509,12 +509,13 @@ const assign = function (name, obj) {
 $.ajax({
     error: (e) => {
         if (e.responseJSON && e.responseJSON.message) {
-            Toast.create(e.responseJSON.message, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
+            toast(e.responseJSON.message, 10, 'text-' + (e.code >= 401 ? 'danger' : 'warning'));
         } else {
-            Toast.create(e.statusText || e.responseText, 'text-' + (e.code >= 401 ? 'danger' : 'warning'), 10);
+            toast(e.statusText || e.responseText, 10, 'text-' + (e.code >= 401 ? 'danger' : 'warning'));
         }
     }
 })
+
 
 
 

@@ -1,11 +1,11 @@
 {% extends "@admin::panel/base.html.twig" %}
 
-{% block head_javascripts %}
-<script src="{{ '@templateEditor/assets/dist/index.bundle.js' | assets }}"></script>
+{% block head_javascript %}
+<script src="{{ '@templateEditor/dist/index.bundle.js' | assets }}"></script>
 {% endblock %}
 
 
-{% block stylesheets %}
+{% block stylesheet %}
 <style>
     .gjs-pn-active {
         color: rgb(59 130 246);
@@ -30,7 +30,7 @@
     </div>
 
 
-    {% block javascripts %}
+    {% block javascript %}
     {{ parent() }}
 
     {% if template %}

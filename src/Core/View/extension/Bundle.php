@@ -81,8 +81,9 @@ class Bundle extends \Twig\Extension\AbstractExtension
 
     function assets($absoluteFilePath = null)
     {
-        $routeLink = "/public/filemanager/module_assets/" . rawurlencode(AES::encrypt($absoluteFilePath));
-        return $routeLink;
+
+      
+        return Box::module("FileManager")->service("Assets")->url($absoluteFilePath);
     }
 
 

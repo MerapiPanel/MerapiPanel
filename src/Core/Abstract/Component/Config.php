@@ -111,7 +111,7 @@ final class Config implements ArrayAccess
             return $config;
         } catch (\Throwable $e) {
 
-            error_log("Error: " . $e->getMessage());
+            error_log(self::class . " Error: " . $e->getMessage());
         }
 
         return false;
@@ -131,13 +131,13 @@ final class Config implements ArrayAccess
 
         foreach (debug_backtrace() as $call) {
             // only in module
-            if (isset($call['file']) && in_array("module", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"),  $call['file'])))) {
+            if (isset($call['file']) && in_array("module", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"), $call['file'])))) {
                 $file = $call['file'];
                 break;
             }
         }
 
-        error_log("File: " . $file);
+        // error_log(self::class . " File: " . $file);
         return $file;
     }
 
@@ -159,7 +159,7 @@ final class Config implements ArrayAccess
             $basename = basename($dirname);
             $dirname = realpath("$dirname/..");
 
-            if (preg_replace('/[^a-zA-Z0-9]+/', '', $_SERVER['DOCUMENT_ROOT']) ==  preg_replace('/[^a-zA-Z0-9]+/', '', $dirname)) {
+            if (preg_replace('/[^a-zA-Z0-9]+/', '', $_SERVER['DOCUMENT_ROOT']) == preg_replace('/[^a-zA-Z0-9]+/', '', $dirname)) {
                 $basename = null;
                 break;
             }

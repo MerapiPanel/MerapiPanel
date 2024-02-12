@@ -326,7 +326,7 @@ final class Proxy
                             assert($paramType instanceof ReflectionNamedType);
 
 
-                            error_log(strtolower(get_class($argument)) . "::" . strtolower($paramType->getName()));
+                            // error_log(strtolower(get_class($argument)) . "::" . strtolower($paramType->getName()));
                             // For class types, check if the argument is an instance of the parameter type
                             if (strtolower(get_class($argument)) == strtolower($paramType->getName())) {
                                 // Attempt conversion or handling for class types here

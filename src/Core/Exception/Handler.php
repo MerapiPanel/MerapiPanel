@@ -28,14 +28,16 @@ class Handler
 
         $error = error_get_last();
 
-        if ($this->isErrorHandled) return;
-        if ($error === null) return;
-        
+        if ($this->isErrorHandled)
+            return;
+        if ($error === null)
+            return;
+
         $errorString = $error['message'];
 
-        $message    = $this->extractMessageFromString($errorString);
+        $message = $this->extractMessageFromString($errorString);
         $stackTrace = $this->extractTracerFromString($errorString, $error['file']);
-        $snippet    = $this->getCodeSnippet($error['file'], $error['line']);
+        $snippet = $this->getCodeSnippet($error['file'], $error['line']);
 
         $type = "Fatal Error";
         if ($this->extractTypeFromString($errorString)) {
@@ -130,7 +132,8 @@ class Handler
         preg_match('/Stack trace:(.*)/s', $errorString, $matches);
         $stackTrace = isset($matches[1]) ? array_values(array_filter(array_map(function ($trace) use (&$isEnd) {
             $trace = trim(preg_replace('/^#\d\s+/', '', $trace));
-            if ($trace == "{main}" || $trace == "thrown") return "";
+            if ($trace == "{main}" || $trace == "thrown")
+                return "";
             $traceData = $this->splitTraceDataFromString($trace);
             return $traceData;
         }, explode("\n", $matches[1])))) : [];
@@ -211,22 +214,22 @@ class Handler
     }
 
 
-    function view($error = [
-        "file" => "",
-        "line" => 0,
-        "message" => "",
-        "code" => 0,
-        "type" => "",
-        "stack_trace" => [],
-        "snippet" => ""
-    ])
-    {
-
-        header("Content-Type: text/html;charset=UTF-8");
+    function view(
+        $error = [
+            "file" => "",
+            "line" => 0,
+            "message" => "",
+            "code" => 0,
+            "type" => "",
+            "stack_trace" => [],
+            "snippet" => ""
+        ]
+    ) {
 
         $view = View::newInstance([__DIR__ . "/views"]);
         return $view->load("error.html.twig")->render([
             "error" => $error
         ]);
+
     }
 }

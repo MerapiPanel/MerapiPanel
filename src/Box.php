@@ -32,9 +32,10 @@ class Box
     private static Box $instance;
 
 
-    public static function Get(Object $object): Box
+    public static function Get(object $object): Box
     {
-        if (!isset(self::$instance)) self::$instance = new Box();
+        if (!isset(self::$instance))
+            self::$instance = new Box();
         return self::$instance;
     }
 
@@ -74,24 +75,30 @@ class Box
     final public function __call($name, $arguments)
     {
 
-        if (!isset(self::$instance)) self::$instance = $this;
+        if (!isset(self::$instance))
+            self::$instance = $this;
 
-        // if call a module
-        if (strtolower($name) === "module") {
-            return $this->callModule($arguments);
+        if (!class_exists($name)) {
+            // if call a module
+            if (strtolower($name) === "module") {
+                return $this->callModule($arguments);
+            }
+            // if call a module with snake case
+            elseif (preg_match('/^module(_|$)/i', $name) === 1) {
+                $moduleName = preg_replace('/^module(_|$)/i', '', $name);
+                return self::module($moduleName, $arguments);
+            }
+
+
+            $name = str_replace(__NAMESPACE__, "", $name);
+            $name = strtolower(str_replace(["\\", "/"], "_", $name));
+            $name = ltrim(str_replace(strtolower(trim(__NAMESPACE__)) . "_", "", $name), "_");
+
+            $className = __NAMESPACE__ . "\\" . str_replace("_", "\\", ucfirst($name));
+        } else {
+            $className = $name;
         }
-        // if call a module with snake case
-        elseif (preg_match('/^module(_|$)/i', $name) === 1) {
-            $moduleName = preg_replace('/^module(_|$)/i', '', $name);
-            return self::module($moduleName, $arguments);
-        }
 
-
-        $name = str_replace(__NAMESPACE__, "", $name);
-        $name = strtolower(str_replace(["\\", "/"], "_", $name));
-        $name = ltrim(str_replace(strtolower(trim(__NAMESPACE__)) . "_", "", $name), "_");
-
-        $className = __NAMESPACE__ . "\\" . str_replace("_", "\\", ucfirst($name));
         $theKey = strtolower(preg_replace("/[^A-Za-z0-9]+/", "", $className));
 
         $instance = &$this->stack;
@@ -118,7 +125,8 @@ class Box
 
     public static function module(string $moduleName, array $args = [])
     {
-        if (!isset(self::$instance)) self::$instance = new Box();
+        if (!isset(self::$instance))
+            self::$instance = new Box();
         return self::$instance->callModule($moduleName, $args);
     }
 
@@ -167,7 +175,8 @@ class Box
 
     final static function __callStatic($name, $arguments)
     {
-        if (!isset(self::$instance)) self::$instance = new Box();
+        if (!isset(self::$instance))
+            self::$instance = new Box();
         return self::$instance->__call($name, $arguments);
     }
 
@@ -192,7 +201,8 @@ class Box
 
     final public function getEvent()
     {
-        if (!isset($this->event)) $this->event = new Event();
+        if (!isset($this->event))
+            $this->event = new Event();
         return $this->event;
     }
 
@@ -214,7 +224,7 @@ class Box
         $zones = ['guest'];
         if ($this->Module_Auth()->isAdmin()) {
             $zones[] = 'admin';
-            error_log("section: admin");
+            //error_log("section: admin");
         }
 
         foreach ($phpFiles as $file) {
@@ -238,7 +248,7 @@ class Box
 
         foreach ($controllers as $controller) {
 
-            $class  = $controller["class"];
+            $class = $controller["class"];
             $object = $this->$class();
             $object->register(Proxy::Real($this->utility_router()));
         }
@@ -269,7 +279,17 @@ class BoxModule
 
 
     const DEFAULT_MODULES = [
-        "Auth", "FileManager", "Menu", "Modules", "Pages", "Panel", "Settings", "Site", "Users", "Template", "TemplateEditor"
+        "Auth",
+        "FileManager",
+        "Menu",
+        "Modules",
+        "Pages",
+        "Panel",
+        "Settings",
+        "Site",
+        "Users",
+        "Template",
+        "TemplateEditor"
     ];
     // is a base className of module
     private $baseModule;
@@ -278,7 +298,7 @@ class BoxModule
 
     public function __construct($baseModule)
     {
-        $this->baseModule = $baseModule;
+        $this->baseModule = ltrim($baseModule, '\\/');
     }
 
 
@@ -348,13 +368,16 @@ class BoxModule
 
         if (!empty($name) && is_string($name)) {
 
-            if (class_exists("{$this->baseModule}\\$name")) {
-                $serviceClassName = "{$this->baseModule}\\$name";
+            $name = strtolower($name);
+            if (class_exists("{$this->baseModule}\\{$name}")) {
+                $serviceClassName = "{$this->baseModule}\\{$name}";
             } elseif (class_exists("{$this->baseModule}\\{$name}Service")) {
                 $serviceClassName = "{$this->baseModule}\\{$name}Service";
             } else if (class_exists("{$this->baseModule}\\service{ucfirst($name)}")) {
                 $serviceClassName = "{$this->baseModule}\\service{ucfirst($name)}";
             } else {
+
+                error_log("Service not found: " . "{$this->baseModule}\\{$name}");
                 throw new ServiceNotFound("Service $name not found");
             }
         }
@@ -406,14 +429,9 @@ class BoxModule
             foreach ($info as $key => $value) {
                 // If the key exists in the YAML data, replace the value in $info
                 if (array_key_exists($key, $yamlData)) {
-                    if ($key == "icon") {
+                    if ($key == "description") {
 
-                        $pathToIcon = str_replace("\\", "/", realpath(__DIR__ . "/module/" . $this->getModuleName() . "/" . ltrim($yamlData[$key], "\\/")));
-                        $info[$key] = str_replace($_SERVER['DOCUMENT_ROOT'], "", $pathToIcon);
-
-                    } elseif ($key == "description") {
-
-                       $info[$key] = Util::cleanHtmlString($yamlData[$key]);
+                        $info[$key] = Util::cleanHtmlString($yamlData[$key]);
 
                     } else {
 
@@ -422,10 +440,36 @@ class BoxModule
                     }
                 }
             }
+
+            unset($info["icon"]);
+            $icon = $this->findIcon();
+            if (!empty($icon)) {
+                $info["icon"] = Box::module("FileManager")->service("Assets")->url("@{$this->getModuleName()}/{$icon}");
+            }
         }
 
         return $info;
     }
+
+
+
+    function findIcon()
+    {
+        $iconExtensions = ['ico', 'png', 'jpg', 'jpeg', 'svg']; // Add more extensions as needed
+        $icon = false;
+        foreach ($iconExtensions as $extension) {
+
+            $file = __DIR__ . '/module/' . $this->getModuleName() . "/icon." . $extension;
+
+            if (is_file($file)) {
+                $icon = "icon." . $extension;
+                break;
+            }
+        }
+
+        return $icon;
+    }
+
 
 
     public static function with($moduleName)
