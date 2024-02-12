@@ -4,7 +4,7 @@ namespace MerapiPanel\Module\Users\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\View;
-use MerapiPanel\Module\Users\Custom\Extension;
+use MerapiPanel\Module\Users\Custom\UsersFunction;
 
 class Admin extends Module
 {
@@ -27,7 +27,7 @@ class Admin extends Module
     public function index($req)
     {
         
-        View::AddExtension(new Extension());
+        View::AddExtension(new UsersFunction());
         return View::render("index.html.twig");
     }
 }

@@ -36,10 +36,13 @@ class Section
      */
     public function __get($name)
     {
+        
+        $exploded = array_values(array_filter(explode('_', $name)));
+        $moduleName = $exploded[0];
+        unset($exploded[0]);
         // Get the module name from the first part and remove it from the parts array
-        $method = trim(preg_replace('/^\w+(_)/i', '', $name), "_");
+        $method = implode('_', $exploded);
         // Construct the module and method names
-        $moduleName = trim(str_replace($method, '', $name), "_");
         return (Box::module("$moduleName")->service("Api\\{$this->getName()}"))->$method();
     }
 

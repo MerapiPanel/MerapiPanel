@@ -123,7 +123,7 @@ class Service extends Module
             if (strpos($icon, 'fa-') !== false) {
                 $menu['icon'] = '<i class="w-[14] ' . $icon . '"></i>';
             } elseif (strpos(trim($icon), '<svg') !== false) {
-                $icon = str_replace('<svg', '<svg width="15" height="16" class="inline-block"', $icon);
+                $icon = str_replace('<svg', '<svg width="15" height="16" class="inline-block align-middle"', $icon);
                 $menu['icon'] = $icon;
             }
         }

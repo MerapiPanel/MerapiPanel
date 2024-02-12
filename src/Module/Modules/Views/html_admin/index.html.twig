@@ -10,20 +10,44 @@
 
     {% for module in admin.modules_ListModule %}
 
-    <div class="rounded-sm shadow mb-5 p-5 flex">
-        <div class="flex">
+    <div class="rounded-sm shadow-sm mb-5 p-5 flex align-top flex-wrap sm:flex-nowrap">
+        <div class="flex w-full">
             <div
-                class="aspect-square bg-black/5 w-[35px] h-[35px] rounded-sm overflow-hidden flex items-center justify-center">
-                <img class="w-full h-full max-w-[80%] max-h-[80%] object-cover"
-                    src="/src/base/assets/img/default-box.svg" srcset="{{ module.icon }}" alt="{{ module.name }} icon">
+                class="aspect-square bg-black/5 w-full max-w-[35px] h-[35px] rounded-sm overflow-hidden flex items-center justify-center">
+                <img class="w-[50%] h-[50%] object-cover align-middle" src="/src/base/assets/img/default-box.svg"
+                    srcset="{{ module.icon }}" alt="{{ module.name }} icon">
             </div>
-            <div class="ms-3">
-                <h1>{{ module.name }}</h1>
-            </div>
-        </div>
-        <div class="ms-auto">
+            <div class="ms-3 w-full max-w-[450px]">
+                <h1>{{ module.name }} {% if not module.controlable %}<span class="italic text-sm text-gray-400/70">(System module)</span>{% endif %}
+                </h1>
+                <p class="text-sm text-ellipsis text-wrap text-gray-400">{{ module.description }}</p>
+                <p class="text-[10px] text-ellipsis text-wrap text-gray-400 mt-1">
+                    {% if module.author %}
+                    <span class="mr-3">Author : {{ module.author }}</span>
+                    {% endif %}
 
+                    {% if module.version %}
+                    <span class="mr-3">Version: {{ module.version }}</span>
+                    {% endif %}
+
+                    {% if module.license %}
+                    <span class="m-3">License: {{ module.license }}</span>
+                    {% endif %}
+
+                    {% if module.website %}
+                    <span class="mr-3">Website: <a class="text-blue-400 underline" href="{{ module.website }}">{{
+                            module.website }}</a></span>
+                    {% endif %}
+
+                </p>
+            </div>
         </div>
+        {% if module.controlable %}
+        <div class="ms-[35px] sm:ms-auto w-full mt-3 flex items-end">
+            <a href="{{ '/module/' ~ module.name | admin_url }}" class="btn btn-sm">Disable</a>
+            <a href="{{ '/module/' ~ module.name | admin_url }}" class="btn btn-sm">Delete</a>
+        </div>
+        {% endif %}
     </div>
 
     {% endfor %}

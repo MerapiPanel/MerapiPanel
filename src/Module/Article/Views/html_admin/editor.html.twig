@@ -2,7 +2,7 @@
 {% block header_title %}New Content{% endblock %}
 
 {% block head_javascripts %}
-<script src="{{ '@content/assets/dist/editor.bundle.js' | assets }}"></script>
+<script src="{{ '@article/assets/dist/editor.bundle.js' | assets }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -58,7 +58,7 @@
     <main>
         <section>
             <header class="sticky top-0 shadow-md bg-white p-3 h-[60px] flex z-10 items-center">
-                <a href="{{ 'content' | admin_url }}" class="flex items-center justify-center w-[80px] h-[35px] border aspect-square rounded">Back</a>
+                <a href="{{ 'article' | admin_url }}" class="flex items-center justify-center w-[80px] h-[35px] border aspect-square rounded">Back</a>
                 <h1 class="ms-3 text-xl font-bold">Content Editor</h1>
                 <button
                     class="lg:hidden ms-auto sidebar-toggle w-[35px] h-[35px] flex items-center justify-center border aspect-square rounded"><i

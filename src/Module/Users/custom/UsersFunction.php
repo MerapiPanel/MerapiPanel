@@ -2,7 +2,9 @@
 
 namespace MerapiPanel\Module\Users\Custom;
 
-class Extension
+use MerapiPanel\Core\View\Abstract\ViewFunction;
+
+class UsersFunction extends ViewFunction
 {
 
     public function getAvatar($email, $size = 120)

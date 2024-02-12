@@ -1,0 +1,2 @@
+name: User
+description: The user module is used to manage users on the website, limit access, add accounts, edit and delete.

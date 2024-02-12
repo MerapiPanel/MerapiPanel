@@ -266,6 +266,10 @@ class Box
 class BoxModule
 {
 
+
+    const DEFAULT_MODULES = [
+        "Auth", "FileManager", "Menu", "Modules", "Pages", "Panel", "Settings", "Site", "Users", "Template", "TemplateEditor"
+    ];
     // is a base className of module
     private $baseModule;
 
@@ -388,7 +392,8 @@ class BoxModule
             "description" => "The base module of MerapiPanel",
             "author" => "Il4mb",
             "license" => "MIT",
-            "url" => "https://github.com/Il4mb/MerapiPanel"
+            "website" => "https://github.com/MerapiPanel",
+            "controlable" => in_array($this->getModuleName(), self::DEFAULT_MODULES) ? false : true
         ];
 
         $yamlFile = __DIR__ . "/module/" . $this->getModuleName() . "/info.yml";

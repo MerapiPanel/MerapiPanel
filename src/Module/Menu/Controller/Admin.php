@@ -20,7 +20,7 @@ class Admin extends Module
             'order' => 3,
             "parent" => "",
             'name' => "Menu",
-            'icon' => 'fa-regular fa-folder',
+            'icon' => 'fa-solid fa-bars-staggered',
             'link' => $route->getPath()
         ]);
     }
