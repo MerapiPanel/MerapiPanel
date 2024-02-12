@@ -55,8 +55,8 @@ class ProcessingComponent implements \Twig\Loader\LoaderInterface
             $method = $matches[2];
             $attributes = trim($matches[3]);
 
-            $instanceAddress = "\\Module\\{$module}\\Views\\Component";
-            $instance = Box::Get($this)->$instanceAddress();
+            $instanceAddress = "Module\\{$module}\\Views\\Component";
+            $instance = Box::module($module)->service("Views\\Component");
 
             $output = "";
             if ($instance instanceof Proxy && (method_exists(Proxy::Real($instance), $method))) {

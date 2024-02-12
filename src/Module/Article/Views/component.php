@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\Articel\Views;
+namespace MerapiPanel\Module\Article\Views;
 
 use MerapiPanel\Core\View\Component\ProcessingComponent;
 
