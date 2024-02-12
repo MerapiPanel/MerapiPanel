@@ -9,9 +9,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	{% block meta %}{% endblock %}
-	{% block stylesheets %}{% endblock %}
-	<script src="{{ 'dist/index.bundle.js' | assets }}"></script>
-	{% block head_javascripts %}{% endblock %}
+	{% block stylesheet %}{% endblock %}
+	<script src="{{ '/src/base/assets/dist/index.bundle.js' }}"></script>
+	{% block head_javascript %}{% endblock %}
 	{% endblock %}
 </head>
 
@@ -33,7 +33,7 @@
 	</main>
 
 
-	{% block javascripts %}{% endblock %}
+	{% block javascript %}{% endblock %}
 	{% endblock %}
 </body>
 

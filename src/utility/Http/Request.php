@@ -13,7 +13,6 @@ class Request
     protected $method;
     protected $path;
 
-
     /**
      * Constructs a new instance of the class.
      *
@@ -24,7 +23,6 @@ class Request
 
         $this->method  = $_SERVER['REQUEST_METHOD'];
         $this->path    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
         $this->header = new RequestHeader();
         $this->query  = new RequestQuery();
         $this->form   = new RequestForm();
@@ -118,19 +116,26 @@ class Request
      */
     function __call($name, $arguments): string | false
     {
+
         $name = $this->camelCaseToKebabCase($name);
-        if (!isset($this->form->$name)) return false;
+        if (!isset($this->form->$name)) {
+            if (empty($arguments)) return $this->__get($name);
+            return false;
+        }
         return $this->form->$name;
     }
 
 
-    
+
 
     /**
      * Magic method use fro return get query value
+     * if not set will forward to __get
      */
     public function __get($name): string | false
     {
+
+        // error_log("From Request Traying Get : " . $name);
         $name = $this->camelCaseToKebabCase($name);
         if (!isset($this->query->$name)) return false;
         return $this->query->$name;
@@ -141,6 +146,7 @@ class Request
 
     /**
      * description: transform camel case to kebab case example : FooBar => foo-bar
+     * if not set return false
      */
     function camelCaseToKebabCase($string)
     {
@@ -154,20 +160,18 @@ class Request
     }
 
 
+    // public function __toJson()
+    // {
 
-
-    public function __toJson()
-    {
-
-        return [
-            'headers' => $this->header,
-            'body' => $this->body,
-            'params' => $this->params,
-            'query' => $this->query,
-            'method' => $this->method,
-            'path' => $this->path,
-        ];
-    }
+    //     return [
+    //         'headers' => $this->header,
+    //         'body' => $this->body,
+    //         'params' => $this->params,
+    //         'query' => $this->query,
+    //         'method' => $this->method,
+    //         'path' => $this->path,
+    //     ];
+    // }
 }
 
 

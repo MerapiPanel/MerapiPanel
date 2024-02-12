@@ -4,6 +4,7 @@ namespace MerapiPanel\Core\View;
 
 use Exception;
 use MerapiPanel\Box;
+use MerapiPanel\Core\Proxy;
 use MerapiPanel\Core\View\Loader;
 use MerapiPanel\Core\Section;
 use MerapiPanel\Core\View\Component\ProcessingComponent;
@@ -57,7 +58,8 @@ class View
 
         $this->twig->addGlobal("admin", $admin);
         $this->twig->addGlobal("guest", $guest);
-        // $this->twig->addGlobal("comp", new ViewComponent());
+
+        $this->addGlobal("request", Proxy::Real(Box::utility_http_request()));
     }
 
 
@@ -113,7 +115,6 @@ class View
     public function __toString()
     {
 
-        $this->variables['request'] = Box::Get($this)->utility_http_request();
         if (!isset($this->wrapper)) return "Unprepare wrapper or unready view";
         return $this->wrapper->render($this->variables);
     }

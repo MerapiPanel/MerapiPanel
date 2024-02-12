@@ -5,7 +5,7 @@
 
 
 
-{% block stylesheets %}
+{% block stylesheet %}
 <link rel="stylesheet" href="{{ '@modules/assets/css/style.css' | assets }}">
 {% endblock %}
 
@@ -25,8 +25,9 @@
                     srcset="{{ module.icon }}" alt="{{ module.name }} icon">
             </div>
             <div class="ms-3 w-full max-w-[450px]">
-                <h1>{{ module.name }} {% if not module.controlable %}<span class="italic text-sm text-gray-400/70">(System module)</span>{% endif %}</h1>
-                
+                <h1>{{ module.name }} {% if not module.controlable %}<span
+                        class="italic text-sm text-gray-400/70">(System module)</span>{% endif %}</h1>
+
                 <p class="text-[10px] text-ellipsis text-wrap text-gray-400">
                     {% if module.author %}
                     <span class="mr-3">Author : {{ module.author }}</span>
@@ -64,9 +65,27 @@
 {% endblock %}
 
 {% block javascript %}
-<script>
-    function readmore() {
+<script type="text/javascript">
 
-    }
+    $(document).ready(function () {
+
+        $("div.module-text").each(function (x) {
+            let el = $("div.module-text")[x];
+
+            if (el.scrollHeight > $(el).innerHeight() + 5) {
+
+                let readMoreHandler = $(`<button class="btn btn-sm absolute bottom-0 right-0">read more</button>`);
+
+                $(el).addClass("relative")
+                $(el).append(readMoreHandler)
+
+                readMoreHandler.on("click", function () {
+                    $(el).toggleClass("unwrap")
+                    $(this).text($(this).text() == "read more" ? "read less" : "read more")
+                });
+            }
+            console.log(el)
+        })
+    })
 </script>
 {% endblock %}

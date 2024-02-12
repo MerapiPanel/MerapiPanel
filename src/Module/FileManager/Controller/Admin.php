@@ -166,8 +166,8 @@ class Admin extends Module
     public function createFolder(Request $request)
     {
 
-        $name = $request->name();
-        $parent = $request->parent();
+        $name = $request->name;
+        $parent = $request->parent;
         $newdirectory = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (empty(rtrim($parent, "\\/")) ? "/" : "/" . ltrim($parent, "\\/")) . "/" . trim($name, "\\/");
 
         try {
@@ -282,9 +282,11 @@ class Admin extends Module
     public function index($req)
     {
 
-        $showHidden = $req->showHidden();
+        $showHidden = $req->showHidden;
+        $directory = $req->directory;
 
-        $root = $_SERVER['DOCUMENT_ROOT'] . '/public/upload/' . (!empty($req->getQuery("directory")) ? ltrim($req->getQuery("directory"), "\\/") : "");
+        $root = $_SERVER['DOCUMENT_ROOT'] . '/public/upload/' . (!empty($directory) ? ltrim($directory, "\\/") : "");
+
         $container = [];
 
         if (!is_file($root)) {
@@ -364,7 +366,7 @@ class Admin extends Module
         }
 
         // Ensure a directory exists to store the uploaded files
-        $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (!empty($req->parent()) ? '/' . ltrim($req->parent(), "\\/") : "");
+        $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (!empty($req->parent) ? '/' . ltrim($req->parent, "\\/") : "");
         if (!is_dir($uploadDirectory)) {
             mkdir($uploadDirectory, 0755, true);
         }
@@ -474,7 +476,7 @@ class Admin extends Module
     public function imageViewer(Request $req)
     {
 
-        $path = urldecode($req->path());
+        $path = urldecode($req->path);
         $file = $_SERVER['DOCUMENT_ROOT'] . '/public/upload' . (!empty($path) ? '/' . ltrim($path, "\\/") : "");
         $destination = $_SERVER['DOCUMENT_ROOT'] . '/public/upload/.resize';
         if (!file_exists($destination)) {

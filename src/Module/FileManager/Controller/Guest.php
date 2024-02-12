@@ -167,7 +167,11 @@ class Guest extends Module
         $output = ob_get_flush();
         ob_clean();
 
-        header("Content-Type: " . mime_content_type($realPath));
+        $mimeTypes = json_decode(file_get_contents(__DIR__ . "/../mimeType.json"), true);
+
+        // Set the appropriate Content-Type header
+        $contentType = $mimeTypes[strtolower(pathinfo($realPath, PATHINFO_EXTENSION))] ?? 'application/octet-stream'; // Default to binary if MIME type is unknown
+        header("Content-Type: $contentType");
 
         return $output;
     }

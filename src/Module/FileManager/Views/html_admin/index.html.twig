@@ -1,11 +1,12 @@
 {% extends "@admin::panel/base.html.twig" %}
 
 
-{% set directory = request.getQuery("directory") %}
+{% set directory = request.directory %}
+
+
 {% block body %}
 
 <body class="min-h-screen min-w-screen bg-slate-100 text-slate-700">
-
 
     {% include "@parts::panel/navigation.html.twig" %}
 

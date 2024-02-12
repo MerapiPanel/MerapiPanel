@@ -82,7 +82,7 @@ class Util
 
 
 
-    public static function cleanHtmlString($htmlString, $allowedTags = ['i', 'b', 'li', 'br', 'span', 'pre', 'strong', 'em', 'p', 'code', 'pre', 'hr'])
+    public static function cleanHtmlString($htmlString, $allowedTags = ['i', 'b', 'ul', 'ol', 'li', 'br', 'span', 'pre', 'strong', 'em', 'p', 'code', 'pre', 'hr'])
     {
         // Create a new DOMDocument and load the HTML string into it
         $dom = new \DOMDocument();
