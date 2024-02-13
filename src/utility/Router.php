@@ -405,13 +405,17 @@ class Router extends Component
              */
             $controllerInstance = $this->box->$controllerClass();
 
+            // execute controller method
             ob_start();
             $output = $controllerInstance->$method($request);
             ob_end_clean();
 
+
             if ($output instanceof Response) {
                 return $output;
             }
+
+
 
             if ($request->getMethod() === Route::GET) {
 
@@ -419,22 +423,23 @@ class Router extends Component
 
                     $response->setContent("$output");
                     return $response;
-                } elseif (is_string($output)) {
+                } 
+                // event method get return a string 
+                elseif (is_string($output)) {
 
                     $response->setContent($output);
                     return $response;
+                } 
+                // event method get return an array
+                elseif (is_array($output)) {
+                    return $this->handleApiResponse($output);
                 }
 
                 throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($output) . " returned", 400);
 
             }
 
-
-            if (is_object($output) || is_array($output)) {
-
-                return $this->handleApiResponse($output);
-            }
-
+            // event method not get return an object or array or string
             return $this->handleApiResponse($output);
 
 

@@ -160,7 +160,7 @@ class Box
                     }
                 } catch (\Exception $e) {
 
-                    throw new \MerapiPanel\Core\Exception\MethodNotFoud($e->getMessage());
+                    throw new MethodNotFoud($e->getMessage());
                 }
             }
 
@@ -281,6 +281,7 @@ class BoxModule
     const DEFAULT_MODULES = [
         "Auth",
         "FileManager",
+        "Dashboard",
         "Menu",
         "Modules",
         "Pages",
@@ -321,7 +322,7 @@ class BoxModule
         $proxy = Box::$className();
 
 
-        if ($proxy instanceof \MerapiPanel\Core\Proxy) {
+        if ($proxy instanceof Proxy) {
 
 
             if (isset($args[1]) && is_array($args[1])) {
@@ -440,12 +441,12 @@ class BoxModule
                     }
                 }
             }
+        }
 
-            unset($info["icon"]);
-            $icon = $this->findIcon();
-            if (!empty($icon)) {
-                $info["icon"] = Box::module("FileManager")->service("Assets")->url("@{$this->getModuleName()}/{$icon}");
-            }
+        unset($info["icon"]);
+        $icon = $this->findIcon();
+        if (!empty($icon)) {
+            $info["icon"] = Box::module("FileManager")->service("Assets")->url("@{$this->getModuleName()}/{$icon}");
         }
 
         return $info;

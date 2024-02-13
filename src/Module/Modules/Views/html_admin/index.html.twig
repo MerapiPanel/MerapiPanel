@@ -17,14 +17,14 @@
 
     {% for module in admin.modules_ListModule %}
 
-    <div class="rounded-sm shadow-sm mb-5 p-5 flex align-top flex-wrap sm:flex-nowrap">
+    <div class="rounded-sm bg-white shadow-sm mb-5 p-5 flex align-top flex-wrap sm:flex-nowrap max-w-[860px]">
         <div class="flex w-full">
             <div
-                class="aspect-square bg-black/5 w-full max-w-[35px] h-[35px] rounded-sm overflow-hidden flex items-center justify-center">
+                class="aspect-square bg-gray-50 w-full max-w-[35px] h-[35px] rounded-sm overflow-hidden flex items-center justify-center">
                 <img class="w-[50%] h-[50%] object-cover align-middle" src="/src/base/assets/img/default-box.svg"
                     srcset="{{ module.icon }}" alt="{{ module.name }} icon">
             </div>
-            <div class="ms-3 w-full max-w-[450px]">
+            <div class="ms-3 w-full">
                 <h1>{{ module.name }} {% if not module.controlable %}<span
                         class="italic text-sm text-gray-400/70">(System module)</span>{% endif %}</h1>
 
@@ -52,7 +52,7 @@
             </div>
         </div>
         {% if module.controlable %}
-        <div class="ms-[35px] sm:ms-auto w-full mt-3 flex items-end">
+        <div class="ms-[25px] sm:ms-auto mt-3 inline-flex items-end">
             <a href="{{ '/module/' ~ module.name | admin_url }}" class="btn btn-sm">Disable</a>
             <a href="{{ '/module/' ~ module.name | admin_url }}" class="btn btn-sm">Delete</a>
         </div>

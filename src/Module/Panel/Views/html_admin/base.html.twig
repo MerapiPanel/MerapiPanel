@@ -3,30 +3,34 @@
 {% block title %}Admin{% endblock %}
 
 {% block stylesheet %}
-
 {% endblock %}
 
 {% block body %}
 
-<body class="min-h-screen min-w-screen bg-slate-100 text-slate-700">
+<body class="min-h-screen min-w-screen bg-slate-100 text-slate-700" id="panel-body">
 
 
     {% include "@parts::panel/navigation.html.twig" %}
 
-    <main class="transition-all duration-300 ms-0 lg:ms-[260px] mx-auto px-4 py-4 pb-24">
+    <main class="transition-all duration-300 ms-0 lg:ms-[260px] mx-auto px-4 py-4 pb-24" id="panel-main">
 
         <div class="max-w-7xl mx-auto">
+            
             {% block header %}
-            <header class="py-3 pb-4 ps-2">
+            <header class="pt-3 flex items-center" id="panel-header">
+                <button
+                    class="btn btn-outline-primary lg:hidden !px-3 !rounded-none mr-3 !bg-white hover:!bg-black/50"
+                    onclick="openNav()"><i class="fa-solid fa-bars"></i></button>
                 <h1 class="font-bold text-3xl">{% block header_title %}Dashboard{% endblock %}</h1>
             </header>
             {% endblock %}
+     
 
             {% block subheader %}
-            <div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
+            <div class="py-5 w-full flex flex-wrap lg:flex-nowrap place-items-start" id="panel-subheader">
 
                 {% block subheader_search %}
-                <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]">
+                <div class="flex w-full mb-3 sm:mb-0 max-w-[430px]" id="panel-subheader-search">
                     <input class="text-input" type="text" placeholder="Search">
                     <button
                         class="ms-2 bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
@@ -41,7 +45,7 @@
             {% endblock %}
 
             {% block content %}
-            <div class="flex flex-wrap justify-center items-center h-[80vh] w-full">
+            <div class="flex flex-wrap justify-center items-center h-[80vh] w-full" id="panel-content">
                 <div class="text-center">
                     <h2 class="text-3xl font-bold">Coming soon</h2>
                     <p>this is base template, you should not see this</p>

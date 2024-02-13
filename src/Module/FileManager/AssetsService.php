@@ -10,13 +10,19 @@ class AssetsService
 {
 
     private AssetMap $assetsMap;
-
+    public string $routeLink = "/public/filemanager/_assets/{data}";
 
     public function __construct()
     {
         $this->assetsMap = new AssetMap();
     }
-    public string $routeLink = "/public/filemanager/_assets/{data}";
+
+
+
+    private static function createMapKey($absoluteFilePath)
+    {
+        return strtolower(preg_replace("/[^a-z0-9]+/i", "", $absoluteFilePath));
+    }
 
 
 
@@ -33,7 +39,7 @@ class AssetsService
         $absoluteFilePath = preg_replace("/\?.*/", "", $absoluteFilePath);
 
         // Generate a key map using the sanitized absolute file path
-        $keyMap = strtolower(preg_replace("/[^a-z0-9]+/i", "", $absoluteFilePath));
+        $keyMap = self::createMapKey($absoluteFilePath);
 
         // Check if the URL for the key map exists in the assets map and is not expired
         if (isset($this->assetsMap[$keyMap]["url"]) && time() - $this->assetsMap[$keyMap]["time"] < 3600) {
@@ -59,18 +65,25 @@ class AssetsService
 
     public function getAssset(Request $req)
     {
-        // if (!$req->http("referer")) {
-        //     return [
-        //         "code" => 403,
-        //         "message" => "Forbidden - Not allowed!"
-        //     ];
-        // }
+        if (!$req->http("referer")) {
+            return [
+                "code" => 403,
+                "message" => "Forbidden - Not allowed!"
+            ];
+        }
 
         $path = AES::decrypt(rawurldecode($req->data));
         $realPath = $this->getRealPath($path);
 
-        if (!file_exists($realPath)) {
-            return "Assets not found " . $realPath;
+        if (!is_string($realPath) || !file_exists($realPath)) {
+
+            $keyMap = self::createMapKey($path);
+            unset($this->assetsMap[$keyMap]);
+            
+            return [
+                "code" => 404,
+                "message" => "Assets not found "
+            ];
         }
 
         $response = new Response();
@@ -87,9 +100,6 @@ class AssetsService
         $response->setHeader("Last-Modified", gmdate("D, d M Y H:i:s", $lastModifiedTime) . " GMT");
         $response->setHeader("Etag", $etag);
 
-
-        // isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-        //   if ($_SERVER['HTTP_IF_NONE_MATCH'] === $etag
         // Check if the page has been modified since the browser's cache
         if ($req->http("if-modified-since") && $req->http("if-modified-since") == gmdate("D, d M Y H:i:s", $lastModifiedTime)) {
             // Return 304 Not Modified without any content if the ETag matches
@@ -110,7 +120,7 @@ class AssetsService
         $response->setHeader("Content-Type", $contentType);
 
 
-        if(strtolower(pathinfo($realPath, PATHINFO_EXTENSION)) == "svg") {
+        if (strtolower(pathinfo($realPath, PATHINFO_EXTENSION)) == "svg") {
             error_log("Content-Type: " . $contentType);
         }
 
@@ -127,7 +137,7 @@ class AssetsService
     {
 
         if (!$path)
-            return "Assets not found";
+            return false;
 
         preg_match("/\@(\w+)/i", $path, $matches);
 
@@ -176,7 +186,7 @@ class AssetMap implements \ArrayAccess
 
 
 
-    function offsetExists(mixed $offset) : bool
+    function offsetExists(mixed $offset): bool
     {
         return isset($this->stack_data[$offset]);
     }
@@ -185,7 +195,7 @@ class AssetMap implements \ArrayAccess
 
 
 
-    function offsetGet(mixed $offset) : mixed
+    function offsetGet(mixed $offset): mixed
     {
         return $this->stack_data[$offset];
     }
@@ -194,7 +204,7 @@ class AssetMap implements \ArrayAccess
 
 
 
-    function offsetSet($offset, $value) : void
+    function offsetSet($offset, $value): void
     {
         $this->stack_data[$offset] = $value;
         $this->save();
@@ -204,7 +214,7 @@ class AssetMap implements \ArrayAccess
 
 
 
-    function offsetUnset($offset) : void
+    function offsetUnset($offset): void
     {
         unset($this->stack_data[$offset]);
         $this->save();
@@ -214,7 +224,7 @@ class AssetMap implements \ArrayAccess
 
 
 
-    private function save() : void
+    private function save(): void
     {
 
         file_put_contents($this->savePath, json_encode($this->stack_data, JSON_PRETTY_PRINT));

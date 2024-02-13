@@ -1,5 +1,5 @@
 name: FileManager
-description: The <code>file manager module</code> is used to manage files on the website, <ol><li>limit access,</li><li>add files,</li><li>edit files,</li><li>delete files.</li><ol>
+description: The <code>FileManager</code> module is used to manage files on the website, <ol><li>limit access,</li><li>add files,</li><li>edit files,</li><li>delete files.</li><ol>
 version: 1.2.0
 license: MIT
 author: Il4mb

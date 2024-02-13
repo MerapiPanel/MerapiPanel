@@ -102,6 +102,7 @@ input[type="radio"] {
     @apply w-4 h-4 focus-within:drop-shadow-[0_0_2px_#3492eb];
 }
 
+/* Text define */
 .text-primary {
     @apply text-blue-600 dark:text-blue-400;
 }
@@ -118,8 +119,10 @@ input[type="radio"] {
     @apply text-cyan-600 dark:text-cyan-400;
 }
 
+
+/* Button define */
 .btn {
-    @apply px-7 py-[0.3rem] border-none rounded hover:shadow-sm transition-all duration-300;
+    @apply px-7 py-[0.3rem] overflow-hidden !border-none rounded shadow-[0_0_0_1px] shadow-gray-50/50 hover:shadow-sm transition-all duration-300;
 }
 .btn-sm {
     @apply px-6 py-[0.3rem] rounded-sm text-[0.7rem];
@@ -144,22 +147,26 @@ input[type="radio"] {
     @apply bg-slate-500 hover:bg-slate-600 text-white shadow-slate-500/20;
 }
 
-.btn-primary-outline {
-    @apply bg-transparent text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white;
+.btn-outline-primary {
+    @apply bg-transparent text-blue-500 shadow-[0_0_0_1px] shadow-blue-500/10 hover:bg-blue-500 hover:text-white;
 }
-.btn-danger-outline {
-    @apply bg-transparent text-red-500 border border-red-500 hover:bg-red-500 hover:text-white;
+.btn-outline-danger {
+    @apply bg-transparent text-red-500 shadow-[0_0_0_1px] shadow-red-500/10 hover:bg-red-500 hover:text-white;
 }
-.btn-warning-outline {
-    @apply bg-transparent text-yellow-500 border border-yellow-500 hover:bg-yellow-500 hover:text-white;
+.btn-outline-warning {
+    @apply bg-transparent text-yellow-500 shadow-[0_0_0_1px] shadow-yellow-500/10 hover:bg-yellow-500 hover:text-white;
 }
-.btn-success-outline {
-    @apply bg-transparent text-green-500 border border-green-500 hover:bg-green-500 hover:text-white;
+.btn-outline-success {
+    @apply bg-transparent text-green-500 shadow-[0_0_0_1px] shadow-green-500/10 hover:bg-green-500 hover:text-white;
 }
-.btn-secondary-outline {
-    @apply bg-transparent text-slate-500 border border-slate-500 hover:bg-slate-500 hover:text-white;
+.btn-outline-secondary {
+    @apply bg-transparent text-slate-500 shadow-[0_0_0_1px] shadow-slate-500/10 hover:bg-slate-500 hover:text-white;
+}
+.btn-close {
+    @apply absolute px-2 py-2 top-2 right-4 scale-100 hover:scale-[1.5] hover:text-red-400 transition-all;
 }
 
+/* Modal define */
 .modal {
     @apply fixed top-0 left-0 w-full h-full z-[260];
     background-color: rgba(0, 0, 0, 0.2);
@@ -184,10 +191,8 @@ input[type="radio"] {
     @apply ms-3;
 }
 
-.btn-close {
-    @apply absolute px-2 py-2 top-2 right-4 scale-100 hover:scale-[1.5] hover:text-red-400 transition-all;
-}
 
+/* dropdown define */
 .dropdown {
     @apply relative flex flex-col justify-end z-10;
 }
@@ -228,6 +233,8 @@ input[type="radio"] {
     position: sticky;
     top: 0;
 }
+
+/* offcanvas define */
 .offcanvas {
     @apply overflow-hidden max-w-[400px] z-[260];
 }

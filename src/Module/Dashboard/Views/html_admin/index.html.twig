@@ -1,7 +1,17 @@
 {% extends "@admin::panel/base.html.twig" %}
+
+
 {% block header_title %}Dashboard{% endblock %}
 
 {% block subheader %}{% endblock %}
+
+
+{% block head_javascript %}
+<script src="{{ '@dashboard/assets/dist/index.bundle.js' | assets }}"></script>
+{% endblock %}
+
+
+
 
 {% block content %}
 <div class="bg-yellow-200 py-4 ps-4 mt-4 shadow mb-3">
@@ -9,7 +19,7 @@
 </div>
 
 
-<div class="py-6">
+<div class="py-6" id="dashboard-widget">
 
     <h3 class="text-xl font-bold">Higlights</h3>
 
