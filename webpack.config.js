@@ -92,11 +92,19 @@ module.exports = {
                 test: /\.twig$/,
                 use: 'twig-loader',
             },
+            {
+                test: /\.tsx?$/,
+                use: 'babel-loader',
+                exclude: /node_modules/,
+            },
         ]
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
     },
     watch: true, // Enable watch mode
     watchOptions: {
-        ignored: /node_modules/, // Exclude node_modules directory from watching
+        ignored: "/node_modules/*", // Exclude node_modules directory from watching
         aggregateTimeout: 300, // Delay before rebuilding (in milliseconds)
         poll: 1000, // Check for changes every second
     },

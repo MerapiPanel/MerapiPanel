@@ -286,7 +286,7 @@ class BoxModule
         "Modules",
         "Pages",
         "Panel",
-        "Settings",
+        "Setting",
         "Site",
         "Users",
         "Template",

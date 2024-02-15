@@ -7,56 +7,58 @@
 
 
 {% block head_javascript %}
-<script src="{{ '@dashboard/assets/dist/index.bundle.js' | assets }}"></script>
+<script src="{{ '@dashboard/dist/index.bundle.js' | assets }}"></script>
 {% endblock %}
 
 
 
-
 {% block content %}
-<div class="bg-yellow-200 py-4 ps-4 mt-4 shadow mb-3">
-    <h2 class="text-xl">Welcome to the admin panel</h2>
-</div>
+<div class="widget-container" id="widget-container">
 
-
-<div class="py-6" id="dashboard-widget">
-
-    <h3 class="text-xl font-bold">Higlights</h3>
-
-    <div class="grid gap-6 grid-cols-3">
-
-        <div class="bg-white py-4 ps-4 mt-4 shadow rounded">
-            <h4 class="text-lg">Some Content</h4>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo sequi
-                tempore
-                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit enim
-                corrupti?</p>
-        </div>
-        <div class="bg-white py-4 ps-4 mt-4 shadow rounded">
-            <h4 class="text-lg">Some Content</h4>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo sequi
-                tempore
-                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit enim
-                corrupti?</p>
-        </div>
-        <div class="bg-white py-4 ps-4 mt-4 shadow rounded">
-            <h4 class="text-lg">Some Content</h4>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo sequi
-                tempore
-                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit enim
-                corrupti?</p>
-        </div>
+    <div class="widget-box">
+        <i class="widget-ic ic-default"></i>
+        <h2 class="text-xl">Welcome to the admin panel</h2>
     </div>
 
-</div>
+    <div class="widget-box"></div>
+    
+    <div class="widget-box">
+
+        <div class="bg-white py-4 ps-4 mt-4 shadow rounded widget-item">
+            <h4 class="text-lg">Some Content</h4>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo
+                sequi
+                tempore
+                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit
+                enim
+                corrupti?</p>
+        </div>
+        <div class="bg-white py-4 ps-4 mt-4 shadow rounded widget-item">
+            <h4 class="text-lg">Some Content</h4>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo
+                sequi
+                tempore
+                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit
+                enim
+                corrupti?</p>
+        </div>
+        <div class="bg-white py-4 ps-4 mt-4 shadow rounded widget-item">
+            <h4 class="text-lg">Some Content</h4>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo
+                sequi
+                tempore
+                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit
+                enim
+                corrupti?</p>
+        </div>
+
+    </div>
 
 
-<div class="py-6">
-    <h3 class="text-xl font-bold mb-4">Todo's</h3>
+    <div class="widget-box">
+        <h3 class="text-xl font-bold mb-4">Todo's</h3>
 
-    <div class="grid grid-cols-3 gap-6">
-
-        <div class="col-span-1">
+        <div class="col-span-1 widget-item">
             <div class="bg-white rounded shadow">
                 <ul class="list-disc ms-6 p-4">
                     <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
@@ -70,15 +72,16 @@
             </div>
         </div>
 
-        <div class="col-span-2">
+        <div class="col-span-2 widget-item">
             <div class="bg-white rounded shadow p-4">
                 <h4 class="text-lg font-bold">Passed</h4>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad nisi esse reiciendis fugit molestiae iure
-                    reprehenderit mollitia saepe. Impedit nostrum non nulla in eius quam maiores sint perferendis omnis
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad nisi esse reiciendis fugit molestiae
+                    iure
+                    reprehenderit mollitia saepe. Impedit nostrum non nulla in eius quam maiores sint perferendis
+                    omnis
                     unde.</p>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}
