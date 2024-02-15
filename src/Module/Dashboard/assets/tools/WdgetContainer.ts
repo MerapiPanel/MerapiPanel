@@ -1,5 +1,3 @@
-
-import { data, event } from "jquery";
 import { WdgetBlock } from "./WdgetBlock";
 import { WdgetEntity } from "./WdgetEntity";
 import { DragEvent } from "./Widget";
@@ -76,22 +74,40 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
             target.addClass("highlight");
 
         })
+
+
         target.on("drag:out", (e, d: DragEvent) => {
 
+
             if (!currentTarget && currentTarget !== target[0]) return;
+
             currentTarget = null;
-            // $("div.widget-block.widget-mook").remove();
-            // console.log("out")
+
+            this.el.find(".widget-mook").remove();
             target.removeClass("highlight");
 
         })
+
+
+        target.on("drag:move", (e, d: DragEvent) => {
+
+
+            if (d.target !== target[0]) return;
+            this.dragMove(d);
+
+        })
+
+
         target.on("drag:drop", (e, d: DragEvent) => {
 
             if (d.target !== target[0]) return;
 
             $(this.el).removeClass("highlight");
 
+            console.log("drop", d.source?.entity);
             this.blocks.push(d.source?.entity as WdgetBlock);
+
+            console.log(this.blocks);
 
             target.off("drag:in");
             target.off("drag:out");
@@ -99,76 +115,51 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
             target.off("drag:move");
 
             this.render();
-
-            // $(this.el).append("<div class='widget-block widget-mook'></div>");
-            // console.log("drop to : ", this.el);
-            // $("div.widget-block.widget-mook").remove();
-
-
         })
 
-        target.on("drag:move", (e, d: DragEvent) => {
 
-            if (d.target !== target[0]) return;
-
-            // console.log("move")
-            this.dragMove(d);
-
-        })
     }
 
 
     dragMove(data: DragEvent) {
 
 
-
-        if (this.blocks.length <= 0 && data.target != undefined) {
-
-            // console.clear();
-            // console.log(this.blocks, data.target)
-
-            $(data.target).append($("div.widget-block.widget-mook"));
-
-            return;
-        }
+        let isMookInsert = false;
+        this.el.find(".widget-mook").remove();
+        const mookBox = $(`<div class='widget-block widget-mook'></div>`);
 
         this.blocks.forEach((block) => {
 
-            if (block.el == undefined) return;
+            if (block.el) {
 
-            let box = $(block.el);
-            var boxPos = box.offset() as JQuery.Coordinates;
-            var boxRight = boxPos.left + (box.width() as number);
-            var boxBottom = boxPos.top + (box.height() as number);
+                let box = $(block.el);
+                var boxPos = box.offset() as JQuery.Coordinates;
+                var boxRight = boxPos.left + (box.innerWidth() as number);
+                var boxBottom = boxPos.top + (box.innerHeight() as number);
 
-            if (data.coordinate.x > boxPos.left && data.coordinate.x < boxRight && data.coordinate.y > boxPos.top && data.coordinate.y < boxBottom) {
+                if (data.coordinate.x > boxPos.left && data.coordinate.x < boxRight && data.coordinate.y > boxPos.top && data.coordinate.y < boxBottom) {
 
+                    if (data.coordinate.x < (boxPos.left + (box.width() as number / 2))) {
+                        // insert before
+                        mookBox.insertBefore(box);
 
-                $("div.widget-block-container.widget-mook").remove();
-                const mookBox = $(`<div class='widget-block-container widget-mook'></div>`);
+                    } else {
+                        // insert after
+                        mookBox.insertAfter(box);
 
-                let insertPosition = (data.coordinate.y > (boxPos.top + (box.height() as number / 2))) ? 1 : 0;
+                    }
 
-                if (insertPosition == 1) {
-                    // insert after
-                    mookBox.insertAfter(box);
-                } else if (insertPosition == 0) {
-                    // insert before
-                    mookBox.insertBefore(box);
+                    isMookInsert = true;
+
                 }
-
-                return;
-
-            } else if (data.coordinate.x > boxPos.left && data.coordinate.x < boxRight && data.coordinate.y > boxPos.top && data.coordinate.y < boxBottom) {
-                $("div.widget-block-container.widget-mook").remove();
             }
 
         })
 
+        if(!isMookInsert){
+            this.el.append(mookBox);
+        }
     }
-
-
-    // mookBlockView( ,)
 
 
 

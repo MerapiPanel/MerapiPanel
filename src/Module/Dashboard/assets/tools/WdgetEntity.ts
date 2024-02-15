@@ -2,9 +2,10 @@ import { WdgetBlock } from "./WdgetBlock";
 import { WdgetContainer } from "./WdgetContainer";
 
 type WdgetEntity = {
-    el?: JQuery,
-    toolbox(): JQuery
-    render(): JQuery
+    el?: JQuery;
+    
+    toolbox(): JQuery;
+    render(): JQuery;
 }
 
 type WdgetEntityStack = {
@@ -30,7 +31,6 @@ class WdgetEntityManager {
                 attribute: entity["attribute"]
             });
         }
- 
     }
 
     getEntity(name: string | number) {

@@ -1,7 +1,4 @@
-
 import "./../css/style.scss";
-
-import { WdgetBlock, WdgetBlockType } from "./WdgetBlock";
 import { WdgetContainer, WdgetContainerType } from "./WdgetContainer";
 import { WdgetEntity, WdgetEntityManager } from "./WdgetEntity";
 

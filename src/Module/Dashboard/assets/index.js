@@ -7,14 +7,16 @@ $(function () {
     const boxs = [
         { // box
             title: "Box 1",
-            blocks: [
-               
-            ]
+            blocks: []
         },
         {
             title: "Box 2",
             blocks: [
-                
+                {
+                    title: "Block 1",
+                    content: "<p>Content of the block...</p>",
+                    attribute: {}
+                }
             ]
         }
     ];
@@ -38,7 +40,7 @@ $(function () {
         }
     });
 
-    
+
     widget.entityManager.addEntity("Content", {
         name: "Content",
         content: "<p>Content of the widget</p>",
