@@ -423,13 +423,13 @@ class Router extends Component
 
                     $response->setContent("$output");
                     return $response;
-                } 
+                }
                 // event method get return a string 
                 elseif (is_string($output)) {
 
                     $response->setContent($output);
                     return $response;
-                } 
+                }
                 // event method get return an array
                 elseif (is_array($output)) {
                     return $this->handleApiResponse($output);
@@ -493,8 +493,9 @@ class Router extends Component
             }
         }
 
-        if (empty($content['data']))
-            unset($content['data']);
+        if (isset($content['data']) && $content['data'] == null) {
+           // unset($content['data']);
+        }
 
         $response->setContent($content);
         $response->setStatusCode($content['code']);

@@ -8,6 +8,16 @@
 
 {% block head_javascript %}
 <script src="{{ '@dashboard/dist/index.bundle.js' | assets }}"></script>
+<script>
+    var widgetPayload = {
+        holder: "#widget-container",
+        endpoints: {
+            fetch: "{{ '/widget/fetch' | admin_url }}",
+            save: "{{ '/widget/save' | admin_url }}",
+            load: "{{ '/widget/load' | admin_url }}"
+        }
+    }
+</script>
 {% endblock %}
 
 
@@ -21,7 +31,7 @@
     </div>
 
     <div class="widget-box"></div>
-    
+
     <div class="widget-box">
 
         <div class="bg-white py-4 ps-4 mt-4 shadow rounded widget-item">

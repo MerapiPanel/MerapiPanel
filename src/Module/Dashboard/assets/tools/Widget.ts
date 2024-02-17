@@ -1,6 +1,16 @@
+/**
+ * description: The Wdget class is used to create a widget for the dashboard. It provides methods for adding, removing, and rendering blocks and containers.
+ * author       Il4mb <https://github.com/Il4mb>
+ * date         2022-11-01
+ * version      1.0.0 
+ * @copyright   Copyright (c) 2022 MerapiPanel
+ * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+ */
+
 import "./../css/style.scss";
 import { WdgetContainer, WdgetContainerType } from "./WdgetContainer";
 import { WdgetEntity, WdgetEntityManager } from "./WdgetEntity";
+import { Wdget_EventDragStart, Wdget_EventDragStop, Wdget_EventDraggingMove, Wdget_EventDraggingIn, Wdget_EventDraggingOut, Wdget_EventDrop, Wdget_EventSource, Wdget_EventCoordinate, Wdget_EventMovingData } from "./WdgetEvent";
 
 
 type WgetOptions = {
@@ -8,39 +18,14 @@ type WgetOptions = {
     data: WdgetContainerType[]
 }
 
-type DragEventSource = {
-    el: HTMLElement | null;
-    entity: WdgetEntity | null
-}
-class DragEvent {
-
-    source: DragEventSource | null;
-    target: HTMLElement | null;
-    coordinate: {
-        x: number,
-        y: number
-    };
-
-    constructor(source: DragEventSource | null, target: HTMLElement | null, coordinate: {
-        x: number,
-        y: number
-    }) {
-        this.source = source;
-        this.target = target;
-        this.coordinate = coordinate
-    }
-}
-
-
 
 class Wdget {
 
-    #dragEvent: DragEvent;
     holder: JQuery<HTMLElement>;
     $toggler: JQuery;
     containers: WdgetContainer[] = [];
     wgetEditing: WgetEditing;
-    entityManager: WdgetEntityManager = new WdgetEntityManager();
+    entityManager: WdgetEntityManager = new WdgetEntityManager(this);
 
 
     constructor(holder: string | JQuery<HTMLElement>, options: WgetOptions) {
@@ -51,7 +36,7 @@ class Wdget {
                 this.setToggler($((typeof options.toggler === "string" ? $(options.toggler) : options.toggler)));
             }
             if (options.data) {
-                this.initialWithData(options.data);
+                this.setData(options.data);
             }
         }
 
@@ -59,24 +44,50 @@ class Wdget {
         this.wgetEditing = new WgetEditing(this);
 
         this.render();
-
     }
 
 
 
 
-    initialWithData(data: WdgetContainerType[]) {
 
+    setData(data: WdgetContainerType[]) {
+
+        if (data.length <= 0) this.containers = [];
 
         for (let x = 0; x < data.length; x++) {
 
             let blockData: WdgetContainerType = data[x];
-            let block = WdgetContainer.fromData(blockData);
+            let block = WdgetContainer.fromData(this, blockData);
             this.containers.push(block);
         }
 
         this.render();
     }
+
+    getData() {
+
+        let data: any = [];
+
+        this.containers.forEach(container => {
+            let blocks: any = [];
+
+            container.blocks.forEach(block => {
+                blocks.push({
+                    name: block.name,
+                    title: block.title,
+                    content: block.content,
+                    attribute: block.attribute
+                })
+            })
+            data.push({
+                title: container.title,
+                blocks: blocks
+            })
+        })
+
+        return data;
+    }
+
 
 
 
@@ -91,80 +102,35 @@ class Wdget {
 
     }
 
+
+
+
     dragHandleDefinition(target: JQuery<HTMLElement>) {
 
         let currentTarget: HTMLElement | null = null;
-        target.on("drag:in", (e, d: DragEvent) => {
+        target.on("widget:dragging:in", (e, d: Wdget_EventDraggingIn) => {
 
             if (d.target !== target[0]) return;
             currentTarget = d.target;
             target.addClass("highlight");
 
         })
-        target.on("drag:out", (e, d: DragEvent) => {
+        target.on("widget:dragging:out", (e, d: Wdget_EventDraggingOut) => {
 
             if (!currentTarget && currentTarget !== target[0]) return;
             currentTarget = null;
-            $("div.widget-block-container.widget-mook").remove();
             target.removeClass("highlight");
 
         })
-        target.on("drag:drop", (e, d: DragEvent) => {
+        target.on("widget:drop", (e, d: Wdget_EventDrop) => {
 
             if (d.target !== target[0]) return;
             target.removeClass("highlight");
-
-            $("div.widget-block-container.widget-mook").remove();
-
-        })
-
-        target.on("drag:move", (e, d: DragEvent) => {
-
-            if (d.target !== target[0]) return;
-            this.onDragging(d);
-
+            this.containers.splice(d.index, 0, new WdgetContainer(this));
+            this.render();
         })
     }
 
-    onDrop(data: DragEvent) {
-
-    }
-
-
-
-    onDragging(data: DragEvent) {
-
-        this.containers.forEach((container) => {
-
-            let box = $(container.el);
-            var boxPos = box.offset() as JQuery.Coordinates;
-            var boxRight = boxPos.left + (box.width() as number);
-            var boxBottom = boxPos.top + (box.height() as number);
-
-            if (data.coordinate.x > boxPos.left && data.coordinate.x < boxRight && data.coordinate.y > boxPos.top && data.coordinate.y < boxBottom) {
-
-
-                $("div.widget-block-container.widget-mook").remove();
-                const mookBox = $(`<div class='widget-block-container widget-mook'></div>`);
-
-                let insertPosition = (data.coordinate.y > (boxPos.top + (box.height() as number / 2))) ? 1 : 0;
-
-                if (insertPosition == 1) {
-                    // insert after
-                    mookBox.insertAfter(box);
-                } else if (insertPosition == 0) {
-                    // insert before
-                    mookBox.insertBefore(box);
-                }
-
-                return;
-
-            } else if (data.coordinate.x > boxPos.left && data.coordinate.x < boxRight && data.coordinate.y > boxPos.top && data.coordinate.y < boxBottom) {
-                $("div.widget-block-container.widget-mook").remove();
-            }
-
-        })
-    }
 
 
 
@@ -195,6 +161,8 @@ class Wdget {
         this.containers.forEach((x) => {
             this.holder.append(x.render());
         })
+
+        if (WgetEditing.isEditing) this.wgetEditing.begins();
     }
 }
 
@@ -221,12 +189,15 @@ class WdgetToolbar {
 
     init() {
 
-        this.el.appendTo(document.body);
-        setTimeout(() => {
-            this.el.addClass("open");
-        }, 100)
+        if ($(document.body).find("div.widget-toolbar").length <= 0) {
 
-        this.render();
+            this.el.appendTo(document.body);
+            setTimeout(() => {
+                this.el.addClass("open");
+            }, 100)
+
+            this.render();
+        }
     }
 
 
@@ -266,13 +237,11 @@ class WdgetToolbar {
 class WgetEditing {
 
 
+    static isEditing: boolean = false;
     wget: Wdget;
     toolbar: WdgetToolbar = new WdgetToolbar(this);
     onToggleCallback: Function = function (e: boolean) { console.log(e) };
-
     toolboxs: JQuery<HTMLElement>[] = [];
-    //boxStack: WdgetBox[] = [];
-
 
 
     constructor(wget: Wdget) {
@@ -282,25 +251,27 @@ class WgetEditing {
 
     toggle() {
 
-        let isOpen = false;
+        WgetEditing.isEditing = false;
 
         if ($(document.body).hasClass("widget-editing")) {
 
+            $(this.wget.holder).trigger("widget:edit:close");
             $(document.body).find("#sidenav").css("display", "unset");
             $(document.body).removeClass("widget-editing");
+            this.wget.containers.forEach(e => $(e.el).trigger("widget:edit:close"));
             this.toolbar.destroy();
 
         } else {
 
-            isOpen = true;
+            $(this.wget.holder).trigger("widget:edit:start");
+            WgetEditing.isEditing = true;
             $(document.body).find("#sidenav").css("display", "none");
             $(document.body).toggleClass("widget-editing");
             this.begins();
 
         }
 
-        this.onToggleCallback(isOpen);
-
+        this.onToggleCallback(WgetEditing.isEditing);
     }
 
 
@@ -310,12 +281,12 @@ class WgetEditing {
 
         this.toolboxs = [];
         this.wget.entityManager.getEntities().forEach((x) => {
-
             let toolbox = x.toolbox();
             this.dragHandle(toolbox, x);
             this.toolboxs.push(toolbox);
         })
 
+        this.wget.containers.forEach(e => $(e.el).trigger("widget:edit:start"));
         this.toolbar.init();
     }
 
@@ -336,6 +307,10 @@ class WgetEditing {
             $(document.body).addClass("scrolling-disabled");
             el.addClass("dragging");
 
+            el.trigger("widget:drag:start", new Wdget_EventDragStart(new Wdget_EventSource(el[0], entity), { x: pos_x, y: pos_y }));
+            $(this.wget.holder).trigger("widget:drag:start", new Wdget_EventDragStart(new Wdget_EventSource(el[0], entity), { x: pos_x, y: pos_y }));
+            $(document).trigger("widget:drag:start", new Wdget_EventDragStart(new Wdget_EventSource(el[0], entity), { x: pos_x, y: pos_y }));
+
             clone.appendTo("body");
             clone.css({
                 "position": "absolute",
@@ -348,8 +323,12 @@ class WgetEditing {
                 "height": Math.min(Math.round(el.height() as number), 100) + "px",
             })
 
-            clone.on("drag:stop", (e: any) => {
-                el.trigger("drag:stop", e.data);
+            clone.on("widget:drag:stop", (e: any) => {
+
+                el.trigger("widget:drag:stop", new Wdget_EventDragStop(new Wdget_EventSource(el[0], entity), { x: pos_x, y: pos_y }));
+                $(this.wget.holder).trigger("widget:drag:stop", new Wdget_EventDragStop(new Wdget_EventSource(el[0], entity), { x: pos_x, y: pos_y }));
+                $(document).trigger("widget:drag:stop", new Wdget_EventDragStop(new Wdget_EventSource(el[0], entity), { x: pos_x, y: pos_y }));
+
                 $(document.body).removeClass("scrolling-disabled");
                 el.removeClass("dragging");
                 clone.remove();
@@ -369,176 +348,138 @@ class WgetEditing {
         var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         var isBlockContainer = entity.constructor.name === "WdgetContainer";
         var underElement: HTMLElement | null = null;
-        var dragEvent: DragEvent;
+
+        var targets: WdgetEntity[] | JQuery[] = [this.wget.getHolder()];
+        var index = 0;
+
+        if (!isBlockContainer) {
+            targets = this.wget.containers;
+        }
 
         $(document).on("mousemove touchmove", (e: any) => {
 
             let pos_x = (e.pageX || e.originalEvent.touches[0].pageX);
             let pos_y = (e.pageY || e.originalEvent.touches[0].pageY);
 
-            dragEvent = new DragEvent({
-                el: clone[0],
-                entity: entity
-            }, underElement, { x: pos_x, y: pos_y })
-
             clone.css({
                 "top": (pos_y - ((clone.height() as number) / 2)) - (isMobile ? 40 : 10) + "px",
                 "left": (pos_x - ((clone.width() as number) / 2)) + (isMobile ? 40 : 10) + "px"
             });
 
-            if (isBlockContainer) {
+            targets.forEach((instance: object) => {
 
-                let wdgetHolder = this.wget.getHolder();
-                let pos = wdgetHolder.offset() as JQuery.Coordinates;
-                let posRight = pos.left + (wdgetHolder.width() as number);
-                let posBottom = pos.top + (wdgetHolder.height() as number);
+                let target = isBlockContainer ? $(instance) : $((instance as WdgetContainer).el);
 
-                if (pos_x > pos.left && pos_x < posRight && pos_y > pos.top && pos_y < posBottom) {
+                let containerMarginBorderWidth = ((target.outerWidth(true) as number) - (target.width() as number)) / 2;
+                var boxPos = target.offset() as JQuery.Coordinates;
+                var boxRight = boxPos.left + (target.width() as number);
+                var boxBottom = boxPos.top + (target.height() as number);
 
-                    if (!underElement && underElement != wdgetHolder[0]) {
+                if (pos_x > (boxPos.left - containerMarginBorderWidth)
+                    && pos_x < (boxRight + containerMarginBorderWidth)
+                    && pos_y > (boxPos.top - containerMarginBorderWidth)
+                    && pos_y < (boxBottom + (containerMarginBorderWidth))) {
 
-                        underElement = wdgetHolder[0];
-                        dragEvent = new DragEvent({
-                            el: clone[0],
-                            entity: entity
-                        }, underElement, { x: pos_x, y: pos_y })
 
-                        $(underElement).trigger("drag:in", dragEvent);
+                    if (underElement != target[0]) {
+                        underElement = target[0] as HTMLElement;
+                        $(underElement).trigger("widget:dragging:in",
+                            new Wdget_EventDraggingIn(new Wdget_EventSource(clone[0], entity), underElement, { x: pos_x, y: pos_y }));
                     }
 
-                    if (underElement === wdgetHolder[0]) {
-                        $(underElement).trigger("drag:move", dragEvent);
+
+                    if (underElement === target[0]) {
+
+                        $(underElement).trigger("widget:dragging:move", new Wdget_EventDraggingMove(new Wdget_EventSource(clone[0], entity), underElement, { x: pos_x, y: pos_y }));
+                        if (isBlockContainer) {
+                            index = this.findPosition(this.wget.containers, this.wget.getHolder(), { x: pos_x, y: pos_y })
+                        } else {
+                            index = this.findPosition((instance as WdgetContainer).blocks, $(underElement), { x: pos_x, y: pos_y });
+                        }
                     }
 
-                    // find where mookBlock is placed
-                    // this.wget.containers.forEach((boxBlock) => {
+                } else if (pos_x < boxPos.left || pos_x > boxRight || pos_y < boxPos.top || pos_y > boxBottom) {
+                    if (underElement != null && underElement == target[0]) {
 
-                    //     let box = $(boxBlock.el);
-                    //     var boxPos = box.offset() as JQuery.Coordinates;
-                    //     var boxRight = boxPos.left + (box.width() as number);
-                    //     var boxBottom = boxPos.top + (box.height() as number);
-
-                    //     if (pos_x > boxPos.left && pos_x < boxRight && pos_y > boxPos.top && pos_y < boxBottom) {
-
-
-                    //         $("div.widget-block-container.widget-mook").remove();
-                    //         const mookBox = $(`<div class='widget-block-container widget-mook'></div>`);
-
-                    //         let insertPosition = (pos_y > (boxPos.top + (box.height() as number / 2))) ? 1 : 0;
-
-                    //         console.log(insertPosition);
-                    //         if (insertPosition == 1) {
-                    //             // insert after
-                    //             mookBox.insertAfter(box);
-                    //         } else if (insertPosition == 0) {
-                    //             // insert before
-                    //             mookBox.insertBefore(box);
-                    //         }
-
-                    //     }
-                    // })
-
-                } else if (pos_x < pos.left || pos_x > posRight || pos_y < pos.top || pos_y > posBottom) {
-                    if (underElement != null && underElement == wdgetHolder[0]) {
-
-                        $(underElement).trigger("drag:out", new DragEvent({
-                            el: clone[0],
-                            entity: entity
-                        }, null, { x: pos_x, y: pos_y }));
+                        $(underElement).trigger("widget:dragging:out", new Wdget_EventDraggingOut(new Wdget_EventSource(clone[0], entity), { x: pos_x, y: pos_y }));
+                        $(document).find("div.widget-temp").remove();
                         underElement = null;
-                        dragEvent = new DragEvent({
-                            el: clone[0],
-                            entity: entity
-                        }, underElement, { x: pos_x, y: pos_y })
 
                     }
-
-                    underElement = null;
                 }
-
-            } else {
-
-                this.wget.containers.forEach((boxBlock) => {
-
-                    let block = $(boxBlock.el);
-                    var boxPos = block.offset() as JQuery.Coordinates;
-                    var boxRight = boxPos.left + (block.width() as number);
-                    var boxBottom = boxPos.top + (block.height() as number);
-
-                    if (pos_x > boxPos.left && pos_x < boxRight && pos_y > boxPos.top && pos_y < boxBottom) {
-
-
-                        if (underElement != block[0]) {
-
-                            underElement = block[0];
-                            dragEvent = new DragEvent({
-                                el: clone[0],
-                                entity: entity
-                            }, underElement, { x: pos_x, y: pos_y })
-
-                            $(underElement).trigger("drag:in", dragEvent);
-                        }
-
-
-                        if (underElement === block[0]) {
-                            $(underElement).trigger("drag:move", dragEvent);
-                        }
-
-                    } else if (pos_x < boxPos.left || pos_x > boxRight || pos_y < boxPos.top || pos_y > boxBottom) {
-                        if (underElement != null && underElement == block[0]) {
-
-                            $(underElement).trigger("drag:out", new DragEvent({
-                                el: clone[0],
-                                entity: entity
-                            }, null, { x: pos_x, y: pos_y }));
-                            underElement = null;
-                            dragEvent = new DragEvent({
-                                el: clone[0],
-                                entity: entity
-                            }, underElement, { x: pos_x, y: pos_y })
-                        }
-                    }
-                })
-            }
+            })
         })
 
 
         $(document).on("mouseup touchend", (e: any) => {
 
             if (underElement) {
-                $(underElement).trigger("drag:drop", dragEvent);
+                $(underElement).trigger("widget:drop", new Wdget_EventDrop(new Wdget_EventSource(clone[0], entity), { x: 0, y: 0 }, index, underElement));
             }
+
+            $(document).find("div.widget-temp").remove();
 
             $(document).off("mousemove");
             $(document).off("touchmove");
-            $(clone).trigger("drag:stop");
+            $(clone).trigger("widget:drag:stop");
             clone.remove();
             underElement = null;
         })
     }
 
 
-    mookBlock(element, data) {
 
+
+    findPosition(entitys: WdgetEntity[], parent: JQuery<HTMLElement>, coordinate: Wdget_EventCoordinate): number {
+
+        const parentPaddingMarginBorderWidth = 10;
+        const mookBox = $(`<div class='widget-block widget-temp'></div>`);
+
+        let index = 0;
+        let isMookInsert = false;
+
+        for (let i = 0; i < entitys.length; i++) {
+
+            const entity = entitys[i];
+            if (!entity.el) continue;
+
+            const target = $(entity.el);
+            const targetPos = target.offset() as JQuery.Coordinates;
+            const targetRight = targetPos.left + (target.innerWidth() as number);
+            const targetBottom = targetPos.top + (target.innerHeight() as number);
+            const marginSize = Math.round(((target.outerWidth(true) as number) - (target.outerWidth() as number)) / 2);
+
+            let palingKiri = (targetPos.left - marginSize - parentPaddingMarginBorderWidth);
+            let palingKanan = (targetRight + marginSize + parentPaddingMarginBorderWidth);
+            let palingAtas = (targetPos.top - marginSize - parentPaddingMarginBorderWidth);
+            let palingBawah = (targetBottom + marginSize + parentPaddingMarginBorderWidth);
+
+
+            if (coordinate.x > palingKiri && coordinate.x < palingKanan && coordinate.y > palingAtas && coordinate.y < palingBawah) {
+                parent.find(".widget-temp").remove();
+                if (coordinate.x > (targetPos.left + (target.outerWidth(true) as number) / 2) || coordinate.y > (targetPos.top + (target.outerHeight(true) as number) / 2)) {
+                    mookBox.insertAfter(target);
+                } else {
+                    mookBox.insertBefore(target);
+                }
+                isMookInsert = true;
+                break;
+            }
+        }
+
+        if (!isMookInsert && parent.find(".widget-temp").length <= 0) {
+            parent.append(mookBox);
+        }
+
+        parent.find(">div").each((i, el) => {
+            if (el.classList.contains("widget-temp")) {
+                index = i;
+                return false;
+            }
+        });
+
+        return index;
     }
-
-
-    scanBox() {
-
-        let finder = this.wget.holder.find(">div");
-
-        // finder.each((x) => {
-        //     let elbox: JQuery = $(finder[x]);
-        //     let name = elbox[0].tagName;
-        //     let content = elbox[0].innerHTML;
-        //     let attributes = [];
-        //     this.boxStack.push(new WdgetBox({
-        //         title: name,
-        //         attributes: attributes
-        //     }));
-        // })
-    }
-
 
 
 
@@ -551,7 +492,5 @@ class WgetEditing {
 
 
 export {
-    Wdget,
-    DragEvent,
-    DragEventSource
+    Wdget
 }

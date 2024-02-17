@@ -1,6 +1,16 @@
+/**
+ * description: The Wdget class is used to create a widget for the dashboard. It provides methods for adding, removing, and rendering blocks and containers.
+ * author       Il4mb <https://github.com/Il4mb>
+ * date         2022-11-01
+ * version      1.0.0 
+ * @copyright   Copyright (c) 2022 MerapiPanel
+ * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+ */
+
 import { WdgetBlock } from "./WdgetBlock";
 import { WdgetEntity } from "./WdgetEntity";
-import { DragEvent } from "./Widget";
+import { Wdget_EventDraggingIn, Wdget_EventDraggingMove, Wdget_EventDraggingOut, Wdget_EventDrop } from "./WdgetEvent";
+import { Wdget } from "./Widget";
 
 
 type WdgetContainerType = {
@@ -9,17 +19,23 @@ type WdgetContainerType = {
     blocks: WdgetBlock[];
 }
 
+type BlocksChange = {
+    type: string;
+    data: object;
+}
+
 class WdgetContainer implements WdgetEntity, WdgetContainerType {
 
-
+    wdget: Wdget;
+    isOnEditing: boolean = false;
     el: JQuery<HTMLElement>;
     title: string = "Container";
     attribute: object;
     blocks: WdgetBlock[] = [];
 
+    constructor(wdget: Wdget, arg?: WdgetContainerType) {
 
-
-    constructor(arg?: WdgetContainerType) {
+        this.wdget = wdget;
 
         if (arg) {
 
@@ -35,6 +51,63 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
             }
         }
 
+
+        // Save a reference to the original splice method
+        const originalSplice = Array.prototype.splice;
+        const originalPush = Array.prototype.push;
+
+        // Override the splice method for this.blocks
+        Object.defineProperty(this.blocks, "splice", {
+            value: function (start, deleteCount, ...items) {
+                // Perform the actual splice operation using the original method
+                const result = originalSplice.apply(this, arguments);
+                if (typeof this.onSplice === "function") {
+                    // You can customize what you pass to your event/function
+                    this.onSplice({
+                        start: start,
+                        deleteCount: deleteCount,
+                        addedItems: items,
+                        removedItems: result
+                    });
+                }
+                // Return the array of removed elements (consistent with the default splice behavior)
+                return result;
+            },
+            configurable: false, // prevents further attempts to modify the property definition
+            enumerable: false // hides the property from for..in loops
+        });
+
+        Object.defineProperty(this.blocks, "push", {
+            value: function (...items) {
+                // Perform the actual push operation using the original method
+                const result = originalPush.apply(this.blocks, items);
+                if (typeof this.onPush === "function") {
+                    this.onPush({
+                        addedItems: items,
+                        result: result
+                    });
+                }
+                return result;
+
+            },
+            configurable: false,
+            enumerable: false
+        });
+
+        (() => {
+            (this.blocks as any).onSplice = (event: object) => {
+                this.#onBlocksChange({
+                    type: "splice",
+                    data: event
+                });
+            }
+            (this.blocks as any).onPush = (event: object) => {
+                this.#onBlocksChange({
+                    type: "push",
+                    data: event
+                });
+            }
+        })()
     }
 
 
@@ -43,7 +116,7 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
     initBlockData(data: Object[]) {
 
         data.forEach(element => {
-            this.blocks.push(new WdgetBlock({
+            this.blocks.push(new WdgetBlock(this.wdget, {
                 name: element["name"] ?? "",
                 content: element["content"] ?? "",
                 attribute: element["attribute"] ?? {}
@@ -62,21 +135,27 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
 
 
 
-
-    dragHandleDefinition(target: JQuery<HTMLElement>) {
+    eventEditDefine() {
 
         let currentTarget: HTMLElement | null = null;
-        target.on("drag:in", (e, d: DragEvent) => {
+        let target = $(this.el);
+
+        // remove event
+        this.el.off("widget:dragging:in");
+        this.el.off("widget:dragging:out");
+        this.el.off("widget:dragging:move");
+        this.el.off("widget:drop");
+
+        target.on("widget:dragging:in", (e, d: Wdget_EventDraggingIn) => {
 
             if (d.target !== target[0]) return;
             currentTarget = d.target;
-            console.log("in")
             target.addClass("highlight");
 
         })
 
 
-        target.on("drag:out", (e, d: DragEvent) => {
+        target.on("widget:dragging:out", (e, d: Wdget_EventDraggingOut) => {
 
 
             if (!currentTarget && currentTarget !== target[0]) return;
@@ -89,78 +168,73 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
         })
 
 
-        target.on("drag:move", (e, d: DragEvent) => {
+        target.on("widget:dragging:move", (e, d: Wdget_EventDraggingMove) => {
 
 
             if (d.target !== target[0]) return;
-            this.dragMove(d);
+
 
         })
 
 
-        target.on("drag:drop", (e, d: DragEvent) => {
+        target.on("widget:drop", (e, d: Wdget_EventDrop) => {
 
             if (d.target !== target[0]) return;
+
 
             $(this.el).removeClass("highlight");
 
-            console.log("drop", d.source?.entity);
-            this.blocks.push(d.source?.entity as WdgetBlock);
+            if (d.source?.entity instanceof WdgetBlock) {
 
-            console.log(this.blocks);
+                let name = d.source?.entity.name;
+                let content = d.source?.entity.content;
+                let attribute = d.source?.entity.attribute;
 
-            target.off("drag:in");
-            target.off("drag:out");
-            target.off("drag:drop");
-            target.off("drag:move");
-
-            this.render();
-        })
-
-
-    }
-
-
-    dragMove(data: DragEvent) {
-
-
-        let isMookInsert = false;
-        this.el.find(".widget-mook").remove();
-        const mookBox = $(`<div class='widget-block widget-mook'></div>`);
-
-        this.blocks.forEach((block) => {
-
-            if (block.el) {
-
-                let box = $(block.el);
-                var boxPos = box.offset() as JQuery.Coordinates;
-                var boxRight = boxPos.left + (box.innerWidth() as number);
-                var boxBottom = boxPos.top + (box.innerHeight() as number);
-
-                if (data.coordinate.x > boxPos.left && data.coordinate.x < boxRight && data.coordinate.y > boxPos.top && data.coordinate.y < boxBottom) {
-
-                    if (data.coordinate.x < (boxPos.left + (box.width() as number / 2))) {
-                        // insert before
-                        mookBox.insertBefore(box);
-
-                    } else {
-                        // insert after
-                        mookBox.insertAfter(box);
-
-                    }
-
-                    isMookInsert = true;
-
-                }
+                this.blocks.splice(d.index, 0, new WdgetBlock(this.wdget, { name, content, attribute }));
             }
 
+            this.el.html("");
+            this.blocks.forEach((block) => {
+                this.el.append(block.render());
+            })
         })
-
-        if(!isMookInsert){
-            this.el.append(mookBox);
-        }
     }
 
+
+    #startEditing() {
+        this.isOnEditing = true;
+        this.dispatchEdit();
+
+    }
+
+    #stopEditing() {
+        this.isOnEditing = false;
+        this.dispatchEdit();
+    }
+
+    #onBlocksChange(arg: BlocksChange) {
+        console.log(arg)
+        setTimeout(() => { // delay to make sure real method is triggered
+            this.dispatchEdit();
+        }, 200);
+    }
+
+    dispatchEdit() {
+        if (this.isOnEditing) {
+            // add event
+            this.blocks.forEach((block) => block.toggleEditing(true));
+            this.eventEditDefine();
+            return;
+        }
+
+        // remove event
+        this.el.off("widget:dragging:in");
+        this.el.off("widget:dragging:out");
+        this.el.off("widget:dragging:move");
+        this.el.off("widget:drop");
+
+        this.blocks.forEach((block) => block.toggleEditing(false));
+    }
 
 
     render(): JQuery {
@@ -169,7 +243,11 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
             this.el = $(`<div class="widget-block-container"></div>`);
         }
 
-        this.dragHandleDefinition(this.el);
+        $(this.el).off("widget:edit:start");
+        $(this.el).off("widget:edit:close");
+        $(this.el).on("widget:edit:start", () => { this.#startEditing() })
+        $(this.el).on("widget:edit:close", () => { this.#stopEditing() })
+
 
         if (this.el.attr("id") == undefined) {
             this.el.attr("id", Date.now().toString());
@@ -191,8 +269,8 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
 
 
 
-    static fromData(data: WdgetContainerType | undefined) {
-        return new WdgetContainer(data);
+    static fromData(wdget: Wdget, data: WdgetContainerType | undefined) {
+        return new WdgetContainer(wdget, data);
     }
 
 }
