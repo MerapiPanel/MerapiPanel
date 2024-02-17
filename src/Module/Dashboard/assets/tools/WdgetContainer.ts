@@ -117,6 +117,7 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
 
         data.forEach(element => {
             this.blocks.push(new WdgetBlock(this.wdget, {
+                title: element["title"] ?? "",
                 name: element["name"] ?? "",
                 content: element["content"] ?? "",
                 attribute: element["attribute"] ?? {}
@@ -186,11 +187,12 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
 
             if (d.source?.entity instanceof WdgetBlock) {
 
+                let title = d.source?.entity.title;
                 let name = d.source?.entity.name;
                 let content = d.source?.entity.content;
                 let attribute = d.source?.entity.attribute;
 
-                this.blocks.splice(d.index, 0, new WdgetBlock(this.wdget, { name, content, attribute }));
+                this.blocks.splice(d.index, 0, new WdgetBlock(this.wdget, { title, name, content, attribute }));
             }
 
             this.el.html("");
