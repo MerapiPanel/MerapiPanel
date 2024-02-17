@@ -43,6 +43,9 @@ class Wdget {
         this.setContainer(holder);
         this.wgetEditing = new WgetEditing(this);
 
+        setTimeout(() => {
+            $(this.holder).trigger("widget:ready");
+        }, 400);
         this.render();
     }
 
@@ -492,5 +495,6 @@ class WgetEditing {
 
 
 export {
-    Wdget
+    Wdget,
+    WgetEditing
 }

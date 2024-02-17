@@ -116,12 +116,15 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
     initBlockData(data: Object[]) {
 
         data.forEach(element => {
-            this.blocks.push(new WdgetBlock(this.wdget, {
+            
+            let block = new WdgetBlock(this.wdget, {
                 title: element["title"] ?? "",
                 name: element["name"] ?? "",
                 content: element["content"] ?? "",
                 attribute: element["attribute"] ?? {}
-            }));
+            });
+            
+            this.blocks.push(block);
         });
 
 
@@ -215,7 +218,7 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
     }
 
     #onBlocksChange(arg: BlocksChange) {
-        console.log(arg)
+        // console.log(arg)
         setTimeout(() => { // delay to make sure real method is triggered
             this.dispatchEdit();
         }, 200);

@@ -40,7 +40,7 @@ class WidgetService
 
                 $doc = self::extractDoc($method->getDocComment());
                 $widgets[] = array_merge($doc, [
-                    "name" => strtolower($reflector->getShortName() . ":" . $method->getName()),
+                    "name" => strtolower($moduleName . ":" . $method->getName()),
                     "category" => $moduleName,
                 ]);
             }
@@ -50,12 +50,39 @@ class WidgetService
     }
 
 
+
+
+    public function renderWidget($name)
+    {
+
+        list($module, $method) = explode(":", $name);
+        $className = "\\MerapiPanel\\Module\\" . ucfirst($module) . "\\Views\\Widget";
+
+        if (class_exists($className)) {
+            $reflector = new \ReflectionClass($className);
+            $instance = $reflector->newInstance();
+
+            return [
+                "code" => 200,
+                "message" => "success",
+                "data" => $instance->{$method}()
+            ];
+
+        }
+
+        return [
+            "code" => 400,
+            "message" => "fail to find widget: " . $name,
+        ];
+    }
+
+
     private static function extractDoc($comment)
     {
 
         $docs = [
             "title" => "No title",
-            "icon"  => "",
+            "icon" => "",
         ];
         $pattern = '/\@(.*?)\s(.*)/';
 

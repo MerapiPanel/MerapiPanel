@@ -8,7 +8,7 @@
  */
 
 import { WdgetEntity } from "./WdgetEntity";
-import { Wdget } from "./Widget";
+import { Wdget, WgetEditing } from "./Widget";
 
 type WdgetBlockType = {
     name: string;
@@ -19,8 +19,8 @@ type WdgetBlockType = {
 
 
 
-
 class WdgetBlock implements WdgetEntity, WdgetBlockType {
+
 
     el: JQuery<HTMLElement> | undefined;
     name: string;
@@ -28,7 +28,6 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
     content: string;
     attribute: object;
     wdget: Wdget;
-
 
 
     constructor(wdget: Wdget, {
@@ -129,7 +128,7 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
 
                 $(document).off("widget:drag:start mousedown touchstart");
 
-                console.log(this.el?.data("instance"));
+                // console.log(this.el?.data("instance"));
             }
 
         });
@@ -141,12 +140,14 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
 
         if (idOnEdit) {
             this.el?.on("click", () => this.showEditTools())
+            this.replaceView();
             return;
         }
 
         this.render();
         this.el?.off("click")
     }
+
 
 
     toolbox(): JQuery<HTMLElement> {
@@ -162,24 +163,38 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
 
 
 
+
+    replaceView() {
+
+        let icon = (this.attribute as any).icon || `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff94fb" class="bi bi-bounding-box" viewBox="0 0 16 16"> <path d="M5 2V0H0v5h2v6H0v5h5v-2h6v2h5v-5h-2V5h2V0h-5v2zm6 1v2h2v6h-2v2H5v-2H3V5h2V3zm1-2h3v3h-3zm3 11v3h-3v-3zM4 15H1v-3h3zM1 4V1h3v3z"/> </svg>`;
+
+        if ((icon as string).startsWith("<svg")) {
+            icon = URL.createObjectURL(new Blob([icon], { type: 'image/svg+xml' }));
+        }
+        this.el?.html(`<div style="color: #ff94fb; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;"><img src="${icon}"><span style="margin-left: 10px;">${this.title}</span></div>`);
+    }
+
+
+
+
     render(): JQuery<HTMLElement> {
 
         if (!this.el) {
-            this.el = $(`<div class="widget-block">${this.content}</div>`);
+            this.el = $(`<div class="widget-block"></div>`);
         }
-
-        //  this.el.html(this.content);
 
         let attribute = this.attribute as any;
         if (attribute) {
 
-            //console.log(this.el[0], this.attribute);
-
-            // this.el.attr(attribute);
             if (attribute.width) this.el.width(attribute.width);
             if (attribute.height) this.el.height(attribute.height);
-
+            this.el.attr(attribute);
         }
+
+
+        if (WgetEditing.isEditing) this.replaceView();
+
+
         return this.el;
     }
 

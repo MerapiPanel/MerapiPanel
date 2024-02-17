@@ -14,6 +14,7 @@ class Admin extends Module
     {
 
         $router->get("/widget/fetch", "widgetFetch", self::class);
+        $router->get("/widget/load/{name}", "widgetLoadComponent", self::class);
         $router->get("/widget/load", "widgetLoad", self::class);
         $router->post("/widget/save", "widgetSave", self::class);
 
@@ -38,6 +39,7 @@ class Admin extends Module
 
     function widgetFetch(Request $req)
     {
+
         $widgets = Box::module("Dashboard")->service("Widget")->getDefindedWidgets();
         return [
             "code" => 200,
@@ -65,6 +67,13 @@ class Admin extends Module
             "code" => 200,
             "message" => "success",
         ];
+    }
+
+
+    function widgetLoadComponent(Request $req)
+    {
+
+        return Box::module("Dashboard")->service("Widget")->renderWidget($req->name());
     }
 
 

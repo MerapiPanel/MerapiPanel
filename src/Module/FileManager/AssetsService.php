@@ -65,24 +65,29 @@ class AssetsService
 
     public function getAssset(Request $req)
     {
-        if (!$req->http("referer")) {
+
+        $path = AES::decrypt(rawurldecode($req->data));
+
+        if ($path[0] !== "!" && !$req->http("referer")) {
             return [
                 "code" => 403,
                 "message" => "Forbidden - Not allowed!"
             ];
+        } else if ($path[0] === "!") // ignore referer
+        {
+            $path = substr($path, 1);
         }
 
-        $path = AES::decrypt(rawurldecode($req->data));
         $realPath = $this->getRealPath($path);
 
         if (!is_string($realPath) || !file_exists($realPath)) {
 
             $keyMap = self::createMapKey($path);
             unset($this->assetsMap[$keyMap]);
-            
+
             return [
                 "code" => 404,
-                "message" => "Assets not found "
+                "message" => "Assets not found " . $realPath
             ];
         }
 

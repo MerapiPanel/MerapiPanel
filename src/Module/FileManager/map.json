@@ -1,66 +1,18 @@
 {
-    "modulesassetscssstylecss": {
-        "url": "\/public\/filemanager\/_assets\/QURvVzVlY01HQnQ2UUZEOVg5YkdnTnlzTXpKVVhNTDNmSmhIMVNxVVUvVT06OkP%2F%2F3VV6xCaQETrQ%2FPmTfk%3D",
-        "time": 1707828799
+    "dashboarddistindexbundlejs": {
+        "url": "\/public\/filemanager\/_assets\/UDYwaklNcGNoQnJLVkgzTGtlWDlDTHQwYWtrMFVZbVgxNWVGaEx0MjRzMD06OoCLr9sMlBw8tuEG%2BvcOZrY%3D",
+        "time": 1708193574
     },
     "panelassetslogosvg": {
-        "url": "\/public\/filemanager\/_assets\/Q2NPSE9QVDdxMGxPMGZBZGNqd0RwN3JGSnVMN3lVaHh2V0h5dzlreUJrST06OnYGyZMeGoAgeP8VmFwFSFw%3D",
-        "time": 1708169844
+        "url": "\/public\/filemanager\/_assets\/T2RNU0VsTU9yWXlGVW1UZXpvK3pIWm1OQ01CK2JWOXBVdFVEVEpzbFNyOD06Ol5SwIbB3gjTPJjtTP98fco%3D",
+        "time": 1708193574
     },
-    "filemanagericonsvg": {
-        "url": "\/public\/filemanager\/_assets\/V1JXKzB0K3ZsN1UxRis4S0tZS093M1BrTkdweHVuQ1hkcDJLWHA4Q2NNbz06OlsdYUctoqCkA%2F82GMVOBe8%3D",
-        "time": 1707828799
-    },
-    "articleiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/MHo0OGpEMjJRN0phWWJoQXo3bWJ6dG84VmpnaFAyYzYybjhZSERPakhPST06OkQWDbRjSKTGeEHcGrw6a9Y%3D",
-        "time": 1707828799
-    },
-    "templateassetsdistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/amx6cFpabEY5aTZ0NUEyZ1FScjIzUDZOcmgvR3UzM3BtdFFPQnlSeVAwSHpYYmNRMTFJdGtMTkdGR3krTngyYzo6cOkDEb%2BjLc4s%2BEWjB9Ke7g%3D%3D",
-        "time": 1707805728
-    },
-    "filemanagerassetsdistviewfilemanagerbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/U2xUa29xSlFDT2Rha2x3SnpMS2h5Smp3OGJhVXlhZjhxSUcwc1V0Rkd3eUdrZ2tSZm9uaXBlUmtDL2lFRE5wOC85enVBcWEvL3pQTzJJK3dKUkcxZ0E9PTo6EfOrObYxtbyfifelzjlVdQ%3D%3D",
-        "time": 1707804700
-    },
-    "templateeditordistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/ZEVxNVI3YVRsUGx1RGlLWTBkL3dJTW1VanNpUDdhbG5lcTVOTnFEeElLN1dMQmV5S3VCbEt4OVFRY044MTIxdTo6fdB28vwP%2FRG23A00uKIhZg%3D%3D",
-        "time": 1707799891
-    },
-    "dashboardiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/eHg3ZTJPRmxLQ2J0ODQrUHNxV2RJeVpUSHpKV000MUVIZ2VUSlliS1dqaz06OvUDBa%2FvLFTKZFsK51Gdj0E%3D",
-        "time": 1707828799
-    },
-    "authiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/T09OSXZXdDJ4VG8xQzAxOWFmV0NQdz09OjoA9fNl6%2BMzY11ku%2F7UYNkS",
-        "time": 1707828799
-    },
-    "templateiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/emFMbjNhbERjbVluTlhNZkVnSkdWeTNXd21MbWtiTFcxOUVKRFoxSUJtWT06OtfpzMd%2FsXSa7Bt2VMnqPQk%3D",
-        "time": 1707828799
-    },
-    "templateeditoriconsvg": {
-        "url": "\/public\/filemanager\/_assets\/cGFXU1RodkVRQjZXcU0rRlpDOUsrbjh2Mk5RUGZTZ3pVS1lhM3FJSzRDYz06Oi4JWJocPqYiT1EfE6JE8Gs%3D",
-        "time": 1707828799
-    },
-    "dashboardassetsdistindexjs": {
-        "url": "\/public\/filemanager\/_assets\/RzFJejBhMXBaVjJ0WU1KTXZKWHNSMFRUZjRsTDEzUVdXLzJ4OGdYWTY1MD06Oi4ieJHODg27fqYovILas4Y%3D",
-        "time": 1707802592
-    },
-    "dashboardassetsdistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/cGlaTG03MEhSVzVlaHJidUVMMWhoMHJncWljK0lzM2JQeHI1RmZKV0htSXUxejdRZVkycTArd2ZXbEtCRzFxSjo6KTGqqE9fBSvR3bispWmLkA%3D%3D",
-        "time": 1707806245
-    },
-    "cssstylecss": {
-        "url": "\/public\/filemanager\/_assets\/NncrcFY2SHJkRzROM001b2Vqb2NHQT09Ojq1OK1sH%2FWL2lUn1GXo%2BOPC",
-        "time": 1707807430
+    "dashboardjsanalyticsjs": {
+        "url": "\/public\/filemanager\/_assets\/dGtxZk1XSktIMGplRnBpZmpVQXg2U2xwZWtsUFJtRkgyejVCYkMyZXMvcz06OugXCR6RmYF3qbNkJRYDbd4%3D",
+        "time": 1708193575
     },
     "dashboardcssstylecss": {
-        "url": "\/public\/filemanager\/_assets\/bnBZOHdMMlI0dE02emFucVBBYWNhN1g5aW1qOGE4SWVaN2U5U3hYU0pWST06OkGZ806agJIXJ%2FhgVskvjEY%3D",
-        "time": 1707927134
-    },
-    "dashboarddistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/dXFMWkh3cVc3bHpZczhtTXhOR3E0dWRWcUhsRVkvWDIzWDRXMms1OFREaz06OlV%2B7wsNYSPPLbGHgOS2jdc%3D",
-        "time": 1708169844
+        "url": "\/public\/filemanager\/_assets\/RGtQUXltQ2hqQmZZNXVwNi83WlpaK0NiVTg1Slo2WDNldFVhcC92L3V0RT06Os4w9hwsb%2BPARtVnFGdtN%2BQ%3D",
+        "time": 1708192405
     }
 }

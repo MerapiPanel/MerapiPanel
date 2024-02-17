@@ -1,8 +1,6 @@
 require('./app.css')
 require('./fontawesome/css/all.min.css');
 const $ = require('jquery');
-//import merapi from './merapi';
-
 
 if (!window.merapi) {
     window.merapi = require("./merapi");
@@ -28,6 +26,8 @@ $(document).on('DOMContentLoaded', function () {
     });
 
     liveReload();
+
+   // console.clear()
 })
 
 

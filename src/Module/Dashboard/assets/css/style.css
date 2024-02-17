@@ -1,154 +1,21 @@
-:root {
-
-    -widget-icon-default: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 2V0H0v5h2v6H0v5h5v-2h6v2h5v-5h-2V5h2V0h-5v2zm6 1v2h2v6h-2v2H5v-2H3V5h2V3zm1-2h3v3h-3zm3 11v3h-3v-3zM4 15H1v-3h3zM1 4V1h3v3z'/%3E%3C/svg%3E";
-
+html,
+body {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
 }
-
-body.widget-editing * {
-    user-select: none !important;
+* {
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
 }
-body.widget-editing #sidebar-toggle {
-    display: none;
-}
-
-body.widget-editing .widget-container {
-    border: #b62ab15a dashed 2px;
-    padding: 0.3rem;
-}
-
-body.widget-editing .widget-container.highlight {
-    border: #b62ab1 dashed 2px;
-    background-color: #fff2fe;
-}
-
-.widget-toolbar {
-
-}
-
-@media screen and (max-width: 1024px) {
-
-    body.widget-editing .widget-container {
-        margin-bottom: 250px;
-    }
-}
-
-
-.widget-component-item {
-    width: 100px;
-    height: 100px;
-    border: 1px solid rgb(0 0 0 / 24%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    cursor: pointer;
-}
-.widget-component-item:hover {
-    background-color: rgb(0 0 0 / 24%);
-}
-.widget-component-item svg {
-    width: 50px;
-    height: 50px;
-}
-.widget-component-item i {
-    font-size: 50px;
-}
-
-body.widget-editing .widget-container * {
-    transition: 0.1s;
-}
-
-.widget-box {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    margin: 0.5rem;
-}
-.widget-container.highlight .widget-box {
-    background-color: hsl(0, 100%, 97%);
-}
-.widget-box.mook-box {
-    opacity: 0.2;
-}
-.widget-box.mook-box:empty::after, .widget-box.mook-box:not(.widget-item)::after {
-    display: none;
-}
-.widget-box.highlight {
-    border: dashed 2px #ff4747;
-    border-radius: 0;
-    cursor: pointer;
-    background-color: #ff47474d;
-}
-body.widget-editing .widget-box:empty,
-body.widget-editing .widget-box:not(.widget-item) {
-    min-height: 100px;
-    position: relative;
-}
-body.widget-editing .widget-box:empty::after,
-body.widget-editing .widget-box:not(.widget-item)::after {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    content: "Drag and drop widgets here";
-    font-style: italic;
-    color: #ccc;
-    font-size: 14px;
-}
-
-body.widget-editing .widget-box,
-body.widget-editing .widget-item {
-    border: dashed 2px #a2d2ff;
-    border-radius: 0;
-    cursor: pointer;
-}
-body.widget-editing .widget-box {
-    border-color: #ff4747;
-}
-body.widget-editing .widget-item:hover {
-    border-color: #5aafff;
-    border-width: 2px;
-}
-
-.widget-item {
-    overflow: auto;
-    margin: 0.4rem !important;
-}
-body.widget-editing .widget-item {
-    cursor: pointer;
-}
-
-.resize {
-    position: relative;
-    background-color: #6cb8ff32;
-    box-shadow: 0 0 0 2px #5aafff;
-}
-
-.resize-handle {
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    z-index: 1;
-    color: #004483;
-}
-.resize-handle:hover {
-    font-size: large;
-    filter: drop-shadow(0px 0px 8px white);
-}
-.resize .resize-handle.resize-horizontal {
-    top: 50%;
-    left: 100%;
-
-    transform: translateY(-50%);
-    margin-left: -10px;
-}
-.resize .resize-handle.resize-vertical {
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: -10px;
-}
-.resize .resize-handle.resize-remove {
-    bottom: 100%;
-    left: 100%;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: rgb(78, 78, 78);
+    font-size: 1.5em;
+    font-weight: 800;
+    margin: 0.3rem 0;
 }
