@@ -7,6 +7,9 @@ $icons: (
     --widget-color-primary: #7dc2ff;
     --widget-color-primary-active: #51aeff;
     --widget-color-primary-disabled: #c9e6ff;
+    --widget-color-danger: #ff7f7f;
+    --widget-color-danger-active: #ff4d4d;
+    --widget-color-danger-disabled: #ffcccc;
     @each $name, $value in $icons {
         --widget-ic-#{$name}: #{$value};
     }
@@ -47,7 +50,7 @@ $icons: (
 
         &[widget-container-title] {
             min-height: 80px;
-          
+
             &::after {
                 content: attr(widget-container-title);
                 position: absolute;
@@ -61,7 +64,6 @@ $icons: (
     }
 
     .widget-block {
-        padding: 0.3rem 0.6rem;
         position: relative;
         background-color: #fafafa;
         box-shadow: 0 0 2px rgba(215, 215, 215, 0.4);
@@ -73,11 +75,14 @@ $icons: (
 
 body.widget-editing {
     user-select: none !important;
+
     &.scrolling-disabled {
         overflow: hidden !important;
     }
     & .widget-container {
         min-height: 80vh;
+        margin-bottom: 10rem;
+
         & > .widget-temp {
             margin-top: 5rem !important;
             &::before {
@@ -190,6 +195,15 @@ body.widget-editing {
                     left: 50%;
                     transform: translateX(-50%);
                 }
+                &.resize-remove {
+                    bottom: 100%;
+                    left: 100%;
+                    background-color: var(--widget-color-danger-disabled);
+                    color: var(--widget-color-danger);
+                    &:hover {
+                        background-color: var(--widget-color-danger-active);
+                    }
+                }
                 &.active {
                     background-color: var(--widget-color-primary-active);
                 }
@@ -205,7 +219,6 @@ body.widget-editing {
             }
         }
     }
-
 
     & .widget-toolbar {
         position: fixed;
@@ -259,6 +272,64 @@ body.widget-editing {
             max-height: inherit;
             @media screen and (max-width: 1024px) {
                 flex-direction: column;
+            }
+
+            & .toolbar-category {
+                flex: 1 1 100%;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-content: flex-start;
+                justify-content: flex-start;
+                align-items: flex-start;
+                transition: 0.5s all;
+                margin: 0.5rem 0;
+                padding-bottom: 0.3rem;
+                &.open {
+                    & .toolbar-category-title {
+                        & i::before {
+                            content: "\f107";
+                        }
+                    }
+                    & .toolbar-category-body {
+                        max-height: 200px;
+                        overflow: auto;
+                        border-color: #d6ecff;
+                    }
+                }
+                & .toolbar-category-title {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    transition: 0.5s all;
+                    
+                    & i {
+                        margin-left: auto;
+                        margin-right: 0.3rem;
+                        transition: 0.5s all;
+                    }
+                }
+                & .toolbar-category-body {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                    align-content: flex-start;
+                    align-items: flex-start;
+                    min-width: 171px;
+                    min-height: 0px;
+                    max-width: inherit;
+                    max-height: 0px;
+                    overflow: hidden;
+                    transition: 0.5s all;
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                    border-bottom: 1px solid #ffffff00;
+
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+                }
             }
         }
 

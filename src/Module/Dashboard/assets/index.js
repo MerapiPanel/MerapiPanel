@@ -48,7 +48,11 @@ $(function () {
                 let model = response.data[i];
                 widget.entityManager.addEntity(model.name, model)
             }
+
+            console.log(widget.entityManager);
         }
+
+        console.log(widget)
     })
 
 
@@ -108,17 +112,12 @@ $(function () {
                                 iframeDoc.open();
                                 iframeDoc.write(`<html style='width: ${block.attribute.width - 20}px; height: ${block.attribute.height - 10}px;'>\n
                                 <head>\n
-                                ${stylesheets.join("\n")}\n
                                 <style>html,body { margin: 0; padding: 0; }\n* { box-sizing: border-box; }\nbody { transition: 1s; animation: loading 1s infinite alternate; } body * { transition: 1s; opacity: 0; } body.loaded { display: block; animation: none; } body.loaded * { opacity: 1; } @keyframes loading { from { background-color: #f2f2f2; } to { background-color: transparent; } }</style>\n
+                                ${stylesheets.join("\n")}\n
                                 </head>\n
                                 <body style='width: ${block.attribute.width - 20}px; height: ${block.attribute.height - 10}px;'>\n
                                 ${data.content}\n
                                 ${scrips.join("\n")}\n
-                                <script type="text/javascript">\n
-                                    window.addEventListener("load", function (e) { setTimeout(function () { document.body.classList.add("loaded"); }, 500); });
-                                    
-
-                                </script>\n
                                 </body>\n
                                 </html>`);
                                 iframeDoc.close();

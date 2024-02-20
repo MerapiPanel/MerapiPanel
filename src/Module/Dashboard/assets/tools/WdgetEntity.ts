@@ -44,7 +44,7 @@ class WdgetEntityManager {
      */
     constructor(wdget: Wdget) {
         this.wdget = wdget;
-        this.stack = { "box": new WdgetContainer(this.wdget) };
+       // this.stack = { "box": new WdgetContainer(this.wdget) };
     }
 
 
@@ -65,6 +65,7 @@ class WdgetEntityManager {
                 name: entity["name"],
                 title: entity["title"],
                 content: entity["content"],
+                category: entity["category"],
                 attribute: entity["attribute"]
             });
         }

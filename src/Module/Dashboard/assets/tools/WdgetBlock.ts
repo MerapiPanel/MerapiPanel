@@ -7,12 +7,14 @@
  * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
  */
 
+import { WdgetContainer } from "./WdgetContainer";
 import { WdgetEntity } from "./WdgetEntity";
 import { Wdget, WgetEditing } from "./Widget";
 
 type WdgetBlockType = {
     name: string;
     title: string;
+    category?: string;
     content: string;
     attribute: object;
 }
@@ -27,6 +29,7 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
     title: string;
     content: string;
     attribute: object;
+    category: string = "default";
     wdget: Wdget;
 
 
@@ -34,6 +37,7 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
         name,
         title,
         content,
+        category = "default",
         attribute
     }: WdgetBlockType) {
 
@@ -43,6 +47,8 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
         this.title = title;
         this.content = content;
         this.attribute = attribute;
+        this.category = category ? category : "default";
+
         if (this.attribute === undefined) {
             this.attribute = {
                 width: "200",
@@ -55,7 +61,7 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
 
 
 
-    showEditTools() {
+    showEditTools(container: WdgetContainer) {
 
         if ($(document).find(".widget-block.edit-tools").length > 0) {
             return;
@@ -67,9 +73,9 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
         const containerEditool = $(`<div class="widget-block edit-tools"></div>`);
         const horizontalHandler = $('<button title="Resize horizontally" class="edit-tool resize-horizontal"><i class="fa-solid fa-left-right"></i></button>');
         const verticalHandler = $('<button title="Resize vertically" class="edit-tool resize-vertical"><i class="fa-solid fa-up-down"></i></button>');
-        const cancelHandler = $('<button title="Remove item" class="edit-tool resize-remove"><i class="fa-solid fa-xmark"></i></button>');
+        const deleteHandler = $('<button title="Remove block" class="edit-tool resize-remove"><i class="fa-solid fa-xmark"></i></button>');
 
-        containerEditool.insertBefore(this.el as JQuery<HTMLElement>).append(this.el as JQuery<HTMLElement>, horizontalHandler, verticalHandler);
+        containerEditool.insertBefore(this.el as JQuery<HTMLElement>).append(this.el as JQuery<HTMLElement>, horizontalHandler, verticalHandler, deleteHandler);
         containerEditool.attr("style", el.attr("style") as string);
 
         let isResizingHorizontal = false, isResizingVertical = false;
@@ -99,11 +105,11 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
 
             if (isResizingHorizontal) {
                 el.width(newWidth);
-                containerEditool.width(newWidth + 20);
+                containerEditool.width(newWidth);
             }
             if (isResizingVertical) {
                 el.height(newHeight);
-                containerEditool.height(newHeight + 10);
+                containerEditool.height(newHeight);
             }
 
             (this.el?.data("instance") as any).attribute = { width: Math.round(el.width() as number), height: Math.round(el.height() as number) };
@@ -127,25 +133,39 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
                 containerEditool.remove();
 
                 $(document).off("widget:drag:start mousedown touchstart");
-
-                // console.log(this.el?.data("instance"));
             }
 
         });
+
+        deleteHandler.on('click', () => {
+            isResizingHorizontal = false;
+            isResizingVertical = false;
+            $(this.el as any).trigger("widget:delete", {
+                source: this,
+                container: container
+            });
+
+            let index = container.blocks.indexOf(this);
+            container.blocks.splice(index, 1);
+            container.render();
+        })
     }
 
 
 
-    toggleEditing(idOnEdit: boolean) {
+    toggleEditing(idOnEdit: boolean, container: WdgetContainer) {
 
+        console.log(idOnEdit)
         if (idOnEdit) {
-            this.el?.on("click", () => this.showEditTools())
+            this.el?.on("click", () => this.showEditTools(container))
             this.replaceView();
             return;
         }
 
         this.render();
         this.el?.off("click")
+
+
     }
 
 

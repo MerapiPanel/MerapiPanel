@@ -8,6 +8,7 @@
  */
 
 import "./../css/style.scss";
+import { WdgetBlock } from "./WdgetBlock";
 import { WdgetContainer, WdgetContainerType } from "./WdgetContainer";
 import { WdgetEntity, WdgetEntityManager } from "./WdgetEntity";
 import { Wdget_EventDragStart, Wdget_EventDragStop, Wdget_EventDraggingMove, Wdget_EventDraggingIn, Wdget_EventDraggingOut, Wdget_EventDrop, Wdget_EventSource, Wdget_EventCoordinate, Wdget_EventMovingData } from "./WdgetEvent";
@@ -222,8 +223,38 @@ class WdgetToolbar {
         this.el.html("")
         holder.appendTo(this.el);
 
-        this.wgetEditing.toolboxs.forEach((x) => {
-            x.appendTo(holder);
+        let boxContainer = new WdgetContainer(this.wgetEditing.wget);
+        let containerToolbox = boxContainer.toolbox();
+        this.wgetEditing.dragHandle(containerToolbox, boxContainer);
+        containerToolbox.appendTo(holder);
+
+
+        let categorys = Object.keys(this.wgetEditing.toolboxs)
+        categorys.forEach((category, x) => {
+
+            let categoryContainer = $(`<div class="toolbar-category"><h4 class="toolbar-category-title">${category}<i class="fa fa-angle-up"></i></h4><div class="toolbar-category-body"></div></div>`);
+            this.wgetEditing.toolboxs[category].forEach((x) => {
+                categoryContainer.find(".toolbar-category-body").append(x);
+            })
+
+            if(x == 0) categoryContainer.addClass("open");
+            
+            categoryContainer.appendTo(holder);
+            categoryContainer.find(".toolbar-category-title").on("click", () => {
+
+               
+
+                if (categoryContainer.hasClass("open")) {
+
+                    $(".toolbar-category").removeClass("open");
+
+                } else {
+
+                    $(".toolbar-category").removeClass("open");
+                    categoryContainer.addClass("open");
+                    
+                }
+            })
         })
     }
 
@@ -237,6 +268,9 @@ class WdgetToolbar {
 
 
 
+type toolboxStack = {
+    [key: string]: JQuery[]
+}
 class WgetEditing {
 
 
@@ -244,7 +278,7 @@ class WgetEditing {
     wget: Wdget;
     toolbar: WdgetToolbar = new WdgetToolbar(this);
     onToggleCallback: Function = function (e: boolean) { console.log(e) };
-    toolboxs: JQuery<HTMLElement>[] = [];
+    toolboxs: toolboxStack = {};
 
 
     constructor(wget: Wdget) {
@@ -282,11 +316,16 @@ class WgetEditing {
 
     begins() {
 
-        this.toolboxs = [];
-        this.wget.entityManager.getEntities().forEach((x) => {
-            let toolbox = x.toolbox();
-            this.dragHandle(toolbox, x);
-            this.toolboxs.push(toolbox);
+        this.toolboxs = {};
+        this.wget.entityManager.getEntities().forEach((x: any) => {
+
+            let block = x as WdgetBlock;
+            let toolbox = block.toolbox();
+            let category = block.category;
+            this.dragHandle(toolbox, block);
+
+            if (this.toolboxs[category]) this.toolboxs[category].push(toolbox);
+            else this.toolboxs[category] = [toolbox];
         })
 
         this.wget.containers.forEach(e => $(e.el).trigger("widget:edit:start"));

@@ -1,12 +1,14 @@
-const width = window.document.body.clientWidth;
-const height = window.document.body.clientHeight;
-
 window.onload = () => {
+
+    const body = document.body;
+    const wrapperComputedStyle = window.getComputedStyle(body, null)
+    const width = body.clientWidth - ((parseFloat(wrapperComputedStyle.paddingLeft) + parseFloat(wrapperComputedStyle.paddingRight)) / 2)
+    const height = body.clientHeight - ((parseFloat(wrapperComputedStyle.paddingTop) + parseFloat(wrapperComputedStyle.paddingBottom)) / 2)
 
 
     const ctx = document.getElementById('myChart');
 
-    
+    document.body.classList.add("loaded")
 
 
     const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
@@ -68,8 +70,8 @@ window.onload = () => {
     });
 
 
-   // let h = ctx.height - ctx.clientHeight;
+    // let h = ctx.height - ctx.clientHeight;
 
     chart.canvas.parentNode.style.height = (height - ctx.parentElement.offsetTop) + 'px';
-    chart.canvas.parentNode.style.width = width + 'px';
+    chart.canvas.parentNode.style.width = (width - ctx.parentElement.offsetLeft) + 'px';
 }

@@ -2,7 +2,7 @@ html,
 body {
     font-family: "Roboto", sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 0.3rem 0.6rem;
 }
 * {
     box-sizing: border-box;

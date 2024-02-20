@@ -227,7 +227,7 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
     dispatchEdit() {
         if (this.isOnEditing) {
             // add event
-            this.blocks.forEach((block) => block.toggleEditing(true));
+            this.blocks.forEach((block) => block.toggleEditing(true, this));
             this.eventEditDefine();
             return;
         }
@@ -238,7 +238,7 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
         this.el.off("widget:dragging:move");
         this.el.off("widget:drop");
 
-        this.blocks.forEach((block) => block.toggleEditing(false));
+        this.blocks.forEach((block) => block.toggleEditing(false, this));
     }
 
 
