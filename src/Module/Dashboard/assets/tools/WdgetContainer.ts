@@ -116,14 +116,14 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
     initBlockData(data: Object[]) {
 
         data.forEach(element => {
-            
+
             let block = new WdgetBlock(this.wdget, {
                 title: element["title"] ?? "",
                 name: element["name"] ?? "",
                 content: element["content"] ?? "",
                 attribute: element["attribute"] ?? {}
             });
-            
+
             this.blocks.push(block);
         });
 
@@ -224,19 +224,123 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
         }, 200);
     }
 
+    #editTitle(x: number, y: number) {
+        let wrapper = $(`<div class="widget-container-title-edit-wrapper"></div>`);
+        let input = $(`<input type="text" class="widget-container-title-edit" value="${this.title}"/>`);
+        let saveBtn = $(`<button class="btn btn-sm btn-primary !rounded-none"><i class="fa-regular fa-circle-check"></i></button>`);
+        wrapper.css({
+            position: "absolute",
+            top: y + "px",
+            left: x + "px",
+            zIndex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            backgroundColor: "white",
+            borderRadius: "0.3rem",
+            overflow: "hidden",
+        })
+        input.css({
+            outline: "none",
+            padding: "0.1rem 0.6rem"
+        })
+
+        wrapper.append(input, saveBtn);
+
+        this.el.append(wrapper);
+        input.trigger("focus");
+
+
+        input.on("keydown", (e) => {
+            if (e.key === "Enter") {
+                saveBtn.trigger("click");
+            }
+        })
+        saveBtn.on("click", () => {
+            this.title = (input.val() as string);
+            wrapper.remove();
+            this.render();
+        })
+
+        setTimeout(() => {
+            $(document).on("click", (e: any) => {
+                if (!wrapper.is(e.target) && wrapper.has(e.target).length === 0) {
+                    wrapper.remove();
+                }
+            })
+        }, 200)
+    }
+
     dispatchEdit() {
+
         if (this.isOnEditing) {
+
+            this.el.attr("widget-container-title", (this.title && this.title.length > 0) ? this.title : "No title");
+
             // add event
             this.blocks.forEach((block) => block.toggleEditing(true, this));
             this.eventEditDefine();
+
+
+            this.el.on("click", (e) => {
+
+
+                $(".widget-block-container").removeClass("highlight");
+                $(".widget-block-container").find("button[data-widget-remover]").remove();
+
+                if (this.el.is(e.target)) {
+                    this.el.toggleClass("highlight");
+
+                    let remover = $(`<button data-widget-remover class="btn btn-sm btn-danger !rounded-full"><i class="fa-regular fa-trash-can"></i></button>`);
+
+                    remover.css({
+                        position: "absolute",
+                        bottom: " 100%",
+                        left: " 100%",
+                        padding: "0.6rem",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignContent: "center",
+                        aspectRatio: 1,
+                    })
+                    this.el.append(remover)
+
+                    remover.on("click", () => {
+                        let index = this.wdget.containers.indexOf(this);
+                        this.wdget.containers.splice(index, 1);
+                        this.wdget.render();
+                    })
+
+                    $(document).on("click", (e: any) => {
+                        if (!this.el.is(e.target) && this.el.has(e.target).length === 0) {
+                            $(".widget-block-container").removeClass("highlight");
+                            $(".widget-block-container").find("button[data-widget-remover]").remove();
+                        }
+                    })
+                }
+
+                let offset = { x: e.offsetX, y: e.offsetY };
+                let pseudoAfter = window.getComputedStyle(e.target, '::after');
+                let h = parseInt(pseudoAfter.height, 10);
+                let w = parseInt(pseudoAfter.width, 10);
+
+                if (offset.y, (offset.y < h && offset.y > -(h * 1.4)), (offset.x < w && offset.x > -(w * 1.4))) {
+                    this.#editTitle(parseInt(pseudoAfter.left), parseInt(pseudoAfter.top));
+                }
+            })
             return;
         }
+
+        $(".widget-block-container").find("button[data-widget-remover]").remove();
+        this.el.attr("widget-container-title", (this.title && this.title.length > 0) ? this.title : "No title");
 
         // remove event
         this.el.off("widget:dragging:in");
         this.el.off("widget:dragging:out");
         this.el.off("widget:dragging:move");
         this.el.off("widget:drop");
+        this.el.off("click");
 
         this.blocks.forEach((block) => block.toggleEditing(false, this));
     }
@@ -258,9 +362,12 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
             this.el.attr("id", Date.now().toString());
         }
 
-        if (this.title) {
-            this.el.attr("widget-container-title", this.title);
+        if (this.isOnEditing) {
+            this.el.attr("widget-container-title", (this.title && this.title.length > 0) ? this.title : "No title");
+        } else {
+            this.el.attr("widget-container-title", this.title || "");
         }
+
 
         this.el.html("");
         this.blocks.forEach((block) => {

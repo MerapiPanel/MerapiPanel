@@ -10,12 +10,13 @@
 import { WdgetContainer } from "./WdgetContainer";
 import { WdgetEntity } from "./WdgetEntity";
 import { Wdget, WgetEditing } from "./Widget";
+import jQuery from "jquery";
 
 type WdgetBlockType = {
     name: string;
     title: string;
     category?: string;
-    content: string;
+    content: string | JQuery<HTMLElement> | HTMLElement;
     attribute: object;
 }
 
@@ -27,10 +28,11 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
     el: JQuery<HTMLElement> | undefined;
     name: string;
     title: string;
-    content: string;
+    content: string | JQuery<HTMLElement> | HTMLElement;
     attribute: object;
     category: string = "default";
     wdget: Wdget;
+    #isOnEdit = false;
 
 
     constructor(wdget: Wdget, {
@@ -153,10 +155,11 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
 
 
 
-    toggleEditing(idOnEdit: boolean, container: WdgetContainer) {
+    toggleEditing(isOnEdit: boolean, container: WdgetContainer) {
 
-        console.log(idOnEdit)
-        if (idOnEdit) {
+        this.#isOnEdit = isOnEdit;
+        if (isOnEdit) {
+           
             this.el?.on("click", () => this.showEditTools(container))
             this.replaceView();
             return;
@@ -164,8 +167,6 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
 
         this.render();
         this.el?.off("click")
-
-
     }
 
 
@@ -195,6 +196,21 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
     }
 
 
+    setContent(content: string | JQuery<HTMLElement> | HTMLElement) {
+
+        this.content = content;
+
+        if (!this.el || this.#isOnEdit) return;
+        if (this.content instanceof jQuery) {
+            this.el.html('');
+            this.el.append($(this.content));
+        } else if (this.content instanceof HTMLElement) {
+            this.el.html('');
+            this.el.append(this.content);
+        } else {
+            this.el.html(this.content as string);
+        }
+    }
 
 
     render(): JQuery<HTMLElement> {
@@ -211,9 +227,7 @@ class WdgetBlock implements WdgetEntity, WdgetBlockType {
             this.el.attr(attribute);
         }
 
-
         if (WgetEditing.isEditing) this.replaceView();
-
 
         return this.el;
     }

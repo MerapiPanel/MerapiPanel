@@ -9,7 +9,7 @@ $icons: (
     --widget-color-primary-disabled: #c9e6ff;
     --widget-color-danger: #ff7f7f;
     --widget-color-danger-active: #ff4d4d;
-    --widget-color-danger-disabled: #ffcccc;
+    --widget-color-danger-disabled: #ffe4e4;
     @each $name, $value in $icons {
         --widget-ic-#{$name}: #{$value};
     }
@@ -59,6 +59,8 @@ $icons: (
                 left: 0px;
                 font-size: 18px;
                 font-weight: 600;
+                min-height: 25px;
+                min-width: 150px;
             }
         }
     }
@@ -109,15 +111,19 @@ body.widget-editing {
 
         & .widget-block-container {
             position: relative;
+            background: #fff !important;
+            border-radius: 0.3rem;
             &::before {
                 content: "";
                 display: block;
+                background: #ffeded9b !important;
                 width: calc(100% + 30px);
                 height: calc(100% + 30px);
                 position: absolute;
                 top: -15px;
                 left: -15px;
                 border: var(--widget-color-primary-disabled) dashed 2px;
+                z-index: -1;
             }
 
             &[widget-container-title] {
@@ -133,6 +139,13 @@ body.widget-editing {
 
             &:not(:has(.widget-block)) {
                 min-height: 80px;
+            }
+
+            &.highlight {
+                &::before {
+                    border-color: var(--widget-color-danger-active);
+                    background-color: var(--widget-color-danger-disabled);
+                }
             }
         }
 

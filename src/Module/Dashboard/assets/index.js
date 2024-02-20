@@ -48,11 +48,7 @@ $(function () {
                 let model = response.data[i];
                 widget.entityManager.addEntity(model.name, model)
             }
-
-            console.log(widget.entityManager);
         }
-
-        console.log(widget)
     })
 
 
@@ -72,6 +68,9 @@ $(function () {
 
 
     function loadContentWidget(widget) {
+
+        console.log("Load Widget");
+
         let blocks = [];
         widget.containers.forEach(element => {
             blocks = blocks.concat(element.blocks)
@@ -95,8 +94,13 @@ $(function () {
 
                             if (data.content || (data.css && data.js)) {
 
-                                block.el.html(`<iframe width="${block.attribute.width - 20}" height="${block.attribute.height - 10}" class='w-full h-full' frameborder='0' scrolling='no'></iframe>`);
-                                let iframe = block.el.find("iframe")[0];
+                                let frame = $(`<iframe width="${block.attribute.width - 20}" height="${block.attribute.height - 10}" class='w-full h-full' frameborder='0' scrolling='no'></iframe>`);
+
+                                block.setContent(frame);
+                                let el = block.render();
+
+                                let iframe = $(el).find("iframe")[0];
+
                                 let iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
                                 let stylesheets = [];
@@ -121,16 +125,20 @@ $(function () {
                                 </body>\n
                                 </html>`);
                                 iframeDoc.close();
+
+
                             }
 
                         } else {
 
-                            $(block.el).html(response.data || "");
+                            block.setContent(response.data || "");
+                            block.render();
                         }
+
                     }
                 }).catch(err => {
                     merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
-                    $(block.el).html(`<div class='w-full h-full flex justify-center items-center text-yellow-400'>
+                    block.setContent(`<div class='w-full h-full flex justify-center items-center text-yellow-400'>
                         <i class=\"fa-solid fa-triangle-exclamation fa-lg\"></i>
                         <span class='ml-2'>Error while load widget</span>
                     </div>`);
