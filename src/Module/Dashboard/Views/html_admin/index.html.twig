@@ -14,7 +14,10 @@
         endpoints: {
             fetch: "{{ '/widget/fetch' | admin_url }}",
             save: "{{ '/widget/save' | admin_url }}",
-            load: "{{ '/widget/load' | admin_url }}"
+            load: "{{ '/widget/load' | admin_url }}",
+            script: {
+                widgetHelper: "{{ '@dashboard/assets/dist/widget-helper.bundle.js' | assets }}"
+            }
         }
     }
 </script>
@@ -23,75 +26,5 @@
 
 
 {% block content %}
-<div class="widget-container" id="widget-container">
-
-    <div class="widget-box">
-        <i class="widget-ic ic-default"></i>
-        <h2 class="text-xl">Welcome to the admin panel</h2>
-    </div>
-
-    <div class="widget-box"></div>
-
-    <div class="widget-box">
-
-        <div class="bg-white py-4 ps-4 mt-4 shadow rounded widget-item">
-            <h4 class="text-lg">Some Content</h4>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo
-                sequi
-                tempore
-                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit
-                enim
-                corrupti?</p>
-        </div>
-        <div class="bg-white py-4 ps-4 mt-4 shadow rounded widget-item">
-            <h4 class="text-lg">Some Content</h4>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo
-                sequi
-                tempore
-                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit
-                enim
-                corrupti?</p>
-        </div>
-        <div class="bg-white py-4 ps-4 mt-4 shadow rounded widget-item">
-            <h4 class="text-lg">Some Content</h4>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cumque aliquam repellat fugiat explicabo
-                sequi
-                tempore
-                assumenda cum? Modi ex dolor consequatur sunt corporis, quidem, blanditiis, ipsa asperiores impedit
-                enim
-                corrupti?</p>
-        </div>
-
-    </div>
-
-
-    <div class="widget-box">
-        <h3 class="text-xl font-bold mb-4">Todo's</h3>
-
-        <div class="col-span-1 widget-item">
-            <div class="bg-white rounded shadow">
-                <ul class="list-disc ms-6 p-4">
-                    <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
-                    <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
-                    <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
-                    <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
-                    <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
-                    <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
-                    <li class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elim</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-span-2 widget-item">
-            <div class="bg-white rounded shadow p-4">
-                <h4 class="text-lg font-bold">Passed</h4>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad nisi esse reiciendis fugit molestiae
-                    iure
-                    reprehenderit mollitia saepe. Impedit nostrum non nulla in eius quam maiores sint perferendis
-                    omnis
-                    unde.</p>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="widget-container" id="widget-container"></div>
 {% endblock %}

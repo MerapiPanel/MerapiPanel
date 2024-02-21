@@ -333,7 +333,7 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
         }
 
         $(".widget-block-container").find("button[data-widget-remover]").remove();
-        this.el.attr("widget-container-title", (this.title && this.title.length > 0) ? this.title : "No title");
+        this.el.attr("widget-container-title", this.title);
 
         // remove event
         this.el.off("widget:dragging:in");
@@ -343,6 +343,7 @@ class WdgetContainer implements WdgetEntity, WdgetContainerType {
         this.el.off("click");
 
         this.blocks.forEach((block) => block.toggleEditing(false, this));
+
     }
 
 

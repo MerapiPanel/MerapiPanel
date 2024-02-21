@@ -19,7 +19,14 @@
 </div>
 {% endblock %}
 
+
+{% set articles = admin.article_fetchAll %}
+
+
+
 {% block content %}
+
+{{ articles |json_encode | raw }}
 
 {% endblock %}
 {% block javascripts %}

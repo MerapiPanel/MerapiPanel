@@ -1,8 +1,8 @@
-version: 1.0.0
+version: 1.0.1
 engine: InnoDB
 collation: utf8mb4_unicode_ci
 tables:
-  contents:
+  articles:
     columns:
       id:
         type: varchar
@@ -15,11 +15,10 @@ tables:
         length: 150
         notnull: true
 
-      slug:
+      user_id:
         type: varchar
-        length: 150
+        length: 100
         notnull: true
-        unique: true
 
       created_at:
         type: timestamp
@@ -33,3 +32,12 @@ tables:
 
     indexes:
       PRIMARY KEY: id
+
+  categories:
+    columns:
+      id:
+        type: varchar
+        length: 100
+        notnull: true
+        unique: true
+        

@@ -1,6 +1,5 @@
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
-import SimpleImage from "@editorjs/simple-image";
 import Checklist from '@editorjs/checklist';
 import Embed from '@editorjs/embed';
 import Quote from '@editorjs/quote';
@@ -30,9 +29,6 @@ function init(args = {}) {
 
         args.editor.holder = String(args.editor.holder).charAt(0) == "#" ? args.editor.holder.slice(1) : args.editor.holder;
     }
-
-
-    console.log(args);
 
 
     const editor = new EditorJS({

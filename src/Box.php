@@ -308,7 +308,7 @@ class BoxModule
 
         $className = $this->findServiceClassName();
 
-        if ($name === "service") {
+        if ($name === "service" && !empty($args)) {
 
             if (isset($args[0]) && is_string($args[0])) {
 

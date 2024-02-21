@@ -49,7 +49,7 @@ class App extends Box
 
         parent::setConfig(self::app_config);
         $this->Core_Exception_Handler();
-        $this->Module_ViewEngine();
+        // $this->Module_ViewEngine();
         $this->setConfig(self::app_config);
         $this->__registerController();
 

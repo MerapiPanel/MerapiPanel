@@ -69,47 +69,38 @@ $(function () {
 
     function loadContentWidget(widget) {
 
-        console.log("Load Widget");
-
         let blocks = [];
         widget.containers.forEach(element => {
-            blocks = blocks.concat(element.blocks)
+            blocks = blocks.concat(element.blocks); // merge blocks
         });
 
         blocks.forEach(block => {
 
-            $(block.el).html(`<div class='w-full h-full flex justify-center items-center text-gray-300'>
-                <i class='fa fa-spinner fa-spin fa-lg'></i>
-                <span class='ml-2'>Loading...</span>
-            </div>`);
+            $(block.el).html(`<div class='w-full h-full flex justify-center items-center text-gray-300'><i class='fa fa-spinner fa-spin fa-lg'></i><span class='ml-2'>Loading...</span></div>`);
 
             setTimeout(() => {
 
                 merapi.http.get(createUrl(endpoints.load + "/" + encodeURI(block.name))).then((response, text, xhr) => {
                     if (xhr.status === 200) {
-
                         if (typeof response.data === "object") {
-
                             var data = response.data;
-
                             if (data.content || (data.css && data.js)) {
 
                                 let frame = $(`<iframe width="${block.attribute.width - 20}" height="${block.attribute.height - 10}" class='w-full h-full' frameborder='0' scrolling='no'></iframe>`);
-
                                 block.setContent(frame);
+
                                 let el = block.render();
-
                                 let iframe = $(el).find("iframe")[0];
-
                                 let iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
                                 let stylesheets = [];
-                                let scrips = [];
+                                let scrips = [
+                                    `<script src="${endpoints.script.widgetHelper}"></script>`
+                                ];
 
-                                data.css.forEach(css => {
+                                data.css?.forEach(css => {
                                     stylesheets.push("<link rel='stylesheet' href='" + css + "'>");
                                 })
-                                data.js.forEach(js => {
+                                data.js?.forEach(js => {
                                     scrips.push("<script src='" + js + "'></script>");
                                 })
 
@@ -118,6 +109,7 @@ $(function () {
                                 <head>\n
                                 <style>html,body { margin: 0; padding: 0; }\n* { box-sizing: border-box; }\nbody { transition: 1s; animation: loading 1s infinite alternate; } body * { transition: 1s; opacity: 0; } body.loaded { display: block; animation: none; } body.loaded * { opacity: 1; } @keyframes loading { from { background-color: #f2f2f2; } to { background-color: transparent; } }</style>\n
                                 ${stylesheets.join("\n")}\n
+                                <script>window.data = ${JSON.stringify(data.data ? data.data : {})}</script>\n
                                 </head>\n
                                 <body style='width: ${block.attribute.width - 20}px; height: ${block.attribute.height - 10}px;'>\n
                                 ${data.content}\n
@@ -125,28 +117,32 @@ $(function () {
                                 </body>\n
                                 </html>`);
                                 iframeDoc.close();
-
-
                             }
-
                         } else {
-
                             block.setContent(response.data || "");
                             block.render();
                         }
-
                     }
                 }).catch(err => {
                     merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
-                    block.setContent(`<div class='w-full h-full flex justify-center items-center text-yellow-400'>
-                        <i class=\"fa-solid fa-triangle-exclamation fa-lg\"></i>
-                        <span class='ml-2'>Error while load widget</span>
-                    </div>`);
+                    block.setContent(`<div class='w-full h-full flex justify-center items-center text-yellow-400'><i class=\"fa-solid fa-triangle-exclamation fa-lg\"></i><span class='ml-2'>Error while load widget</span></div>`);
                 })
             }, 400);
         })
     }
-
 });
 
 
+
+const callbacks = {};
+
+window.addEventListener('message', (event) => {
+    // Security check
+    if (event.origin !== window.location.origin) {
+        return;
+    }
+
+    const { id, content } = event.data;
+
+    return "hallo";
+});

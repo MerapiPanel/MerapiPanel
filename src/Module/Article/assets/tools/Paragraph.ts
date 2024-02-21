@@ -1,4 +1,8 @@
 class Paragraph {
+
+    api: any = null;
+    paragraph: any = null;
+
     constructor({ api }) {
         this.api = api;
         this.paragraph = null;
@@ -25,39 +29,6 @@ class Paragraph {
         return this.paragraph;
     }
 
-    onClick() {
-        // Create the paragraph block
-        // const block = this.api.blocks.paragraph();
-
-        // // Add the alignment and placeholder options
-        // block.setText('Enter your text here...');
-        // block.addListItem('left', 'Align left');
-        // block.addListItem('center', 'Align center');
-        // block.addListItem('right', 'Align right');
-        // block.addListItem('justify', 'Justify');
-
-        // // Add the inline toolbar
-        // block.addInlineTool('bold', {
-        //     command: 'bold',
-        //     className: 'fa fa-bold',
-        //     title: 'Bold',
-        // });
-        // block.addInlineTool('italic', {
-        //     command: 'italic',
-        //     className: 'fa fa-italic',
-        //     title: 'Italic',
-        // });
-        // block.addInlineTool('strike', {
-        //     command: 'strikeThrough',
-        //     className: 'fa fa-strikethrough',
-        //     title: 'Strike',
-        // });
-
-        // Insert the block into the editor
-        // this.api.blocks.insert(block);
-    }
-
-
     renderSettings() {
         const settings = [
             {
@@ -83,8 +54,6 @@ class Paragraph {
         settings.forEach(tune => {
 
             let paragraphAlign = "text " + ($(this.paragraph).css('text-align'));
-
-            console.log(paragraphAlign);
             let button = document.createElement('div');
 
             button.classList.add('cdx-settings-button');
@@ -106,7 +75,7 @@ class Paragraph {
         return wrapper[0];
     }
 
-    _toggleTune(tune) {
+    _toggleTune(tune: string) {
 
         switch (tune) {
             case 'text justify':
