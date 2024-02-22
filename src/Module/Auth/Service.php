@@ -2,13 +2,12 @@
 
 namespace MerapiPanel\Module\Auth;
 
+use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\AES;
 
 class Service extends Module
 {
-
-//    const COOKIE_KEY = "m-auth";
 
     public function isAdmin()
     {
@@ -19,18 +18,37 @@ class Service extends Module
 
 
 
-    public function setAuthSession($username)
+    public function setSession($user_id)
     {
 
         $data = [
-            "username" => $username,
+            "user_id" => $user_id,
             "time" => time()
         ];
 
-        error_log(json_encode($data));
         $encrypted = AES::encrypt(json_encode($data));
         setcookie(($this->getSetting()["cookie"]["cookie_key"]), $encrypted, time() + (86400 * 30), "/");
     }
+
+
+
+    public function getSession()
+    {
+
+        $raw = AES::decrypt($_COOKIE[($this->getSetting()["cookie"]["cookie_key"])]);
+        if (!$raw)
+            return false;
+        $data = json_decode($raw, true);
+        if (!$data)
+            return false;
+
+        if (isset($data["user_id"])) {
+            return Box::module("Users")->service()->getUserById($data["user_id"]);
+        } else if (isset($data["username"])) {
+            return Box::module("Users")->service()->getUserByUsername($data["username"]);
+        }
+    }
+
 
 
 
@@ -38,10 +56,12 @@ class Service extends Module
     {
 
         $raw = AES::decrypt($_COOKIE[($this->getSetting()["cookie"]["cookie_key"])]);
-        if (!$raw) return false;
+        if (!$raw)
+            return false;
 
         $data = json_decode($raw, true);
-        if (!$data || !isset($data["username"])) return false;
+        if (!$data || !isset($data["username"]))
+            return false;
 
         return $data["username"];
     }
@@ -53,7 +73,7 @@ class Service extends Module
 
         return [
             "cookie" => [
-                "cookie_key" =>  "m-auth",
+                "cookie_key" => "m-auth",
                 "cookie_lifetime" => 86400,
             ],
             "login_path" => "/login"

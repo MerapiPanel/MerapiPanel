@@ -1,0 +1,32 @@
+input {
+    @apply border border-gray-300 rounded px-2 py-1;
+
+    &.invalid {
+        box-shadow: 0 0 2px red;
+
+        &[invalid-message]:not([invalid-message=""]) {
+            position: relative;
+            &::after {
+                color: red;
+                content: attr(invalid-message);
+                position: absolute;
+                top: 100%;
+                left: 0;
+            }
+        }
+    }
+}
+
+div:has( .invalid-feedback) {
+    align-items: baseline;
+}
+.invalid-feedback {
+    position: relative;
+    margin-bottom: 15px;
+
+    & small {
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}

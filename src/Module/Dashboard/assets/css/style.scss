@@ -46,11 +46,10 @@ $icons: (
         align-items: flex-start;
         align-content: flex-start;
         gap: 2rem;
-        margin-top: 5rem;
-
-        &[widget-container-title] {
+        margin-top: 2rem;
+        &[widget-container-title]:not([widget-container-title=""]) {
             min-height: 80px;
-
+            margin-top: 5rem;
             &::after {
                 content: attr(widget-container-title);
                 position: absolute;

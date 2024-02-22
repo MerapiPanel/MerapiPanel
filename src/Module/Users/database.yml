@@ -1,11 +1,16 @@
-version: 1.0.0
+version: 1.0.1
 engine: InnoDB
 collation: utf8mb4_unicode_ci
 
-tables: 
-
+tables:
   users:
-    columns: 
+    columns:
+      id:
+        type: INTEGER
+        notnull: true
+        autoincrement: true
+        unique: true
+
       username:
         type: varchar
         length: 255

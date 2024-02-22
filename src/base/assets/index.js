@@ -1,12 +1,58 @@
-require('./app.css')
-require('./fontawesome/css/all.min.css');
-const $ = require('jquery');
+
+import './app.css';
+import "./style/input.scss";
+import './fontawesome/css/all.min.css';
+import $, { fn } from 'jquery';
 
 if (!window.merapi) {
     window.merapi = require("./merapi");
     // console.log(window)
 }
 
+
+fn.invalidate = function () {
+    let $this = $(this);
+    $this.addClass("invalid");
+
+
+
+    $this.trigger("focus");
+}
+
+fn.validate = function () {
+
+    let $this = $(this);
+    let pattern = $this.attr('pattern');
+    let val = $this.val();
+    let parent = $this.parent();
+
+    if ((pattern && !new RegExp(pattern).test(val)) || ($this.prop("required") && val.length === 0)) {
+
+        $this.addClass("invalid").attr('aria-invalid', 'true');
+        let message = $this.attr('invalid-message');
+        if (message && !parent.hasClass('invalid-feedback')) {
+            let wrapper = $(`<div class="invalid-feedback"><small class='block w-full text-red-400'>${$this.attr('invalid-message')}</small></div>`);
+            wrapper.insertAfter($this);
+            $this.remove();
+            wrapper.prepend($this);
+        }
+        $this.trigger("focus");
+        return false;
+
+    } else if ((pattern && new RegExp(pattern).test(val)) || ($this.prop("required") && val.length > 0)) {
+
+        $this.removeClass("invalid").removeAttr('aria-invalid');
+        if (parent.hasClass('invalid-feedback')) {
+            let input = parent.find("input");
+            input.insertBefore(parent);
+            parent.remove();
+        }
+        return true;
+
+    }
+    
+    return false;
+};
 
 
 $(document).on('DOMContentLoaded', function () {
@@ -27,7 +73,7 @@ $(document).on('DOMContentLoaded', function () {
 
     liveReload();
 
-   // console.clear()
+    // console.clear()
 })
 
 

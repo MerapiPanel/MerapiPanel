@@ -47,7 +47,7 @@ class Guest extends Module
 
         if ($user && password_verify($password, $user['password'])) {
 
-            $this->service()->setAuthSession($user['username']);
+            $this->service()->setSession($user['username']);
             return Response::with("success")->redirect("/panel/admin");
         }
 

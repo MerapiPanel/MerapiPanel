@@ -11,6 +11,7 @@ use MerapiPanel\Utility\Middleware\Component;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Exceptions\Error;
+use MerapiPanel\Utility\Route;
 
 class Router extends Component
 {
@@ -48,28 +49,30 @@ class Router extends Component
      * Retrieves a route object for a GET request.
      *
      * @param string $path The path for the route.
+     * @param string|callable $method The callback function for the route.
      * @param string $controller The callback function for the route.
      * @param bool $isAdmin Determines if the route is for an admin.
-     * @throws None
      * @return Route The route object.
      */
-    public function get($path, $method, $controller): Route
+    public function get(string $path, string|callable $method, string $controller = null): Route
     {
 
-        $this->validateController($controller);
+        $callback = false;
+        if (is_string($method) && $controller !== null) {
+            $callback = $controller . "@$method";
+        } else if (is_callable($method)) {
+            $callback = $method;
+        }
+        if ($callback === false) {
+            throw new \InvalidArgumentException("callback is invalid");
+        }
 
-        if (strtolower(basename($controller)) === "admin") {
-
+        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        if ($sectionName === "admin") {
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
-            //  $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
         }
 
-        $route = new Route(Route::GET, $path, $controller . "@$method");
-
-        if (isset($middleware)) {
-            $route->middleware->addMiddleware($middleware);
-        }
-
+        $route = new Route(Route::GET, $path, $callback);
         return $this->addRoute(Route::GET, $route);
     }
 
@@ -80,26 +83,32 @@ class Router extends Component
      * Creates a new POST route and adds it to the route collection.
      *
      * @param string $path The path of the route.
+     * @param string|callable $method The callback function for the route.
      * @param string $controller The controller function to be executed when the route is matched.
      * @param bool $isAdmin Whether the route is for admin only.
      * @return Route The created route.
      */
-    public function post($path, $method, $controller): Route
+    public function post(string $path, string|callable $method, string $controller = null): Route
     {
 
-        $this->validateController($controller);
+        $callback = false;
 
-        if (strtolower(basename($controller)) === "admin") {
-
-            $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            // $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
+        if (is_string($method) && $controller !== null) {
+            $callback = $controller . "@$method";
+        } else if (is_callable($method)) {
+            $callback = $method;
+        }
+        if ($callback === false) {
+            throw new \InvalidArgumentException("callback is invalid");
         }
 
-        $route = new Route(Route::POST, $path, $controller . "@$method");
-        if (isset($middleware)) {
-            $route->middleware->addMiddleware($middleware);
+
+        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        if ($sectionName === "admin") {
+            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
         }
 
+        $route = new Route(Route::POST, $path, $callback);
         return $this->addRoute(Route::POST, $route);
     }
 
@@ -110,26 +119,30 @@ class Router extends Component
      * Adds a PUT route to the router.
      *
      * @param string $path The path for the route.
+     * @param string|callable $method The callback function for the route.
      * @param string $controller The controller function to be executed when the route is matched.
      * @param bool $isAdmin (optional) Whether the route is for admin use only. Defaults to false.
      * @return Route The added route.
      */
-    public function put($path, $method, $controller): Route
+    public function put(string $path, string|callable $method, string $controller = null): Route
     {
 
-        $this->validateController($controller);
-
-        if (strtolower(basename($controller)) === "admin") {
-
-            $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
+        $callback = false;
+        if (is_string($method) && $controller !== null) {
+            $callback = $controller . "@$method";
+        } else if (is_callable($method)) {
+            $callback = $method;
+        }
+        if ($callback === false) {
+            throw new \InvalidArgumentException("callback is invalid");
         }
 
-        $route = new Route(Route::PUT, $path, $controller . "@$method");
-        if (isset($middleware)) {
-            // $route->middleware->addMiddleware($middleware);
+        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        if ($sectionName === "admin") {
+            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
         }
 
+        $route = new Route(Route::PUT, $path, $callback);
         return $this->addRoute(Route::PUT, $route);
     }
 
@@ -139,44 +152,33 @@ class Router extends Component
      * Deletes a route.
      *
      * @param string $path The path of the route.
+     * @param string|callable $method The callback function for the route.
      * @param string $controller The controller function to handle the route.
      * @param bool $isAdmin (optional) Indicates if the route is for an admin. Defaults to false.
-     * @throws \Some_Exception_Class Description of the exception that can be thrown.
-     * @return \Route The created route.
+     * @return Route The created route.
      */
-    public function delete($path, $method, $controller): Route
+    public function delete(string $path, string|callable $method, string $controller = null): Route
     {
 
-        $this->validateController($controller);
-
-
-        if (strtolower(basename($controller)) === "admin") {
-
-            $path = rtrim($this->adminPrefix, "/") . "/" . ltrim($path, "/");
-            // $middleware = Proxy::Real($this->box->Module_Auth_Middleware_Admin());
+        $callback = false;
+        if (is_string($method) && $controller !== null) {
+            $callback = $controller . "@$method";
+        } else if (is_callable($method)) {
+            $callback = $method;
+        }
+        if ($callback === false) {
+            throw new \InvalidArgumentException("callback is invalid");
         }
 
-        $route = new Route(Route::DELETE, $path, $controller . "@$method");
-        if (isset($middleware)) {
-            $route->middleware->addMiddleware($middleware);
+        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        if ($sectionName === "admin") {
+            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
         }
 
+        $route = new Route(Route::DELETE, $path, $callback);
         return $this->addRoute(Route::DELETE, $route);
     }
 
-
-
-
-    function validateController($controller)
-    {
-
-        // if (
-        //     strtolower(basename($controller)) !== "admin" &&
-        //     strtolower(basename($controller)) !== "guest"
-        // ) {
-        //     throw new Exception("Controller must be Admin or Guest");
-        // }
-    }
 
 
     /**
@@ -190,10 +192,27 @@ class Router extends Component
     {
 
         $this->routeStack[$method][] = $route;
-
         return $route;
     }
 
+
+
+    private function getCaller()
+    {
+
+        $file = false;
+
+        foreach (debug_backtrace() as $call) {
+            // only in module
+            if (isset($call['file']) && in_array("module", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"), $call['file'])))) {
+                $file = $call['file'];
+                break;
+            }
+        }
+
+        // error_log(self::class . " File: " . $file);
+        return $file;
+    }
 
 
 
@@ -227,6 +246,7 @@ class Router extends Component
         //     }
         // }
 
+        //  echo "dispatch $method $path";
 
         /**
          * @var Route $route
@@ -234,6 +254,7 @@ class Router extends Component
          */
         foreach ($this->routeStack[$method] as $route) {
 
+            //  print_r([$route->getPath(), $path]);
 
             if ($this->matchRoute($route->getPath(), $path)) {
 
@@ -244,6 +265,8 @@ class Router extends Component
                 return $this->handle($request, $route);
             }
         }
+
+
 
         throw new Exception("Route not found $path", 404);
     }
@@ -327,7 +350,6 @@ class Router extends Component
      *
      * @param Request $request The request object.
      * @param Route $route The route object.
-     * @throws Some_Exception_Class If an exception occurs during processing.
      * @return Response|null The response object or null if no response is returned.
      */
     protected function handle(Request $request, Route $route): Response
@@ -375,12 +397,12 @@ class Router extends Component
         $response = new Response();
         if (is_callable($callback)) {
 
-            return call_user_func($callback, $request);
+            $response->setContent(call_user_func($callback, ...[$request, &$response]));
+            return $response;
+
         } else if (is_string($callback) && strpos($callback, '@') !== false) {
 
             list($controller, $method) = explode('@', $callback);
-
-
 
             if (!class_exists($controller)) {
                 $controllerClass = 'Mp\\Controllers\\' . $controller;
@@ -407,7 +429,7 @@ class Router extends Component
 
             // execute controller method
             ob_start();
-            $output = $controllerInstance->$method($request);
+            $output = $controllerInstance->$method(...[$request, &$response]);
             ob_end_clean();
 
 
@@ -494,7 +516,7 @@ class Router extends Component
         }
 
         if (isset($content['data']) && $content['data'] == null) {
-           // unset($content['data']);
+            // unset($content['data']);
         }
 
         $response->setContent($content);

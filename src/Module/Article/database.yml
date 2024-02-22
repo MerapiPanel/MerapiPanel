@@ -1,4 +1,4 @@
-version: 1.0.1
+version: 1.0.7
 engine: InnoDB
 collation: utf8mb4_unicode_ci
 tables:
@@ -14,6 +14,10 @@ tables:
         type: varchar
         length: 150
         notnull: true
+
+      category_id:
+        type: varchar
+        length: 100
 
       user_id:
         type: varchar
@@ -33,11 +37,29 @@ tables:
     indexes:
       PRIMARY KEY: id
 
-  categories:
+  category:
     columns:
+
       id:
-        type: varchar
+        type: INTEGER
         length: 100
-        notnull: true
         unique: true
-        
+        autoincrement: true
+      
+      name:
+        type: varchar
+        length: 150
+        notnull: true
+
+      created_at:
+        type: timestamp
+        defaultcurrent: true
+        notnull: true
+
+      updated_at:
+        type: timestamp
+        defaultcurrent: true
+        notnull: true
+
+    indexes:
+      PRIMARY KEY: id

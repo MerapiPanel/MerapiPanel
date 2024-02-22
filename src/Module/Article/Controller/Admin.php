@@ -6,6 +6,7 @@ use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Http\Request;
+use MerapiPanel\Utility\Router;
 
 class Admin extends Module
 {
@@ -19,13 +20,41 @@ class Admin extends Module
     }
 
 
-    function register($router)
+    function register(Router $router)
     {
 
-        $index  = $router->get("/article", "index", self::class);
-        $list   = $router->get("/article/list", "list", self::class);
-        $new    = $router->get("/article/create", "createNewarticle", self::class);
+        $router->post("/article/endpoint/{class}/{method}", function ($req, &$res) {
+
+            $res->setHeader("Content-Type", "application/json");
+
+            $class = $req->class();
+            $method = $req->method();
+
+            if (!is_string($class) || !is_string($method)) {
+                return [
+                    "code"    => 401,
+                    "message" => "Invalid request",
+                    "data"    => null
+                ];
+            }
+
+            if (strtolower($class) == "category") {
+                $class = "MerapiPanel\\Module\\Article\\Controller\\Category";
+            } else {
+                $class = "MerapiPanel\\Module\\Article\\Controller\\Article";
+            }
+
+            $instance = new $class();
+            if (method_exists($instance, $method)) {
+                return $instance->{$method}($req);
+            }
+        });
+
+        $index = $router->get("/article", "index", self::class);
+        $list = $router->get("/article/list", "list", self::class);
+        $new = $router->get("/article/create", "createNewarticle", self::class);
         $config = $router->get("/article/config", "config", self::class);
+
 
         Box::module("panel", [
             "addMenu" => [

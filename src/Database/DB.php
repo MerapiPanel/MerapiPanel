@@ -9,11 +9,11 @@ use Symfony\Component\Yaml\Yaml;
 
 final class DB
 {
-    
+
 
     private static array $instances = [];
     private $identify;
-    protected \PDO $dbh;
+    protected PDO $dbh;
 
 
 
@@ -31,7 +31,7 @@ final class DB
     private static function getInstance()
     {
         $yamlFile = self::findYmlConfig();
-        $dbFile   = self::generateDbFileName($yamlFile);
+        $dbFile = self::generateDbFileName($yamlFile);
         $identify = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '', $dbFile));
 
         self::log('YAML file: ' . $yamlFile);
@@ -64,7 +64,7 @@ final class DB
 
 
 
-    private static function findYmlConfig(): string | false
+    private static function findYmlConfig(): string|false
     {
 
         $filePath = null;
@@ -77,7 +77,7 @@ final class DB
             if (
                 isset($call['file']) &&
                 $filePathFromCallSanitized !== $currentFileSanitized &&
-                !in_array("core", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"),  $filePathFromCall)))
+                !in_array("core", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"), $filePathFromCall)))
             ) {
                 $filePath = $filePathFromCall;
                 break;
@@ -238,20 +238,43 @@ final class DB
      */
     protected function upgradeDatabase($newVersionFile, $config): void
     {
+        
         $newDatabase = $this->createDatabaseConnection($newVersionFile);
         $this->initializeTables($newDatabase, $config['tables']);
         // Add logging statement
         self::log("Tables initialized for new database version");
 
-        $latestVersionFile = $this->findLatestVersionFile($newVersionFile);
-        if ($latestVersionFile && file_exists($latestVersionFile)) {
-            $oldDatabase = $this->createDatabaseConnection($latestVersionFile);
-            self::log("Database connection established for old version: $latestVersionFile");
-            $oldTables = $this->getTableNames($oldDatabase);
+
+        $previusDatabaseVersion = $this->findPreviousVersionFile($newVersionFile);
+        if ($previusDatabaseVersion && file_exists($previusDatabaseVersion)) {
+
+            $oldDatabase = $this->createDatabaseConnection($previusDatabaseVersion);
+            self::log("Database connection established for old version: $previusDatabaseVersion");
+
+            $oldTables = array_map(function ($e) {
+                return $e['name'];
+            }, $this->getTableNames($oldDatabase) ?? []);
+
+            $successCount = 0;
             foreach ($oldTables as $table) {
-                $this->importBetweenDatabase($table, $oldDatabase, $newDatabase);
-                // Add logging statement
+
                 self::log("Imported data from table: $table");
+
+                try {
+                    (function () use ($table, $oldDatabase, $newDatabase) {
+                        $this->importBetweenDatabase($table, $oldDatabase, $newDatabase);
+                    })();
+
+                    $successCount++;
+                } catch (Exception $e) {
+
+                    self::log("Failed to import data from table: $table");
+                }
+            }
+
+            $oldDatabase = null;
+            if ($successCount >= count($oldTables)) {
+                unlink($previusDatabaseVersion);
             }
         }
 
@@ -272,7 +295,7 @@ final class DB
      * @param string $dbFile The path to the SQLite database file
      * @return \PDO The PDO database connection
      */
-    protected function createDatabaseConnection($dbFile): \PDO
+    protected function createDatabaseConnection($dbFile): PDO
     {
         // Construct the Data Source Name (DSN) for the SQLite connection
         $dsn = 'sqlite:' . $dbFile;
@@ -281,10 +304,10 @@ final class DB
         self::log('Connecting to SQLite database at ' . $dbFile);
 
         // Create a new PDO instance for the SQLite connection
-        $dbh = new \PDO($dsn);
+        $dbh = new PDO($dsn);
 
         // Set the error mode to throw exceptions for errors
-        $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Add logging statement
         self::log('Connected to SQLite database');
@@ -316,14 +339,8 @@ final class DB
         $stmt = $pdo->prepare($SQL);
         $stmt->execute();
 
-        // Log the execution of SQL query
-        error_log("Executing SQL: " . $SQL);
-
-        // Log the successful execution of SQL query
-        error_log("SQL executed successfully");
-
         // Return the fetched table names
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
@@ -334,43 +351,59 @@ final class DB
 
 
     /**
-     * Finds the latest version file in the given directory.
+     * Finds the previous version file based on the given current version file.
      *
-     * @param string $file The file path to search for the latest version file.
-     * @return string|false The path of the latest version file if found, otherwise false.
+     * @param string $file The file path to search for the previous version file.
+     * @return string|false The path of the previous version file if found, otherwise false.
      */
-    protected function findLatestVersionFile($file): string | false
+    protected function findPreviousVersionFile($file): string|false
     {
         $directory = dirname($file);
         $files = glob("$directory/*.sqlite");
-        $latestVersionFile = null;
-        $latestVersion = '';
+
+        $currentVersion = basename($file, ".sqlite");
+
+        // Splitting current version into major, minor, and patch numbers
+        preg_match('/(\d+)\.(\d+)\.(\d+)/', $currentVersion, $matches);
+        $currentMajor = (int) $matches[1];
+        $currentMinor = (int) $matches[2];
+        $currentPatch = (int) $matches[3];
+
+        // Initialize previous version variables
+        $previousVersion = '';
+        $previousVersionFile = '';
 
         foreach ($files as $currentFile) {
             $fileName = pathinfo($currentFile, PATHINFO_FILENAME);
-            self::log("Checking file: $fileName");
 
+            // Extracting version numbers from the filename
             if (preg_match('/(\d+)\.(\d+)\.(\d+)/', $fileName, $matches)) {
-                $version = $matches[0];
-                self::log("Found version: $version");
+                $fileMajor = (int) $matches[1];
+                $fileMinor = (int) $matches[2];
+                $filePatch = (int) $matches[3];
 
-                if (version_compare($version, $latestVersion, '>')) {
-                    $latestVersion = $version;
-                    $latestVersionFile = $currentFile;
-                    self::log("Updating latest version to: $latestVersion");
+                // Check if the file version is the previous version
+                if (
+                    $fileMajor < $currentMajor ||
+                    ($fileMajor == $currentMajor && $fileMinor < $currentMinor) ||
+                    ($fileMajor == $currentMajor && $fileMinor == $currentMinor && $filePatch < $currentPatch)
+                ) {
+
+                    // Update the previous version information
+                    $previousVersion = "$fileMajor.$fileMinor.$filePatch";
+                    $previousVersionFile = $currentFile;
                 }
             }
         }
 
-        if ($latestVersionFile != null) {
-            $latestVersionFileFullPath = $directory . '/' . $latestVersionFile;
-            self::log("Latest version file found: $latestVersionFileFullPath");
-            return $latestVersionFileFullPath;
+        if ($previousVersionFile !== '') {
+            self::log("Previous version file ({$previousVersion}.sqlite) found: $previousVersionFile");
+            return $previousVersionFile;
         }
-        self::log("Latest version file not found");
+
+        self::log("Previous version file not found");
         return false;
     }
-
 
 
 
@@ -385,7 +418,7 @@ final class DB
      * @param \PDO $dbConnection The database connection.
      * @param array $tableDefinitions The array of table definitions.
      */
-    protected function initializeTables(\PDO $dbConnection, array $tableDefinitions)
+    protected function initializeTables(PDO $dbConnection, array $tableDefinitions)
     {
         foreach ($tableDefinitions as $tableName => $tableOptions) {
             $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (";
@@ -461,23 +494,26 @@ final class DB
      * @param \PDO $toDB The destination database to import to
      * @return void
      */
-    protected function importBetweenDatabase(string $tableName, \PDO $fromDB, \PDO $toDB)
+    protected function importBetweenDatabase(string $tableName, PDO $fromDB, PDO $toDB)
     {
+
+        self::log("Importing table: $tableName");
+
         // Get the table info from the source database
-        $sql1 = "PRAGMA table_info($tableName)";
+        $sql1 = "PRAGMA table_info(`$tableName`)";
         $stmt1 = $fromDB->prepare($sql1);
         $stmt1->execute();
-        $tableInfo1 = $stmt1->fetchAll(\PDO::FETCH_ASSOC);
+        $tableInfo1 = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
         // Get the table info from the destination database
-        $sql2 = "PRAGMA table_info($tableName)";
+        $sql2 = "PRAGMA table_info(`$tableName`)";
         $stmt2 = $toDB->prepare($sql2);
         $stmt2->execute();
-        $tableInfo2 = $stmt2->fetchAll(\PDO::FETCH_ASSOC);
+        $tableInfo2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
         // If either table has no columns, return false
         if (count($tableInfo1) <= 0 || count($tableInfo2) <= 0) {
-            return false;
+            return null;
         }
 
         // Create a mapping between the columns in the source table and the columns in the destination table
@@ -493,8 +529,21 @@ final class DB
 
         // Import data from db1 to db2, ignoring columns that are not present in db2
         $columnNames = implode(', ', array_values($columnMapping));
-        $sql = "INSERT IGNORE INTO $tableName ($columnNames) SELECT " . implode(', ', array_keys($columnMapping)) . " FROM $tableName";
-        $toDB->exec($sql);
+        $sql = "SELECT $columnNames FROM `$tableName`";
+        $oldData = ($fromDB->query($sql))->fetchAll(PDO::FETCH_ASSOC);
+
+        $dataMapping = [];
+        foreach ($oldData as $row) {
+            $dataMapping[] = array_intersect_key($row, $columnMapping);
+        }
+
+        $sql = "INSERT INTO `$tableName` ($columnNames) VALUES " . implode(", ", array_map(function ($row) {
+            return '("' . implode('", "', $row) . '")';
+        }, $dataMapping));
+        $stmt = $toDB->prepare($sql);
+        $stmt->execute();
+
+        self::log("Importing table: $tableName | Done");
     }
 
 
@@ -586,7 +635,7 @@ final class DB
 
 
 
-    public function prepare($sql): \PDOStatement |false
+    public function prepare($sql): \PDOStatement|false
     {
         return $this->dbh->prepare($sql);
     }
@@ -812,7 +861,7 @@ final class Where
     public function equal($val): WhereQueryBuilder
     {
         $this->operator = "=";
-        $this->value    = $val;
+        $this->value = $val;
         return $this->whereBuilder->where($this);
     }
 
@@ -832,7 +881,7 @@ final class Where
     public function notEqual($val): WhereQueryBuilder
     {
         $this->operator = "!=";
-        $this->value    = $val;
+        $this->value = $val;
         return $this->whereBuilder->where($this);
     }
 
@@ -853,7 +902,7 @@ final class Where
     public function greaterThan($val): WhereQueryBuilder
     {
         $this->operator = ">";
-        $this->value    = $val;
+        $this->value = $val;
         return $this->whereBuilder->where($this);
     }
 
@@ -895,7 +944,7 @@ final class Where
     public function like($val): WhereQueryBuilder
     {
         $this->operator = "LIKE";
-        $this->value    = $val;
+        $this->value = $val;
         return $this->whereBuilder->where($this);
     }
 
@@ -916,7 +965,7 @@ final class Where
     public function notLike($val): WhereQueryBuilder
     {
         $this->operator = "NOT LIKE";
-        $this->value    = $val;
+        $this->value = $val;
         return $this->whereBuilder->where($this);
     }
 
@@ -977,7 +1026,7 @@ final class Where
     public function between($val): WhereQueryBuilder
     {
         $this->operator = "BETWEEN";
-        $this->value    = $val;
+        $this->value = $val;
         return $this->whereBuilder->where($this);
     }
 
@@ -997,7 +1046,7 @@ final class Where
     public function notBetween($val): WhereQueryBuilder
     {
         $this->operator = "NOT BETWEEN";
-        $this->value    = $val;
+        $this->value = $val;
         return $this->whereBuilder->where($this);
     }
 
@@ -1016,7 +1065,7 @@ final class Where
     public function isNull(): WhereQueryBuilder
     {
         $this->operator = "IS";
-        $this->value    = "NULL";
+        $this->value = "NULL";
         return $this->whereBuilder->where($this);
     }
 
@@ -1036,7 +1085,7 @@ final class Where
     public function isNotNull(): WhereQueryBuilder
     {
         $this->operator = "IS NOT";
-        $this->value    = "NULL";
+        $this->value = "NULL";
         return $this->whereBuilder->where($this);
     }
 
@@ -1120,7 +1169,7 @@ class WhereQueryBuilder
      * @param Where|string $column The column to add a condition for.
      * @return $this | Where
      */
-    public function where(Where|string $column): self | Where
+    public function where(Where|string $column): self|Where
     {
         if (is_string($column)) {
             return new Where($this, $column); // Create a new Where object with the current instance and the column
@@ -1144,7 +1193,7 @@ class WhereQueryBuilder
      *
      * @return $this
      */
-    public function or(): WhereQueryBuilder
+    public function or (): WhereQueryBuilder
     {
         $this->nextOp = "OR";
         return $this;
@@ -1162,7 +1211,7 @@ class WhereQueryBuilder
      *
      * @return $this
      */
-    public function and(): WhereQueryBuilder
+    public function and (): WhereQueryBuilder
     {
         $this->nextOp = "AND";
         return $this;
@@ -1181,7 +1230,7 @@ class WhereQueryBuilder
      * @param array|string $column
      * @return $this
      */
-    public function group(array | string $column)
+    public function group(array|string $column)
     {
         if (is_array($column)) {
             // Set the groups to the given array of columns
@@ -1561,7 +1610,7 @@ final class SelectQuery extends WhereQueryBuilder
      */
     public function __construct(Table $table, string $columns)
     {
-        $this->table   = $table;
+        $this->table = $table;
         $this->columns = $columns;
     }
 
@@ -1760,6 +1809,6 @@ final class DeleteQuery extends WhereQueryBuilder
         $wherePart = $this->build();
 
         // Construct and return the DELETE SQL query
-        return "DELETE FROM {$this->table->getName()}" . (!empty($wherePart) ?  " {$wherePart}" : "");
+        return "DELETE FROM {$this->table->getName()}" . (!empty($wherePart) ? " {$wherePart}" : "");
     }
 }

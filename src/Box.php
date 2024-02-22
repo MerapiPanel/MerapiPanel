@@ -324,6 +324,7 @@ class BoxModule
 
         if ($proxy instanceof Proxy) {
 
+            
 
             if (isset($args[1]) && is_array($args[1])) {
 

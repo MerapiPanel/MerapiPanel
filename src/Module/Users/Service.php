@@ -22,8 +22,6 @@ class Service extends Module
 
 
 
-
-
     private function tryCreateDefaultAdmin()
     {
         $username = 'admin';
@@ -52,6 +50,10 @@ class Service extends Module
     }
 
 
+    public function getUserById($id)
+    {
+        return DB::table("users")->select("*")->where("id")->equal($id)->execute()->fetch(PDO::FETCH_ASSOC);
+    }
 
 
 
