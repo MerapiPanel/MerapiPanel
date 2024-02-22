@@ -29,19 +29,19 @@ class Admin extends Module
 
             $class = $req->class();
             $method = $req->method();
-
             if (!is_string($class) || !is_string($method)) {
                 return [
-                    "code"    => 401,
+                    "code" => 401,
                     "message" => "Invalid request",
-                    "data"    => null
+                    "data" => null
                 ];
             }
 
+
             if (strtolower($class) == "category") {
-                $class = "MerapiPanel\\Module\\Article\\Controller\\Category";
+                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Category";
             } else {
-                $class = "MerapiPanel\\Module\\Article\\Controller\\Article";
+                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Article";
             }
 
             $instance = new $class();
@@ -54,6 +54,7 @@ class Admin extends Module
         $list = $router->get("/article/list", "list", self::class);
         $new = $router->get("/article/create", "createNewarticle", self::class);
         $config = $router->get("/article/config", "config", self::class);
+        $router->get("/article/category", "category");
 
 
         Box::module("panel", [
@@ -109,5 +110,11 @@ class Admin extends Module
     function list($view)
     {
         return View::render("list.html.twig");
+    }
+
+
+    function category(Request $req) {
+
+        return View::render("category.html.twig");
     }
 }

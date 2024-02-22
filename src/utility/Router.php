@@ -4,6 +4,7 @@ namespace MerapiPanel\Utility;
 
 use Exception;
 use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\Cog\Config;
 use MerapiPanel\Core\Proxy;
 use MerapiPanel\Core\View\View;
@@ -58,16 +59,25 @@ class Router extends Component
     {
 
         $callback = false;
-        if (is_string($method) && $controller !== null) {
-            $callback = $controller . "@$method";
-        } else if (is_callable($method)) {
+        $caller = $this->getCaller();
+        if (is_string($method)) {
+            $moduleName = Module::getModuleName($caller);
+            $className = "\\MerapiPanel\\Module\\{$moduleName}\\Controller\\" . basename($caller, ".php");
+            if (class_exists($className)) {
+                $callback = $className . "@" . $method;
+            } else {
+                $className = Util::getClassNameFromFile($caller);
+                if ($className && class_exists($className)) {
+                    $callback = $className . "@" . $method;
+                }
+            }
+        } elseif (is_callable($method)) {
             $callback = $method;
-        }
-        if ($callback === false) {
-            throw new \InvalidArgumentException("callback is invalid");
+        } else {
+            throw new \InvalidArgumentException("Callback is invalid");
         }
 
-        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        $sectionName = strtolower(basename($caller ?? "", ".php"));
         if ($sectionName === "admin") {
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
         }
@@ -92,22 +102,28 @@ class Router extends Component
     {
 
         $callback = false;
-
-        if (is_string($method) && $controller !== null) {
-            $callback = $controller . "@$method";
-        } else if (is_callable($method)) {
+        $caller = $this->getCaller();
+        if (is_string($method)) {
+            $moduleName = Module::getModuleName($caller);
+            $className = "\\MerapiPanel\\Module\\{$moduleName}\\Controller\\" . basename($caller, ".php");
+            if (class_exists($className)) {
+                $callback = $className . "@" . $method;
+            } else {
+                $className = Util::getClassNameFromFile($caller);
+                if ($className && class_exists($className)) {
+                    $callback = $className . "@" . $method;
+                }
+            }
+        } elseif (is_callable($method)) {
             $callback = $method;
-        }
-        if ($callback === false) {
-            throw new \InvalidArgumentException("callback is invalid");
+        } else {
+            throw new \InvalidArgumentException("Callback is invalid");
         }
 
-
-        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        $sectionName = strtolower(basename($caller ?? "", ".php"));
         if ($sectionName === "admin") {
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
         }
-
         $route = new Route(Route::POST, $path, $callback);
         return $this->addRoute(Route::POST, $route);
     }
@@ -128,16 +144,25 @@ class Router extends Component
     {
 
         $callback = false;
-        if (is_string($method) && $controller !== null) {
-            $callback = $controller . "@$method";
-        } else if (is_callable($method)) {
+        $caller = $this->getCaller();
+        if (is_string($method)) {
+            $moduleName = Module::getModuleName($caller);
+            $className = "\\MerapiPanel\\Module\\{$moduleName}\\Controller\\" . basename($caller, ".php");
+            if (class_exists($className)) {
+                $callback = $className . "@" . $method;
+            } else {
+                $className = Util::getClassNameFromFile($caller);
+                if ($className && class_exists($className)) {
+                    $callback = $className . "@" . $method;
+                }
+            }
+        } elseif (is_callable($method)) {
             $callback = $method;
-        }
-        if ($callback === false) {
-            throw new \InvalidArgumentException("callback is invalid");
+        } else {
+            throw new \InvalidArgumentException("Callback is invalid");
         }
 
-        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        $sectionName = strtolower(basename($caller ?? "", ".php"));
         if ($sectionName === "admin") {
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
         }
@@ -161,16 +186,25 @@ class Router extends Component
     {
 
         $callback = false;
-        if (is_string($method) && $controller !== null) {
-            $callback = $controller . "@$method";
-        } else if (is_callable($method)) {
+        $caller = $this->getCaller();
+        if (is_string($method)) {
+            $moduleName = Module::getModuleName($caller);
+            $className = "\\MerapiPanel\\Module\\{$moduleName}\\Controller\\" . basename($caller, ".php");
+            if (class_exists($className)) {
+                $callback = $className . "@" . $method;
+            } else {
+                $className = Util::getClassNameFromFile($caller);
+                if ($className && class_exists($className)) {
+                    $callback = $className . "@" . $method;
+                }
+            }
+        } elseif (is_callable($method)) {
             $callback = $method;
-        }
-        if ($callback === false) {
-            throw new \InvalidArgumentException("callback is invalid");
+        } else {
+            throw new \InvalidArgumentException("Callback is invalid");
         }
 
-        $sectionName = strtolower(basename($this->getCaller() ?? "", ".php"));
+        $sectionName = strtolower(basename($caller ?? "", ".php"));
         if ($sectionName === "admin") {
             $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
         }
@@ -210,7 +244,6 @@ class Router extends Component
             }
         }
 
-        // error_log(self::class . " File: " . $file);
         return $file;
     }
 

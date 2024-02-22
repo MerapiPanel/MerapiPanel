@@ -1,9 +1,10 @@
 {% extends "@admin::panel/base.html.twig" %}
-{% block header_title %}Content{% endblock %}
 
-{% block head_javascripts %}
+{% block head_javascript %}
 <script src="{{ '@template/assets/dist/index.bundle.js' | assets }}"></script>
 {% endblock %}
+
+{% block header_title %}Category{% endblock %}
 
 {% block subheader_actions %}
 <div class="ms-auto">
@@ -24,18 +25,19 @@
 </div>
 {% endblock %}
 
-
-{% set articles = admin.article_fetchAll %}
-{% set categories = admin.article_category.fetchAll %}
-
 {% block breadcrumb %}
 <nav class="flex w-full" aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ '/' | admin_url }}">Home</a></li>
-        <li class="breadcrumb-item">Article</li>
+        <li class="breadcrumb-item"><a href="{{ '/article' | admin_url }}">Article</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Category</li>
     </ol>
 </nav>
 {% endblock %}
+
+
+{% set categories = admin.article_category.fetchAll %}
+
 
 {% block content %}
 

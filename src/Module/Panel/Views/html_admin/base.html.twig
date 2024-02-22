@@ -15,16 +15,25 @@
     <main class="transition-all duration-300 ms-0 lg:ms-[260px] mx-auto px-4 py-4 pb-24" id="panel-main">
 
         <div class="max-w-7xl mx-auto">
-            
+
             {% block header %}
-            <header class="pt-3 flex items-center" id="panel-header">
-                <button
-                    class="btn btn-outline-primary lg:hidden !px-3 !rounded-none mr-3 !bg-white hover:!bg-black/50"
-                    onclick="openNav()" id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
-                <h1 class="font-bold text-3xl">{% block header_title %}Dashboard{% endblock %}</h1>
+            <header class="pt-3 flex flex-col items-center" id="panel-header">
+                <div class="flex w-full">
+                    <button
+                        class="btn btn-outline-primary lg:hidden !px-3 !rounded-none mr-3 !bg-white hover:!bg-black/50"
+                        onclick="openNav()" id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="font-bold text-3xl">{% block header_title %}Dashboard{% endblock %}</h1>
+                </div>
+                {% block breadcrumb %}
+                <nav class="flex w-full" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ '/' |admin_url}}">Home</a></li>
+                    </ol>
+                </nav>
+                {% endblock %}
             </header>
             {% endblock %}
-     
+
 
             {% block subheader %}
             <div class="py-5 w-full flex flex-wrap lg:flex-nowrap place-items-start" id="panel-subheader">

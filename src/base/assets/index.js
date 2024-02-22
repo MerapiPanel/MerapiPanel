@@ -1,7 +1,10 @@
-
 import './app.css';
-import "./style/input.scss";
 import './fontawesome/css/all.min.css';
+
+import "./style/color.scss";
+import "./style/input.scss";
+import "./style/nav.scss";
+
 import $, { fn } from 'jquery';
 
 if (!window.merapi) {
@@ -50,7 +53,7 @@ fn.validate = function () {
         return true;
 
     }
-    
+
     return false;
 };
 

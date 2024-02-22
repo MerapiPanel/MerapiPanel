@@ -1,11 +1,14 @@
 <?php
-namespace MerapiPanel\Module\Article\Controller;
+namespace MerapiPanel\Module\Article\Controller\Endpoint;
 
 use MerapiPanel\Database\DB;
 use MerapiPanel\Utility\Http\Request;
 
 class Category
 {
+
+
+
 
     function create(Request $req)
     {
