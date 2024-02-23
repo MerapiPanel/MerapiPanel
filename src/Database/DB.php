@@ -52,7 +52,6 @@ final class DB
 
 
 
-
     public function getIdentifier()
     {
         return $this->identify;
@@ -576,6 +575,9 @@ final class DB
 
 
 
+    public function pdo() : PDO {
+        return $this->dbh;
+    }
 
 
 
@@ -728,6 +730,10 @@ final class Table
         return $this->name;
     }
 
+
+    public function lastInsertId() {
+        return $this->db->pdo()->lastInsertId();
+    }
 
 
 

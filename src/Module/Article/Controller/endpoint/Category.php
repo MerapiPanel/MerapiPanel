@@ -19,20 +19,23 @@ class Category
             ];
         }
 
-        $query = DB::table("category")->insert([
-            "name" => $name,
-            "created_at" => time(),
-            "updated_at" => time(),
-        ])->execute();
-        if ($query) {
+        $table = DB::table("category");
+
+        if (!($table->insert(["name" => $name, "created_at" => time(), "updated_at" => time()])->execute())) {
             return [
-                "code" => 200,
-                "message" => "success"
+                "code" => 500,
+                "message" => "fail to create category"
             ];
         }
+
+        $category = $table->select("*")->where("id")->equal($table->lastInsertId())->execute()->fetch(\PDO::FETCH_ASSOC);
+        $category['updated_at'] = Util::timeAgo($category['updated_at']);
+        $category['created_at'] = date("Y M d, H:i", $category['created_at']);
+
         return [
-            "code" => 500,
-            "message" => "fail"
+            "code" => 200,
+            "message" => "success",
+            "data" => $category,
         ];
     }
 
@@ -104,10 +107,10 @@ class Category
             "code" => 200,
             "message" => "success",
             "data" => [
-                    "id" => $id,
-                    "name" => $name,
-                    "updated_at" => Util::timeAgo(time())
-                ]
+                "id" => $id,
+                "name" => $name,
+                "updated_at" => Util::timeAgo(time())
+            ]
         ];
     }
 }

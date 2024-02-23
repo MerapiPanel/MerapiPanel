@@ -5,11 +5,13 @@
 <script src="{{ '@article/assets/dist/editor.bundle.js' | assets }}"></script>
 {% endblock %}
 
-{% block stylesheets %}
+{% block stylesheet %}
 {{ parent() }}
 
 {% endblock %}
 
+
+{% set categories = admin.article_category.fetchAll %}
 
 {% block body %}
 
@@ -58,8 +60,9 @@
     <main>
         <section>
             <header class="sticky top-0 shadow-md bg-white p-3 h-[60px] flex z-10 items-center">
-                <a href="{{ 'article' | admin_url }}" class="flex items-center justify-center w-[80px] h-[35px] border aspect-square rounded">Back</a>
-                <h1 class="ms-3 text-xl font-bold">Content Editor</h1>
+                <a href="{{ 'article' | admin_url }}"
+                    class="flex items-center justify-center w-[80px] h-[35px] border aspect-square rounded">Back</a>
+                <h1 class="ms-3 text-xl font-bold">Article Editor</h1>
                 <button
                     class="lg:hidden ms-auto sidebar-toggle w-[35px] h-[35px] flex items-center justify-center border aspect-square rounded"><i
                         class="fa-solid fa-chevron-left"></i></button>
@@ -79,20 +82,21 @@
                                     class="lg:hidden sidebar-toggle w-[35px] h-[35px] flex items-center justify-center border aspect-square rounded">
                                     <i class="fa-solid fa-chevron-right"></i>
                                 </button>
-                                <h2 class="text-2xl font-bold">Content Property</h2>
+                                <h2 class="text-2xl font-bold">Article Property</h2>
                             </header>
                             <div class="mb-3">
-                                <label for="" class="block text-sm font-medium text-gray-700">Title of Content</label>
+                                <label for="" class="block text-sm font-medium text-gray-700">Title of article</label>
                                 <input type="text" class="text-input" placeholder="Enter title">
                             </div>
 
                             <div class="mb-3">
 
-                                <label for="" class="block text-sm font-medium text-gray-700">Category</label>
+                                <label for="" class="block text-sm font-medium text-gray-700">Category of article</label>
                                 <select class="text-input">
-                                    <option>Category 1</option>
-                                    <option>Category 2</option>
-                                    <option>Category 3</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+
                                 </select>
                             </div>
                         </div>

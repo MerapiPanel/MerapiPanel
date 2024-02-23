@@ -1,4 +1,4 @@
-version: 1.0.7
+version: 1.0.8
 engine: InnoDB
 collation: utf8mb4_unicode_ci
 tables:
@@ -16,7 +16,7 @@ tables:
         notnull: true
 
       category_id:
-        type: varchar
+        type: int
         length: 100
 
       user_id:
