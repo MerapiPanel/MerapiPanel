@@ -430,7 +430,16 @@ class Router extends Component
         $response = new Response();
         if (is_callable($callback)) {
 
-            $response->setContent(call_user_func($callback, ...[$request, &$response]));
+            $output = call_user_func($callback, ...[$request, &$response]);
+            if ($output instanceof Response) {
+                return $output;
+            }
+
+            if (is_array($output) || is_object($output) && isset($output['code'])) {
+                $response->setStatusCode($output['code']);
+            }
+            $response->setContent($output);
+
             return $response;
 
         } else if (is_string($callback) && strpos($callback, '@') !== false) {

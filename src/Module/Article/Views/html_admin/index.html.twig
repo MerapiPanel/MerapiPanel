@@ -46,9 +46,10 @@
     <div class="flex-1"></div>
 
     <div class="absolute md:relative top-0 -right-[15px] w-full max-w-[250px] px-2">
-        <h3 class="text-lg font-bold bg-slate-200 px-1 mb-3 flex items-center w-full">Categories
-            <button onclick="createNewCategory()" class="btn !p-0 ms-auto !shadow-none hover:text-blue-400">
-                <i class="fa-solid fa-plus"></i>
+        <h3 class="text-lg bg-slate-200 px-1 mb-3 flex items-center w-full">
+             <a class="ms-2 text-sm hover:text-blue-400" href="{{ '/article/category' | admin_url }}"><span class="font-semibold">Category</span> <i class="text-blue-400 text-[12px] align-baseline fa-solid fa-arrow-up-long rotate-45"></i></a>
+            <button onclick="createNewCategory()" class="btn !p-1 ms-auto !shadow-none hover:text-blue-400">
+                <i class="text-[14px] fa-solid fa-plus"></i>
             </button>
         </h3>
         <ul class="px-1 list-inside list-disc" id="categories">

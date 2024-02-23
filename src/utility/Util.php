@@ -105,4 +105,43 @@ class Util
         // Return the cleaned HTML string
         return $dom->saveHTML();
     }
+
+
+    public static function timeAgo(string|int $timestamp)
+    {
+        $timeAgo = gettype($timestamp) === 'string' ? strtotime($timestamp) : $timestamp;
+        $currentTime = time();
+        $timeDifference = $currentTime - $timeAgo;
+        $seconds = $timeDifference;
+
+        // Time intervals in seconds
+        $minute = 60;
+        $hour = 3600;
+        $day = 86400;
+        $week = 604800;
+        $month = 2629440; // Average month in seconds (30.44 days)
+        $year = 31553280; // Average year in seconds (365.24 days)
+
+        if ($seconds <= 60) {
+            return "Just now";
+        } else if ($minute <= $seconds && $seconds < $hour) {
+            $minutes = round($seconds / $minute);
+            return "$minutes minutes ago";
+        } else if ($hour <= $seconds && $seconds < $day) {
+            $hours = round($seconds / $hour);
+            return "$hours hours ago";
+        } else if ($day <= $seconds && $seconds < $week) {
+            $days = round($seconds / $day);
+            return "$days days ago";
+        } else if ($week <= $seconds && $seconds < $month) {
+            $weeks = round($seconds / $week);
+            return "$weeks weeks ago";
+        } else if ($month <= $seconds && $seconds < $year) {
+            $months = round($seconds / $month);
+            return "$months months ago";
+        } else {
+            $years = round($seconds / $year);
+            return "$years years ago";
+        }
+    }
 }

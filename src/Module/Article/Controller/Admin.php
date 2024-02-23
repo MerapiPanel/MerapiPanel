@@ -32,16 +32,20 @@ class Admin extends Module
             if (!is_string($class) || !is_string($method)) {
                 return [
                     "code" => 401,
-                    "message" => "Invalid request",
-                    "data" => null
+                    "message" => "Invalid request"
                 ];
             }
 
 
             if (strtolower($class) == "category") {
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Category";
-            } else {
+            } else if (strtolower($class) == "article") {
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Article";
+            } else {
+                return [
+                    "code" => 401,
+                    "message" => "Invalid request"
+                ];
             }
 
             $instance = new $class();
@@ -113,7 +117,8 @@ class Admin extends Module
     }
 
 
-    function category(Request $req) {
+    function category(Request $req)
+    {
 
         return View::render("category.html.twig");
     }

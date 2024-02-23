@@ -131,17 +131,22 @@ const createModal = (title, content, action = {
     $(document.body).append(element);
 
     function show() {
+        $(element).trigger("modal:show");
         element.fadeIn();
-        $(document).trigger("modal:show");
     }
+
+
     function hide() {
+        $(element).trigger("modal:hide");
         element.fadeOut({
             complete: () => {
                 element.remove();
-                $(document).trigger("modal:hide");
             }
         });
     }
+
+
+
     /**
      * Sets the action for the given type of button.
      *
@@ -180,6 +185,9 @@ const createModal = (title, content, action = {
         } else throw new Error('Invalid action');
     }
 
+
+
+
     /**
      * Sets the title of the modal header.
      *
@@ -193,6 +201,9 @@ const createModal = (title, content, action = {
             header.prepend(`<h5 class='modal-title'>${title}</h5>`);
         }
     }
+
+
+
     /**
      * Sets the content of the body element.
      *
@@ -220,6 +231,15 @@ const createModal = (title, content, action = {
         setTitle: setTitle,
         setContent: setContent
     }
+
+    modal.on = function (event, callback) {
+        $(modal.container.element).on(event, callback);
+    }
+    modal.off = function (event, callback) {
+        $(modal.container.element).off(event, callback);
+    }
+
+
 
     return modal;
 }
@@ -464,22 +484,33 @@ const dialog = {
         const modal = createModal(title, message);
 
         return new Promise(resolve => {
+
+            function confirmed() {
+                resolve(true);
+            }
+            function cancelled() {
+                resolve(false);
+            }
+
             modal.setAction('+', {
                 text: 'Yes',
                 callback: () => {
-                    modal.hide();
                     resolve(true);
+                    modal.hide();
                 }
             })
             modal.setAction('-', {
                 text: 'No',
                 callback: () => {
-                    modal.hide();
                     resolve(false);
+                    modal.hide();
                 }
             })
 
             modal.show();
+            modal.on("modal:hide", () => {
+                setTimeout(() => resolve(false), 50);
+            });
         });
     },
 
@@ -492,12 +523,22 @@ const dialog = {
             const negative = $(modal.container.action.negative);
             positive.addClass("btn btn-danger")
             positive.text("Continue")
-            positive.on("click", () => resolve(true))
+            positive.on("click", () => {
+                resolve(true);
+                modal.hide();
+            })
             negative.addClass("btn btn-primary")
             negative.removeClass("btn-secondary")
             negative.text("Cancel")
-            negative.on("click", () => resolve(false))
+            negative.on("click", () => {
+                resolve(false);
+                modal.hide();
+            })
             modal.show();
+
+            modal.on("modal:hide", () => {
+                setTimeout(() => resolve(false), 50);
+            });
         });
     }
 }

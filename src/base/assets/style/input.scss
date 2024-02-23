@@ -3,6 +3,12 @@ input {
 
     &.invalid {
         box-shadow: 0 0 2px red;
+        border-color: red;
+
+        &:focus-visible {
+            box-shadow: 0 0 2px red;
+            border-color: red;
+        }
 
         &[invalid-message]:not([invalid-message=""]) {
             position: relative;
@@ -17,7 +23,7 @@ input {
     }
 }
 
-div:has( .invalid-feedback) {
+div:has(.invalid-feedback) {
     align-items: baseline;
 }
 .invalid-feedback {

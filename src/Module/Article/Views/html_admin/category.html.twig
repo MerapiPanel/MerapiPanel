@@ -41,31 +41,131 @@
 
 {% block content %}
 
-{{ articles |json_encode | raw }}
 
 
-<div class="w-full flex relative">
-    <div class="flex-1"></div>
 
-    <div class="absolute md:relative top-0 -right-[15px] w-full max-w-[250px] px-2">
-        <h3 class="text-lg font-bold bg-slate-200 px-1 mb-3 flex items-center w-full">Categories
-            <button onclick="createNewCategory()" class="btn !p-0 ms-auto !shadow-none hover:text-blue-400">
-                <i class="fa-solid fa-plus"></i>
-            </button>
-        </h3>
-        <ul class="px-1 list-inside list-disc" id="categories">
-            {% for category in categories %}
-            <li class="pl-1 mb-2">{{ category.name }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+<div class="w-full">
+    <ul>
+        {% for category in categories %}
+        <li>
+            <div id="category-{{ category.id }}"
+                class="block mb-3 shadow-sm bg-white px-4 py-2 rounded-md overflow-hidden max-w-[800px] w-full">
+                <h4 id="category-{{ category.id }}-name">{{ category.name }}</h4>
+
+                <div class="text-[10px] text-slate-400 flex items-end">
+                    {% if category.id %}
+                    <div>
+                        <span id="category-{{ category.id }}-id" class="font-semibold text-purple-400">#{{ category.id
+                            }}</span>,
+                        <span id="category-{{ category.id }}-updated">Edited {{ category.updated_at }}</span>,
+                        <span id="category-{{ category.id }}-created" class="ms-2">Create {{ category.created_at
+                            }}</span>
+                    </div>
+                    <div class="ms-auto">
+                        <button onclick="deleteCategory('{{ category.id }}')"
+                            class="btn btn-sm hover:text-red-400 hover:bg-red-50">delete</button>
+                        <button onclick="editCategory({name:'{{ category.name }}', id:'{{ category.id }}'})"
+                            class="btn btn-sm hover:text-blue-400 hover:bg-blue-50">edit</button>
+                    </div>
+                    {% else %}
+                    <span class="italic">this is default category you can't edit or delete</span>
+                    {% endif %}
+                </div>
+
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
-<div class="inline-flex  max-w-[175px]"></div>
 
 {% endblock %}
 {% block javascript %}
 {{ parent() }}
 <script>
+
+    function deleteCategory(prop) {
+        merapi.dialog.confirmDanger("Are you sure?", "Are you sure you want to delete this category?").then((act) => {
+            if (act) {
+                merapi.http.post("{{ '/article/endpoint/category/delete' | admin_url }}", { id: prop }).then((data) => {
+                    console.log(data);
+                })
+            }
+        })
+    }
+
+    function editCategory({ name, id }) {
+
+        const body = $(`<div class='w-full'>
+            <input class='text-input' type='text' min='3' value='${name}' placeholder='Category Name' invalid-message='Please enter category name, minimum 3 characters' required/>
+            <small class="text-slate-400 hidden">Current name: <b>${name}</b></small>
+        </div>`);
+
+
+        const modal = merapi.createModal("Edit category", body, {
+            positive: {
+                callback: function () {
+
+                    if (!$(input).validate()) {
+                        merapi.toast("Please enter valid name", 5, 'text-warning');
+                        return;
+                    }
+
+                    modal.hide();
+                    // send request to server
+                    merapi.http.post("{{ '/article/endpoint/category/edit' | admin_url }}", {
+                        name: input.val(),
+                        id: id
+                    }).then((response, text, xhr) => {
+
+                        if (xhr.status === 200 && response.code === 200)
+                        // if request success with code 200
+                        {
+                            $("#category-" + id + "-name").text(response.data.name);
+                            $("#category-" + id + "-updated").text("Edited " + response.data.updated_at);
+
+                        }
+                        else
+                        // if request failed
+                        {
+                            throw new Error(response.message, response.code);
+                        }
+
+                    }).catch((err) => {
+                        merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+                    })
+                }
+            },
+            negative: {
+                callback: function () { modal.hide(); }
+            }
+        });
+
+        let input = body.find("input");
+        let timming = null;
+        input.on("input", () => {
+            if (timming) clearTimeout(timming);
+            timming = setTimeout(() => {
+
+                $(modal.container.action.positive).attr("disabled", true);
+
+                if (input.val() === name) {
+                    body.find("small").fadeOut(200);
+                } else {
+                    body.find("small").fadeIn(200);
+                }
+
+                if ($(input).validate()) {
+                    $(modal.container.action.positive).attr("disabled", false);
+                }
+                input.trigger("focus");
+
+            }, 200);
+        })
+
+        $(modal.container.action.positive).attr("disabled", true);
+
+        modal.show();
+    }
 
 
     function createNewCategory() {
