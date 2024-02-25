@@ -7,7 +7,6 @@ namespace MerapiPanel;
 ini_set("error_log", __DIR__ . "/php-error.log");
 
 use MerapiPanel\Core\Proxy;
-use MerapiPanel\Utility\Http\Request;
 use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);
@@ -17,6 +16,7 @@ $conf['root'] = $_SERVER['DOCUMENT_ROOT'];
 $GLOBALS["conf"] = $conf;
 $GLOBALS["debug"] = true;
 $_ENV['AES_KEY'] = "a3af08095b8a63cf50d35129d514ca2703c89d159963dc7a53e5766361bbc3c9";
+$_ENV['ROOT'] = __DIR__;
 
 // error_log($_ENV['AES_KEY']);
 
@@ -74,7 +74,7 @@ class App extends Box
 
             $request = Proxy::Real($this->utility_http_request());
             echo $this->utility_router()->dispatch($request);
-            
+
         } catch (Throwable $e) {
             // send to exception handler to find the error
             $this->core_exception_handler()->handle_error($e);

@@ -95,6 +95,14 @@ class Paragraph {
                 break;
         }
     }
+
+    save(blockElement: any) {
+
+        return {
+            text: ($(this.paragraph).text()).trim(),
+            align: $(this.paragraph).css('text-align')
+        }
+    }
 }
 
 

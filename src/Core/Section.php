@@ -42,6 +42,10 @@ class Section
         unset($exploded[0]);
         // Get the module name from the first part and remove it from the parts array
         $method = implode('_', $exploded);
+
+        if($method == "options") {
+            return (Box::module("$moduleName")->service())->getOptions();
+        }
         // Construct the module and method names
         return (Box::module("$moduleName")->service("Api\\{$this->getName()}"))->$method();
     }

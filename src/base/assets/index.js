@@ -4,13 +4,12 @@ import './fontawesome/css/all.min.css';
 import "./style/color.scss";
 import "./style/input.scss";
 import "./style/button.scss";
+import "./style/header.scss";
 import "./style/nav.scss";
 
-// import $ from 'jquery';
 
 if (!window.merapi) {
     window.merapi = require("./merapi");
-    // console.log(window)
 }
 
 
@@ -94,33 +93,76 @@ $(document).on('DOMContentLoaded', function () {
     // console.clear()
 })
 
+const liveCallback = {
+    ".dropdown": {
+        initial: function (e) {
+            let $this = $(e);
+            $this.find('[data-act-trigger=dropdown]').on('click', function () {
+                $('.dropdown').not($this).removeClass('open');
+                $this.toggleClass('open');
+            });
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest($this).length) {
+                    $this.removeClass('open');
+                }
+            });
+        }
+    }
+}
+
 
 
 function liveReload() {
-    $('.dropdown').each(function () {
-        const $this = $(this);
 
-        // Check if the element already has the event listener attached
-        if ($this.data('listener-attached')) {
-            return; // Exit the loop for this element
-        }
+    const ElementEvents = [
+        "click", // User clicks an element
+        "dblclick", // User double-clicks an element
+        "mouseenter", // Mouse pointer enters the element
+        "mouseleave", // Mouse pointer leaves the element
+        "mouseover", // Mouse pointer is over the element
+        "mouseout", // Mouse pointer leaves the element or one of its children
+        "mousedown", // User presses a mouse button over an element
+        "mouseup", // User releases a mouse button over an element
+        "focus", // Element gains focus
+        "blur", // Element loses focus
+        "change", // The value of an element changes
+        "submit", // A form is submitted
+        "keydown", // User is pressing a key
+        "keyup", // User releases a key
+        "keypress", // Character is being inserted
+        "resize", // Element is resized
+        "scroll", // Element is scrolled
+    ];
 
-        // Attach the event listener
-        $this.find('[data-act-trigger=dropdown]').on('click', function () {
-            $('.dropdown').not($this).removeClass('open');
-            $this.toggleClass('open');
-        });
+    Object.keys(liveCallback).forEach(selector => {
 
-        $(document).on('click', function (e) {
-            if (!$(e.target).closest($this).length) {
-                $this.removeClass('open');
-            }
-        });
+        let fn = liveCallback[selector];
+        let target = $(selector);
 
-        // Mark the element as having the event listener attached
-        $this.data('listener-attached', true);
-    });
+        if (!target.length) return;
 
+        target.each(function () {
+            let $this = $(this);
+
+            Object.keys(fn).forEach(method => {
+
+                let attached = $this.data('listener-attached') ?? [];
+                if (attached.includes(method)) return;
+    
+                if (ElementEvents.includes(method)) {
+                    $this.on(method, fn[method]);
+                } else if (method === 'initial') {
+                    fn.initial($this);
+                } else {
+                    console.error(`Live reload cant find Method ${method} not found`);
+                }
+    
+                attached.push(method);
+                $this.data('listener-attached', attached);
+            })
+        })
+    })
+    
     setTimeout(() => {
         window.requestAnimationFrame(liveReload);
     }, 800);

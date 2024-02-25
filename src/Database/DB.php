@@ -63,13 +63,15 @@ final class DB
 
 
 
-    private static function findYmlConfig(): string|false
+    public static function findYmlConfig(): string|false
     {
 
         $filePath = null;
 
         foreach (debug_backtrace() as $call) {
-            $filePathFromCall = $call['file'];
+            $filePathFromCall = isset($call['file']) ? $call['file'] : null;
+            if($filePathFromCall === null) continue;
+            
             $filePathFromCallSanitized = preg_replace('/[^a-zA-Z0-9]+/', '', $filePathFromCall);
             $currentFileSanitized = preg_replace('/[^a-zA-Z0-9]+/', '', __FILE__);
 

@@ -4,7 +4,7 @@ namespace MerapiPanel\Core\Abstract;
 
 use Exception;
 use MerapiPanel\Box;
-use MerapiPanel\Core\Abstract\Component\Config;
+use MerapiPanel\Core\Abstract\Component\Options;
 use MerapiPanel\Core\Abstract\Component\Settings;
 use MerapiPanel\Core\Database;
 use ReflectionClass;
@@ -94,14 +94,14 @@ abstract class Module
     public function __call($name, $arguments)
     {
 
-        $index    = $this->__getIndex();
+        $index = $this->__getIndex();
         $basename = "\\" . basename($index);
-        $class    = $this::class;
-        $pos      = strpos($class, $basename);
+        $class = $this::class;
+        $pos = strpos($class, $basename);
 
         $baseClass = substr($class, 0, $pos + strlen($basename));
-        $target    = implode("/", array_map("ucfirst", explode("/", $name)));
-        $instance  = "{$baseClass}\\{$target}";
+        $target = implode("/", array_map("ucfirst", explode("/", $name)));
+        $instance = "{$baseClass}\\{$target}";
 
         if (!class_exists($instance)) {
             throw new Exception("Module $target not found");
@@ -114,10 +114,10 @@ abstract class Module
 
 
 
-    final public function getConfig()
+    final public function getOptions()
     {
 
-        return new Config();
+        return new Options($this::class);
     }
 
 
@@ -126,7 +126,6 @@ abstract class Module
     {
 
         $db = $this->getDatabase();
-
         return new Settings($db);
     }
 

@@ -4,21 +4,35 @@ namespace MerapiPanel\Core\Abstract\Component;
 
 use ArrayAccess;
 use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Database\DB;
+use MerapiPanel\Utility\Util;
 use PDO;
 
-final class Config implements ArrayAccess
+enum ConnectionType
+{
+    case FILE;
+    case SQLITE;
+}
+
+
+final class Options implements ArrayAccess
 {
 
+    const file = "config.json";
+    private $conType = ConnectionType::FILE;
 
     protected $container = [];
+    private $className;
 
 
 
 
 
-    final public function __construct()
+    final public function __construct($className)
     {
+
+        $this->className = $className;
         $this->initialize();
     }
 
@@ -33,6 +47,39 @@ final class Config implements ArrayAccess
      */
     private function initialize()
     {
+
+        $find = DB::findYmlConfig();
+
+        if ($find && file_exists($find)) {
+            $this->initialWithDB();
+            $this->conType = ConnectionType::SQLITE;
+        } else {
+            $this->initialWithFile();
+            $this->conType = ConnectionType::FILE;
+        }
+    }
+
+
+    private function initialWithFile()
+    {
+
+        $file = __DIR__ . "/../../../Module" . Module::getModuleName($this->className);
+        if (!file_exists($file)) {
+            throw new \Exception("Module " . Module::getModuleName($this->className) . " not found");
+        }
+
+        $file .= "/" . self::file;
+
+        error_log("File: " . $file);
+
+    }
+
+
+
+
+    private function initialWithDB()
+    {
+
         // Check if the config table exists, if not, create it
         if (!DB::table("config")->isExist()) {
             $SQL = "CREATE TABLE IF NOT EXISTS config (`name` TEXT PRIMARY KEY,`value` TEXT UNIQUE NOT NULL);";
@@ -42,7 +89,7 @@ final class Config implements ArrayAccess
             $sql = "PRAGMA table_info(config)";
             $stmt = DB::instance()->prepare($sql);
             $stmt->execute();
-            $tableInfo = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $tableInfo = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $expectedColumns = [
                 ["name" => "key", "type" => "varchar(255)"],
@@ -98,8 +145,6 @@ final class Config implements ArrayAccess
 
 
 
-
-
     private function getDefaultConfig(): array|false
     {
 
@@ -137,7 +182,6 @@ final class Config implements ArrayAccess
             }
         }
 
-        // error_log(self::class . " File: " . $file);
         return $file;
     }
 
@@ -151,10 +195,13 @@ final class Config implements ArrayAccess
     private function getModuleName()
     {
         $caller = $this->getCaller();
+
+        error_log("caller : " . $caller);
+
         $dirname = dirname($caller);
         $basename = basename($dirname);
 
-        while (strtolower(basename($dirname)) != "module") {
+        while (strtolower(basename($dirname)) != "module" && $dirname != '/' && $dirname != null) {
 
             $basename = basename($dirname);
             $dirname = realpath("$dirname/..");

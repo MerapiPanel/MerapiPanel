@@ -6,69 +6,69 @@
 {% endblock %}
 
 {% block subheader_actions %}
-<button type="button" onclick="createNewPage()"
-    class="ms-auto bg-white rounded outline-none border shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
+<button type="button" onclick="createNewPage()" class="menu-item">
     <i class="fa fa-plus"></i> new page
 </button>
 {% endblock %}
 
 {% block content %}
 
-    <div class="mb-5"></div>
+<div class="mb-5"></div>
 
-    {% set pages = admin.pages_getall %}
-    {% if pages %}
-        {% for page in pages %}
-            <section class="bg-white shadow px-6 py-3 rounded relative mb-4 max-w-[800px]">
-                <header class="flex justify-between items-center">
-                    <h4 class="text-lg font-bold">Title : {{ page.title }}</h4>
-                </header>
-                <article>
-                    <div class="flex flex-wrap">
-                        <div class="w-full max-w-[350px]">
-                            <a class="text-blue-500" href="{{ page.slug }}" target="_blank">{{ page.slug }}</a>
-                        </div>
-                        {% if page.template %}
-                            <div class="w-full max-w-[350px]">
-                                <p>Mounted to template <b>{{ page.template.name }}</b><small class="ml-2"><i>{{ page.template.id }}</i></small></p>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <small>{{ page.id }}</small>
-                </article>
-                <div class="absolute right-2 top-0">
-                    <div class="dropdown">
-                        <button data-act-trigger="dropdown" class="dropdown-toggle">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-item">
-                                <button type="button" onclick="assignTemplate({
+{% set pages = admin.pages_getall %}
+{% if pages %}
+{% for page in pages %}
+<section class="bg-white shadow px-6 py-3 rounded relative mb-4 max-w-[800px]">
+    <header class="flex justify-between items-center">
+        <h4 class="text-lg font-bold">Title : {{ page.title }}</h4>
+    </header>
+    <article>
+        <div class="flex flex-wrap">
+            <div class="w-full max-w-[350px]">
+                <a class="text-blue-500" href="{{ page.slug }}" target="_blank">{{ page.slug }}</a>
+            </div>
+            {% if page.template %}
+            <div class="w-full max-w-[350px]">
+                <p>Mounted to template <b>{{ page.template.name }}</b><small class="ml-2"><i>{{ page.template.id
+                            }}</i></small></p>
+            </div>
+            {% endif %}
+        </div>
+        <small>{{ page.id }}</small>
+    </article>
+    <div class="absolute right-2 top-0">
+        <div class="dropdown">
+            <button data-act-trigger="dropdown" class="dropdown-toggle">
+                <i class="fa-solid fa-ellipsis"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                    <button type="button" onclick="assignTemplate({
                                     title: '{{ page.title }}',
                                     slug: '{{ page.slug }}',
                                     id: '{{ page.id }}',
                                 })">
-                                    <i class="fa-solid fa-star-of-life"></i> Mount Template
-                                </button>
-                            </li>
-                            <li class="dropdown-item">
-                                <button type="button" class="text-red-500" onclick="deletePage('{{ page.id }}')">
-                                    <i class="fa-solid fa-trash"></i> Delete Page
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-        {% endfor %}
-    {% else %}
-        <div class="card">
-            <div class="card-body">
-                <p>You have no pages</p>
-            </div>
+                        <i class="fa-solid fa-star-of-life"></i> Mount Template
+                    </button>
+                </li>
+                <li class="dropdown-item">
+                    <button type="button" class="text-red-500" onclick="deletePage('{{ page.id }}')">
+                        <i class="fa-solid fa-trash"></i> Delete Page
+                    </button>
+                </li>
+            </ul>
         </div>
-    {% endif %}
- {% endblock %}
+    </div>
+</section>
+{% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body">
+        <p>You have no pages</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
 
 
 {% block javascripts %}
@@ -91,7 +91,7 @@
             id: args.id,
             token: "{{ merapi_token() }}",
             endpoint: {
-                save:  "{{ '/pages/endpoint/assign' | admin_url | url }}",
+                save: "{{ '/pages/endpoint/assign' | admin_url | url }}",
                 template: "{{ '/template/fetchall' | admin_url | url }}"
             }
         });
