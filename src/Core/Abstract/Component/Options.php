@@ -59,6 +59,8 @@ final class Options implements ArrayAccess
         }
     }
 
+    
+
 
     private function initialWithFile()
     {
