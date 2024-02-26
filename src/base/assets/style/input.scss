@@ -12,8 +12,8 @@
     }
 
     --merapi-shadow-rgb: 0 0 0;
-    --merapi-shadow-alpha: var(--merapi-alpha-20);
-    --merapi-shadow-alt: 0px 0px 1px rgb(var(--merapi-shadow-rgb) / var(--merapi-shadow-alpha));
+    --merapi-shadow-alpha: var(--merapi-alpha-10);
+    --merapi-shadow-alt: 0px 0px 1px rgb(var(--merapi-shadow-rgb) / var(--merapi-alpha-6));
     --merapi-shadow: var(--merapi-shadow-alt), 1px 1px 2px rgb(var(--merapi-shadow-rgb) / var(--merapi-shadow-alpha));
     --merapi-shadow-inset: inset var(--merapi-shadow-alt),
         inset 0px 0px 2px rgb(var(--merapi-shadow-rgb) / var(--merapi-alpha-60));
@@ -62,6 +62,9 @@ div:has(.invalid-feedback) {
         box-shadow:
             var(--merapi-shadow-alt),
             0 0 0 4px rgb(var(--merapi-rgb-primary) / 0.4);
+    }
+    &:not(:empty):invalid {
+        box-shadow: 0 0 0 4px rgb(var(--merapi-rgb-danger) / 0.4) !important;
     }
 }
 

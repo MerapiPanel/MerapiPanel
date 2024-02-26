@@ -361,7 +361,8 @@ const http = {
             processData: false,
             contentType: false,
             cache: false,
-            headers: headers
+            headers: headers,
+           
         });
     },
 

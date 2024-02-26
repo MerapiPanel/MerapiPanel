@@ -18,6 +18,9 @@
         &.active {
             color: var(--merapi-color-secondary);
         }
+        &:not(:has(a)) {
+            color: var(--merapi-color-secondary);
+        }
     }
 
     margin-top: 0.1rem;

@@ -13,66 +13,67 @@ if (!window.merapi) {
 }
 
 
+function validate(el) {
+
+    const $input = $(el);
+    const pattern = $input.attr('pattern');
+    const min = parseFloat($input.attr('min'));
+    const max = parseFloat($input.attr('max'));
+
+    // Precompile the RegExp for efficiency if pattern is provided
+    const regex = pattern ? new RegExp(pattern) : null;
+    const required = $input.prop("required");
+
+    function removeInvalidCondition() {
+        const $parent = $input.parent();
+        $input.removeClass("invalid").removeAttr('aria-invalid');
+        if ($parent.hasClass('invalid-feedback')) {
+            const $inputInParent = $parent.find("input");
+            $inputInParent.insertBefore($parent);
+            $parent.remove();
+        }
+    }
+
+    function showInvalidCondition() {
+        $input.addClass("invalid").attr('aria-invalid', 'true');
+        const message = $input.attr('invalid-message');
+        if (message && !$input.parent().hasClass('invalid-feedback')) {
+            const wrapper = $(`<div class="invalid-feedback"><small style='display: none;' class='w-full text-red-400'>${$input.attr('invalid-message')}</small></div>`);
+            wrapper.insertAfter($input);
+            $input.remove();
+            wrapper.prepend($input);
+            wrapper.find('small').fadeIn(200);
+        }
+        $input.trigger("focus");
+    }
+
+
+    function isValid() {
+        const value = $input.val();
+        if (!value) return required ? false : true; // Check for required field
+        if (min !== undefined && value.length < min) return false; // Check for min value
+        if (max !== undefined && value.length > max) return false; // Check for max value
+        return (regex ? regex.test(value) : true); // Check against pattern
+    }
+
+    function validateInput() {
+        if (!isValid()) {
+            showInvalidCondition();
+        } else {
+            removeInvalidCondition();
+        }
+    }
+
+    // Initial validation check
+    validateInput();
+
+    return isValid();
+};
 
 
 $(document).on('DOMContentLoaded', function () {
 
-    window.$.fn.validate = function () {
-        const $input = $(this);
-        const pattern = $input.attr('pattern');
-        const min = parseFloat($input.attr('min'));
-        const max = parseFloat($input.attr('max'));
-
-        // Precompile the RegExp for efficiency if pattern is provided
-        const regex = pattern ? new RegExp(pattern) : null;
-        const required = $input.prop("required");
-
-        function removeInvalidCondition() {
-            const $parent = $input.parent();
-            $input.removeClass("invalid").removeAttr('aria-invalid');
-            if ($parent.hasClass('invalid-feedback')) {
-                const $inputInParent = $parent.find("input");
-                $inputInParent.insertBefore($parent);
-                $parent.remove();
-            }
-        }
-
-        function showInvalidCondition() {
-            $input.addClass("invalid").attr('aria-invalid', 'true');
-            const message = $input.attr('invalid-message');
-            if (message && !$input.parent().hasClass('invalid-feedback')) {
-                const wrapper = $(`<div class="invalid-feedback"><small style='display: none;' class='w-full text-red-400'>${$input.attr('invalid-message')}</small></div>`);
-                wrapper.insertAfter($input);
-                $input.remove();
-                wrapper.prepend($input);
-                wrapper.find('small').fadeIn(200);
-            }
-            $input.trigger("focus");
-        }
-
-
-        function isValid() {
-            const value = $input.val();
-            if (!value) return required ? false : true; // Check for required field
-            if (min !== undefined && value.length < min) return false; // Check for min value
-            if (max !== undefined && value.length > max) return false; // Check for max value
-            return (regex ? regex.test(value) : true); // Check against pattern
-        }
-
-        function validateInput() {
-            if (!isValid()) {
-                showInvalidCondition();
-            } else {
-                removeInvalidCondition();
-            }
-        }
-
-        // Initial validation check
-        validateInput();
-
-        return isValid();
-    };
-
+    window.$.fn.validate = function () { return validate(this) };
 
     $('[onload]').each(function () {
         const $this = $(this);
@@ -83,14 +84,7 @@ $(document).on('DOMContentLoaded', function () {
         }
     });
 
-    $('[data-act-target]').each(function () {
-
-        let target = $this.attr('data-act-target');
-    });
-
     liveReload();
-
-    // console.clear()
 })
 
 const liveCallback = {
@@ -115,6 +109,64 @@ const liveCallback = {
             })
         }
     },
+    "input": {
+        initial(el) {
+            if (el.prop('required') || el.attr('pattern') || el.attr('min') || el.attr('max')) {
+                if ($(this).is(":hidden")) return;
+
+                $(el).on("input", function () {
+                    if ($(this).is(":focus")) {
+                        validate(this);
+                        $(this).trigger("focus");
+                    }
+                });
+
+                if (el.closest('form').length > 0) {
+                    let form = $(el.closest('form'));
+                    form.on('submit', function (evt) {
+                        if (!validate(el)) {
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                        }
+                    })
+                }
+            }
+        }
+    },
+    "form[method='xhr::post']": {
+        initial: function (el) {
+            el.on("submit", function (evt) {
+                evt.preventDefault();
+                let formData = new FormData(this);
+                merapi.http.post(this.action, formData).then((result, status, xhr) => {
+                    if (xhr.status == 200) {
+                        el.trigger("xhr:success", { result: result, status: status, xhr: xhr, event: evt });
+                    } else {
+                        el.trigger("xhr:error", { error: result, status: status, xhr: xhr, event: evt });
+                    }
+                }).catch((err) => {
+                    el.trigger("xhr:error", { error: err, event: evt });
+                })
+            })
+        }
+    },
+    "form[method='xhr::get']": {
+        initial: function (el) {
+            el.on("submit", function (evt) {
+                evt.preventDefault();
+                let formData = new FormData(this);
+                merapi.http.get(this.action, formData).then((result, status, xhr) => {
+                    if (xhr.status == 200) {
+                        el.trigger("xhr:success", { result: result, status: status, xhr: xhr, event: evt });
+                    } else {
+                        el.trigger("xhr:error", { error: result, status: status, xhr: xhr, event: evt });
+                    }
+                }).catch((err) => {
+                    el.trigger("xhr:error", { error: err, event: evt });
+                })
+            })
+        }
+    }
 }
 
 
@@ -155,7 +207,7 @@ function liveReload() {
 
                 let attached = $this.data('listener-attached') ?? [];
                 if (attached.includes(method)) return;
-    
+
                 if (ElementEvents.includes(method)) {
                     $this.on(method, fn[method]);
                 } else if (method === 'initial') {
@@ -163,13 +215,13 @@ function liveReload() {
                 } else {
                     console.error(`Live reload cant find Method ${method} not found`);
                 }
-    
+
                 attached.push(method);
                 $this.data('listener-attached', attached);
             })
         })
     })
-    
+
     setTimeout(() => {
         window.requestAnimationFrame(liveReload);
     }, 800);
