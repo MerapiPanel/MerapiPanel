@@ -13,7 +13,6 @@ class Service extends Module
     public array $config = [
         "name" => "Article",
         "slug" => "article",
-        
     ];
 
     public function setBox(Box $box)

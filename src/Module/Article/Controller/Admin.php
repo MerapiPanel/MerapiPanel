@@ -23,6 +23,8 @@ class Admin extends Module
     function register(Router $router)
     {
 
+        Box::module("article")->getOptions();
+
         $router->post("/article/endpoint/{class}/{method}", function ($req, &$res) {
 
             $res->setHeader("Content-Type", "application/json");

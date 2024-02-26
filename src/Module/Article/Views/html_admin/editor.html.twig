@@ -12,7 +12,7 @@
 
 
 {% set categories = admin.article_category.fetchAll %}
-{% set option = admin.article_options %}
+{% set options = admin.article_options %}
 
 {% block body %}
 
@@ -76,8 +76,8 @@
                 </div>
 
                 <div class="shadow-md lg:shadow-none content-sidebar close bg-white w-full max-w-[350px]">
-                    <div class="flex flex-col h-full px-4 py-6 min-w-[350px]">
-                        <div class="w-full">
+                    <div class="flex flex-col h-full px-4 py-6 min-w-[350px] overflow-y-auto">
+                        <div class="w-full h-full">
 
                             <header class="flex items-center gap-4 mb-4">
                                 <button
@@ -87,16 +87,23 @@
                                 <h2 class="text-2xl font-bold">Article Property</h2>
                             </header>
 
+                            {% if options['thubnails-enable'] %}
+                            <div class="mb-3">
+                                <label>
+                                    <span class="block text-sm font-medium text-gray-700 mb-2">Thubnail</span>
+                                    <input id="article-thumbnail" type="file" class="form-input" min="5"
+                                        invalid-message="this field is required" placeholder="Select file">
+                                </label>
+                                <small class="italic">Slug style <b>{{ options.slug }}</b></small>
+                            </div>
+                            {% endif %}
+
+
                             <div class="mb-3">
                                 <label>
                                     <span class="block text-sm font-medium text-gray-700 mb-2">Title of article</span>
-                                    <input 
-                                        id="article-title" 
-                                        type="text" 
-                                        class="form-input" 
-                                        placeholder="Enter title" 
-                                        invalid-message="this field is required" 
-                                        required>
+                                    <input id="article-title" type="text" class="form-input" placeholder="Enter title"
+                                        invalid-message="this field is required" required>
                                 </label>
                                 <div id="article-title-autocomplete"></div>
                             </div>
@@ -104,14 +111,10 @@
                             <div class="mb-3">
                                 <label>
                                     <span class="block text-sm font-medium text-gray-700 mb-2">Slug</span>
-                                    <input 
-                                        id="article-slug" 
-                                        type="text" 
-                                        class="form-input" 
-                                        min="5"
-                                        invalid-message="this field is required"
-                                        placeholder="Enter slug">
+                                    <input id="article-slug" type="text" class="form-input" min="5"
+                                        invalid-message="this field is required" placeholder="Enter slug">
                                 </label>
+                                <small class="italic">Slug style <b>{{ options.slug }}</b></small>
                             </div>
 
                             <div class="mb-3">
@@ -128,15 +131,18 @@
 
                             <div class="mb-3">
                                 <label>
-                                    <input type="checkbox" class="form-input switch mr-3" id="article-published" name="article-published" value="1"> Custom description</label>
-                                <label>
+                                    <input type="checkbox" class="form-input switch mr-3" 
+                                        name="article-published" value="1" onchange="$('#article-description').parent().toggleClass('hidden')"> Custom description</label>
+                                <label class="hidden">
                                     <span class="block text-sm font-medium text-gray-700 mb-2">Description</span>
-                                    <textarea id="article-description" class="form-textarea" placeholder="Enter description"></textarea>
+                                    <textarea id="article-description" class="form-textarea"
+                                        placeholder="Enter description"></textarea>
                                 </label>
                             </div>
 
                             <div class="mb-3">
-                                <label><input type="checkbox" class="form-input switch mr-3" id="article-published" name="article-published" value="1"> Publish</label>
+                                <label><input type="checkbox" class="form-input switch mr-3" id="article-published"
+                                        name="article-published" value="1" checked> Publish</label>
                             </div>
                         </div>
 

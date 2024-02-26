@@ -117,7 +117,7 @@ abstract class Module
     final public function getOptions()
     {
 
-        return new Options($this::class);
+        return Options::getInstance($this::class);
     }
 
 

@@ -1,0 +1,4 @@
+{
+    "slug": "article/{date}/{slug}",
+    "thubnails-enable": true
+}

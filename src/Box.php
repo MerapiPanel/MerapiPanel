@@ -2,6 +2,7 @@
 
 namespace MerapiPanel;
 
+use MerapiPanel\Core\Abstract\Component\Options;
 use MerapiPanel\Core\Cog\Config;
 use MerapiPanel\Core\Exception\ModuleNotFound;
 use MerapiPanel\Core\Exception\ServiceNotFound;
@@ -324,7 +325,7 @@ class BoxModule
 
         if ($proxy instanceof Proxy) {
 
-            
+
 
             if (isset($args[1]) && is_array($args[1])) {
 
@@ -451,6 +452,13 @@ class BoxModule
         }
 
         return $info;
+    }
+
+
+    public function getOptions(): Options
+    {
+
+        return Options::getInstance($this->baseModule);
     }
 
 
