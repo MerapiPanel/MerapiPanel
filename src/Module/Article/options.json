@@ -1,4 +1,11 @@
 {
-    "slug": "article/{date}/{slug}",
-    "thubnails-enable": true
+    "link_format": "2",
+    "thubnails_enable": false,
+    "links_style_format": [
+        "\/article\/{id}",
+        "\/article\/{id}\/{slug}",
+        "\/article\/{category}\/{id}",
+        "\/article\/{category}\/{slug}",
+        "\/article\/{category}\/{id}\/{slug}"
+    ]
 }

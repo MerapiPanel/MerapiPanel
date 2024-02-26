@@ -15,13 +15,9 @@
 {% endblock %}
 
 {% block breadcrumb %}
-<nav class="flex w-full" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ '/' | admin_url }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ '/article' | admin_url }}">Article</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Category</li>
-    </ol>
-</nav>
+<li class="breadcrumb-item"><a href="{{ '/' | admin_url }}">Home</a></li>
+<li class="breadcrumb-item"><a href="{{ '/article' | admin_url }}">Article</a></li>
+<li class="breadcrumb-item active" aria-current="page">Category</li>
 {% endblock %}
 
 

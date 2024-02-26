@@ -70,10 +70,9 @@ function validate(el) {
     return isValid();
 };
 
+$(function () {
 
-$(document).on('DOMContentLoaded', function () {
-
-    window.$.fn.validate = function () { return validate(this) };
+    $.fn.validate = function () { return validate(this) };
 
     $('[onload]').each(function () {
         const $this = $(this);
@@ -85,7 +84,7 @@ $(document).on('DOMContentLoaded', function () {
     });
 
     liveReload();
-})
+});
 
 const liveCallback = {
     ".dropdown": {
@@ -135,36 +134,51 @@ const liveCallback = {
     },
     "form[method='xhr::post']": {
         initial: function (el) {
-            el.on("submit", function (evt) {
+            $(el).on("submit", function (evt) {
+
                 evt.preventDefault();
-                let formData = new FormData(this);
+
+                const $this = window.$(this);
+                $this.trigger("xhr::submit", evt);
+
+                let formData = new FormData($this[0]);
                 merapi.http.post(this.action, formData).then((result, status, xhr) => {
+
                     if (xhr.status == 200) {
-                        el.trigger("xhr:success", { result: result, status: status, xhr: xhr, event: evt });
+                        $this.trigger("xhr::success", { result, status, xhr });
                     } else {
-                        el.trigger("xhr:error", { error: result, status: status, xhr: xhr, event: evt });
+                        throw new Error(result.message, result.code);
                     }
                 }).catch((err) => {
-                    el.trigger("xhr:error", { error: err, event: evt });
+                    $this.trigger("xhr::error", { message: err.message || err.statusText || err.responseText, code: err.code });
                 })
             })
         }
     },
     "form[method='xhr::get']": {
         initial: function (el) {
-            el.on("submit", function (evt) {
+            window.$(el).on("submit", function (evt) {
+
                 evt.preventDefault();
+
+                const $this = window.$(this);
+                $this.trigger("xhr::submit", evt);
+
                 let formData = new FormData(this);
                 merapi.http.get(this.action, formData).then((result, status, xhr) => {
+
                     if (xhr.status == 200) {
-                        el.trigger("xhr:success", { result: result, status: status, xhr: xhr, event: evt });
+                        $this.trigger("xhr::success", { result, status, xhr });
                     } else {
-                        el.trigger("xhr:error", { error: result, status: status, xhr: xhr, event: evt });
+                        throw new Error(result.message, result.code);
                     }
                 }).catch((err) => {
-                    el.trigger("xhr:error", { error: err, event: evt });
-                })
-            })
+                    $this.trigger("xhr::error", {
+                        message: err.message || err.statusText || err.responseText,
+                        code: err.code
+                    });
+                });
+            });
         }
     }
 }
@@ -196,12 +210,12 @@ function liveReload() {
     Object.keys(liveCallback).forEach(selector => {
 
         let fn = liveCallback[selector];
-        let target = $(selector);
+        let target = window.$(selector);
 
         if (!target.length) return;
 
         target.each(function () {
-            let $this = $(this);
+            let $this = window.$(this);
 
             Object.keys(fn).forEach(method => {
 
@@ -222,7 +236,5 @@ function liveReload() {
         })
     })
 
-    setTimeout(() => {
-        window.requestAnimationFrame(liveReload);
-    }, 800);
+    setTimeout(liveReload, 800);
 }

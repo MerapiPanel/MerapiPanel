@@ -58,8 +58,6 @@ final class Options implements ArrayAccess
         if (!file_exists($file)) {
             throw new \Exception("Module " . Module::getModuleName($this->className) . " not found, looking on " . $file);
         }
-
-
         $file .= "/" . self::file;
         if (!file_exists($file)) {
             file_put_contents($file, json_encode([], JSON_PRETTY_PRINT));
@@ -68,70 +66,20 @@ final class Options implements ArrayAccess
 
 
         if (json_last_error() != JSON_ERROR_NONE) {
+            rename($file, $file . ".old");
             file_put_contents($file, json_encode([], JSON_PRETTY_PRINT));
             $this->container = [];
         }
-    }
 
-
-
-
-
-
-
-    private function getDefaultConfig(): array|false
-    {
-        $file = realpath(__DIR__ . "\\..\\..\\..\\Module") . "\\" . Module::getModuleName($this->className);
-        if (!file_exists($file)) {
-            throw new \Exception("Module " . Module::getModuleName($this->className) . " not found, looking on " . $file);
-        }
-        return json_decode(file_get_contents($file), true);
-    }
-
-
-
-
-
-
-
-
-    private function getCaller()
-    {
-        $file = false;
-        foreach (debug_backtrace() as $call) {
-            if (isset($call['file']) && in_array("module", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"), $call['file'])))) {
-                $file = $call['file'];
-                break;
-            }
-        }
-        return $file;
-    }
-
-
-
-
-
-
-
-
-    private function getModuleName()
-    {
-        $caller   = $this->getCaller();
-        $dirname  = dirname($caller);
-        $basename = basename($dirname);
-
-        while (strtolower(basename($dirname)) != "module" && $dirname != '/' && $dirname != null) {
-
-            $basename = basename($dirname);
-            $dirname = realpath("$dirname/..");
-
-            if (preg_replace('/[^a-zA-Z0-9]+/', '', $_SERVER['DOCUMENT_ROOT']) == preg_replace('/[^a-zA-Z0-9]+/', '', $dirname)) {
-                $basename = null;
-                break;
-            }
+        $container = [];
+        foreach ($this->container as $key => $value) {
+            $newKey = str_replace("-", "_", $key);
+            $container[$newKey] = $value;
         }
 
-        return $basename;
+        $this->container = $container;
+        $this->save();
+
     }
 
 
@@ -143,6 +91,7 @@ final class Options implements ArrayAccess
 
     function offsetExists(mixed $key): bool
     {
+        $key = str_replace("-", "_", $key);
         return isset($this->container[$key]);
     }
 
@@ -153,6 +102,7 @@ final class Options implements ArrayAccess
 
     function offsetGet(mixed $key): mixed
     {
+        $key = str_replace("-", "_", $key);
         return $this->container[$key];
     }
 
@@ -162,6 +112,7 @@ final class Options implements ArrayAccess
 
     function offsetSet($key, $value): void
     {
+        $key = str_replace("-", "_", $key);
         $this->container[$key] = $value;
         $this->save();
     }
@@ -172,16 +123,16 @@ final class Options implements ArrayAccess
 
 
 
-    function offsetUnset($value): void
+    function offsetUnset($key): void
     {
-        unset($this->container[$value]);
+        unset($this->container[$key]);
         $this->save();
     }
 
 
     private function save()
     {
-        $file = __DIR__ . "/../../../Module" . Module::getModuleName($this->className);
+        $file = realpath(__DIR__ . "\\..\\..\\..\\Module") . "\\" . Module::getModuleName($this->className) . "\\" . self::file;
         file_put_contents($file, json_encode($this->container, JSON_PRETTY_PRINT));
     }
 }
