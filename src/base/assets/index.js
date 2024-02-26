@@ -107,7 +107,14 @@ const liveCallback = {
                 }
             });
         }
-    }
+    },
+    "input[type='file'].form-input": {
+        initial: function (e) {
+            e.on("change", function () {
+                $(this).attr("data-file-name", this.files[0].name);
+            })
+        }
+    },
 }
 
 
