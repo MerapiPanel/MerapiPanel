@@ -37,10 +37,15 @@
 
 <div class="flex items-start gap-3">
     <div class="flex-1 min-h-screen bg-white rounded-md">
-        {{ articles |json_encode | raw }}
+
+        {% for article in articles %}
+                
+        {% endfor %}
+
     </div>
 
-    <div class="top-0 w-full max-w-[250px] h-[calc(100vh-100px)] bg-white sticky -mt-[4px] -mr-[8px] rounded-md overflow-hidden">
+    <div
+        class="top-0 w-full max-w-[250px] h-[calc(100vh-100px)] bg-white sticky -mt-[4px] -mr-[8px] rounded-md overflow-hidden">
         <h3 class="text-lg bg-slate-200 px-1 mb-3 flex items-center w-full">
             <a class="ms-2 text-sm hover:text-blue-400" href="{{ '/article/category' | admin_url }}"><span
                     class="font-semibold">Category</span> <i
@@ -62,7 +67,10 @@
 {% block javascript %}
 {{ parent() }}
 <script>
-
+    var articles = JSON.parse('{{ articles|json_encode|raw }}');
+    console.log(articles)
+</script>
+<script>
 
     function createNewCategory() {
         let container = $("#categories");

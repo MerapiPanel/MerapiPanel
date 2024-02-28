@@ -31,7 +31,7 @@ class Admin extends Module
 
             $class = $req->class();
             $method = $req->method();
-            if (!is_string($class) || !is_string($method)) {
+            if (!is_string($class) || !is_string($method) || empty($class) || empty($method)) {
                 return [
                     "code" => 401,
                     "message" => "Invalid request"
@@ -47,17 +47,24 @@ class Admin extends Module
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Options";
             } else if (strtolower($class) == "editor") {
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Editor";
-            } else {
-                return [
-                    "code" => 401,
-                    "message" => "Invalid request"
-                ];
             }
 
-            $instance = new $class();
-            if (method_exists($instance, $method)) {
+
+            if (class_exists($class)) {
+                $instance = new $class();
+                if (!method_exists($instance, $method)) {
+                    return [
+                        "code" => 401,
+                        "message" => "Method " . $method . " not found in " . $class
+                    ];
+                }
                 return $instance->{$method}($req);
             }
+
+            return [
+                "code" => 401,
+                "message" => "Invalid request"
+            ];
         });
 
         $index = $router->get("/article", "index", self::class);

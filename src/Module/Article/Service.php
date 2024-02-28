@@ -134,6 +134,13 @@ class Service extends Module
     public function fetchAll()
     {
 
-        return DB::table("articles")->select(["id", "title", "user_id", "created_at", "updated_at"])->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        $articles = DB::table("articles")->select("*")->execute()->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($articles as &$article) {
+            $article["created_at"] = date("Y M d, H:i:s", $article["created_at"]);
+            $article["updated_at"] = date("Y M d, H:i:s", $article["updated_at"]);
+        }
+
+        return $articles;
     }
 }
