@@ -1,4 +1,4 @@
-version: 1.0.8
+version: 1.1.1
 engine: InnoDB
 collation: utf8mb4_unicode_ci
 tables:
@@ -6,7 +6,7 @@ tables:
     columns:
       id:
         type: varchar
-        length: 100
+        length: 16
         notnull: true
         unique: true
 
@@ -17,22 +17,24 @@ tables:
 
       category_id:
         type: int
-        length: 100
+        length: 10
 
       user_id:
         type: varchar
-        length: 100
+        length: 50
         notnull: true
+
+      description:
+        type: text
+
+      status:
+        type: tinyint
 
       created_at:
-        type: timestamp
-        defaultcurrent: true
-        notnull: true
+        type: tinyint
 
       updated_at:
-        type: timestamp
-        defaultcurrent: true
-        notnull: true
+        type: tinyint
 
     indexes:
       PRIMARY KEY: id
@@ -42,7 +44,7 @@ tables:
 
       id:
         type: INTEGER
-        length: 100
+        length: 16
         unique: true
         autoincrement: true
       
@@ -52,14 +54,10 @@ tables:
         notnull: true
 
       created_at:
-        type: timestamp
-        defaultcurrent: true
-        notnull: true
+        type: tinyint
 
       updated_at:
-        type: timestamp
-        defaultcurrent: true
-        notnull: true
+        type: tinyint
 
     indexes:
       PRIMARY KEY: id

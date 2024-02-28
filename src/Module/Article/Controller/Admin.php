@@ -45,6 +45,8 @@ class Admin extends Module
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Article";
             } else if (strtolower($class) == "options") {
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Options";
+            } else if (strtolower($class) == "editor") {
+                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Editor";
             } else {
                 return [
                     "code" => 401,

@@ -1,4 +1,5 @@
 @use "sass:math";
+@use "sass:map";
 
 :root {
     @for $x from 1 through 9 {
@@ -19,7 +20,7 @@
         inset 0px 0px 2px rgb(var(--merapi-shadow-rgb) / var(--merapi-alpha-60));
 }
 
-div:has(.invalid-feedback) {
+div:has(>.invalid-feedback) {
     align-items: baseline;
 }
 .invalid-feedback {
@@ -64,7 +65,11 @@ div:has(.invalid-feedback) {
             0 0 0 4px rgb(var(--merapi-rgb-primary) / 0.4);
     }
     &:not(:empty):invalid {
-        box-shadow: 0 0 0 4px rgb(var(--merapi-rgb-danger) / 0.4) !important;
+        box-shadow: 0 0 0 4px rgb(var(--merapi-rgb-danger) / 0.4);
+    }
+
+    &.invalid {
+        border: 1px solid map-get($map: $themes, $key: "danger");
     }
 }
 

@@ -5,6 +5,35 @@ namespace MerapiPanel\Utility;
 class Util
 {
 
+    public static function uniqReal($desiredLength = 16)
+    {
+        $hexString = self::uniq($desiredLength);
+
+        // Calculate position to insert hyphen
+        $insertPosition = 0;
+        foreach (range(1, 10) as $divisor) {
+            $position = round($desiredLength / $divisor);
+            if (6 <= $position && $position <= 8) {
+                if (($desiredLength / $divisor) > $position) {
+                    $position -= 1;
+                }
+                $insertPosition = $position;
+                break;
+            }
+        }
+
+        // Insert hyphens at the calculated position if it's greater than 0
+        if ($insertPosition > 0) {
+            $pattern = "/(.{" . $insertPosition . "})/u";
+            $hexString = preg_replace($pattern, "$1-", $hexString);
+            // Remove any trailing hyphen
+            $hexString = rtrim($hexString, "-");
+        }
+
+        return $hexString;
+    }
+
+
     public static function uniq($lenght = 13)
     {
 
@@ -18,6 +47,7 @@ class Util
         }
         return substr(bin2hex($bytes), 0, $lenght);
     }
+
 
 
     public static function getNamespaceFromFile($filePath)

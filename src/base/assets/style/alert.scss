@@ -1,0 +1,34 @@
+@use "sass:color";
+
+.alert {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    box-shadow: var(--merapi-shadow-alt), var(--merapi-shadow);
+    & .alert-title {
+        margin-bottom: 0.2rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    & .alert-text {
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+        line-height: 1.5rem;
+    }
+}
+@each $name, $color in $themes {
+    .alert-#{$name} {
+        background-color: color.scale($color, $lightness: 95%);
+        color: darken($color, 10%);
+        box-shadow:
+            var(--merapi-shadow-alt),
+            var(--merapi-shadow),
+            0 0 0 4px color.scale($color, $lightness: 95%);
+        & .alert-title {
+            color: darken($color, 25%);
+        }
+        & .alert-text {
+            color: darken($color, 15%);
+        }
+    }
+}

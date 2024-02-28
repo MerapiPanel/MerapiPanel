@@ -1,11 +1,6 @@
 import './app.css';
 import './fontawesome/css/all.min.css';
-
-import "./style/color.scss";
-import "./style/input.scss";
-import "./style/button.scss";
-import "./style/header.scss";
-import "./style/nav.scss";
+import "./style/app.scss";
 
 
 if (!window.merapi) {
@@ -28,9 +23,15 @@ function validate(el) {
         const $parent = $input.parent();
         $input.removeClass("invalid").removeAttr('aria-invalid');
         if ($parent.hasClass('invalid-feedback')) {
-            const $inputInParent = $parent.find("input");
-            $inputInParent.insertBefore($parent);
-            $parent.remove();
+            $parent.find('small').fadeOut({
+                duration: 200,
+                complete: function () {
+                    const $inputInParent = $parent.find("input, textarea");
+                    $inputInParent.insertBefore($parent);
+                    $parent.remove();
+                    $input.trigger("focus");
+                }
+            });
         }
     }
 
@@ -40,7 +41,7 @@ function validate(el) {
         if (message && !$input.parent().hasClass('invalid-feedback')) {
             const wrapper = $(`<div class="invalid-feedback"><small style='display: none;' class='w-full text-red-400'>${$input.attr('invalid-message')}</small></div>`);
             wrapper.insertAfter($input);
-            $input.remove();
+            $input.detach();
             wrapper.prepend($input);
             wrapper.find('small').fadeIn(200);
         }
@@ -108,7 +109,7 @@ const liveCallback = {
             })
         }
     },
-    "input": {
+    "input,textarea": {
         initial(el) {
             if (el.prop('required') || el.attr('pattern') || el.attr('min') || el.attr('max')) {
                 if ($(this).is(":hidden")) return;
@@ -119,14 +120,22 @@ const liveCallback = {
                         $(this).trigger("focus");
                     }
                 });
+                $(el).on("change", () => setTimeout(() => validate(el), 200))
 
-                if (el.closest('form').length > 0) {
-                    let form = $(el.closest('form'));
+                if (window.$(el).closest('form').length > 0) {
+                    let form = window.$(window.$(el).closest('form'));
                     form.on('submit', function (evt) {
-                        if (!validate(el)) {
-                            evt.preventDefault();
-                            evt.stopPropagation();
-                        }
+                        evt.preventDefault();
+
+                        let invalid = [];
+                        $(form).find('input,textarea').each(function (i, el) {
+                            if ($(el).is(":visible") && ($(el).prop('required') || $(el).attr('pattern') || $(el).attr('min') || $(el).attr('max'))) {
+                                if (!validate(el)) {
+                                    invalid.push(el);
+                                }
+                            }
+                        })
+                        $(this).data("invalid", invalid);
                     })
                 }
             }
@@ -138,14 +147,19 @@ const liveCallback = {
 
                 evt.preventDefault();
 
-                const $this = window.$(this);
-                $this.trigger("xhr::submit", evt);
+                if ($(this).data('invalid') && $(this).data('invalid').length > 0) {
+                    $($(this).data('invalid')[0]).trigger("focus");
+                    merapi.toast("Please fill all required fields", 5, "text-danger");
+                    evt.stopPropagation();
+                    return;
+                }
 
+                const $this = window.$(this); // use window to get element by jQuery user context
                 let formData = new FormData($this[0]);
                 merapi.http.post(this.action, formData).then((result, status, xhr) => {
 
                     if (xhr.status == 200) {
-                        $this.trigger("xhr::success", { result, status, xhr });
+                        $this.trigger("xhr::success", { message: result.message, code: result.code, result, status, xhr });
                     } else {
                         throw new Error(result.message, result.code);
                     }
@@ -161,14 +175,19 @@ const liveCallback = {
 
                 evt.preventDefault();
 
-                const $this = window.$(this);
-                $this.trigger("xhr::submit", evt);
+                if ($(this).data('invalid') && $(this).data('invalid').length > 0) {
+                    $($(this).data('invalid')[0]).trigger("focus");
+                    merapi.toast("Please fill all required fields", 5, "text-danger");
+                    evt.stopPropagation();
+                    return;
+                }
 
+                const $this = window.$(this); // use window to get element by jQuery user context
                 let formData = new FormData(this);
                 merapi.http.get(this.action, formData).then((result, status, xhr) => {
 
                     if (xhr.status == 200) {
-                        $this.trigger("xhr::success", { result, status, xhr });
+                        $this.trigger("xhr::success", { message: result.message, code: result.code, result, status, xhr });
                     } else {
                         throw new Error(result.message, result.code);
                     }

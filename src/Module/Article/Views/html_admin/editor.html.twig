@@ -72,82 +72,114 @@
             <div class="flex h-[calc(100vh-60px)]">
 
                 <div class="w-full overflow-auto p-3 md:p-0">
-                    <div id="editor" class="h-auto border-0 bg-white p-4 m-4 rounded-sm mx-auto max-w-[860px] min-h-screen"></div>
+                    <div id="editor"
+                        class="h-auto border-0 bg-white p-4 m-4 rounded-sm mx-auto max-w-[860px] min-h-screen"></div>
                 </div>
 
                 <div class="shadow-md lg:shadow-none content-sidebar close bg-white w-full max-w-[350px]">
                     <div class="flex flex-col h-full px-4 py-6 min-w-[350px] overflow-y-auto">
-                        <form method="xhr::post" class="w-full h-full pb-4">
+                        <form method="xhr::post" action="{{ '/article/endpoint/editor/save' | admin_url }}"
+                            class="w-full h-full pb-4">
 
-                            <header class="flex items-center gap-4 mb-4">
-                                <button
-                                    class="lg:hidden sidebar-toggle w-[35px] h-[35px] flex items-center justify-center border aspect-square rounded">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </button>
-                                <h2 class="text-2xl font-bold">Article Property</h2>
-                            </header>
+                            <div>
+                                <header class="flex items-center gap-4 mb-4">
+                                    <button
+                                        class="lg:hidden sidebar-toggle w-[35px] h-[35px] flex items-center justify-center border aspect-square rounded">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                    <h2 class="text-2xl font-bold">Article Property</h2>
+                                </header>
 
-                            {% if options['thubnails-enable'] %}
-                            <div class="mb-3">
-                                <label>
-                                    <span class="block text-sm font-medium text-gray-700 mb-2">Thubnail</span>
-                                    <input id="article-thumbnail" name="thumbnail" type="file" class="form-input"
-                                        invalid-message="this field is required" placeholder="Select file" required>
-                                </label>
                             </div>
-                            {% endif %}
-
-
-                            <div class="mb-3">
-                                <label>
-                                    <span class="block text-sm font-medium text-gray-700 mb-2">Title of article</span>
-                                    <input id="article-title" name="title" type="text" class="form-input" min="5"
-                                        placeholder="Enter title" invalid-message="this field is required" required>
-                                </label>
-                                <div id="article-title-autocomplete"></div>
+                            <div>
+                                {% if options['thubnails-enable'] %}
+                                <div class="mb-3">
+                                    <label>
+                                        <span class="block text-sm font-medium text-gray-700 mb-2">Thubnail</span>
+                                        <input id="article-thumbnail" name="thumbnail" type="file" class="form-input"
+                                            invalid-message="this field is required" placeholder="Select file" required>
+                                    </label>
+                                </div>
+                                {% endif %}
                             </div>
 
-                            <div class="mb-3">
-                                <label>
-                                    <span class="block text-sm font-medium text-gray-700 mb-2">Slug</span>
-                                    <input id="article-slug" name="slug" type="text" class="form-input" min="5"
-                                        invalid-message="this field is required" placeholder="Enter slug">
-                                </label>
-                                <small class="italic">Slug style <b>{{ options.slug }}</b></small>
+
+                            <div>
+                                <div class="mb-3">
+                                    <label>
+                                        <span class="block text-sm font-medium text-gray-700 mb-2">Title of
+                                            article</span>
+                                        <input id="article-title" name="title" type="text" class="form-input" min="5"
+                                            placeholder="Enter title" invalid-message="this field is required" required>
+                                    </label>
+                                    <div id="article-title-autocomplete"></div>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label>
-                                    <span class="block text-sm font-medium text-gray-700 mb-2">Category of
-                                        article</span>
-                                    <select id="article-category" name="category" class="form-select">
-                                        {% for category in categories %}
-                                        <option value="{{ category.id }}">{{ category.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </label>
+                            <div>
+                                <div class="mb-3">
+                                    <label>
+                                        <span class="block text-sm font-medium text-gray-700 mb-2">Slug</span>
+                                        <input id="article-slug" name="slug" type="text" class="form-input" min="5"
+                                            invalid-message="this field is required" placeholder="Enter slug">
+                                    </label>
+                                    <small class="text-disabled">Link format : <i>{{
+                                            options.links_style_format[options.link_format] }}</i></small>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label>
-                                    <input onchange="showCustomDescription(this)" type="checkbox"
-                                        class="form-input switch mr-3" value="1"> Custom
-                                    description</label>
-                                <label style="display: none;">
-                                    <span class="block text-sm font-medium text-gray-700 mb-2">Description</span>
-                                    <textarea id="article-description" name="description" class="form-textarea"
-                                        placeholder="Enter description"
-                                        invalid-message="this field is required, minimum 150 characters"
-                                        min="150"></textarea>
-                                </label>
+                            <div>
+                                <div class="mb-3">
+                                    <label>
+                                        <span class="block text-sm font-medium text-gray-700 mb-2">Category of
+                                            article</span>
+                                        <select id="article-category" name="category" class="form-select">
+                                            {% for category in categories %}
+                                            <option value="{{ category.id }}">{{ category.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label><input type="checkbox" class="form-input switch mr-3" id="article-published"
-                                        name="article-published" value="1" checked required> Publish</label>
+                            <div>
+                                <div class="mb-3">
+                                    <label>
+                                        <input onchange="showCustomDescription(this)" type="checkbox"
+                                            class="form-input switch mr-3" id="is-custom-description" value="1"> Custom
+                                        description</label>
+                                    <label style="display: none;">
+                                        <span class="block text-sm font-medium text-gray-700 mb-2">Description</span>
+                                        <textarea id="article-description" name="description" class="form-textarea"
+                                            placeholder="Enter description"
+                                            invalid-message="this field is required, minimum 150 characters"
+                                            min="150"></textarea>
+                                    </label>
+                                </div>
                             </div>
 
-                            <button id="btn-save" type="submit" class="btn btn-primary w-full my-5">Save</button>
+                            <div>
+                                <div class="mb-3">
+                                    <label>
+                                        <input type="checkbox" class="form-input switch mr-3" id="is-publish"
+                                            name="is-publish" value="1" checked> Publish</label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="mb-3 hidden">
+                                    <input type="hidden" id="article-content" name="content">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-3 hidden">
+                                    <input type="hidden" id="article-id" name="id">
+                                </div>
+                            </div>
+
+                            <div>
+                                <button id="btn-save" type="submit" class="btn btn-primary w-full my-5">Save</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -174,31 +206,44 @@
             }
         }
 
+
         $(function () {
 
-            var title = $("#article-title");
+            const title = $("#article-title");
+            const slug = $("#article-slug");
 
             const editor = merapi.editor.init({
                 editor: {
                     holder: "#editor"
+                },
+                event: {
+                    onChange: (api, evt) => {
+                        editor.save().then(output => {
+                            $("#article-content").val(JSON.stringify(output));
+                        });
+                    },
+                    onReady: (api, evt) => {
+                        editor.save().then(output => {
+                            $("#article-content").val(JSON.stringify(output));
+                        })
+                    }
                 }
             });
 
 
-
             $("form").on("xhr::success", function (evt, data) {
-                console.log("success")
-                merapi.toast("Please fill all required fields", 5, "text-success");
+
+                console.log(data.result.data.id);
+                $("#article-id").val(data.result.data.id);
+                merapi.toast(data.message, 5, "text-success");
             });
             $("form").on("xhr::error", function (evt, data) {
-                console.log("error")
-                merapi.toast("Please fill all required fields", 5, "text-danger");
+                merapi.toast(data.message, 5, "text-danger");
             });
-
-
 
             title.on("input", () => {
                 showAutocompletion(title.val().trim());
+                slug.val(slugify(title.val().trim()));
             });
 
 
@@ -269,7 +314,7 @@
                         item.html(val.replace((new RegExp(_title.trim(), 'gi')), `<span style='color: #b88f14;'>$&</span>`)).appendTo(holder.find(".autocomplete-container"));
                         item.on("click", () => {
                             title.val(val);
-                            slug.val(createSlug(val));
+                            slug.val(slugify(val));
                             holder.html("");
                         })
                     });
@@ -283,7 +328,7 @@
             }
 
 
-            function createSlug(text) {
+            function slugify(text) {
                 return (text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')).replace(/^[^a-z]+|[^a-z]+$/g, '');
             }
 

@@ -26,12 +26,20 @@
     <div class="w-full max-w-[700px]">
         <section class="bg-white mb-3 p-4 rounded-md shadow-sm">
             <header>
-                <h2 class="text-xl">Content Template</h2>
+                <h2 class="text-xl">Article Template</h2>
             </header>
             <article>
                 <label class="ps-3 w-full opacity-50 text-sm" for="website_timezone">Select template for content</label>
-                <select class="text-input" name="website_timezone" id="website_timezone"></select>
+                <select class="form-select {% if options.template is null %}invalid{% endif %}" name="website_timezone" id="website_timezone"></select>
             </article>
+
+            {% if options.template is null %}
+                <div class="alert alert-danger mt-5">
+                    <h4 class="alert-title"><i class="fa fa-exclamation-triangle"></i> No template found</h4>
+                    <p class="alert-text">Please create a template for article to use this feature, and then go back to this page</p>
+                </div>
+            {% endif %}
+            
         </section>
 
 
