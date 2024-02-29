@@ -7,6 +7,8 @@ if (!window.merapi) {
     window.merapi = require("./merapi");
 }
 
+console.log(merapi);
+
 
 function validate(el) {
 
@@ -88,10 +90,26 @@ $(function () {
 });
 
 const liveCallback = {
+    ".tooltip": {
+        initial: function (e) {
+
+            let $this = $(e);
+            $this.on("mouseenter touchstart", function () {
+                if (e.attr("onShow")) {
+                    eval(e.attr("onShow"));
+                }
+            });
+            $this.on("mouseleave touchend", function () {
+                if (e.attr("onHide")) {
+                    eval(e.attr("onHide"));
+                }
+            });
+        }
+    },
     ".dropdown": {
         initial: function (e) {
             let $this = $(e);
-            $this.find('[data-act-trigger=dropdown]').on('click', function () {
+            $this.find('.dropdown-toggle').on('click', function () {
                 $('.dropdown').not($this).removeClass('open');
                 $this.toggleClass('open');
             });

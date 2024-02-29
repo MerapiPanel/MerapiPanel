@@ -135,10 +135,25 @@ class Service extends Module
     {
 
         $articles = DB::table("articles")->select("*")->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        $categorys = DB::table("category")->select("*")->execute()->fetchAll(\PDO::FETCH_ASSOC);
+
+        $options = Box::module("article")->getOptions();
+        $linkFormat = $options['links_style_format'][$options['link_format']];
 
         foreach ($articles as &$article) {
+
             $article["created_at"] = date("Y M d, H:i:s", $article["created_at"]);
             $article["updated_at"] = date("Y M d, H:i:s", $article["updated_at"]);
+            $slug = preg_replace("/[^a-z0-9]+/i", "-", $article["title"]);
+            $link = str_replace('{id}', $article["id"], $linkFormat);
+
+            if ($article['category_id'] && $found_key = array_search($article['category_id'], array_column($categorys, "id"))) {
+                $link = str_replace('{category}', ($categorys[$found_key]['name']) || "default", $link);
+            }
+            $link = str_replace('{category}', "default", $link);
+
+            $link = str_replace('{slug}', $slug, $link);
+            $article['link'] = Util::siteURL() . "/" . ltrim($link, "\\/");
         }
 
         return $articles;

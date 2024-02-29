@@ -1,3 +1,4 @@
+import Modal from "./script/modal";
 //import $ from 'jquery';
 
 const proggressbars = $(`<div class='http-progress'><div class='download running-strip'></div><div class='upload running-strip'></div></div>`);
@@ -72,7 +73,7 @@ const createModal = (title, content, action = {
 }) => {
 
     const element = $(
-        `<div class='modal' style='display: none;'>
+        `<div class='modal'>
             <div class='modal-dialog'>
                 <div class='modal-header'>
                     <h5 class='modal-title'>${title}</h5>
@@ -132,16 +133,23 @@ const createModal = (title, content, action = {
 
     function show() {
         $(element).trigger("modal:show");
-        element.fadeIn();
+        element.fadeIn({
+            complete: () => {
+                element.addClass('show');
+            },
+            duration: 100
+        });
     }
 
 
     function hide() {
         $(element).trigger("modal:hide");
+        element.removeClass('show');
         element.fadeOut({
             complete: () => {
                 element.remove();
-            }
+            },
+            duration: 100
         });
     }
 
@@ -362,7 +370,7 @@ const http = {
             contentType: false,
             cache: false,
             headers: headers,
-           
+
         });
     },
 
@@ -562,6 +570,7 @@ $.ajax({
 
 
 export {
+    Modal,
     assign,
     createModal,
     http,

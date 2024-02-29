@@ -36,10 +36,73 @@
 {% block content %}
 
 <div class="flex items-start gap-3">
-    <div class="flex-1 min-h-screen bg-white rounded-md">
+    <div class="flex-1 min-h-screen">
 
         {% for article in articles %}
-                
+        <div class="relative max-w-[800px] bg-white rounded-md mb-3 p-2 shadow-sm">
+
+            <div class="float-right top-0 right-0">
+                <div class="dropdown">
+                    <button class="dropdown-toggle" type="button"></button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="{{ article.link }}" target="_blank"><i
+                                    class="fa-solid fa-arrow-up-right-from-square"></i> open article</a>
+                        </li>
+                        <li class="dropdown-item" onclick="editArticle('{{ article.id }}')">
+                            <i class="fa-regular fa-pen-to-square"></i> edit article
+                        </li>
+                        <li class="dropdown-item" onclick="setArticleStatus(this, '{{ article.id }}')">
+                            {% if article.status == 1 %}
+                            <i class="fa-solid fa-lock"></i> make private
+                            {% else %}
+                            <i class="fa-solid fa-earth-americas"></i> make public
+                            {% endif %}
+                        </li>
+                        <li class="dropdown-item" onclick="quickEditArticle('{{ article.id }}')"><i
+                                class="fa-solid fa-wand-magic-sparkles"></i> quick edit attribute</li>
+                        <li class="dropdown-item text-danger" onclick="deleteArticle('{{ article.id }}')"><i
+                                class="fa-solid fa-delete-left"></i> delete</li>
+                    </ul>
+                </div>
+            </div> <!-- dropdown -->
+
+            <section class="p-4">
+                <header class="mb-2">
+                    <h4 class="text-md mb-1">
+                        <span class="tooltip tooltip-right" id="article-{{ article.id }}-icon-status"
+                            onshow="tooltipShowHandler(this, '{{ article.id }}')">
+                            {% if article.status == 1 %}
+                            <i class="fa-solid fa-earth-americas"></i>
+                            {% else %}
+                            <i class="fa-solid fa-lock"></i>
+                            {% endif %}
+                            <div class="tooltip-content text-nowrap">
+                                <h1 class="font-bold">Visibility status</h1>
+                                <p></p>
+                            </div>
+                        </span>
+                        {{ article.title }}
+                    </h4>
+                    <a class="inline-block text-[12px] text-blue-500/50 hover:text-blue-500 tooltip tooltip-bottom"
+                        href="{{ article.link }}" target="_blank">{{ article.link }}
+                        <div class="tooltip-content">
+                            <p>Open article page in new tab</p>
+                        </div>
+                    </a>
+                </header>
+                <article class="text-disabled text-[10px]">
+                    <ul class="flex gap-4">
+                        <li class="text-purple-500/50" id="article-{{ article.id }}-id">#{{ article.id }}</li>
+                        <li id="article-{{ article.id }}-status">status : {% if article.status == 1 %}public{% else
+                            %}private{% endif %}</li>
+                        <li id="article-{{ article.id }}-created_at">created_at : {{ article.created_at }}</li>
+                        <li id="article-{{ article.id }}-updated_at">updated_at : {{ article.updated_at }}</li>
+                    </ul>
+                </article>
+            </section>
+
+        </div>
         {% endfor %}
 
     </div>
@@ -63,13 +126,76 @@
 </div>
 <div class="inline-flex  max-w-[175px]"></div>
 
+<div class="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit article</h3>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
+
+
 {% block javascript %}
+
 {{ parent() }}
+
+
 <script>
+
+
+    let modal = merapi.Modal.from($(".modal"));
+
+    modal.on("click", function () {
+        modal.hide();
+    })
+    $(document).on("click", (e) => {
+        if ($(e.target).closest(".modal").length) {
+            modal.hide();
+        } else {
+            modal.show();
+            setTimeout(() => {
+                modal.dialog.header.setTitle("<h1>Hallo World</h1>")
+            }, 1000)
+        }
+        console.log("Click")
+    })
+
+    console.log(modal);
+
     var articles = JSON.parse('{{ articles|json_encode|raw }}');
-    console.log(articles)
+
+    function setArticleStatus(el, id) {
+        let article = articles.find(article => article.id == id);
+        article.status = article.status == 1 ? 0 : 1;
+        merapi.http.post("{{ '/article/endpoint/update/status' | admin_url }}", { id: article.id, status: article.status }).then((res, text, xhr) => {
+            if (xhr.status === 200 && res.code === 200) {
+
+                $("#article-" + article.id + "-status").html(" status : " + (article.status == 1 ? "public" : "private"));
+                $("#article-" + article.id + "-icon-status").html(article.status == 1 ? `<i class="fa-solid fa-earth-americas"></i>` : `<i class="fa-solid fa-lock"></i>`);
+                $("#article-" + article.id + "-icon-status").append(`<div class="tooltip-content text-nowrap"><h1 class="font-bold">Visibility status</h1><p></p></div>`)
+
+                merapi.toast(res.message, 5, 'text-success');
+                $(el).html(article.status == 1 ? `<i class="fa-solid fa-lock"></i> make private` : `<i class="fa-solid fa-earth-americas"></i> make public`);
+
+            } else throw new Error(res.message, res.code);
+        }).catch(err => {
+            article.status = !article.status;
+            merapi.toast(err.message ?? err.statusText, 5, 'text-danger');
+        })
+    }
+
+    function tooltipShowHandler(el, id) {
+        let article = articles.find(article => article.id == id);
+        if (article) {
+            let tooltip = $(el).find(".tooltip-content");
+            tooltip.find("p").text(article.status == 1 ? "Your article is public, that means anyone can see it." : "Your article is private, that means only you can see it.");
+        }
+    }
 </script>
+
+
 <script>
 
     function createNewCategory() {

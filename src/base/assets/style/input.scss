@@ -1,6 +1,3 @@
-@use "sass:math";
-@use "sass:map";
-
 :root {
     @for $x from 1 through 9 {
         $val: math.div($x, 100);

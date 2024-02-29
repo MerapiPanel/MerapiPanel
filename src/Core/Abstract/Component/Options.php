@@ -65,11 +65,11 @@ final class Options implements ArrayAccess
         $this->container = json_decode(file_get_contents($file), true);
 
 
-        if (json_last_error() != JSON_ERROR_NONE) {
-            rename($file, $file . ".old");
-            file_put_contents($file, json_encode([], JSON_PRETTY_PRINT));
-            $this->container = [];
-        }
+        // if (json_last_error() != JSON_ERROR_NONE) {
+        //     rename($file, $file . ".old");
+        //     file_put_contents($file, json_encode([], JSON_PRETTY_PRINT));
+        //     $this->container = [];
+        // }
 
         $container = [];
         foreach ($this->container as $key => $value) {
@@ -78,7 +78,7 @@ final class Options implements ArrayAccess
         }
 
         $this->container = $container;
-        $this->save();
+       // $this->save();
 
     }
 

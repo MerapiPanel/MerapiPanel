@@ -31,7 +31,7 @@ class Admin extends Module
 
             $class = $req->class();
             $method = $req->method();
-            if (!is_string($class) || !is_string($method) || empty($class) || empty($method)) {
+            if (!is_string($class) || !is_string($method) || empty ($class) || empty ($method)) {
                 return [
                     "code" => 401,
                     "message" => "Invalid request"
@@ -41,8 +41,8 @@ class Admin extends Module
 
             if (strtolower($class) == "category") {
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Category";
-            } else if (strtolower($class) == "article") {
-                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Article";
+            } else if (strtolower($class) == "update") {
+                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Update";
             } else if (strtolower($class) == "options") {
                 $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Options";
             } else if (strtolower($class) == "editor") {
@@ -62,8 +62,8 @@ class Admin extends Module
             }
 
             return [
-                "code" => 401,
-                "message" => "Invalid request"
+                "code" => 406,
+                "message" => "there no controller with name " . $class . " found"
             ];
         });
 

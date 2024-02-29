@@ -167,7 +167,7 @@ input[type="radio"] {
 }
 
 /* Modal define */
-.modal {
+/* .modal {
     @apply fixed top-0 left-0 w-full h-full z-[260];
     background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(4px);
@@ -189,11 +189,11 @@ input[type="radio"] {
 }
 .modal-footer button {
     @apply ms-3;
-}
+} */
 
 
 /* dropdown define */
-.dropdown {
+/* .dropdown {
     @apply relative flex flex-col justify-end z-10;
 }
 .dropdown > [data-act-trigger] {
@@ -216,7 +216,7 @@ input[type="radio"] {
 }
 [data-act-trigger="dropdown"] {
     @apply cursor-pointer rounded-full p-[0.3rem] m-[0.3rem] hover:scale-125 hover:bg-white transition-all flex align-middle justify-center hover:shadow;
-}
+} */
 
 .img-scale-down {
     @apply object-scale-down;

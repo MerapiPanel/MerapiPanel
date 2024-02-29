@@ -174,4 +174,23 @@ class Util
             return "$years years ago";
         }
     }
+
+
+
+    public static function siteURL()
+    {
+        // Check if the current request is using HTTPS
+        $is_https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+
+        // Get the protocol
+        $protocol = $is_https ? "https://" : "http://";
+
+        // Get the host (domain) name
+        $host = $_SERVER['HTTP_HOST'];
+
+        // Combine protocol and host to get the site URL
+        $site_url = $protocol . $host;
+
+        return $site_url;
+    }
 }
