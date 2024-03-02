@@ -6,7 +6,8 @@ use MerapiPanel\Utility\Http\Request;
 
 class Update
 {
-    public function status(Request $req)
+
+    public function quick(Request $req)
     {
 
         $id = $req->id();
@@ -16,15 +17,13 @@ class Update
                 "message" => "id character is not possible to be less than 16",
             ];
         }
-        $status = $req->status();
-        if (!in_array($status, [0, 1])) {
-            return [
-                "code" => 400,
-                "message" => "Invalid request, status must be 0 or 1 but " . $status . " given",
-            ];
-        }
-
-        if (!DB::table("articles")->update(["status" => $status])->where("id")->equal($id)->execute()) {
+        $data = [
+            "title" => $req->title() ?? "",
+            "category_id" => $req->category() ?? "",
+            "description" => $req->description() ?? "",
+            "status" => is_numeric($req->isPublish()) ? $req->isPublish() : 0,
+        ];
+        if (!DB::table("articles")->update($data)->where("id")->equal($id)->execute()) {
             return [
                 "code" => 500,
                 "message" => "fail to update article",
@@ -34,6 +33,12 @@ class Update
         return [
             "code" => 200,
             "message" => "success",
+            "data" => array_merge(["id" => $id], $data),
         ];
     }
+
+
+
+
+    
 }

@@ -25,6 +25,26 @@ class Admin extends Module
 
         Box::module("article")->getOptions();
 
+        $router->post("/article/endpoint/{method}", function ($req, &$res) {
+
+            $res->setHeader("Content-Type", "application/json");
+
+            $method = $req->method();
+
+
+            $instance = new endpoint();
+
+            if (!method_exists($instance, $method)) {
+                return [
+                    "code" => 401,
+                    "message" => "Method " . $method . " not found",
+                ];
+            }
+
+            return $instance->{$method}($req);
+        });
+
+
         $router->post("/article/endpoint/{class}/{method}", function ($req, &$res) {
 
             $res->setHeader("Content-Type", "application/json");

@@ -2,10 +2,11 @@
 namespace MerapiPanel\Module\Article\Controller\Endpoint;
 
 use MerapiPanel\Box;
+use MerapiPanel\Database\DB;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Util;
 
-class Editor
+class Article
 {
 
     private $directory = __DIR__ . "/../../content";
@@ -49,7 +50,7 @@ class Editor
                 "isPublish" => $isPublish
             ]);
 
-            if(!$id) {
+            if (!$id) {
                 return [
                     "code" => 500,
                     "message" => "failed to create article",
@@ -118,5 +119,25 @@ class Editor
                 "message" => $e->getMessage(),
             ];
         }
+    }
+
+
+    function delete(Request $req)
+    {
+
+        $id = $req->id();
+        $delete = Box::module("article")->service()->delete($id);
+
+        if (!$delete) {
+            return [
+                "code" => 500,
+                "message" => "failed to delete article",
+            ];
+        }
+
+        return [
+            "code" => 200,
+            "message" => "article deleted successfully",
+        ];
     }
 }

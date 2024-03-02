@@ -262,13 +262,12 @@ class Modal extends UnitModel {
         let modal_dialog = $(this.getElement()).find('.modal-dialog');
 
         modal_dialog.on("scroll", (e) => {
+
             const dialog = modal_dialog[0];
             const parent = modal_dialog.parent();
-
             const scrollHeight = dialog.scrollHeight;
-            const scrollTop = (modal_dialog.scrollTop() as any) + ((modal_dialog.outerHeight() as any) / 2);
+            const scrollTop  = (modal_dialog.scrollTop() as any) + ((modal_dialog.outerHeight() as any) / 2);
             const percentage = (scrollTop / scrollHeight) * 100;
-
             const shadowOffsetTop = parent.find(".shadow-offset-top");
             const shadowOffsetBottom = parent.find(".shadow-offset-bottom");
 
@@ -311,7 +310,7 @@ class Modal extends UnitModel {
         $(this.getElement()).trigger(event, params);
     }
 
-    public render() {
+    render() {
 
         this.fire('modal:render', {
             element: this.getElement(),

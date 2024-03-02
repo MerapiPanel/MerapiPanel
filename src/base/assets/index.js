@@ -7,8 +7,6 @@ if (!window.merapi) {
     window.merapi = require("./merapi");
 }
 
-console.log(merapi);
-
 
 function validate(el) {
 
@@ -115,8 +113,18 @@ const liveCallback = {
         initial: function (e) {
             let $this = $(e);
             $this.find('.dropdown-toggle').on('click', function () {
-                $('.dropdown').not($this).removeClass('open');
-                $this.toggleClass('open');
+                if ($this.hasClass('open')) {
+                    if (e.attr("onHide")) {
+                        eval(e.attr("onHide"));
+                    }
+                    $this.removeClass('open');
+                } else {
+                    if (e.attr("onShow")) {
+                        eval(e.attr("onShow"));
+                    }
+                    $('.dropdown').not($this).removeClass('open');
+                    $this.addClass('open');
+                }
             });
             $(document).on('click', function (e) {
                 if (!$(e.target).closest($this).length) {

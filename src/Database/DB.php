@@ -70,8 +70,9 @@ final class DB
 
         foreach (debug_backtrace() as $call) {
             $filePathFromCall = isset($call['file']) ? $call['file'] : null;
-            if($filePathFromCall === null) continue;
-            
+            if ($filePathFromCall === null)
+                continue;
+
             $filePathFromCallSanitized = preg_replace('/[^a-zA-Z0-9]+/', '', $filePathFromCall);
             $currentFileSanitized = preg_replace('/[^a-zA-Z0-9]+/', '', __FILE__);
 
@@ -239,7 +240,7 @@ final class DB
      */
     protected function upgradeDatabase($newVersionFile, $config): void
     {
-        
+
         $newDatabase = $this->createDatabaseConnection($newVersionFile);
         $this->initializeTables($newDatabase, $config['tables']);
         // Add logging statement
@@ -577,7 +578,8 @@ final class DB
 
 
 
-    public function pdo() : PDO {
+    public function pdo(): PDO
+    {
         return $this->dbh;
     }
 
@@ -733,7 +735,8 @@ final class Table
     }
 
 
-    public function lastInsertId() {
+    public function lastInsertId()
+    {
         return $this->db->pdo()->lastInsertId();
     }
 
@@ -1744,7 +1747,7 @@ final class UpdateQuery extends WhereQueryBuilder
         // Iterate through the data array and build the SET parts
         foreach ($this->data as $column => $value) {
             // If the value is a string, add slashes and wrap it in quotes
-            $setParts[] = "{$column} = " . (is_string($value) ? "'" . addslashes($value) . "'" : $value);
+            $setParts[] = "{$column} = " . (is_string($value) ? "'" . addslashes($value) . "'" : (empty($value) ? 'NULL' : $value));
         }
 
         // Build the WHERE part of the SQL query

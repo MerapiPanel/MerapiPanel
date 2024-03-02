@@ -23,18 +23,12 @@ $themes: (
     "disabled": #d1d1d1
 );
 
-@each $name, $color in $themes {
-    .bg-#{$name} {
-        background-color: $color;
-    }
-    .text-#{$name} {
-        color: $color;
-        &.bg-#{$name} {
-            color: darken($color: $color, $amount: 20%);
-            background-color: color.scale($color, $lightness: 95%);
-        }
-    }
-}
+$sizes: (
+    "xs": 0.4rem,
+    "sm": 0.8rem,
+    "md": 1.2rem,
+    "lg": 1.6rem
+);
 
 :root {
     @for $x from 1 through 9 {
@@ -64,5 +58,52 @@ $themes: (
     }
 }
 
+@each $name, $color in $themes {
+    .bg-#{$name} {
+        background-color: $color;
+    }
+    .text-#{$name} {
+        color: $color;
+        &.bg-#{$name} {
+            color: darken($color: $color, $amount: 20%);
+            background-color: color.scale($color, $lightness: 95%);
+        }
+    }
+}
+
+@for $x from 1 through 9 {
+    $val: math.div($x, 5) * 1rem;
+    .p-#{$x} {
+        padding: $val;
+    }
+    .pt-#{$x} {
+        padding-top: $val;
+    }
+    .pb-#{$x} {
+        padding-bottom: $val;
+    }
+    .pl-#{$x} {
+        padding-left: $val;
+    }
+    .pr-#{$x} {
+        padding-right: $val;
+    }
+    .m-#{$x} {
+        margin: $val;
+    }
+    .mt-#{$x} {
+        margin-top: $val;
+    }
+    .mb-#{$x} {
+        margin-bottom: $val;
+    }
+    .ml-#{$x} {
+        margin-left: $val;
+    }
+    .mr-#{$x} {
+        margin-right: $val;
+    }
+}
+
 @import "./nav.scss", "./header.scss", "./input.scss", "./alert.scss", "./button.scss", "./dropdown.scss",
-    "./tooltip.scss", "./modal.scss";
+    "./tooltip.scss", "./modal.scss", "./card.scss";

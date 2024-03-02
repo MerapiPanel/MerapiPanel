@@ -50,12 +50,22 @@ button {
 }
 
 .btn {
-    padding: 0.3rem 1.2rem;
-    border-radius: 0.25rem;
+    padding: 0.3em 1.2em;
+    border-radius: 0.25em;
     box-shadow: var(--mp-shadow-alt);
     font-weight: semibold;
+    transition: 0.25s;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
     @each $key, $value in $themes {
         @include btn($key, $value);
+    }
+
+    @each $name, $size in $sizes {
+        &.btn-#{$name} {
+            font-size: $size;
+        }
     }
 }
 .btn-close {
@@ -80,5 +90,4 @@ button {
             font-size: 1.25em;
         }
     }
-    
 }
