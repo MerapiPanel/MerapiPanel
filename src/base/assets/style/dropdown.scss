@@ -10,7 +10,7 @@
         border-radius: 10rem;
         appearance: none;
         z-index: 9;
-        transition: 0.2s;
+        transition: 0.2s all;
         border: none;
         cursor: pointer;
         &:focus,
@@ -37,7 +37,7 @@
         transform-origin: top right;
         transition-property: all;
         transition-timing-function: linear;
-        transition-duration: 0.2s;
+        transition-duration: 0.15s;
         box-shadow: var(--merapi-shadow-alt), var(--merapi-shadow);
         max-width: 250px;
         overflow: hidden;

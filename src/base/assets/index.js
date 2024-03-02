@@ -90,6 +90,11 @@ $(function () {
 });
 
 const liveCallback = {
+    ".modal": {
+        initial: function (e) {
+
+        }
+    },
     ".tooltip": {
         initial: function (e) {
 

@@ -46,6 +46,7 @@
     "@editorjs/simple-image": "^1.6.0",
     "@editorjs/table": "^2.3.0",
     "@editorjs/text-variant-tune": "^1.0.1",
+    "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.16",
     "bootstrap": "^5.3.2",
     "codemirror": "^6.0.1",
