@@ -2,6 +2,7 @@
 
 namespace MerapiPanel\Module\Article\Controller;
 
+use MerapiPanel\Box;
 use MerapiPanel\Core\Mod\Mod_Controller;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Http\Request;
@@ -13,15 +14,30 @@ class Guest extends Mod_Controller
     function register(Router $router)
     {
 
-        $router->get("/article/{date}/{id}/{title}", "showarticle", self::class);
+        $options = Box::module("article")->getOptions();
+        $link_format = $options["links_style_format"][$options["link_format"]];
+
+        $router->get($link_format, "index");
     }
 
+
+    public function index(Request $request)
+    {
+        $id = $request->id();
+        $slug = $request->slug();
+        $category = $request->category();
+
+        $articles = Box::module("article")->service()->fetchById($id);
+        return View::render("index.html.twig", [
+            "article" => $articles[0],
+        ]);
+    }
 
     public function showarticle(Request $req)
     {
 
-        $date  = $req->date();
-        $id    = $req->id();
+        $date = $req->date();
+        $id = $req->id();
         $title = $req->title();
 
         return View::render("index.html.twig");

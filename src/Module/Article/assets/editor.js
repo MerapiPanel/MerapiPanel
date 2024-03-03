@@ -17,7 +17,8 @@ function init(args = {}) {
 
     Object.assign({
         editor: {
-            holder: null
+            holder: null,
+            data: null
         },
         event: {
             onReady: null,
@@ -40,38 +41,7 @@ function init(args = {}) {
         placeholder: 'Let`s write an awesome story!',
         holder: args.editor.holder,
         autofocus: true,
-        data: {
-            blocks: [
-                {
-                    type: 'header',
-                    data: {
-                        text: 'Hallo World',
-                        level: 1,
-                    }
-                },
-                {
-                    type: 'header',
-                    data: {
-                        text: 'Hallo Dunia',
-                        level: 2
-                    }
-                },
-                {
-                    type: 'header',
-                    data: {
-                        text: 'Hallo World is a better than any thing what you want for example is anonimouse is also type hallo world in each they do coding on their desktop',
-                        level: 1,
-                    }
-                },
-                {
-                    type: 'header',
-                    data: {
-                        text: 'Yanto odading',
-                        level: 3
-                    }
-                }
-            ]
-        },
+        data: args.editor.data,
         tools: {
             paragraph: {
                 class: Paragraph,

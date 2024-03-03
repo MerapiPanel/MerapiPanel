@@ -1,7 +1,7 @@
 {% extends "@admin::panel/base.html.twig" %}
 {% block header_title %}Pages{% endblock %}
 
-{% block head_javascripts %}
+{% block head_javascript %}
 <script src="{{ '@pages/assets/dist/index.bundle.js' | assets }}"></script>
 {% endblock %}
 
@@ -69,12 +69,14 @@
 {% endblock %}
 
 
-{% block javascripts %}
+{% block javascript %}
 {{ parent() }}
 <script>
-    function createNewPage() {
 
-        // console.log(merapi)
+    $(() => {
+        console.log(merapi)
+    })
+    function createNewPage() {
         merapi.Pages.createPage({
             template: "{{ '/template/fetchall' | admin_url | url }}",
             endpoint: "{{ '/pages/endpoint' | admin_url | url }}",

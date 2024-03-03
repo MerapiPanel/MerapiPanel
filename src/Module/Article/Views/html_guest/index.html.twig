@@ -1,15 +1,19 @@
 {% extends "base.html.twig" %}
 
+{% block body %}
 
-{% block content %}
-<section>
-    <header>
-        <h1>Content</h1>
-    </header>
-    <article>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut minus dolor quasi? Ab quidem quod, laboriosam
-            aliquam illo et odit consequatur aperiam eaque fugiat dignissimos aspernatur itaque ratione fuga delectus?
-        </p>
-    </article>
-</section>
+<main class="container mx-auto max-w-[1400px] px-3">
+
+    {% block content %}
+    <section>
+        <header class="mb-3">
+            <h1 class="text-3xl">{{ article.title }}</h1>
+        </header>
+        <article>
+            {{ article.content.html | raw }}
+        </article>
+    </section>
+    {% endblock %}
+
+</main>
 {% endblock %}

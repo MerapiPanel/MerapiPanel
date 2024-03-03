@@ -10,6 +10,14 @@
 @use "sass:color";
 @use "sass:math";
 
+@function to-rgb($color) {
+    $r: color.red($color);
+    $g: color.green($color);
+    $b: color.blue($color);
+
+    @return $r $g $b;
+}
+
 $themes: (
     "light": #fff,
     "dark": #292929,
@@ -26,6 +34,7 @@ $themes: (
 $sizes: (
     "xs": 0.4rem,
     "sm": 0.8rem,
+    "base": 1rem,
     "md": 1.2rem,
     "lg": 1.6rem
 );
@@ -106,4 +115,4 @@ $sizes: (
 }
 
 @import "./nav.scss", "./header.scss", "./input.scss", "./alert.scss", "./button.scss", "./dropdown.scss",
-    "./tooltip.scss", "./modal.scss", "./card.scss";
+    "./tooltip.scss", "./modal.scss", "./card.scss", "./table.scss";

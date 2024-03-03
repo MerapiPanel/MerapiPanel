@@ -208,7 +208,24 @@
     function deleteArticle(el, id) {
 
         let article = articles.find(article => article.id == id);
-        modal_delete.content = `Are you sure you want to delete <span class="font-semibold">${article.title}</span> <small class="text-muted italic text-purple-400">(${article.id})</small>?<br/>This action can not be undone.`;
+        modal_delete.content = `Are you sure you want to delete this article?
+        <div class='py-2'>
+        Details as follows:
+            <table class="table table-sm table-danger table-striped table-bordered mb-3">
+                <tr>
+                    <th>id</th>
+                    <td>${article.id}</td>
+                </tr>
+                <tr>
+                    <th>title</th>
+                    <td>${article.title}</td>
+                </tr>
+            </table>
+        </div>
+        <div class='alert alert-sm alert-warning'>
+            <h4 class='alert-title'>Warning</h4>
+            <p class='text-sm'>This action cannot be undone!.</p>
+        </div>`
         modal_delete.dismiss = false;
         modal_delete.show();
 
@@ -293,6 +310,10 @@
     }
 
 
+    function editArticle(el, id) {
+        window.location.href = "{{ '/article/edit' | admin_url }}/" + id;
+    }
+
     function renderArticles() {
 
         if (articles.length == 0) {
@@ -341,10 +362,9 @@
                     <article class="text-disabled text-[10px]">
                         <ul class="flex gap-4">
                             <li class="text-purple-500/50" id="article-${article.id}-id">#${article.id}</li>
-                            <li id="article-${article.id}-status">status : {% if article.status == 1 %}public{% else
-                                %}private{% endif %}</li>
-                            <li id="article-${article.id}-created_at">created_at : ${article.created_at}</li>
-                            <li id="article-${article.id}-updated_at">updated_at : ${article.updated_at}</li>
+                            <li id="article-${article.id}-status">status <b>${article.status == 1 ? "public" : "private"}</b></li>
+                            <li id="article-${article.id}-created_at">created at <b>${article.created_at}</b></li>
+                            <li id="article-${article.id}-updated_at">updated at <b>${article.updated_at}</b></li>
                         </ul>
                     </article>
                 </section>
@@ -360,11 +380,11 @@
         let menu = $(el).parent().find(".dropdown-menu");
 
         menu.html("");
-        menu.append($(`<li class= "dropdown-item" > <a href="${article.link}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> open article</a></li > `));
-        menu.append($(`<li class= "dropdown-item" onclick = "editArticle('${id}')" > <i class="fa-regular fa-pen-to-square"></i> edit article</li > `));
-        menu.append($(`<li class= "dropdown-item" onclick = "quickEditArticle(this, '${id}')" > <i class="fa-regular fa-pen-to-square"></i> quick edit article</li > `));
-        menu.append($(`<li class= "dropdown-item" onclick = "changeStatus(this, '${id}')" > ${article.status == 1 ? `<i class="fa-solid fa-lock"></i> make private` : `<i class="fa-solid fa-earth-americas"></i> make public`}</li > `));
-        menu.append($(`<li class= "dropdown-item" onclick = "deleteArticle(this, '${id}')" > <i class="fa-regular fa-trash-can"></i> delete article</li >`));
+        menu.append($(`<li class="dropdown-item" > <a href="${article.link}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> open article</a></li > `));
+        menu.append($(`<li class="dropdown-item" onclick = "editArticle(this, '${id}')" > <i class="fa-regular fa-pen-to-square"></i> edit article</li > `));
+        menu.append($(`<li class="dropdown-item" onclick = "quickEditArticle(this, '${id}')" > <i class="fa-regular fa-pen-to-square"></i> quick edit article</li > `));
+        menu.append($(`<li class="dropdown-item" onclick = "changeStatus(this, '${id}')" > ${article.status == 1 ? `<i class="fa-solid fa-lock"></i> make private` : `<i class="fa-solid fa-earth-americas"></i> make public`}</li > `));
+        menu.append($(`<li class="dropdown-item text-danger" onclick = "deleteArticle(this, '${id}')" > <i class="fa-regular fa-trash-can"></i> delete article</li >`));
 
     }
 

@@ -45,53 +45,11 @@ class Admin extends Module
         });
 
 
-        $router->post("/article/endpoint/{class}/{method}", function ($req, &$res) {
-
-            $res->setHeader("Content-Type", "application/json");
-
-            $class = $req->class();
-            $method = $req->method();
-            if (!is_string($class) || !is_string($method) || empty ($class) || empty ($method)) {
-                return [
-                    "code" => 401,
-                    "message" => "Invalid request"
-                ];
-            }
-
-
-            if (strtolower($class) == "category") {
-                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Category";
-            } else if (strtolower($class) == "update") {
-                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Update";
-            } else if (strtolower($class) == "options") {
-                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Options";
-            } else if (strtolower($class) == "editor") {
-                $class = "MerapiPanel\\Module\\Article\\Controller\\Endpoint\\Editor";
-            }
-
-
-            if (class_exists($class)) {
-                $instance = new $class();
-                if (!method_exists($instance, $method)) {
-                    return [
-                        "code" => 401,
-                        "message" => "Method " . $method . " not found in " . $class
-                    ];
-                }
-                return $instance->{$method}($req);
-            }
-
-            return [
-                "code" => 406,
-                "message" => "there no controller with name " . $class . " found"
-            ];
-        });
-
         $index = $router->get("/article", "index", self::class);
-        $list = $router->get("/article/list", "list", self::class);
-        $new = $router->get("/article/create", "createNewarticle", self::class);
+        $new = $router->get("/article/create", "create", self::class);
+        $new = $router->get("/article/edit/{id}", "edit", self::class);
         $options = $router->get("/article/options", "options", self::class);
-        $router->get("/article/category", "category");
+        $category = $router->get("/article/category", "category");
 
 
         Box::module("panel", [
@@ -102,14 +60,9 @@ class Admin extends Module
                     "link" => $index,
                     "childs" => [
                         [
-                            "name" => "List of article",
+                            "name" => "Categories",
                             "icon" => "fa-solid fa-bars-staggered",
-                            "link" => $list
-                        ],
-                        [
-                            "name" => "Create new article",
-                            "icon" => "fa fa-plus",
-                            "link" => $new
+                            "link" => $category
                         ]
                     ]
                 ]
@@ -139,9 +92,20 @@ class Admin extends Module
         return View::render("index.html.twig");
     }
 
-    function createNewarticle($view)
+    function create($view)
     {
         return View::render("editor.html.twig");
+    }
+
+    function edit(Request $req)
+    {
+
+        $id = $req->id();
+        $article = Box::module("article")->service()->fetchById($id);
+
+        return View::render("editor.html.twig", [
+            "article" => $article[0]
+        ]);
     }
 
     function list($view)

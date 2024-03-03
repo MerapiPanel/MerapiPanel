@@ -75,8 +75,12 @@
 
                 <div class="shadow-md lg:shadow-none content-sidebar close bg-white w-full max-w-[350px]">
                     <div class="flex flex-col h-full px-4 py-6 min-w-[350px] overflow-y-auto">
-                        <form method="xhr::post" action="{{ '/article/endpoint/save' | admin_url }}"
-                            class="w-full h-full pb-4">
+                        <form method="xhr::post" action="
+                            {% if article is not null %} 
+                                {{ '/article/endpoint/update' | admin_url }} 
+                            {% else %} 
+                                {{ '/article/endpoint/create' | admin_url }} 
+                            {% endif %}" class="w-full h-full pb-4">
 
                             <div>
                                 <header class="flex items-center gap-4 mb-4">
@@ -187,8 +191,23 @@
 
 
     {% block javascript %}
-    <script>
+    {% if article is not null %}
 
+    <script>
+        const article = JSON.parse(`{{ article | json_encode | replace({"\\": "\\\\"}) | raw }}`);
+        $(() => {
+            $("#article-title").val(article.title);
+            $("#article-slug").val(article.slug);
+            $("#article-category").val(article.category_id);
+            $("#article-description").val(article.description);
+            $("#article-id").val(article.id);
+            $("#is-publish").prop("checked", article.status == 1);
+        });
+
+    </script>
+    {% endif %}
+
+    <script>
         function showCustomDescription(checkbox) {
             if ($(checkbox).is(":checked")) {
                 $("#article-description").parent().fadeIn({
@@ -209,10 +228,15 @@
             const title = $("#article-title");
             const slug = $("#article-slug");
 
+            const editorOpt = {
+                holder: "#editor",
+            }
+            if (article && article.content.json) {
+                editorOpt.data = article.content.json
+            }
+
             const editor = merapi.editor.init({
-                editor: {
-                    holder: "#editor"
-                },
+                editor: editorOpt,
                 event: {
                     onChange: (api, evt) => {
                         editor.save().then(output => {

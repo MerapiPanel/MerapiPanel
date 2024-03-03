@@ -88,6 +88,78 @@ $(function () {
 });
 
 const liveCallback = {
+
+    "div.form-select": {
+        initial: function (e) {
+
+            const select = $(`<div class='selected'></div>`);
+            const list = $(`<div class='option-list'></div>`);
+
+            (() => {
+                if ($(e).children("select").length <= 0) {
+                    $(e).append(select);
+                } else {
+                    $(e).children("select").replaceWith(select);
+                }
+                if ($(e).children(".option-list").length <= 0) {
+                    $(e).append(list);
+                } else {
+                    $(e).children(".option-list").replaceWith(list);
+                }
+            })();
+
+            const opt_item = $(e).find(".option-item");
+            
+            if (opt_item.length > 0) {
+
+                opt_item.each(function () {
+                    let $this = $(this);
+                    $this.detach();
+                    list.append($this);
+                    if ($this.attr('disabled') !== undefined) return;
+                    $this.on("click", function () {
+                        select.attr("data-value", $this.attr('value'));
+                        select.trigger("change");
+                    })
+                });
+
+
+                if (list.find(".selected").length <= 0) {
+                    select.attr("data-value", list.children(".option-item").first().attr('value'));
+                    select.html(list.children(".option-item").first().html());
+                    list.children(".option-item").first().addClass("selected");
+                } else {
+                    select.attr("data-value", list.find(".selected").attr('value'));
+                    select.html(list.find(".selected").html());
+                }
+
+
+
+            }
+
+            select.on("mousedown touchstart", function (e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+                $(this).parent().toggleClass("open");
+            });
+
+            select.on("change", function () {
+
+                $(this).parent().removeClass("open");
+                list.children(".option-item").removeClass("selected");
+                let $selected = list.find('[value="' + select.attr("data-value") + '"]');
+                $selected.addClass("selected");
+                select.html($selected.html());
+            })
+
+            $(document).on("click", function (e) {
+                if (!$(e.target).closest(".form-select").length) {
+                    select.parent().removeClass("open");
+                }
+            })
+        }
+    },
     ".modal": {
         initial: function (e) {
 

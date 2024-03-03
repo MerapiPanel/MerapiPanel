@@ -16,7 +16,7 @@
 
 {% block subheader %}{% endblock %}
 
-
+{% set all_template = admin.template_all_template %}
 {% set options = admin.article_options %}
 
 {% block content %}
@@ -30,16 +30,36 @@
             </header>
             <article>
                 <label class="ps-3 w-full opacity-50 text-sm" for="website_timezone">Select template for content</label>
-                <select class="form-select {% if options.template is null %}invalid{% endif %}" name="website_timezone" id="website_timezone"></select>
+                <select style="display: none;" class="form-select {% if options.template is null %}invalid{% endif %}" name="website_timezone"
+                    id="website_timezone">
+
+                    {% for template in all_template %}
+                    <option value="{{ template.id }}"><i class="fa fa-check"></i> {{ template.name }}</option>
+                    {% endfor %}
+                </select>
+
+
+                <div class="form-select">
+                    <div class="option-item" value="" disabled>-- please chose the template --</div>
+                    {% for template in all_template %}
+                    <div class="option-item" value="{{ template.id }}">
+                        <div class="bg-black w-[25px] h-25px aspect-square me-3 rounded-sm"></div>{{ template.name }}
+                    </div>
+                    {% endfor %}
+
+                  
+                </div>
+
             </article>
 
             {% if options.template is null %}
-                <div class="alert alert-danger mt-5">
-                    <h4 class="alert-title"><i class="fa fa-exclamation-triangle"></i> No template found</h4>
-                    <p class="alert-text">Please create a template for article to use this feature, and then go back to this page</p>
-                </div>
+            <div class="alert alert-danger mt-5">
+                <h4 class="alert-title"><i class="fa fa-exclamation-triangle"></i> No template found</h4>
+                <p class="alert-text">Please create a template for article to use this feature, and then go back to this
+                    page</p>
+            </div>
             {% endif %}
-            
+
         </section>
 
 
@@ -98,6 +118,10 @@
 {% block javascript %}
 {{ parent() }}
 <script>
+
+
+    console.log($("select"));
+
 
     $(() => {
         $("form").on("xhr::success", function (e, data) {

@@ -107,7 +107,7 @@ class Service extends Module
         }
 
 
-        
+
         if (
             $content &&
             !file_put_contents($this->directory . "/" . $id . ".json", (gettype($content) == "string" ? json_encode(json_decode($content, true), JSON_PRETTY_PRINT) : json_encode($content, JSON_PRETTY_PRINT)))
@@ -175,5 +175,101 @@ class Service extends Module
         }
 
         return $articles;
+    }
+
+
+    public function fetchById($id)
+    {
+
+        $articles = DB::table("articles")->select("*")->where("id")->equal($id)->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        $articles = array_map(function ($article) {
+
+            $file_content = __DIR__ . "/content/" . $article["id"] . ".json";
+            if (file_exists($file_content)) {
+                $json = json_decode(file_get_contents($file_content), true);
+                $article['content'] = [
+                    'json' => $json,
+                    'html' => $this->parseBlock($json['blocks'])
+                ];
+            }
+
+            $article['created_at'] = date('Y-m-d H:i:s', $article['created_at']);
+            $article['updated_at'] = date('Y-m-d H:i:s', $article['updated_at']);
+
+            return $article;
+        }, $articles);
+        return $articles;
+    }
+
+    public function fetchByCategoryId($categoryId)
+    {
+
+        $articles = DB::table("articles")->select("*")->where("category_id")->equal($categoryId)->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        return $articles;
+    }
+
+    public function fetchBySlug($slug)
+    {
+
+        $articles = DB::table("articles")->select("*")->where("slug")->equal($slug)->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        return $articles;
+    }
+
+
+
+    public function parseBlock($blocks = [])
+    {
+
+        $htmls = [];
+        foreach ($blocks as $block) {
+            $htmls[] = $this->parseBlockHtml($block);
+        }
+
+        return implode("\n", $htmls);
+    }
+
+    public function parseBlockHtml($block)
+    {
+        switch ($block["type"]) {
+            case "header":
+                return "<h" . $block["data"]["level"] . ">" . $block["data"]["text"] . "</h" . $block["data"]["level"] . ">";
+            case "paragraph":
+                return "<p>" . $block["data"]["text"] . "</p>";
+            case "image":
+                return "<img src='" . $block["data"]["src"] . "' alt='" . $block["data"]["alt"] . "'>";
+            case "code":
+                return "<pre><code>" . $block["data"]["text"] . "</code></pre>";
+            case "delimiter":
+                return "<hr/>";
+            case "list":
+                return "<ul><li>" . $block["data"]["text"] . "</li></ul>";
+            case "quote":
+                return "<blockquote><p>" . $block["data"]["text"] . "</p></blockquote>";
+            case "table":
+                $data = $block["data"];
+                $withHeadings = $data["withHeadings"];
+                $content = $data['content'];
+                $table = "<table class='table table-danger table-striped table-bordered'>";
+                foreach ($content as $key => $row) {
+                    if ($key == 0 && $withHeadings) {
+                        $table .= "<thead><tr>";
+                        foreach ($row as $cell) {
+                            $table .= "<th>" . $cell . "</th>";
+                        }
+                        $table .= "</tr></thead><tbody>";
+                        continue;
+                    }
+
+                    $table .= "<tr>";
+                    foreach ($row as $cell) {
+                        $table .= "<td>" . $cell . "</td>";
+                    }
+                    $table .= "</tr>";
+                }
+                $table .= "</tbody></table>";
+                return $table;
+            default:
+                return "<div>unknown block type: " . $block["type"] . "</div>";
+        }
     }
 }
