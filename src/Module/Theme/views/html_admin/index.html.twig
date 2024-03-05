@@ -1,5 +1,11 @@
 {% extends "@admin::panel/base.html.twig" %}
 
+
+{% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ '@theme/style/theme.css' | assets }}">
+{% endblock %}
+
 {% block header_title %}Theme{% endblock %}
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{{ '/' |admin_url}}">Home</a></li>
@@ -10,5 +16,23 @@
 {% set themes = admin.theme_fetchAll %}
 
 {% block content %}
-{{ themes | json_encode | raw }}
+
+<div class="flex flex-wrap gap-3">
+    {% for theme in themes %}
+
+    <div class="bg-white rounded-md p-3 w-full max-w-[300px]">
+        <section>
+            <header>
+                <img src="{{ theme.thumbnail }}" alt="thumbnail {{ theme.name }}">
+                <h4>{{ theme.name }}</h4>
+            </header>
+            <article>
+                <p>{{ theme.description }}</p>
+            </article>
+        </section>
+    </div>
+
+    {% endfor %}
+</div>
+
 {% endblock %}

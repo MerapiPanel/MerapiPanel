@@ -2,12 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 const LodashModule = require("lodash-webpack-plugin");
 const glob = require('glob');
-// import Merapi from './src/base/assets/merapi.js';
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const stylesHandler = MiniCssExtractPlugin.loader;
 
 
 const entry = () => {
 
-    const entryFiles = glob.sync('./src/base/assets/*.js').reduce((acc, item) => {
+    const entryFiles = glob.sync('./src/base/assets/src/*.js').reduce((acc, item) => {
 
         const file = `./${item}`;
         const name = path.basename(file).replace(".js", "");
@@ -16,13 +18,13 @@ const entry = () => {
         return acc;
     }, {});
 
-    const entryModule = glob.sync("./src/module/**/assets/*.js").reduce((acc, item) => {
+    const entryModule = glob.sync("./src/module/**/assets/src/*.js").reduce((acc, item) => {
 
         const directoryPath = path.dirname(item);
         const name = path.basename(item).replace(".js", "");
         const file = `./${item}`;
 
-        acc[`..\\..\\..\\..\\${directoryPath}\\dist\\${name}`] = file; // Use full file path as key
+        acc[`..\\..\\..\\..\\..\\${directoryPath}\\dist\\${name}`] = file; // Use full file path as key
 
         // console.log(acc)
         return acc;
@@ -34,14 +36,15 @@ const entry = () => {
 
 
 module.exports = {
-    mode: 'development',
+    mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
     entry: entry(),
     output: {
-        filename: '[name].bundle.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, "./src/base/assets/dist"),
     },
 
     plugins: [
+        new MiniCssExtractPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jquery: "jQuery",
@@ -51,18 +54,6 @@ module.exports = {
     ],
     module: {
         rules: [
-            {
-                test: require.resolve('./src/base/assets/merapi.js'),
-                use: [{
-                    loader: 'expose-loader',
-                    options: {
-                        exposes: {
-                            globalName: 'merapi',
-                            override: true,
-                        },
-                    },
-                }],
-            },
             {
                 test: require.resolve("jquery"),
                 use: [{
@@ -76,26 +67,34 @@ module.exports = {
                 }]
             },
             {
+                test: /\.s[ac]ss$/i,
+                use: [stylesHandler, 'css-loader', 'postcss-loader', 'sass-loader'],
+            },
+            {
                 test: /\.css$/i,
-                // include: path.resolve(__dirname, './src/module/*'),
-                use: ['style-loader', 'css-loader', 'postcss-loader'],
+                use: [stylesHandler, 'css-loader', 'postcss-loader'],
             },
-            {
-                test: /\.scss$/,
-                use: [
-                    'style-loader', // Injects styles into the DOM using a <style> tag
-                    'css-loader',   // Translates CSS into CommonJS
-                    'sass-loader'   // Compiles Sass to CSS
-                ],
-            },
-            {
-                test: /\.twig$/,
-                use: 'twig-loader',
-            },
+            // {
+            //     test: /\.css$/i,
+            //     // include: path.resolve(__dirname, './src/module/*'),
+            //     use: ['style-loader', 'css-loader', 'postcss-loader'],
+            // },
+            // {
+            //     test: /\.scss$/,
+            //     use: [
+            //         'style-loader', // Injects styles into the DOM using a <style> tag
+            //         'css-loader',   // Translates CSS into CommonJS
+            //         'sass-loader'   // Compiles Sass to CSS
+            //     ],
+            // },
             {
                 test: /\.tsx?$/,
                 use: 'babel-loader',
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+                type: 'asset',
             },
         ]
     },

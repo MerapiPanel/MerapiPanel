@@ -1,5 +1,6 @@
 <?php
 namespace MerapiPanel\Module\Theme;
+use MerapiPanel\Box;
 
 class Service
 {
@@ -22,9 +23,20 @@ class Service
     public function getThemes()
     {
 
+        $default_thumbnail = Box::module("fileManager")->service("AssetsService")->url("@theme/img/placeholder-image.jpg");
+
         $themes = [];
         foreach (glob('' . $this->getDirectory() . '*') as $file) {
-            $themes[] = basename($file);
+
+            $name = basename($file);
+            $file_info = $file . "/theme.info";
+            $info = [];
+
+            $themes[] = array_merge([
+                "name" => basename($file),
+                "thumbnail" => $default_thumbnail,
+                "description" => "",
+            ], $info);
         }
         return $themes;
     }

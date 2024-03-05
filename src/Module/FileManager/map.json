@@ -1,66 +1,42 @@
 {
-    "templateassetsdistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/QUdTNGtYWDcwNWRlNGN3Q0NtZEc3OTB1bisyMVJtMmtPbXR2OVY0eDZuM1UwN2FySVdHNWFRc0NSZHFxcHBPUjo6Kk5Swhg3Bp8VTZDVZxbAJQ%3D%3D",
-        "time": 1709647897
-    },
     "panelassetslogosvg": {
-        "url": "\/public\/filemanager\/_assets\/Y3pHYkhUanF6VHlKcUt5ak1TUXpaV2pyY1ZRRE50eVN6Y285UzJCR3Nycz06OvgrkclI6eba5OfLihFGdU4%3D",
-        "time": 1709651308
+        "url": "\/public\/filemanager\/_assets\/TWVLaDhsamI2b24zeStWOGZ1VUlQOVBuUnZLY1VNSlk2TXhodFUrVHhYYz06OqGhzp8jVvOASG4rWE0jhjg%3D",
+        "time": 1709660653
     },
-    "dashboarddistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/VURoajR6aXRUM21reTZXV1NWS1loTzRXZ1FpV0VpYitlRGJTTEtGUkZGOD06OsKcsOmSbdP86PbdS1SmBGA%3D",
-        "time": 1709651911
+    "srcbaseassetsdistindexjs": {
+        "url": "\/public\/filemanager\/_assets\/dGU0Qzd1VXo0Q2FQZnExT25jVFd1Q3hDdTI2SXlnNUVCZmVpeFVCN1V4Yz06OjR08kyBWg8cq8R7S7jbORU%3D",
+        "time": 1709656976
     },
-    "dashboardassetsdistwidgethelperbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/THNua0NxUGRtVnhOZVFVQTBJblBwY09wclRGTUpNMUNsKzlKQU1URVEzeEpXY0R4T2pYMXlXYm5BQ2grRkNEKzo6k4AHSbdQFrr%2BpmSUy52Fzg%3D%3D",
-        "time": 1709651911
-    },
-    "modulesassetscssstylecss": {
-        "url": "\/public\/filemanager\/_assets\/TUg1WEIrNjBQanNLMDJTUmcrVWJ4bVlHZkdPMHFVc29JTDRNMGNXZ2RYaz06Om%2BO%2B6uYcPkXRCUE3YL8h1A%3D",
-        "time": 1709648244
-    },
-    "articleiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/WWhESXpPdEdSRVhscThSVHBLeFRaNzBCVFJzYmg4TTVNR2hOQ2Fjc2tWQT06OmAPMxujmiAneyh1mfHkaPQ%3D",
-        "time": 1709648244
-    },
-    "authiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/c3lraDUwSzJVR2loUVg4SCtqcy9WQT09OjpprzjbZh3BSSm%2F7%2FUYFhRQ",
-        "time": 1709648244
-    },
-    "dashboardiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/ajYrYWs5Y1JSVVA1ZFYvRGR3Y1BTQWVQMmp1V1FrUTcrajNqc2Rzb0pBRT06Omf7KSKMAezN%2FdAIA1HY%2BPE%3D",
-        "time": 1709648244
-    },
-    "filemanagericonsvg": {
-        "url": "\/public\/filemanager\/_assets\/Qk1ZL0c2a3M0Y2FjUzFObEcvNEJBT0xNcHpuUm1sV0VLeXZtZmJzVVhhRT06OuvfvhWu6XlmLOwzW%2Fpf5l0%3D",
-        "time": 1709648244
-    },
-    "templateiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/NmUvVkZvMGJRNW1RT1NObWFJN2hwWDkwTkMyTjJSMnFGakZtdUJPVy9Gaz06Ona1Esg4NCPwbVSuK0pOufM%3D",
-        "time": 1709648244
-    },
-    "templateeditoriconsvg": {
-        "url": "\/public\/filemanager\/_assets\/M3JwQ3JNMGhCWkhNUzZycFpoL216a1ZRbHFlVkhXZ05wbTVDa1FraFEvZz06Omoul5m8Ocdm%2Fqgd%2FwZYzNE%3D",
-        "time": 1709648244
-    },
-    "articleassetsdisteditorbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/ajB1TEtoQURFL2JlbVRVeUdlazkrUjlhV1JOeExpa2xGc0NPME5rV1VVSVYwMkphRURKRWw2SFIzcERZZGVUNzo6keAe0hNeC5JzXQHBokytPg%3D%3D",
-        "time": 1709627953
-    },
-    "filemanagerassetsdistviewfilemanagerbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/Q1BMdzRnYklsblVFYkVFdDVEUE16NmNHT2QreE9kdXZRa2VOVVdLSTYrSTk1ZFVua3NZRWNXc3NkM3ptNHhDK2NWZjRlMmFMWGJaNk9sOHVJVjRRN1E9PTo6OuTthm8vZIe0RgJd%2FyiL%2BA%3D%3D",
-        "time": 1709647924
-    },
-    "templateeditordistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/SnI4VWJTV3h1Q2M1cFE2SFUvOGdoeVRSb3gyV0U4SE1XMEw5MmVMaWdmUGl6a3hpdU83V2ZJUWNuMFJPNEV1Rzo6wJag%2FKn2Ene5jubAhYNsVg%3D%3D",
-        "time": 1709390766
+    "distindexjs": {
+        "url": "\/public\/filemanager\/_assets\/WTdpQTRNaE1YSzFTVU9SaWlZbjkzZz09Ojo6z%2BgVJp0FjFntKnVd5Sd8",
+        "time": 1709660637
     },
     "pagesassetsdistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/OVJIeXhhbHRLbEt5dThHQ3N2YkZ2c09SaGRla3pzWFd3VWVqUTQ1STczVmVLSzcvOWg2MzRORkFJNW93djh1NTo6kea%2BnHp%2BOJuFwGVs3xnpMg%3D%3D",
-        "time": 1709651907
+        "url": "\/public\/filemanager\/_assets\/bEhPbzkxWjVJL2kwTnlDdks0bnpxMU9OcElkRlZ4MUZKdWhwOUhqaDBoMURXckl4dEs3UTllaXhxaUltV3BFYzo696aPDpWfnwvpATzmJ5H0dg%3D%3D",
+        "time": 1709661466
     },
-    "themeiconsvg": {
-        "url": "\/public\/filemanager\/_assets\/Z0loZlcxL2ppM1ovRUR6T0N5NkZpUT09OjpL4TbXnnFe39DnV%2BVaWVvP",
-        "time": 1709649349
+    "templateassetsdistindexbundlejs": {
+        "url": "\/public\/filemanager\/_assets\/UkUxSnZiM0ptSmRoeGM4LzdxOFNUVnErZXVPc2hpdU9IaFl0WXViSFpRRWhvbmxPWVZzMk9TUkIra2FWY0RDSzo6IF8yKB%2BQrgv4Ryduegry3Q%3D%3D",
+        "time": 1709657028
+    },
+    "templateeditordistindexbundlejs": {
+        "url": "\/public\/filemanager\/_assets\/Yk9QOHJTek9YUk1MSDFTaFpVbHBpTU9EcXVvRCtmWHRIVWtmL29YVm5wME8rRmZTWWJGTlpCb21DNkZTKy9LQzo6RmIaaeVt%2BNuGVaeWJprtPw%3D%3D",
+        "time": 1709657034
+    },
+    "dashboarddistindexbundlejs": {
+        "url": "\/public\/filemanager\/_assets\/QndtM01tR0RrdVMrMzVGVEtvVXJtd3prNXhKb1ZJcSsrOUpHbloxWXMvQT06OtXVm8n4U6y1ljLI18Xm%2Bc0%3D",
+        "time": 1709660682
+    },
+    "dashboardassetsdistwidgethelperbundlejs": {
+        "url": "\/public\/filemanager\/_assets\/NkljeUdwNW1mcTZHbzV3QVZkRFpJWUxwYTJXV0VuME92TXhkZWRtRzgzZkUrcjAvVjM2eW1zZWw0YlRVakx4eDo6%2FEvwOsng17iB4y8ILz%2B%2Bag%3D%3D",
+        "time": 1709660682
+    },
+    "filemanagerassetsdistviewfilemanagerbundlejs": {
+        "url": "\/public\/filemanager\/_assets\/a0ZCQlV5ZkQvRWtjdXFuZElZQ3hKdWNEMkp0bzdIMnF5WkR2VWVpSkJja3ZhNVJEZmlXc2hrWC9lcXplVFNhNjQyYkdyb3pXdlN2RzhoYW1MVjFGWmc9PTo6hUX%2BdNlIoyBzSIuEHoDGag%3D%3D",
+        "time": 1709659575
+    },
+    "distindexcss": {
+        "url": "\/public\/filemanager\/_assets\/YzZDR3dIR3FydFhPeXdzU2Z2Zzg0QT09Ojrerbg0dUX%2BU%2FZXUSYujdTX",
+        "time": 1709661780
     }
 }

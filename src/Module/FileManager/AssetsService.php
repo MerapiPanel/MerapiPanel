@@ -66,6 +66,31 @@ class AssetsService
     public function getAssset(Request $req)
     {
 
+        $referer_path = parse_url($req->http("referer"), PHP_URL_PATH);
+
+        if (!empty($referer_path) && $this->assetsMap->contains($referer_path)) {
+
+            $pattern = preg_replace("/\//", "\/", $this->routeLink);
+            $pattern = "/" . str_replace("{data}", "(.*)", $pattern) . "$/";
+
+            preg_match($pattern, $req->http("referer"), $matches);
+            if (isset($matches[1])) {
+
+                $base = AES::decrypt(rawurldecode($matches[1]));
+                if ($base[0] === "!") {
+                    $base = substr($base, 1);
+                }
+
+                return $this->loadAssetComponent($req, $base, $req->data);
+
+            }
+
+            return [
+                "code" => 403,
+                "message" => "Forbidden - Not allowed!",
+            ];
+        }
+
         $path = AES::decrypt(rawurldecode($req->data));
 
         if ($path[0] !== "!" && !$req->http("referer")) {
@@ -77,6 +102,7 @@ class AssetsService
         {
             $path = substr($path, 1);
         }
+
 
         $realPath = $this->getRealPath($path);
 
@@ -91,11 +117,47 @@ class AssetsService
             ];
         }
 
+        return $this->sendResponse($req, $realPath);
+    }
+
+
+    private function loadAssetComponent($req, $base, $file)
+    {
+
+        $realPath = $this->getRealPath($base);
+
+        if (!file_exists($realPath)) {
+            return [
+                "code" => 404,
+                "message" => "Assets not found ",
+            ];
+        }
+
+        $dirname = dirname($realPath);
+        $fullPath = rtrim($dirname, "\/") . "/" . ltrim($file, "\/");
+
+        if (!file_exists($fullPath)) {
+            return [
+                "code" => 404,
+                "message" => "Assets not found ",
+            ];
+        }
+
+        return $this->sendResponse($req, $fullPath);
+    }
+
+
+
+
+
+    private function sendResponse($req, $file)
+    {
+
         $response = new Response();
 
         // Determine the last modified time of the file for caching
-        $lastModifiedTime = filemtime($realPath);
-        $etag = md5($lastModifiedTime . $realPath);
+        $lastModifiedTime = filemtime($file);
+        $etag = md5($lastModifiedTime . $file);
 
         // Send the headers for caching
         header("Cache-Control: public, max-age=86400"); // Example: cache for 1 day (86400 seconds)
@@ -113,19 +175,19 @@ class AssetsService
         }
 
         ob_start();
-        echo file_get_contents($realPath);
+        echo file_get_contents($file);
         $output = ob_get_flush();
         ob_clean();
 
         $mimeTypes = json_decode(file_get_contents(__DIR__ . "/mimeType.json"), true);
 
         // Set the appropriate Content-Type header
-        $contentType = $mimeTypes[strtolower(pathinfo($realPath, PATHINFO_EXTENSION))] ?? 'application/octet-stream'; // Default to binary if MIME type is unknown
+        $contentType = $mimeTypes[strtolower(pathinfo($file, PATHINFO_EXTENSION))] ?? 'application/octet-stream'; // Default to binary if MIME type is unknown
         header("Content-Type: $contentType");
         $response->setHeader("Content-Type", $contentType);
 
 
-        if (strtolower(pathinfo($realPath, PATHINFO_EXTENSION)) == "svg") {
+        if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) == "svg") {
             error_log("Content-Type: " . $contentType);
         }
 
@@ -138,6 +200,8 @@ class AssetsService
 
 
 
+
+
     private function getRealPath($path)
     {
 
@@ -145,22 +209,18 @@ class AssetsService
             return false;
 
         preg_match("/\@(\w+)/i", $path, $matches);
-
         $moduleName = "base";
 
         if (isset($matches[1])) {
-
             $moduleName = "module/" . $matches[1];
-
             $path = ltrim(str_replace("@" . $matches[1], "", $path), "\\/");
         }
         if (!is_file($_SERVER['DOCUMENT_ROOT'] . "/src/" . $moduleName . "/" . $path) && strpos($path, "assets") !== 0) {
-            $path = "assets/" . $path;
+            $path = "assets/" . ltrim($path, "\/");
         }
 
-        $path = $moduleName . "/" . $path;
-
-        return (preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/src/" . $path));
+        $path = ltrim(rtrim($moduleName, "\/") . "/" . ltrim($path, "\/"), "\/");
+        return(preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/src/" . $path));
     }
 
 
@@ -225,6 +285,17 @@ class AssetMap implements \ArrayAccess
         $this->save();
     }
 
+
+
+    public function contains($value)
+    {
+
+        $serialized = array_map(function ($e) {
+            return preg_replace("/[^a-z0-9]+/im", "", $e);
+        }, array_values(array_column($this->stack_data, "url")));
+
+        return in_array(preg_replace("/[^a-z0-9]+/im", "", $value), $serialized);
+    }
 
 
 

@@ -1,0 +1,55 @@
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/module/Article/assets/style/article.scss ***!
+  \*********************************************************************************************************************************************************************************/
+h1 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+h5 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+h6 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.autocomplete-container {
+  padding: 0.3rem 0.2rem 0.2rem 0.2rem;
+}
+.autocomplete-container .autocomplete-item {
+  padding: 0.1rem 0.8rem;
+  background: aliceblue;
+  font-style: italic;
+  margin-bottom: 0.2rem;
+  overflow: hidden;
+  display: -webkit-box; /* Use -webkit-box for WebKit browsers */
+  -webkit-line-clamp: 2; /* Limit the content to 2 lines */
+  -webkit-box-orient: vertical; /* Set the content layout as vertical */
+  line-height: 1.5em;
+  max-height: 3.5em; /* Adjust max-height as needed */
+  max-width: 320px; /* Ensures the container has a fixed max-width */
+}
+.autocomplete-container .autocomplete-item:hover {
+  background: lightblue;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(104, 104, 104, 0.5);
+  transform: scale(1.01);
+}

@@ -9,4 +9,5 @@ src/database/data/*
 src/cache
 src/Core/Mod/Cache/data/
 src/Core/Mod/Cache/map.json
+src/Module/**/assets/src/*
 public/assets/plugins/*
