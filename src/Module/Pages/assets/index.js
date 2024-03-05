@@ -22,27 +22,17 @@ const createPage = (args = {}) => {
 
     var name = "", slug = "";
 
-    const modal = merapi.createModal('<i class="fa-solid fa-star-of-life"></i> Create New Page');
+    const modal = merapi.Modal.create('<i class="fa-solid fa-star-of-life"></i> Create New Page');
 
-    const container = $(`<div class="container">
-        <div class='mb-3'>
-            <label for="input-title" class="font-bold">Title</label>
-            <input class='text-input' id="input-title" type="text" placeholder="Enter title">
-            <small>title just for reference records</small>
-        </div>
-        <div class='mb-3'>
-            <label for="input-slug" class="font-bold">Slug</label>
-            <input class='text-input' id="input-slug" type="text" placeholder="url-slug">
-        </div>
-    </div>`);
+    modal.content = $(`<div class="container"><div class='mb-3'><label for="input-title" class="font-bold">Title</label><input class='text-input' id="input-title" type="text" placeholder="Enter title"><small>title just for reference records</small></div><div class='mb-3'><label for="input-slug" class="font-bold">Slug</label><input class='text-input' id="input-slug" type="text" placeholder="url-slug"></div></div>`);
 
-    $(container).find("#input-title").on("input", function () {
+    $(modal.content).find("#input-title").on("input", function () {
         name = $(this).val();
         slug = "/page/" + trim($(this).val().replace(/^\/page/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase(), "-");
-        $(container).find("#input-slug").val(slug);
+        $(modal.content).find("#input-slug").val(slug);
     })
     let delay = null;
-    $(container).find("#input-slug").on("input", function () {
+    $(modal.content).find("#input-slug").on("input", function () {
         slug = ($(this).val().replace(/^\/page/g, '').replace(/[^a-z0-9]+/gi, '-').trim().toLowerCase());
         if (slug.charAt(0) == "-") slug = slug.substring(1);
         slug = "/page/" + slug;
@@ -57,8 +47,10 @@ const createPage = (args = {}) => {
     })
 
 
-    modal.container.body.append(container);
-    modal.setAction("+", {
+    //modal.container.body.append(container);
+
+
+    modal.action.positive = {
         text: "create",
         class: "btn btn-primary",
         callback: () => {
@@ -81,7 +73,7 @@ const createPage = (args = {}) => {
                 }
             })
         }
-    })
+    }
     modal.show();
 }
 
@@ -118,13 +110,12 @@ const assignTemplate = (args = {}) => {
     }
 
 
-    const Modal = merapi.createModal('<i class="fa-solid fa-code-pull-request"></i> Assign Template');
-    const content = $(Modal.container.body);
-    content.append(`<div class='mb-3'><div class='mb-4 flex'><i class="text-3xl rotate-[-30deg] p-2 fa-solid fa-thumbtack"></i><div class='ps-3'><h3>page: ${options.title}</h3><small>${options.slug}</small></div></div><p class='mb-2'>Chose template</p><div class='max-h-[50vh] overflow-auto p-1' id='template-wrapper'></div></div>`);
+    const modal = merapi.Modal.create('<i class="fa-solid fa-code-pull-request"></i> Assign Template');
+    modal.content = $(`<div class='mb-3'><div class='mb-4 flex'><i class="text-3xl rotate-[-30deg] p-2 fa-solid fa-thumbtack"></i><div class='ps-3'><h3>page: ${options.title}</h3><small>${options.slug}</small></div></div><p class='mb-2'>Chose template</p><div class='max-h-[50vh] overflow-auto p-1' id='template-wrapper'></div></div>`);
 
     merapi.http.get(options.endpoint.template).then((response) => {
 
-        const wrapper = content.find("#template-wrapper");
+        const wrapper = modal.content.find("#template-wrapper");
         const templates = response.data.templates;
 
         for (let i in templates) {
@@ -138,7 +129,7 @@ const assignTemplate = (args = {}) => {
             wrapper.append(element);
         }
 
-        Modal.setAction("+", {
+        modal.action.positive = {
             text: "Assign",
             class: "btn btn-primary",
             callback: () => {
@@ -163,9 +154,9 @@ const assignTemplate = (args = {}) => {
                     }
                 })
             }
-        })
+        }
 
-        Modal.show();
+        modal.show();
     })
 }
 

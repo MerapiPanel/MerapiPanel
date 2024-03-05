@@ -3,25 +3,27 @@
 namespace MerapiPanel\Core;
 
 use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Module;
+use Throwable;
 
 class Section
 {
 
-    protected $name = '';
+    protected string $name = '';
 
     /**
      * Constructor for the section.
      *
      * @param string $name description
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
 
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -36,18 +38,26 @@ class Section
      */
     public function __get($name)
     {
-        
+
         $exploded = array_values(array_filter(explode('_', $name)));
         $moduleName = $exploded[0];
         unset($exploded[0]);
         // Get the module name from the first part and remove it from the parts array
         $method = implode('_', $exploded);
 
-        if($method == "options") {
-            return (Box::module("$moduleName")->service())->getOptions();
+        if ($method == "options") {
+            return(Box::module("$moduleName")->service())->getOptions();
         }
-        // Construct the module and method names
-        return (Box::module("$moduleName")->service("Api\\{$this->getName()}"))->$method();
+
+        if (Box::module("$moduleName")->serviceIsExist("Views\\Api") && (Box::module("$moduleName")->service("Views\\Api"))->methodExists($method)) {
+            return(Box::module("$moduleName")->service("Views\\Api"))->$method();
+        }
+
+        if (Box::module("$moduleName")->serviceIsExist("Api\\{$this->getName()}") && (Box::module("$moduleName")->service("Api\\{$this->getName()}"))->methodExists($method)) {
+            return(Box::module("$moduleName")->service("Api\\{$this->getName()}"))->$method();
+        }
+
+        throw new \Exception("Property $method not found in module $moduleName");
     }
 
 

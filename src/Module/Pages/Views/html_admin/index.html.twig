@@ -72,10 +72,6 @@
 {% block javascript %}
 {{ parent() }}
 <script>
-
-    $(() => {
-        console.log(merapi)
-    })
     function createNewPage() {
         merapi.Pages.createPage({
             template: "{{ '/template/fetchall' | admin_url | url }}",
@@ -98,14 +94,14 @@
     }
 
     function deletePage(id) {
-        const modal = merapi.createModal('Delete page', 'Are you sure you want to delete this page?');
-        modal.setAction('+', {
+        const modal = merapi.Modal.create('Delete page', 'Are you sure you want to delete this page?');
+        modal.action.positive = {
             text: "Yes",
             class: "btn btn-danger",
             callback: function () {
                 modal.hide();
             }
-        })
+        }
         modal.show();
     }
 </script>

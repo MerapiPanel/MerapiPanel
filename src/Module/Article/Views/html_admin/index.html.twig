@@ -250,7 +250,9 @@
 
     function quickEditArticle(el, id) {
 
-        let article = articles.find(article => article.id == id);
+        let article = null;
+        if (id) article = articles.find(article => article.id == id);
+
         if (!article) {
             merapi.toast("Article not found", 5, 'text-danger');
             return;
@@ -285,26 +287,24 @@
         modal.action.positive = {
             text: "Save",
             class: "btn-primary",
-        };
+            callback: () => {
 
-        modal.action.positive = () => {
-
-            $('#form-quick-edit').submit();
-
-            $("#form-quick-edit").on("xhr::success", (evt, data) => {
-                article.title = title.val();
-                article.slug = slug.val();
-                article.category_id = category.val();
-                article.description = description.val();
-                article.status = publish.prop("checked") ? 1 : 0;
-                merapi.toast(data.message ?? "Updated", 5, 'text-success');
-                renderArticles();
-            });
-
-            $("#form-quick-edit").on("xhr::error", (evt, data) => {
-                merapi.toast(data.message ?? data.statusText, 5, 'text-danger');
-            });
-
+                $('#form-quick-edit').submit();
+                $("#form-quick-edit").on("xhr::success", (evt, data) => {
+                    article.title = title.val();
+                    article.slug = slug.val();
+                    article.category_id = category.val();
+                    article.description = description.val();
+                    article.status = publish.prop("checked") ? 1 : 0;
+                    merapi.toast(data.message ?? "Updated", 5, 'text-success');
+                    $("#form-quick-edit").off("xhr::success");
+                    renderArticles();
+                });
+                $("#form-quick-edit").on("xhr::error", (evt, data) => {
+                    $("#form-quick-edit").off("xhr::error");
+                    merapi.toast(data.message ?? data.statusText, 5, 'text-danger');
+                });
+            }
         }
         modal.show();
     }

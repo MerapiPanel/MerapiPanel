@@ -362,7 +362,17 @@ class BoxModule
         }
     }
 
-
+    public function serviceIsExist($service)
+    {
+        if (!is_string($service))
+            return false;
+        try {
+            $className = $this->findServiceClassName($service);
+            return class_exists($className);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
 
     private function findServiceClassName($name = null)
     {
@@ -380,7 +390,7 @@ class BoxModule
                 $serviceClassName = "{$this->baseModule}\\service{ucfirst($name)}";
             } else {
 
-                error_log("Service not found: " . "{$this->baseModule}\\{$name}");
+                // error_log("Service not found: " . "{$this->baseModule}\\{$name}");
                 throw new ServiceNotFound("Service $name not found");
             }
         }

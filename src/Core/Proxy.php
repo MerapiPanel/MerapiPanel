@@ -13,14 +13,14 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use Symfony\Component\Yaml\Yaml;
-use  MerapiPanel\Core\Mod\Cache\Cache;
+use MerapiPanel\Core\Mod\Cache\Cache;
 
 final class Proxy
 {
 
     protected Box $box;
     protected string $className;
-    private ?Object $instance = null;
+    private ?object $instance = null;
     protected $args = [];
     protected $identify;
     protected $meta = [];
@@ -54,21 +54,23 @@ final class Proxy
     {
 
         $reflection = new ReflectionClass($className);
-        $construct  = $reflection->getConstructor();
+        $construct = $reflection->getConstructor();
         $instance = null;
 
         if ($construct) {
 
-            $classParams     = $construct->getParameters();
-            $passedParams    = [];
+            $classParams = $construct->getParameters();
+            $passedParams = [];
 
             foreach ($classParams as $key => $param) {
 
                 $paramType = $param->getType();
 
-                if ($paramType && (ltrim($paramType, "?") == self::class ||
-                    ltrim($paramType, "?") == $this::class
-                )) {
+                if (
+                    $paramType && (ltrim($paramType, "?") == self::class ||
+                        ltrim($paramType, "?") == $this::class
+                    )
+                ) {
 
                     throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
                 } else {
@@ -141,6 +143,15 @@ final class Proxy
     public function getRealInstance()
     {
         return $this->instance;
+    }
+
+    public function methodExists($name)
+    {
+        $reflectionClass = new ReflectionClass($this->className);
+        if ($reflectionClass->hasMethod($name)) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -247,12 +258,12 @@ final class Proxy
         $yml = $file . "/module.yml";
 
         $meta = [
-            "name"     => $modName ? $modName : ucfirst(basename($file)),
-            "version"  => "1.0.0",
-            "author"   => "Merapi panel",
-            'image'     => "/src/views/assets/img/default-box.svg",
+            "name" => $modName ? $modName : ucfirst(basename($file)),
+            "version" => "1.0.0",
+            "author" => "Merapi panel",
+            'image' => "/src/views/assets/img/default-box.svg",
             "location" => str_replace("\\", "/", $file),
-            "file"     => str_replace("\\", "/", $reflection->getFileName()),
+            "file" => str_replace("\\", "/", $reflection->getFileName()),
         ];
         $this->meta = array_merge($this->meta, $meta);
 

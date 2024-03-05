@@ -1,0 +1,14 @@
+{% extends "@admin::panel/base.html.twig" %}
+
+{% block header_title %}Theme{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{{ '/' |admin_url}}">Home</a></li>
+<li class="breadcrumb-item">Theme</li>
+{% endblock %}
+
+
+{% set themes = admin.theme_fetchAll %}
+
+{% block content %}
+{{ themes | json_encode | raw }}
+{% endblock %}

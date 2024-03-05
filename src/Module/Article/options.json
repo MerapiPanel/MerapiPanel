@@ -1,5 +1,5 @@
 {
-    "link_format": "2",
+    "link_format": "0",
     "thubnails_enable": false,
     "links_style_format": [
         "\/article\/{id}",

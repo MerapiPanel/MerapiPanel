@@ -188,4 +188,36 @@ class endpoint
     }
 
 
+
+
+    function options_save(Request $req)
+    {
+
+        try {
+            
+            $link_format = $req->link_format();
+            $thubnails_enable = $req->thubnails_enable();
+
+            $options = Box::module("article")->getOptions();
+            if ($options['link_format'] != $link_format) {
+                $options['link_format'] = $link_format;
+            }
+            if ($options['thubnails_enable'] != $thubnails_enable) {
+                $options['thubnails_enable'] = $thubnails_enable;
+            }
+
+            return [
+                "code" => 200,
+                "message" => "Options saved",
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                "code" => 500,
+                "message" => $e->getMessage(),
+            ];
+        }
+    }
+
+
 }

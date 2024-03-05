@@ -17,6 +17,7 @@ $GLOBALS["conf"] = $conf;
 $GLOBALS["debug"] = true;
 $_ENV['AES_KEY'] = "a3af08095b8a63cf50d35129d514ca2703c89d159963dc7a53e5766361bbc3c9";
 $_ENV['ROOT'] = __DIR__;
+$_ENV['APP'] = realpath(__DIR__ . "/..");
 
 // error_log($_ENV['AES_KEY']);
 
