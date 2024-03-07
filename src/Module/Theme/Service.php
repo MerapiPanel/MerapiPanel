@@ -23,40 +23,108 @@ class Service
     }
 
 
-    private function matchOptThemes($theme_dirs = [])
-    {
 
-        $opt_themes = Box::module("theme")->getOptions();
-        if (!isset($opt_themes["themes"])) {
-            $opt_themes["themes"] = [];
+    private function resetToDefault()
+    {
+        $opt = Box::module("theme")->getOptions();
+        $themes = $opt['themes']->toArray();
+
+        $find = array_search("default", array_map(fn($item) => $item['name'], $themes));
+
+        if ($find === false) {
+            throw new \Exception('Default theme not found');
+        }
+        $opt['theme_id'] = $find;
+    }
+
+
+
+    public function getActive()
+    {
+        $opts = Box::module("theme")->getOptions();
+        if (!isset($opts["theme_id"])) {
+            $this->resetToDefault();
+            return $this->getActive();
+        }
+        $theme_id = $opts["theme_id"];
+        if (!isset($opts['themes'])) {
+            $opts['themes'] = [];
+            $this->scan($opts['themes']);
+            return $this->getActive();
         }
 
-        if (count($opt_themes["themes"]) != count($theme_dirs)) {
+        if (!isset($opts['themes'][$theme_id])) {
+            $this->resetToDefault();
+            return $this->getActive();
+        }
 
-            $themes_in_opt = array_keys($opt_themes["themes"]);
-            $diff = array_diff(array_map(fn($item) => basename($item), $theme_dirs), $themes_in_opt);
+        return $this->getThemeById($theme_id);
+    }
 
-            $themes = $opt_themes["themes"];
 
-            foreach ($diff as $theme) {
-                $themes[$theme] = [
-                    "dirname" => $theme_dirs[array_search($theme, array_map(fn($item) => basename($item), $theme_dirs))],
-                    "id" => Util::uniqReal(25, ""),
-                ];
+
+
+    public function getThemeById($id)
+    {
+
+        $opts = Box::module("theme")->getOptions();
+
+        if (!isset($opts["themes"])) {
+            $opts["themes"] = [];
+            $this->scan($opts["themes"]);
+            return $this->getThemeById($id);
+        }
+
+        $themes = $opts["themes"];
+        if (!isset($themes[$id])) {
+            throw new \Exception("Theme with id \"{$id}\" not found");
+        }
+
+        $theme = $opts['themes'][$id]->toArray(); // convert to array to prevent update options
+        $theme['id'] = $id;
+
+        $default_thumbnail = Box::module("fileManager")->service("AssetsService")->url("@theme/img/placeholder-image.jpg");
+
+        $name = basename($theme['dirname']);
+        $file_info = rtrim($theme['dirname']) . "/theme.yml";
+        $info = [];
+
+        $theme['thumbnail'] = $default_thumbnail;
+        if (file_exists(rtrim($theme['dirname']) . "/thumbnail.jpg")) {
+            $theme["thumbnail"] = "/public/themes/" . $name . "/thumbnail.jpg";
+        }
+        if (file_exists($file_info)) {
+            $info = Yaml::parseFile($file_info) ?? [];
+        }
+
+        return array_merge($theme, $info);
+    }
+
+
+    public function scan(&$themes = [])
+    {
+        $stack = [];
+        foreach (glob('' . $this->getDirectory() . '*') as $file) {
+
+            $name = basename($file);
+            $stack[] = [
+                "dirname" => $file,
+                "name" => $name,
+            ];
+        }
+
+        foreach ($stack as $key => $item) {
+
+            if (array_search($item['dirname'], array_map(fn($item) => $item['dirname'], $themes->toArray())) == false) {
+                $themes[Util::uniqReal(16, "")] = $item;
+                continue;
             }
 
-            $opt_themes["themes"] = $themes;
         }
     }
 
 
-    public function scan()
-    {
-
-    }
-
-
-    public function getThemes()
+    public function fetchAll()
     {
 
         $options = Box::module("theme")->getOptions();
@@ -64,59 +132,23 @@ class Service
         if (!isset($options["themes"])) {
             $options["themes"] = [];
         }
-
         $themes = &$options["themes"];
-
-        foreach ($themes as $key => $theme) {
-
-            if (
-                (!isset($theme['basedir']) || !isset($theme['id']))
-                ||
-                (isset($theme['basedir']) && !is_dir($theme['basedir']))
-            ) {
-
-                error_log("Theme {$key} is not valid");
-                unset($themes[$key]);
-            }
+        if (count($themes) <= 0) {
+            $this->scan($themes);
         }
 
-        return [];
+        $output = [];
+        foreach ($themes as $key => $theme) {
 
+            if (!isset($theme['dirname']) || (isset($theme['dirname']) && !is_dir($theme['dirname']))) {
+                $this->scan($themes);
+                unset($themes[$key]);
+                return $this->fetchAll();
+            }
 
+            $output[] = $this->getThemeById($key);
+        }
 
-
-
-
-        // $default_thumbnail = Box::module("fileManager")->service("AssetsService")->url("@theme/img/placeholder-image.jpg");
-
-        // $theme_dirs = [];
-        // $themes = [];
-        // foreach (glob('' . $this->getDirectory() . '*') as $file) {
-
-        //     $theme_dirs[] = $file;
-
-        //     $name = basename($file);
-        //     $file_info = $file . "/theme.yml";
-        //     $info = [];
-
-        //     if (file_exists($file_info)) {
-        //         $info = Yaml::parseFile($file_info) ?? [];
-        //     }
-        //     if (file_exists($file . "/thumbnail.jpg")) {
-        //         $info["thumbnail"] = "/public/themes/" . $name . "/thumbnail.jpg";
-        //     }
-
-        //     $themes[] = array_merge([
-        //         "name" => $name,
-        //         "thumbnail" => $default_thumbnail,
-        //         "description" => "",
-        //     ], $info);
-        // }
-
-        // $this->matchOptThemes($theme_dirs);
-
-        // return $themes;
+        return $output;
     }
-
-
 }

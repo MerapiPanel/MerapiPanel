@@ -8,24 +8,18 @@ use MerapiPanel\Core\Proxy;
 use MerapiPanel\Core\View\Loader;
 use MerapiPanel\Core\Section;
 use MerapiPanel\Core\View\Component\ProcessingComponent;
-use MerapiPanel\Core\View\Component\ViewComponent;
 use Twig\Extension\AbstractExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\TemplateWrapper;
 
 class View
 {
-
-    protected $box;
     protected $twig;
     protected $loader;
-    protected $localeEngine;
-    protected $globals = [];
-    protected $initialize = false;
     protected $variables = [];
     private $file;
 
-    public function __construct(array | ArrayLoader $loader = [])
+    public function __construct(array|ArrayLoader $loader = [])
     {
 
         if (gettype($loader) == "array") {
@@ -35,7 +29,7 @@ class View
             $this->loader = $loader;
         }
 
-        $this->twig   = new Twig(new ProcessingComponent($this->loader), ['cache' => false]);
+        $this->twig = new Twig(new ProcessingComponent($this->loader), ['cache' => false]);
 
         $this->twig->enableDebug();
 
@@ -102,7 +96,8 @@ class View
      */
     public function getTemplate()
     {
-        if (!isset($this->wrapper)) throw new Exception("Please load view first before get template");
+        if (!isset($this->wrapper))
+            throw new Exception("Please load view first before get template");
         return $this->wrapper;
     }
 
@@ -115,7 +110,8 @@ class View
     public function __toString()
     {
 
-        if (!isset($this->wrapper)) return "Unprepare wrapper or unready view";
+        if (!isset($this->wrapper))
+            return "Unprepare wrapper or unready view";
         return $this->wrapper->render($this->variables);
     }
 
@@ -128,7 +124,8 @@ class View
 
     private static function getInstance(): View
     {
-        if (self::$instance == null) self::$instance = new View();
+        if (self::$instance == null)
+            self::$instance = new View();
         return self::$instance;
     }
 
@@ -159,8 +156,9 @@ class View
 
 
 
-    public static function render(string $file, array $data = []): View
+    public static function render(string $file, array $data = []): mixed
     {
+
 
         $backtrace = debug_backtrace();
         $caller = $backtrace[0]; // Index 0 is the current function, index 1 is its caller
@@ -175,7 +173,8 @@ class View
             $file_path = $caller['file'];
             $metadata['file_caller'] = $file_path;
             $env = rtrim(basename($file_path, ".php"), "\\/");
-            if (!in_array(strtolower($env), ["admin", "guest"])) $env = "guest";
+            if (!in_array(strtolower($env), ["admin", "guest"]))
+                $env = "guest";
 
             $module_index = strpos($file_path, "\\Module");
             if ($module_index !== false) {
@@ -192,8 +191,14 @@ class View
 
 
         $view = self::getInstance();
-        $view->load(("@" . strtolower($env) . "::" . strtolower($metadata['module_name'])  . "/"  . ltrim($file, "\\/")));
+        $view->load(("@" . strtolower($env) . "::" . strtolower($metadata['module_name']) . "/" . ltrim($file, "\\/")));
         $view->addVariable($data);
+
+        $args = [
+            "view" => &$view,
+            "env" => $env,
+        ];
+        Box::event()->notify([self::class, "render"], $args);
         return $view;
     }
 }

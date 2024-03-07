@@ -483,7 +483,7 @@ class Router extends Component
 
             if ($request->getMethod() === Route::GET) {
 
-                if ($output instanceof View) {
+                if ($output instanceof View || ($output instanceof Proxy && Proxy::Real($output) instanceof View)) {
 
                     $response->setContent("$output");
                     return $response;

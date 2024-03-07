@@ -48,6 +48,7 @@ class App extends Box
     public function __construct()
     {
 
+        $this->__registerEvent();
         parent::setConfig(self::app_config);
         $this->Core_Exception_Handler();
         // $this->Module_ViewEngine();

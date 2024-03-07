@@ -1,7 +1,16 @@
 {
-    "active": "default",
-    "themes": [],
+    "themes": {
+        "0484e10097e399c8": {
+            "dirname": "F:\\web\\MerapiPanel\/public\/themes\/default",
+            "name": "default"
+        },
+        "574961665e439e9d": {
+            "dirname": "F:\\web\\MerapiPanel\/public\/themes\/other",
+            "name": "other"
+        }
+    },
     "person": {
         "name": "MerapiPanel"
-    }
+    },
+    "theme_id": "0484e10097e399c8"
 }

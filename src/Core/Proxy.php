@@ -4,11 +4,8 @@ namespace MerapiPanel\Core;
 
 use Exception;
 use MerapiPanel\Box;
-use MerapiPanel\Core\Exception\CodeException;
 use MerapiPanel\Core\Exception\MethodNotFoud;
 use MerapiPanel\Core\Exception\MissingArgument;
-use MerapiPanel\Utility\Util;
-use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -22,15 +19,14 @@ final class Proxy
     protected string $className;
     private ?object $instance = null;
     protected $args = [];
-    protected $identify;
+    // protected $identify;
     protected $meta = [];
-    // protected $reflection;
 
 
     function __construct($className, $arguments)
     {
 
-        $this->identify = Cache::getIdentify($className);
+        //$this->identify = Cache::getIdentify($className);
         $this->className = $className;
         $this->args = $arguments;
     }
@@ -159,6 +155,7 @@ final class Proxy
     public function __call($name, $arguments)
     {
 
+        Box::Get($this)->getEvent()->notify(preg_replace("/(\\\|\\/|\s)+/im", ":", strtolower($this->className . ":" . $name)), $arguments);
         if (!$this->instance) {
             return null;
         }
@@ -300,8 +297,16 @@ final class Proxy
 
     public static function Real(Proxy $proxy)
     {
-
         return $proxy->instance;
+    }
+
+    public static function fromObject($object)
+    {
+
+        $proxy = new self("", []);
+        $proxy->className = get_class($object);
+        $proxy->instance = $object;
+        return $proxy;
     }
 
 

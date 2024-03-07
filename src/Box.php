@@ -41,6 +41,13 @@ class Box
     }
 
 
+    private static function getInstance(): Box
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new Box();
+        }
+        return self::$instance;
+    }
 
 
     final public function setConfig(string $fileYml)
@@ -198,6 +205,11 @@ class Box
     }
 
 
+    public static function event()
+    {
+        return self::getInstance()->getEvent();
+    }
+
 
 
     final public function getEvent()
@@ -209,6 +221,18 @@ class Box
 
 
 
+    public function __registerEvent()
+    {
+
+        // Directory where your PHP files are located
+        $directory = realpath(__DIR__ . "/module"); // You may need to specify your project's directory here
+        foreach (glob($directory . '/*') as $file) {
+            $classEventRegister = __NAMESPACE__ . "\\Module\\" . basename($file) . "\\EventRegister";
+            if (class_exists($classEventRegister)) {
+                $this->getEvent()->register($classEventRegister);
+            }
+        }
+    }
 
     public function __registerController()
     {
@@ -291,7 +315,8 @@ class BoxModule
         "Site",
         "Users",
         "Template",
-        "TemplateEditor"
+        "TemplateEditor",
+        "Theme"
     ];
     // is a base className of module
     private $baseModule;

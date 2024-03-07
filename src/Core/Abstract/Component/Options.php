@@ -4,12 +4,13 @@ namespace MerapiPanel\Core\Abstract\Component;
 
 use ArrayAccess;
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
 use MerapiPanel\Core\Abstract\Module;
 use Traversable;
 
 
-final class Options implements ArrayAccess, IteratorAggregate
+final class Options implements ArrayAccess, IteratorAggregate, Countable
 {
 
     const file = "options.json";
@@ -81,6 +82,11 @@ final class Options implements ArrayAccess, IteratorAggregate
     }
 
 
+    function count(): int
+    {
+        return count($this->container);
+    }
+
 
     public function getIterator(): Traversable
     {
@@ -139,16 +145,16 @@ final class Options implements ArrayAccess, IteratorAggregate
     public function save()
     {
         $file = realpath(__DIR__ . "\\..\\..\\..\\Module") . "\\" . Module::getModuleName($this->className) . "\\" . self::file;
-        file_put_contents($file, json_encode($this->toJson(), JSON_PRETTY_PRINT));
+        file_put_contents($file, json_encode($this->toArray(), JSON_PRETTY_PRINT));
     }
 
-    public function toJson()
+    public function toArray()
     {
         $stack = [];
 
         foreach ($this->container as $key => $value) {
             if (gettype($value) == "array" || gettype($value) == "object") {
-                $stack[$key] = $value->toJson();
+                $stack[$key] = $value->toArray();
             } else {
                 $stack[$key] = $value;
             }
@@ -159,7 +165,7 @@ final class Options implements ArrayAccess, IteratorAggregate
 }
 
 
-final class Nested implements ArrayAccess, IteratorAggregate
+final class Nested implements ArrayAccess, IteratorAggregate, Countable
 {
 
     private Options $options;
@@ -179,6 +185,11 @@ final class Nested implements ArrayAccess, IteratorAggregate
                 $this->container[$key] = $value;
             }
         }
+    }
+
+    function count(): int
+    {
+        return count($this->container);
     }
 
     public function getIterator(): Traversable
@@ -218,12 +229,12 @@ final class Nested implements ArrayAccess, IteratorAggregate
     }
 
 
-    public function toJson()
+    public function toArray()
     {
         $stack = [];
         foreach ($this->container as $key => $value) {
             if ($value instanceof Nested) {
-                $stack[$key] = $value->toJson();
+                $stack[$key] = $value->toArray();
             } else {
                 $stack[$key] = $value;
             }

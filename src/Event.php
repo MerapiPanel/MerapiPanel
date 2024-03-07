@@ -19,6 +19,17 @@ class Event
     }
 
 
+    public function register($classRegister)
+    {
+        $reflector = new \ReflectionClass($classRegister);
+        $methods = $reflector->getMethods(\ReflectionMethod::IS_STATIC);
+        foreach ($methods as $method) {
+            $name = $method->getName();
+            $key = "merapipanel:" . preg_replace("/[^a-zA-Z0-9]+/im", ":", $name);
+            $this->addListener($key, [$classRegister, $name]);
+        }
+    }
+
     public function addListener($key, $listener)
     {
         $this->listeners[$key][] = $listener;
@@ -28,12 +39,14 @@ class Event
     public function notify($key, &$params = [])
     {
 
+        if (is_array($key)) {
+            $key = strtolower(implode(":", $key));
+        }
+        $key = preg_replace("/[^a-zA-Z0-9]+/im", ":", $key);
         $listener = $this->listeners[$key] ?? [];
         foreach ($listener as $callback) {
-            $params = $callback($params);
+            $callback($params);
         }
-
-        return $params;
     }
 
 
@@ -54,15 +67,16 @@ class Event
 
     public static function on($client, $key, Closure $callback)
     {
-        
+
         return EventClient::with($client)->addListener($key, $callback);
-        
+
     }
 
 
     public static function fire($key, $params = [])
     {
         $caller = self::getClient();
-        if ($caller) return EventClient::with($caller)->notify($key, $params);
+        if ($caller)
+            return EventClient::with($caller)->notify($key, $params);
     }
 }
