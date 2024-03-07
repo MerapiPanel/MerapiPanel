@@ -10,15 +10,22 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+	
 	{% block meta %}{% endblock %}
 
+
+	{% block stylesheet %}
 	<link rel="stylesheet" href="{{ '/dist/index.css' | assets }}">
+	<link rel="stylesheet" href="{{ '/dist/base.css' | assets }}">
+	{% endblock %}
 
-	{% block stylesheet %}{% endblock %}
-	
+
+
+	{% block head_javascript %}
 	<script src="{{ '/dist/index.js' | assets }}"></script>
+	<script src="{{ '/dist/base.js' | assets }}"></script>
+	{% endblock %}
 
-	{% block head_javascript %}{% endblock %}
 
 	{% endblock %}
 </head>
@@ -44,4 +51,5 @@
 </body>
 
 {% endblock %}
+
 </html>

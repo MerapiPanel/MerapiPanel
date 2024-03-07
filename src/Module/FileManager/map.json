@@ -16,8 +16,8 @@
         "time": 1709829079
     },
     "templateassetsdistindexbundlejs": {
-        "url": "\/public\/filemanager\/_assets\/c0lreStoL3dwQ3loRlNCbkZLcFd2K2JNTjQvTE9XVnkyai9KY1pTaTRaNS9zRU9mVi9ZL2pWa3cxb2c1VUhyODo6x8mqzh%2BMtu1ryHklk%2B40qw%3D%3D",
-        "time": 1709796380
+        "url": "\/public\/filemanager\/_assets\/a1ZBV0NMQ01yKzdCaklZUmdKeFgxeUlCSHp5N2I3NnAxT0E1Tlk1SHRZa1lJMmtCZSt3MTdSL0xNTExkZWlSVjo6F48Pgs%2Fa77hlHujtjSGxGg%3D%3D",
+        "time": 1709829580
     },
     "templateeditordistindexbundlejs": {
         "url": "\/public\/filemanager\/_assets\/Yk9QOHJTek9YUk1MSDFTaFpVbHBpTU9EcXVvRCtmWHRIVWtmL29YVm5wME8rRmZTWWJGTlpCb21DNkZTKy9LQzo6RmIaaeVt%2BNuGVaeWJprtPw%3D%3D",
@@ -82,5 +82,17 @@
     "themeiconsvg": {
         "url": "\/public\/filemanager\/_assets\/VzRyR1YzZ25hcEhxY2g1YnFtUzd4Zz09OjoPtWkG7XT6XfwXHuDkAEpr",
         "time": 1709797975
+    },
+    "articleassetsdisteditorbundlejs": {
+        "url": "\/public\/filemanager\/_assets\/NUZtQ2ZIMTJSdUdWOHFkVGxvZVI1VlE4ZTVyemU2VHlubGxiZHFhUFJQK1FISDhwZkxxL0IrdkZCTEo4cVBWSDo6T43Fg7LhzC69n7W89IySlA%3D%3D",
+        "time": 1709829303
+    },
+    "distbasecss": {
+        "url": "\/public\/filemanager\/_assets\/T1hzSk5PUDFHTTZqOXFUcWxabjFLZz09OjrK%2F%2BpSlerp5JtSoEp%2BnHS7",
+        "time": 1709830269
+    },
+    "distbasejs": {
+        "url": "\/public\/filemanager\/_assets\/c1ZTc3NZd1g2SFNKYTQ5aWFiRk5KQT09OjqsLx7A7VA%2FOx39u6sTVb%2B8",
+        "time": 1709830269
     }
 }

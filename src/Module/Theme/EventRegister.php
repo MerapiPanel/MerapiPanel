@@ -7,7 +7,6 @@ use DOMXPath;
 use MerapiPanel\Box;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Http\Request;
-use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -42,11 +41,16 @@ class EventRegister
 class ViewFunction extends AbstractExtension
 {
     public $content = "";
+    public DOMDocument $dom;
+    public DOMXPath $xpath;
 
 
     public function __construct($content)
     {
         $this->content = $content;
+        $this->dom = new DOMDocument();
+        @$this->dom->loadHTML($content);
+        $this->xpath = new DOMXPath($this->dom);
     }
 
 
@@ -64,23 +68,17 @@ class ViewFunction extends AbstractExtension
     public function title()
     {
 
-        $dom = new DOMDocument();
-        $dom->loadHTML($this->content);
-        return $dom->getElementsByTagName("title")->item(0)->nodeValue;
+        return $this->dom->getElementsByTagName("title")->item(0)->nodeValue;
     }
 
     public function html()
     {
-        $dom = new DOMDocument();
-        $dom->loadHTML($this->content);
-
-        $xpath = new DOMXPath($dom);
         // Extract all HTML content within the <body> tag
-        $bodyContent = $xpath->query('//body')->item(0)->childNodes;
+        $bodyContent = $this->xpath->query('//body')->item(0)->childNodes;
 
         $htmlElements = [];
         foreach ($bodyContent as $node) {
-            $htmlElements[] = $dom->saveHTML($node);
+            $htmlElements[] = $this->dom->saveHTML($node);
         }
 
         return implode("\n", $htmlElements);
@@ -91,16 +89,12 @@ class ViewFunction extends AbstractExtension
 
     function script()
     {
-        $dom = new DOMDocument();
-        $dom->loadHTML($this->content);
-
-        $xpath = new DOMXPath($dom);
 
         // Extract link elements for stylesheets
-        $scriptElements = $xpath->query('//script');
+        $scriptElements = $this->xpath->query('//script');
         $scripts = [];
         foreach ($scriptElements as $link) {
-            $scripts[] = $dom->saveHTML($link);
+            $scripts[] = $this->dom->saveHTML($link);
         }
         return implode("\n", $scripts);
     }
@@ -109,23 +103,19 @@ class ViewFunction extends AbstractExtension
 
     public function style()
     {
-        $dom = new DOMDocument();
-        $dom->loadHTML($this->content);
-
-        $xpath = new DOMXPath($dom);
 
         // Extract link elements for stylesheets
-        $linkElements = $xpath->query('//link[@rel="stylesheet"]');
+        $linkElements = $this->xpath->query('//link[@rel="stylesheet"]');
         $stylesheets = [];
         foreach ($linkElements as $link) {
-            $stylesheets[] = $dom->saveHTML($link);
+            $stylesheets[] = $this->dom->saveHTML($link);
         }
 
         // Extract style tags
-        $styleTags = $xpath->query('//style');
+        $styleTags = $this->xpath->query('//style');
         $styles = [];
         foreach ($styleTags as $style) {
-            $styles[] = $dom->saveHTML($style);
+            $styles[] = $this->dom->saveHTML($style);
         }
 
         return implode("\n", array_merge($stylesheets, $styles));
