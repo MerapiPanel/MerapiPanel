@@ -12,27 +12,54 @@
 <li class="breadcrumb-item">Theme</li>
 {% endblock %}
 
-
 {% set themes = admin.theme_fetchAll %}
 
 {% block content %}
 
-<div class="flex flex-wrap gap-3">
+<div class="flex flex-wrap gap-5">
     {% for theme in themes %}
 
-    <div class="bg-white rounded-md p-3 w-full max-w-[300px]">
+    <div class="theme shadow">
         <section>
-            <header>
-                <img src="{{ theme.thumbnail }}" alt="thumbnail {{ theme.name }}">
-                <h4>{{ theme.name }}</h4>
+            <header class="theme-header">
+                <img class="theme-thumbnail" src="{{ theme.thumbnail }}" alt="thumbnail {{ theme.name }}">
+                <h4 class="theme-title">{{ theme.name }}</h4>
             </header>
-            <article>
+            <article class="p-3">
+                {% if theme.description %}
                 <p>{{ theme.description }}</p>
+                {% else %}
+                <p class="text-disabled">No description</p>
+                {% endif %}
+
+                <div class="theme-footer float-right mb-3">
+                    <button class="btn btn-sm hover:text-blue-400 hover:bg-blue-50" onclick="editTheme('{{ theme.id }}')">Enable</button>
+                </div>
+
             </article>
         </section>
+        <div class="!absolute right-2 top-2 dropdown">
+            <button data-act-trigger="dropdown" class="dropdown-toggle"></button>
+            <ul class="dropdown-menu min-w-[150px]">
+                <li class="dropdown-item"><i class="fa-regular fa-pen-to-square"></i> Edit</li>
+                <li class="dropdown-item"><i class="fa-solid fa-circle-info"></i> Details</li>
+                <li class="dropdown-item hover:text-red-600 hover:!bg-red-50"><i class="fa-regular fa-trash-can"></i> Delete</li>
+            </ul>
+
+        </div>
     </div>
 
     {% endfor %}
 </div>
 
+{% endblock %}
+
+
+{% block javascript %}
+{{parent()}}
+<script>
+    $(() => {
+
+    })
+</script>
 {% endblock %}

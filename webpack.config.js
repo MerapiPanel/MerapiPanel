@@ -74,19 +74,6 @@ module.exports = {
                 test: /\.css$/i,
                 use: [stylesHandler, 'css-loader', 'postcss-loader'],
             },
-            // {
-            //     test: /\.css$/i,
-            //     // include: path.resolve(__dirname, './src/module/*'),
-            //     use: ['style-loader', 'css-loader', 'postcss-loader'],
-            // },
-            // {
-            //     test: /\.scss$/,
-            //     use: [
-            //         'style-loader', // Injects styles into the DOM using a <style> tag
-            //         'css-loader',   // Translates CSS into CommonJS
-            //         'sass-loader'   // Compiles Sass to CSS
-            //     ],
-            // },
             {
                 test: /\.tsx?$/,
                 use: 'babel-loader',

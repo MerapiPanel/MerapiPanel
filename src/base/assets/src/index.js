@@ -75,6 +75,21 @@ $(function () {
 
     $.fn.validate = function () { return validate(this) };
 
+    $("img").each(function () {
+
+        let $this = $(this);
+        if ($this[0].naturalWidth == 0 && $this[0].naturalHeight == 0) {
+            $this.attr("error", true);
+            let image = new Image();
+            image.onload = () => {
+                $this.removeAttr("error");
+            }
+            image.src = $this.attr("src");
+        } else {
+            $this.css("opacity", 1);
+        }
+    });
+
     $('[onload]').each(function () {
         const $this = $(this);
         try {
@@ -109,7 +124,7 @@ const liveCallback = {
             })();
 
             const opt_item = $(e).find(".option-item");
-            
+
             if (opt_item.length > 0) {
 
                 opt_item.each(function () {

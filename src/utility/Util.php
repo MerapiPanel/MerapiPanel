@@ -5,7 +5,7 @@ namespace MerapiPanel\Utility;
 class Util
 {
 
-    public static function uniqReal($desiredLength = 16)
+    public static function uniqReal($desiredLength = 16, $spearator = "-")
     {
         $hexString = self::uniq($desiredLength);
 
@@ -25,7 +25,7 @@ class Util
         // Insert hyphens at the calculated position if it's greater than 0
         if ($insertPosition > 0) {
             $pattern = "/(.{" . $insertPosition . "})/u";
-            $hexString = preg_replace($pattern, "$1-", $hexString);
+            $hexString = preg_replace($pattern, "$1$spearator", $hexString);
             // Remove any trailing hyphen
             $hexString = rtrim($hexString, "-");
         }
