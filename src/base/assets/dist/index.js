@@ -40,6 +40,17 @@ eval("var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!\n * jQ
 
 /***/ }),
 
+/***/ "./src/base/assets/src/scss/app.scss":
+/*!*******************************************!*\
+  !*** ./src/base/assets/src/scss/app.scss ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://merapipanel/./src/base/assets/src/scss/app.scss?");
+
+/***/ }),
+
 /***/ "./src/base/assets/src/index.js":
 /*!**************************************!*\
   !*** ./src/base/assets/src/index.js ***!
@@ -47,7 +58,7 @@ eval("var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!\n * jQ
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\nObject(function webpackMissingModule() { var e = new Error(\"Cannot find module '../scss/app.scss'\"); e.code = 'MODULE_NOT_FOUND'; throw e; }());\n/* provided dependency */ var $ = __webpack_require__(/*! jquery */ \"./node_modules/jquery/dist/jquery-exposed.js\");\n\r\n\r\n$(() => {\r\n    $(\"img\").each(function () {\r\n\r\n        let $this = $(this);\r\n        if ($this[0].naturalWidth == 0 && $this[0].naturalHeight == 0) {\r\n            $this.attr(\"error\", true);\r\n            let image = new Image();\r\n            image.onload = () => {\r\n                $this.removeAttr(\"error\");\r\n            }\r\n            image.src = $this.attr(\"src\");\r\n        } else {\r\n            $this.css(\"opacity\", 1);\r\n        }\r\n    });\r\n})\n\n//# sourceURL=webpack://merapipanel/./src/base/assets/src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _scss_app_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scss/app.scss */ \"./src/base/assets/src/scss/app.scss\");\n/* provided dependency */ var $ = __webpack_require__(/*! jquery */ \"./node_modules/jquery/dist/jquery-exposed.js\");\n\r\n\r\n$(() => {\r\n    $(\"img\").each(function () {\r\n\r\n        let $this = $(this);\r\n        if ($this[0].naturalWidth == 0 && $this[0].naturalHeight == 0) {\r\n            $this.attr(\"error\", true);\r\n            let image = new Image();\r\n            image.onload = () => {\r\n                $this.removeAttr(\"error\");\r\n            }\r\n            image.src = $this.attr(\"src\");\r\n        } else {\r\n            $this.css(\"opacity\", 1);\r\n        }\r\n    });\r\n})\n\n//# sourceURL=webpack://merapipanel/./src/base/assets/src/index.js?");
 
 /***/ })
 
