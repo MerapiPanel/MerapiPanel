@@ -3,12 +3,13 @@
 {% block title %}Admin{% endblock %}
 
 {% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ '@panel/dist/panel.css' | assets }}">
 {% endblock %}
 
 {% block body %}
 
 <body class="min-h-screen min-w-screen bg-slate-100 text-slate-700" id="panel-body">
-
 
     {% include "@parts::panel/navigation.html.twig" %}
 
@@ -78,6 +79,7 @@
     </script>
 
     {% block javascript %}
+    {{ parent() }}
     {% endblock %}
 
 </body>

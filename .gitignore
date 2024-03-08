@@ -5,9 +5,13 @@ vendor/
 *.db
 *.pem
 public/upload/
+src/base/assets/plugins/*
+src/base/assets/src
 src/database/data/*
 src/cache
 src/Core/Mod/Cache/data/
 src/Core/Mod/Cache/map.json
 src/Module/**/assets/src/*
+src/Module/**/assets/plugins/*
+src/Module/**/assets/plugin/*
 public/assets/plugins/*

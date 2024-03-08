@@ -24,7 +24,7 @@ const entry = () => {
         const name = path.basename(item).replace(".js", "");
         const file = `./${item}`;
 
-        acc[`..\\..\\..\\..\\..\\${directoryPath}\\dist\\${name}`] = file; // Use full file path as key
+        acc[`..\\..\\..\\..\\${directoryPath}\\..\\dist\\${name}`] = file; // Use full file path as key
 
         // console.log(acc)
         return acc;
