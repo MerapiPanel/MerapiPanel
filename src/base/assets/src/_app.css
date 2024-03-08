@@ -1,0 +1,152 @@
+@tailwind base;
+
+/* For WebKit browsers (Chrome, Safari) */
+/* You can customize the scrollbar styles as needed */
+/* Remember to use vendor prefixes for cross-browser compatibility */
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #ffffff00; /* Change to your desired track color */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #4fa1ff99; /* Change to your desired handle color */
+    border-radius: 10px; /* Rounded corners */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #4fa1ff; /* Change to your desired handle color on hover */
+}
+
+/* For Firefox */
+/* You can customize the scrollbar width and color */
+/* Note: Firefox supports scrollbar-width and scrollbar-color properties */
+
+/* Track */
+/* You may need to customize scrollbar-track-color for Firefox */
+/* as scrollbar-track-color is not supported */
+/* in ::-webkit-scrollbar-track */
+* {
+    scrollbar-width: thin; /* Change to your desired width */
+    scrollbar-color: #4fa1ff99 #ffffff00; /* Change to your desired handle and track colors */
+    scrollbar-track-color: #00000088;
+}
+
+/* Track on hover */
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #4fa1ff; /* Change to your desired handle color on hover */
+}
+
+@tailwind components;
+@tailwind utilities;
+
+.text-input {
+    @apply bg-white shadow w-full text-slate-800 rounded py-2 px-4 focus-visible:outline-none focus-visible:border-blue-500;
+}
+.text-input:disabled {
+    background: #ffffffdd;
+    color: #00000088;
+}
+textarea.text-input {
+    @apply min-h-[2.5rem];
+}
+
+.sidenav {
+    @apply transition-all duration-300 overflow-hidden shadow-[0_0_6px_rgba(0,0,0,0.2)] top-0 left-0 w-full max-w-0 lg:max-w-[250px] h-full fixed bg-white;
+    z-index: 250;
+}
+
+.sidenav.open::before {
+    content: "";
+    @apply fixed lg:relative top-0 left-0 w-full h-full bg-black opacity-50 -z-[1];
+}
+
+.sidenav > div {
+    @apply min-w-max;
+}
+
+.sidenav.open {
+    @apply max-w-[250px];
+}
+
+.nav-menu li a.active {
+    @apply text-blue-500;
+}
+.nav-menu li:has(ul > li > a.active) {
+    @apply text-slate-500;
+}
+
+.nav-menu li ul:has(li > a.active) {
+    @apply border-blue-500;
+}
+
+.running-strip {
+    background-image: url("data:image/svg+xml,%3Csvg width='50.351mm' height='38mm' version='1.1' viewBox='-9 0 50.351 41.38' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(-113.46)'%3E%3Cpath d='m122.46 0h23.36l-17.992 41.38h-23.36z' style='fill:%2300000045'/%3E%3C/g%3E%3C/svg%3E%0A");
+    background-size: 25px;
+    background-repeat: repeat-x;
+    animation: running-strip 0.3s linear infinite;
+}
+
+@keyframes running-strip {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 25px 0;
+    }
+}
+
+input[type="radio"] {
+    @apply w-4 h-4 focus-within:drop-shadow-[0_0_2px_#3492eb];
+}
+
+/* Text define */
+.text-primary {
+    @apply text-blue-600 dark:text-blue-400;
+}
+.text-danger {
+    @apply text-red-600 dark:text-red-400;
+}
+.text-warning {
+    @apply text-yellow-600 dark:text-yellow-400;
+}
+.text-success {
+    @apply text-green-600 dark:text-green-400;
+}
+.text-info {
+    @apply text-cyan-600 dark:text-cyan-400;
+}
+
+
+.img-scale-down {
+    @apply object-scale-down;
+}
+.img-contain {
+    @apply object-contain;
+}
+.img-cover {
+    @apply object-cover;
+}
+
+.flex-item-sticky {
+    align-self: flex-start;
+    position: sticky;
+    top: 0;
+}
+
+/* offcanvas define */
+.offcanvas {
+    @apply overflow-hidden max-w-[400px] z-[260];
+}
+.offcanvas-body {
+    @apply overflow-auto w-full break-words;
+}
+
+code {
+    background: #f3f3f3;
+    color: currentColor;
+    padding: 0 0.4rem;
+    border-radius: 0.25rem;
+}
