@@ -4,9 +4,8 @@ vendor/
 *.sqlite
 *.db
 *.pem
-public/upload/
-src/base/assets/plugins/*
 
+public/upload/
 src/database/data/*
 src/cache
 src/Core/Mod/Cache/data/
