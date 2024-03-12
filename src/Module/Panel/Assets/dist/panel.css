@@ -104,7 +104,7 @@
   --panel-body-font-family: var(--panel-font-sans-serif);
   --panel-body-font-size: 0.8rem;
   --panel-body-font-weight: 400;
-  --panel-body-line-height: 0.8;
+  --panel-body-line-height: 1.5;
   --panel-body-color: #363b41;
   --panel-body-color-rgb: 54, 59, 65;
   --panel-body-bg: whitesmoke;
@@ -250,38 +250,33 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 }
 
 h1, .h1 {
-  font-size: calc(1.325rem + 0.9vw);
-}
-@media (min-width: 1200px) {
-  h1, .h1 {
-    font-size: 2rem;
-  }
-}
-
-h2, .h2 {
   font-size: calc(1.285rem + 0.42vw);
 }
 @media (min-width: 1200px) {
-  h2, .h2 {
+  h1, .h1 {
     font-size: 1.6rem;
   }
 }
 
-h3, .h3 {
-  font-size: calc(1.265rem + 0.18vw);
+h2, .h2 {
+  font-size: calc(1.253rem + 0.036vw);
 }
 @media (min-width: 1200px) {
-  h3, .h3 {
-    font-size: 1.4rem;
+  h2, .h2 {
+    font-size: 1.28rem;
   }
 }
 
+h3, .h3 {
+  font-size: 1.12rem;
+}
+
 h4, .h4 {
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 h5, .h5 {
-  font-size: 1rem;
+  font-size: 0.88rem;
 }
 
 h6, .h6 {
@@ -3038,23 +3033,23 @@ progress {
 }
 
 .fs-1 {
-  font-size: calc(1.325rem + 0.9vw) !important;
-}
-
-.fs-2 {
   font-size: calc(1.285rem + 0.42vw) !important;
 }
 
+.fs-2 {
+  font-size: calc(1.253rem + 0.036vw) !important;
+}
+
 .fs-3 {
-  font-size: calc(1.265rem + 0.18vw) !important;
+  font-size: 1.12rem !important;
 }
 
 .fs-4 {
-  font-size: 1.2rem !important;
+  font-size: 1rem !important;
 }
 
 .fs-5 {
-  font-size: 1rem !important;
+  font-size: 0.88rem !important;
 }
 
 .fs-6 {
@@ -3106,7 +3101,7 @@ progress {
 }
 
 .lh-base {
-  line-height: 0.8 !important;
+  line-height: 1.5 !important;
 }
 
 .lh-lg {
@@ -6697,13 +6692,10 @@ progress {
 }
 @media (min-width: 1200px) {
   .fs-1 {
-    font-size: 2rem !important;
-  }
-  .fs-2 {
     font-size: 1.6rem !important;
   }
-  .fs-3 {
-    font-size: 1.4rem !important;
+  .fs-2 {
+    font-size: 1.28rem !important;
   }
 }
 @media print {
@@ -6830,7 +6822,7 @@ progress {
   --panel-navbar-hover-color: rgba(var(--panel-emphasis-color-rgb), 0.8);
   --panel-navbar-disabled-color: rgba(var(--panel-emphasis-color-rgb), 0.3);
   --panel-navbar-active-color: rgba(var(--panel-emphasis-color-rgb), 1);
-  --panel-navbar-brand-padding-y: 0.42rem;
+  --panel-navbar-brand-padding-y: 0.35rem;
   --panel-navbar-brand-margin-end: 1rem;
   --panel-navbar-brand-font-size: 1rem;
   --panel-navbar-brand-color: rgba(var(--panel-emphasis-color-rgb), 1);
@@ -16216,7 +16208,7 @@ body:has(.modal.show) {
   --panel-btn-font-family: ;
   --panel-btn-font-size: 0.8rem;
   --panel-btn-font-weight: 400;
-  --panel-btn-line-height: 0.8;
+  --panel-btn-line-height: 1.5;
   --panel-btn-color: var(--panel-body-color);
   --panel-btn-bg: transparent;
   --panel-btn-border-width: var(--panel-border-width);

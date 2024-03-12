@@ -41,8 +41,8 @@
     <div class="article-wrapper" id="article-wrapper" onload="renderArticles()"></div>
 
     <div class="category-wrapper">
-        <div class="navbar-expand-lg p-0">
-            <h3 class="d-flex align-items-center text-bs ps-3 py-0">
+        <div class="navbar-expand-lg p-0 border-bottom">
+            <h3 class="d-flex align-items-center text-bs ps-3 py-0 pt-1 mb-1">
                 <a class="text-decoration-none text-dark text-hover-primary light-5"
                     href="{{ '/article/category' | admin_url }}"><span class="font-semibold">Categorys</span> </a>
                 <button onclick="createNewCategory()" class="ms-auto btn text-dark text-hover-primary light-5">
@@ -300,7 +300,7 @@
         }
 
         function articleTemplate(article) {
-            return $(`<div class="relative bg-white rounded-2 mb-3 p-2 shadow-sm" style="display: none;" id="article-${article.id}">
+            return $(`<div class="relative bg-white mb-1 p-2 border-bottom" style="display: none;" id="article-${article.id}">
 
                 <div class="float-right top-0 right-0">
                     <div class="dropdown" role="menu" onshow="dropdownMenuShow(this, '${article.id}')">

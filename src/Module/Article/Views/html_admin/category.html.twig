@@ -6,12 +6,10 @@
 
 {% block header_title %}Category{% endblock %}
 
-{% block subheader_actions %}
-<div class="ms-auto">
-    <button onclick="createNewCategory()" class="ms-3 btn btn-outline-secondary">
-        Category <i class="text-[12px] fa fa-plus"></i>
-    </button>
-</div>
+{% block subheader_menu %}
+<button onclick="createNewCategory()" class="menu-item btn">
+    Category <i class="text-[12px] fa fa-plus"></i>
+</button>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -25,27 +23,26 @@
 
 
 {% block content %}
-<ul class="list-none" id="category-list">
+<ul class="row list-none ps-2" id="category-list">
     {% for category in categories %}
-    <li>
-        <div id="category-{{ category.id }}"
-            class="block mb-3 shadow-sm bg-white px-4 py-2 rounded-md overflow-hidden max-w-[800px] w-full">
+    <li class="col-12 col-md-8">
+        <div class="border-bottom p-3" id="category-{{ category.id }}">
             <h4 id="category-{{ category.id }}-name">{{ category.name }}</h4>
 
             <div class="text-[10px] text-slate-400 flex items-end">
                 {% if category.id %}
-                <div>
+                <div class="mb-2">
                     <span id="category-{{ category.id }}-id" class="font-semibold text-purple-400">#{{ category.id
                         }}</span>,
                     <span id="category-{{ category.id }}-updated">Edited {{ category.updated_at }}</span>,
                     <span id="category-{{ category.id }}-created" class="ms-2">Create {{ category.created_at
                         }}</span>
                 </div>
-                <div class="ms-auto">
+                <div class="w-100 d-flex gap-2">
                     <button onclick="deleteCategory('{{ category.id }}')"
-                        class="btn btn-sm hover:text-red-400 hover:bg-red-50">delete</button>
+                        class="btn btn-sm border text-hover-danger">delete</button>
                     <button onclick="editCategory({name:'{{ category.name }}', id:'{{ category.id }}'})"
-                        class="btn btn-sm hover:text-blue-400 hover:bg-blue-50">edit</button>
+                        class="btn btn-sm border text-hover-primary">edit</button>
                 </div>
                 {% else %}
                 <span class="italic">this is default category you can't edit or delete</span>
