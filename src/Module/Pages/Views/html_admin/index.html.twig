@@ -1,65 +1,90 @@
 {% extends "@admin::panel/base.html.twig" %}
 {% block header_title %}Pages{% endblock %}
 
+
 {% block head_javascript %}
 {{ parent() }}
 <script src="{{ '@pages/assets/dist/index.js' | assets }}"></script>
 {% endblock %}
 
-{% block subheader_actions %}
-<button type="button" onclick="createNewPage()" class="menu-item">
+
+
+{% block stylesheet %}
+{{ parent() }}
+<style>
+    .actions-button {
+        position: absolute;
+        top: 50% !important;
+        right: unset !important;
+        bottom: unset !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block breadcrumb %}
+{{ parent() }}
+<li class="breadcrumb-item">Page</li>
+{% endblock %}
+
+
+
+{% block subheader_menu %}
+<button type="button" onclick="createNewPage()" class="menu-item btn">
     <i class="fa fa-plus"></i> new page
 </button>
 {% endblock %}
 
-{% block content %}
-
-<div class="mb-5"></div>
 
 {% set pages = admin.pages_getall %}
+
+
+{% block content %}
+
+
 {% if pages %}
-{% for page in pages %}
-<section class="bg-white shadow px-6 py-3 rounded relative mb-4 max-w-[800px]">
-    <header class="flex justify-between items-center">
-        <h4 class="text-lg font-bold">Title : {{ page.title }}</h4>
-    </header>
-    <article>
-        <div class="flex flex-wrap">
-            <div class="w-full max-w-[350px]">
-                <a class="text-blue-500" href="{{ page.slug }}" target="_blank">{{ page.slug }}</a>
-            </div>
-            {% if page.template %}
-            <div class="w-full max-w-[350px]">
-                <p>Mounted to template <b>{{ page.template.name }}</b><small class="ml-2"><i>{{ page.template.id
-                            }}</i></small></p>
-            </div>
-            {% endif %}
-        </div>
-        <small>{{ page.id }}</small>
-    </article>
-    <div class="absolute right-2 top-0">
-        <div class="dropdown">
-            <button data-trigger="dropdown" class="dropdown-toggle"></button>
-            <ul class="dropdown-menu">
-                <li class="dropdown-item">
-                    <button type="button" onclick="assignTemplate({
-                                    title: '{{ page.title }}',
-                                    slug: '{{ page.slug }}',
-                                    id: '{{ page.id }}',
-                                })">
-                        <i class="fa-solid fa-star-of-life"></i> Mount Template
-                    </button>
-                </li>
-                <li class="dropdown-item">
-                    <button type="button" class="text-red-500" onclick="deletePage('{{ page.id }}')">
-                        <i class="fa-solid fa-trash"></i> Delete Page
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </div>
-</section>
-{% endfor %}
+
+    <table class="table table-bordered table-hover table-striped table-primary">
+        <colgroup>
+            <col style="width: 2rem;" />
+            <col />
+            <col style="width: 5rem;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>TITLE/SLUG</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for no, page in pages %}
+            <tr>
+                <td class="text-sm">{{ page.id }}</td>
+                <td>
+                    <div>
+                        <h3 class="text-bs mb-0">{{ page.title }}</h3>
+                        <a class="text-sm text-primary" href="{{ page.slug }}">{{ page.slug }}</a>
+                    </div>
+                </td>
+                <td class="dropdown position-relative">
+                    <button class="dropdown-toggle actions-button"></button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item"
+                            onclick="assignTemplate({ title: '{{ page.title }}', slug: '{{ page.slug }}', id: '{{ page.id }}' })">
+                            Assign template</li>
+                        <li class="dropdown-item text-hover-danger" onclick="deletePage('{{ page.id }}')">Delete</li>
+                    </ul>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% else %}
 <div class="card">
     <div class="card-body">

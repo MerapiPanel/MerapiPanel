@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="{{ '@article/assets/dist/index.css' | assets }}">
 {% endblock %}
 
-{% block subheader_actions %}
+{% block subheader_menu %}
 <a href="{{ 'article/create' | admin_url }}" class="menu-item">
     <i class="fa fa-plus"></i> new article
 </a>
@@ -42,13 +42,13 @@
 
     <div class="category-wrapper">
         <div class="navbar-expand-lg p-0">
-            <h3 class="d-flex align-items-center bg-secondary text-white text-bs ps-3 py-0">
-                <a class="text-decoration-none text-white text-hover-primary light-5"
+            <h3 class="d-flex align-items-center text-bs ps-3 py-0">
+                <a class="text-decoration-none text-dark text-hover-primary light-5"
                     href="{{ '/article/category' | admin_url }}"><span class="font-semibold">Categorys</span> </a>
-                <button onclick="createNewCategory()" class="ms-auto btn text-white text-hover-primary light-5">
+                <button onclick="createNewCategory()" class="ms-auto btn text-dark text-hover-primary light-5">
                     <i class="fa-solid fa-plus"></i>
                 </button>
-                <button class="btn text-white text-hover-primary light-5 navbar-toggler" data-bs-toggle="collapse"
+                <button class="btn text-dark text-hover-primary light-5 navbar-toggler" data-bs-toggle="collapse"
                     data-bs-target="#categories-collapse">
                     <i class="fa-solid fa-chevron-down"></i>
                 </button>
