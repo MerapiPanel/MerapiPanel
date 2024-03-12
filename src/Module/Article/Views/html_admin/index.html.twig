@@ -1,8 +1,12 @@
 {% extends "@admin::panel/base.html.twig" %}
-{% block header_title %}Content{% endblock %}
 
-{% block head_javascripts %}
-<script src="{{ '@template/assets/dist/index.bundle.js' | assets }}"></script>
+
+{% block header_title %}Article{% endblock %}
+
+
+{% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ '@article/assets/dist/index.css' | assets }}">
 {% endblock %}
 
 {% block subheader_actions %}
@@ -24,86 +28,40 @@
 {% set articles = admin.article_fetchAll %}
 {% set categories = admin.article_category.fetchAll %}
 
+
 {% block breadcrumb %}
-<nav class="flex w-full" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ '/' | admin_url }}">Home</a></li>
-        <li class="breadcrumb-item">Article</li>
-    </ol>
-</nav>
+<li class="breadcrumb-item"><a href="{{ '/' | admin_url }}">Home</a></li>
+<li class="breadcrumb-item">Article</li>
 {% endblock %}
+
 
 {% block content %}
 
-<div class="flex items-start gap-3">
+<div class="container-article gap-3">
+    <div class="article-wrapper" id="article-wrapper" onload="renderArticles()"></div>
 
-    <div class="flex-1 min-h-screen" id="article-container" onload="renderArticles()">
+    <div class="category-wrapper">
+        <div class="navbar-expand-lg p-0">
+            <h3 class="d-flex align-items-center bg-secondary text-white text-bs ps-3 py-0">
+                <a class="text-decoration-none text-white text-hover-primary light-5"
+                    href="{{ '/article/category' | admin_url }}"><span class="font-semibold">Categorys</span> </a>
+                <button onclick="createNewCategory()" class="ms-auto btn text-white text-hover-primary light-5">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <button class="btn text-white text-hover-primary light-5 navbar-toggler" data-bs-toggle="collapse"
+                    data-bs-target="#categories-collapse">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </h3>
 
-        {% for article in articles %}
-        <div class="relative max-w-[800px] bg-white rounded-md mb-3 p-2 shadow-sm">
-
-            <div class="float-right top-0 right-0">
-                <div class="dropdown" role="menu" onshow="dropdownMenuShow(this, '{{ article.id }}')">
-                    <button class="dropdown-toggle" type="button"></button>
-                    <ul class="dropdown-menu" role="menuitem"></ul>
-                </div>
-            </div> <!-- dropdown -->
-
-            <section class="p-4">
-                <header class="mb-2">
-                    <h4 class="text-md mb-1">
-                        <span class="tooltip tooltip-right" id="article-{{ article.id }}-icon-status"
-                            onshow="tooltipShowHandler(this, '{{ article.id }}')">
-                            {% if article.status == 1 %}
-                            <i class="fa-solid fa-earth-americas"></i>
-                            {% else %}
-                            <i class="fa-solid fa-lock"></i>
-                            {% endif %}
-                            <div class="tooltip-content text-nowrap">
-                                <h1 class="font-bold">Visibility status</h1>
-                                <p></p>
-                            </div>
-                        </span>
-                        {{ article.title }}
-                    </h4>
-                    <a class="inline-block text-[12px] text-blue-500/50 hover:text-blue-500 tooltip tooltip-bottom"
-                        href="{{ article.link }}" target="_blank">{{ article.link }}
-                        <div class="tooltip-content">
-                            <p>Open article page in new tab</p>
-                        </div>
-                    </a>
-                </header>
-                <article class="text-disabled text-[10px]">
-                    <ul class="flex gap-4">
-                        <li class="text-purple-500/50" id="article-{{ article.id }}-id">#{{ article.id }}</li>
-                        <li id="article-{{ article.id }}-status">status : {% if article.status == 1 %}public{% else
-                            %}private{% endif %}</li>
-                        <li id="article-{{ article.id }}-created_at">created_at : {{ article.created_at }}</li>
-                        <li id="article-{{ article.id }}-updated_at">updated_at : {{ article.updated_at }}</li>
-                    </ul>
-                </article>
-            </section>
-
+            <div class="collapse navbar-collapse" id="categories-collapse">
+                <ul class="list-none py-1 px-3" id="categories">
+                    {% for category in categories %}
+                    <li class="pl-1 mb-2">{{ category.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        {% endfor %}
-
-    </div>
-
-    <div
-        class="top-0 w-full max-w-[250px] h-[calc(100vh-100px)] bg-white sticky -mt-[4px] -mr-[8px] rounded-md overflow-hidden">
-        <h3 class="text-lg bg-slate-200 px-1 mb-3 flex items-center w-full">
-            <a class="ms-2 text-sm hover:text-blue-400" href="{{ '/article/category' | admin_url }}"><span
-                    class="font-semibold">Category</span> <i
-                    class="text-blue-400 text-[12px] align-baseline fa-solid fa-arrow-up-long rotate-45"></i></a>
-            <button onclick="createNewCategory()" class="btn !p-1 ms-auto !shadow-none hover:text-blue-400">
-                <i class="text-[14px] fa-solid fa-plus"></i>
-            </button>
-        </h3>
-        <ul class="px-1 list-inside list-disc" id="categories">
-            {% for category in categories %}
-            <li class="pl-1 mb-2">{{ category.name }}</li>
-            {% endfor %}
-        </ul>
     </div>
 </div>
 <div class="inline-flex  max-w-[175px]"></div>
@@ -176,10 +134,13 @@
 {% endblock %}
 
 
+
+
 {% block javascript %}
 
 {{ parent() }}
 
+<script src="{{ '@template/assets/dist/index.js' | assets }}"></script>
 
 <script>
 
@@ -317,7 +278,7 @@
     function renderArticles() {
 
         if (articles.length == 0) {
-            $("#article-container").html(`<div style='display: flex; justify-content: center; align-items: center; flex-direction: column; width: 100%; height: 65vh;'>
+            $("#article-wrapper").html(`<div style='display: flex; justify-content: center; align-items: center; flex-direction: column; width: 100%; height: 65vh;'>
                 <div class='card shadow' style='max-width: 18rem;'>
                     <div class='card-body'>
                         <h3 class='card-title'> <i class="fa-regular fa-circle-question"></i> This Page is Empty</h3>
@@ -327,12 +288,19 @@
                 </div>
             </div>`);
         } else {
-            $("#article-container").html("").append(articles.map(article => articleTemplate(article)));
+            $("#article-wrapper").html("");
+            articles.map((article, x) => {
+                setTimeout(() => {
+                    let el = articleTemplate(article);
+                    $("#article-wrapper").append(el);
+                    el.fadeIn(300)
+                }, x * 50);
+            });
 
         }
 
         function articleTemplate(article) {
-            return $(`<div class="relative max-w-[800px] bg-white rounded-md mb-3 p-2 shadow-sm">
+            return $(`<div class="relative bg-white rounded-2 mb-3 p-2 shadow-sm" style="display: none;" id="article-${article.id}">
 
                 <div class="float-right top-0 right-0">
                     <div class="dropdown" role="menu" onshow="dropdownMenuShow(this, '${article.id}')">
@@ -340,10 +308,10 @@
                         <ul class="dropdown-menu" role="menuitem"></ul>
                     </div>
                 </div> <!-- dropdown -->
-                <section class="p-4">
+                <section class="p-3">
                     <header class="mb-2">
                         <h4 class="text-md mb-1">
-                            <span class="tooltip tooltip-right" id="article-${article.id}-icon-status" onshow="tooltipShowHandler(this, '${article.id}')">
+                            <span class="tooltip tooltip-right ${article.status == 1 ? 'text-success' : 'text-danger'}" id="article-${article.id}-icon-status" onshow="tooltipShowHandler(this, '${article.id}')">
                                 ${article.status == 1 ? `<i class="fa-solid fa-earth-americas"></i>` : `<i class="fa-solid fa-lock"></i>`}
                                 <div class="tooltip-content text-nowrap">
                                     <h1 class="font-bold">Visibility status</h1>
@@ -352,19 +320,18 @@
                             </span>
                             ${article.title}
                         </h4>
-                        <a class="inline-block text-[12px] text-blue-500/50 hover:text-blue-500 tooltip tooltip-bottom"
+                        <a class="text-sm inline-block tooltip tooltip-bottom"
                             href="${article.link}" target="_blank">${article.link}
-                            <div class="tooltip-content">
+                            <div class="tooltip-content text-sm">
                                 <p>Open article page in new tab</p>
                             </div>
                         </a>
                     </header>
-                    <article class="text-disabled text-[10px]">
-                        <ul class="flex gap-4">
-                            <li class="text-purple-500/50" id="article-${article.id}-id">#${article.id}</li>
-                            <li id="article-${article.id}-status">status <b>${article.status == 1 ? "public" : "private"}</b></li>
-                            <li id="article-${article.id}-created_at">created at <b>${article.created_at}</b></li>
-                            <li id="article-${article.id}-updated_at">updated at <b>${article.updated_at}</b></li>
+                    <article class="text-disabled text-sm">
+                        <ul class="d-flex gap-4 mb-0 list-none">
+                            <li class="text-magenta" id="article-${article.id}-id">#${article.id}</li>
+                            <li id="article-${article.id}-status">status <span class="text-secondary">${article.status == 1 ? "public" : "private"}</span></li>
+                            <li id="article-${article.id}-updated_at">last update <span class="text-secondary">${article.updated_at}</span></li>
                         </ul>
                     </article>
                 </section>
@@ -404,9 +371,9 @@
     function createNewCategory() {
         let container = $("#categories");
 
-        let element = $(`< li class= "pl-1 mb-2 whitespace-nowrap" >
+        let element = $(`<li class= "pl-1 mb-2 whitespace-nowrap" >
             <div class="inline-flex">
-                <input class='px-2 py-1 outline-none max-w-[175px] rounded pt-1 px-2' type='text' name='category_name' placeholder='Category Name' pattern='[a-z]' invalid-message="Please enter category name" required>
+                <input class='form-input' type='text' name='category_name' placeholder='Category Name' pattern='[a-z]' invalid-message="Please enter category name" required>
                     <button class="btn btn-sm ms-auto !px-3 hover:text-blue-400"><i class="fa-regular fa-circle-check"></i></button>
             </div>
         </li >`);

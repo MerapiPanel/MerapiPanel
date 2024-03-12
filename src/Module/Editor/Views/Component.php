@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\TemplateEditor\Views;
+namespace MerapiPanel\Module\Editor\Views;
 
 
 class Component

@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Module\TemplateEditor\Controller;
+namespace MerapiPanel\Module\Editor\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\View\Component\ProcessingComponent;

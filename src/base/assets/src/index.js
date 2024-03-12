@@ -1,4 +1,8 @@
-import "./scss/app.scss";
+import "../scss/app.scss";
+
+window.$ = $;
+window.merapi = require("./merapi");
+
 
 $(() => {
     $("img").each(function () {

@@ -7,20 +7,25 @@
 <link rel="stylesheet" href="{{ '@panel/dist/panel.css' | assets }}">
 {% endblock %}
 
+{% block head_javascript %}
+{{ parent() }}
+<script src="{{ '@panel/dist/panel.js' | assets }}"></script>
+{% endblock %}
+
 {% block body %}
 
-<body class="min-h-screen min-w-screen bg-slate-100 text-slate-700" id="panel-body">
+<body id="panel-body">
 
     {% include "@parts::panel/navigation.html.twig" %}
 
-    <main class="transition-all duration-300 ms-0 lg:ms-[250px] mx-auto overflow-x-clip" id="panel-main">
+    <main class="panel" id="panel-main">
 
         {% block header %}
-        <header class="pt-3 flex flex-col items-center bg-white py-1 px-5" id="panel-header">
-            <div class="flex w-full">
-                <button class="btn btn-outline-primary lg:hidden !px-3 !rounded-none mr-3 !bg-white hover:!bg-black/50"
-                    onclick="openNav()" id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
-                <h1 class="font-bold text-3xl">{% block header_title %}Dashboard{% endblock %}</h1>
+        <header class="panel-header" id="panel-header">
+            <div class="d-flex w-100">
+                <button class="sidebar-toggle btn btn-outline-primary me-3 border-0" onclick="openNav()"
+                    id="sidebar-toggle"></button>
+                <h1 class="panel-title">{% block header_title %}Dashboard{% endblock %}</h1>
             </div>
             <nav class="flex w-full" aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -29,32 +34,35 @@
                     {% endblock %}
                 </ol>
             </nav>
+
+            {% block subheader %}
+            <div class="panel-subheader" id="panel-subheader">
+                {% block subheader_search %}
+                <div class="panel-search" id="panel-subheader-search">
+                    <input class="form-input" type="text" placeholder="Search">
+                    <button class="ms-2 btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                {% endblock %}
+
+                <div id="subheader-actions" class="subheader-actions">
+                    <button id="subheader-toggle" onclick="toggleMenu()" class="subheader-toggle btn">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <div id="subheader-menu" class="subheader-menu">{% block subheader_actions %}{% endblock %}</div>
+                </div>
+
+            </div>
+            {% endblock %}
+
         </header>
         {% endblock %}
 
 
-        {% block subheader %}
-        <div class="w-full flex gap-2 bg-white px-4 pb-4 pt-2" id="panel-subheader">
-            {% block subheader_search %}
-            <div class="flex w-full max-w-[430px]" id="panel-subheader-search">
-                <input class="form-input" type="text" placeholder="Search">
-                <button class="ms-2 bg-white rounded outline-none shadow px-4 py-2 hover:bg-blue-500 hover:text-white">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </div>
-            {% endblock %}
 
-            <div id="panel-subheader-actions" class="subheader-actions">
-                <button id="subheader-toggle" onclick="toggleMenu()" class="subheader-toggle">
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                </button>
-                <div id="subheader-menu" class="subheader-menu">{% block subheader_actions %}{% endblock %}</div>
-            </div>
 
-        </div>
-        {% endblock %}
-
-        <div class="m-4 my-3">
+        <div class="panel-content">
             {% block content %}
             <div class="flex flex-wrap justify-center items-center h-[80vh] w-full" id="panel-content">
                 <div class="text-center">
@@ -69,10 +77,10 @@
 
     <script>
         function toggleMenu() {
-            $("#panel-subheader-actions").toggleClass("open");
+            $("#subheader-actions").toggleClass("open");
             $(document).on('click', function (e) {
-                if (!$(e.target).closest('#panel-subheader-actions').length) {
-                    $("#panel-subheader-actions").removeClass("open");
+                if (!$(e.target).closest('#subheader-actions').length) {
+                    $("#subheader-actions").removeClass("open");
                 }
             })
         }

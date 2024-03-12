@@ -1,8 +1,10 @@
-/*!**********************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/base/assets/src/scss/app.scss ***!
-  \**********************************************************************************************************************************************************************/
+/*!******************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/base/assets/scss/app.scss ***!
+  \******************************************************************************************************************************************************************/
 :root {
-  --base-light: 255 255 255;
+  --base-white: 255 255 255;
+  --base-color-white: rgb(var(--base-white));
+  --base-light: 242 242 242;
   --base-color-light: rgb(var(--base-light));
   --base-dark: 41 41 41;
   --base-color-dark: rgb(var(--base-dark));
@@ -10,11 +12,11 @@
   --base-color-primary: rgb(var(--base-primary));
   --base-secondary: 122 122 122;
   --base-color-secondary: rgb(var(--base-secondary));
-  --base-success: 0 200 83;
+  --base-success: 28 177 113;
   --base-color-success: rgb(var(--base-success));
   --base-warning: 219 201 35;
   --base-color-warning: rgb(var(--base-warning));
-  --base-danger: 237 62 43;
+  --base-danger: 219 70 53;
   --base-color-danger: rgb(var(--base-danger));
   --base-info: 24 202 222;
   --base-color-info: rgb(var(--base-info));

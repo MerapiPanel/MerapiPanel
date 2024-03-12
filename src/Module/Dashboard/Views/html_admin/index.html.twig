@@ -7,7 +7,8 @@
 
 
 {% block head_javascript %}
-<script src="{{ '@dashboard/dist/index.bundle.js' | assets }}"></script>
+{{ parent() }}
+<script src="{{ '@dashboard/dist/index.js' | assets }}"></script>
 <script>
     var widgetPayload = {
         holder: "#widget-container",
@@ -16,7 +17,7 @@
             save: "{{ '/widget/save' | admin_url }}",
             load: "{{ '/widget/load' | admin_url }}",
             script: {
-                widgetHelper: "{{ '@dashboard/assets/dist/widget-helper.bundle.js' | assets }}"
+                widgetHelper: "{{ '@dashboard/assets/dist/widget-helper.js' | assets }}"
             }
         }
     }

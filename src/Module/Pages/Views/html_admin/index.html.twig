@@ -2,7 +2,8 @@
 {% block header_title %}Pages{% endblock %}
 
 {% block head_javascript %}
-<script src="{{ '@pages/assets/dist/index.bundle.js' | assets }}"></script>
+{{ parent() }}
+<script src="{{ '@pages/assets/dist/index.js' | assets }}"></script>
 {% endblock %}
 
 {% block subheader_actions %}
