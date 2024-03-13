@@ -182,7 +182,8 @@ class View
         $view->addVariable($data);
 
         $args = [
-            "view" => &$view
+            "view"   => &$view,
+            "module" => $module_name
         ];
         Box::event()->notify([self::class, "render"], $args);
         return $view;

@@ -26,7 +26,8 @@
         <header class="panel-header">
 
 
-            <button class="ms-3 sidebar-toggle btn btn-outline-primary me-3 border-0" onclick="openNav()" id="sidebar-toggle"></button>
+            <button class="ms-3 sidebar-toggle btn btn-outline-primary me-3 border-0" onclick="openNav()"
+                id="sidebar-toggle"></button>
             {% block header_title_outer %}
             <h1 class="panel-title">{% block header_title %}MerapiPanel{% endblock %}</h1>
             {% endblock %}
@@ -34,13 +35,22 @@
         </header>
         {% endblock %}
 
+        {% block breadcrumb_outer %}
         <nav class="flex w-full px-2" aria-label="breadcrumb">
+
+            {% block breadcrumb %}
             <ol class="breadcrumb">
-                {% block breadcrumb %}
+
+                {% block breadcrumb_item %}
                 <li class="breadcrumb-item"><a href="{{ '/' |admin_url}}">Home</a></li>
                 {% endblock %}
+
             </ol>
+            {% endblock %}
+            
         </nav>
+        {% endblock %}
+
 
         {% block container %}
         <div class="panel-container">

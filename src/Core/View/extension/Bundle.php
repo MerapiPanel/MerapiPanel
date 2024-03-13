@@ -67,8 +67,14 @@ class Bundle extends \Twig\Extension\AbstractExtension
         return [
             new TwigFilter('admin_url', [$this, 'admin_url']),
             new TwigFilter('assets', [$this, 'assets']),
-            new TwigFilter('url', [$this, 'url'])
+            new TwigFilter('url', [$this, 'url']),
+            new TwigFilter('preg_replace', [$this, 'preg_replace']),
         ];
+    }
+
+    function preg_replace($subject, $pattern, $replacement)
+    {
+        return preg_replace($pattern, $replacement, $subject);
     }
 
 
@@ -82,7 +88,7 @@ class Bundle extends \Twig\Extension\AbstractExtension
     function assets($absoluteFilePath = null)
     {
 
-      
+
         return Box::module("FileManager")->service("Assets")->url($absoluteFilePath);
     }
 

@@ -31,7 +31,7 @@ class Guest extends Mod_Controller
         if (!isset($articles[0])) {
             return throw new \Exception("Article not found", 404);
         }
-        return View::render("index.html.twig", [
+        return View::render("public.html.twig", [
             "article" => $articles[0],
         ]);
     }

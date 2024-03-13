@@ -1,57 +1,38 @@
 {% extends "@panel/base.html.twig" %}
 
 
+{% block stylesheet %}
+{{parent()}}
+<link rel="stylesheet" href="{{ '@FileManager/dist/filemanager.css' | assets }}">
+{% endblock %}
+
 {% set directory = request.directory %}
 
 
 
 {% block header_title %}File Manager{% endblock %}
 
-{% block header %}
-{{ parent() }}
-
-<h4 class="py-3">
-    <a class="text-blue-400 px-3 py-0 border border-blue-400/20" href="?directory="><i
-            class="fa-solid fa-house"></i></a>
-
-    {% if directory %}
-    {% set paths = directory | split('/') %}
-    {% set link = "" %}
-    {% for key, item in paths %}
-
-    {% set link = link ~ "/" ~ item %}
-    <a class="text-blue-400 px-3 py-0 border border-blue-400/20" href="?directory={{ link | trim('/') }}">/
-        {{ item }}</a>
-    {% endfor %}
-    {% endif %}
-</h4>
-{% endblock %}
-
-
-
-
-{% block subheader %}
-{% if container.type == 'navigate' %}
-<div class="py-5 w-full flex flex-wrap lg:flex-nowrap">
-
-    {% block subheader_search %}
-
-    <div class="ml-auto pr-5">
-        <button class="btn btn-secondary" onclick="createFolder('{{ directory }}')">
-            <i class="fa-solid fa-folder-plus"></i> new folder
-        </button>
-        <button class="btn btn-secondary" onclick="uploadFile()">
-            <i class="fa-solid fa-file-arrow-up"></i> upload file
-        </button>
-    </div>
-
-    {% endblock %}
-
-    {% block subheader_actions %}{% endblock %}
-
-</div>
+{% block breadcrumb_item %}
+<a class="breadcrumb-item" href="?directory="><i class="fa-solid fa-house"></i></a>
+{% if directory %}
+{% set paths = directory | split('/') %}
+{% set link = "" %}
+{% for key, item in paths %}
+{% set link = link ~ "/" ~ item %}
+<a class="breadcrumb-item" href="?directory={{ link | trim('/') }}">{{ item }}</a>
+{% endfor %}
 {% endif %}
 {% endblock %}
+
+
+{% block subheader_menu %}
+<li class="menu-item btn" onclick="createFolder('{{ directory }}')"><i class="fa-solid fa-folder-plus"></i> new folder
+</li>
+<li class="menu-item btn" onclick="uploadFile()"><i class="fa-solid fa-file-arrow-up"></i> upload file</li>
+{% endblock %}
+
+
+
 
 
 
@@ -61,73 +42,71 @@
 {% if container.type == 'navigate' %}
 
 
-<div class="flex w-full">
-    <div class="mb-[15rem] w-full">
-        <div class="flex flex-wrap gap-4" id="container-filemanager">
-            {% if container.data | length > 0 %}
-            {% for key, item in container.data %}
-            <div data-fm-key="{{ key }}" onclick="merapi.FileManager.ItemFocusHandle(this);"
-                class="w-[140px] cursor-pointer [&.active>.file-info]:to-slate-500/80 [&.active>.file-info]:text-white [&.active>.hidden]:block [&.active]:shadow-blue-500 bg-gray-200 rounded shadow aspect-[3/4] flex items-top justify-center relative">
+<div class="fm-container" id="container-filemanager">
+    {% if container.data | length > 0 %}
+    {% for key, item in container.data %}
+    <div data-fm-key="{{ key }}" class="fm-file">
 
+        <div class="fm-file-content mb-1" data-bs-toggle="collapse" data-bs-target="#collapse-{{ item.path | preg_replace('/[^a-z0-9]+/mi', "-") }}">
+            <div class="fm-file-icon">
                 {% if item.icon is iterable %}
                 <img {% if item.icon.scale=="scale-down" %}width="35px" height="35px" {% endif %}
                     class="rounded overflow-hidden img-{{ item.icon.scale }}" src="{{ item.icon.src }}" />
                 {% else %}
                 <div class="h-full w-full flex items-center justify-center"><i
-                        class="fa-solid {{ item.icon }} fa-2x"></i></div>
+                        class="fa-solid {{ item.icon }} fa-2x"></i>
+                </div>
                 {% endif %}
-
-
-                <div
-                    class="file-info absolute rounded-b overflow-hidden pt-5 bottom-0 w-full p-2 bg-gradient-to-b from-transparent from-0% to-slate-500/40 to-50% bg-opacity-20 text-sm">
-                    {{ item.name }}
-                </div>
-
-                {% set contentType = item.type == "directory" ? "directory" : "file" %}
-                {% set contentFile = item.path %}
-
-                <div class="absolute hidden right-2 top-0 z-20">
-                    <div class="dropdown">
-                        <button data-act-trigger="dropdown" class="dropdown-toggle"></button>
-                        <ul class="dropdown-menu text-sm">
-                            <li class="dropdown-item">
-                                <a type="button" href="?directory={{ item.path }}">
-                                    <i class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
-                                    Open {% if item.type == "directory" %}folder{% else %}file{% endif %}
-                                </a>
-                            </li>
-                            <li class="dropdown-item">
-                                <button type="button" class="" onclick="infoFile('{{ key }}')">
-                                    <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
-                                </button>
-                            </li>
-                            <li class="dropdown-item">
-                                <button type="button" class=""
-                                    onclick="renameFile({ file: '{{ contentFile }}', name: '{{ item.name }}', type: '{{ contentType }}' })">
-                                    <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
-                                </button>
-                            </li>
-                            <li class="dropdown-item">
-                                <button type="button" class="text-red-500"
-                                    onclick="deleteFile({ file: '{{ contentFile }}', type: '{{ contentType }}' })">
-                                    <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </div>
-            {% endfor %}
-            {% else %}
-            <div class="flex flex-wrap justify-center items-center h-[60vh] w-full" id="filemanager-directory-empty">
-                <div class="text-center">
-                    <div class="opacity-50 p-5"><i class="fa-regular fa-folder-open fa-6x"></i></div>
-                    <h2 class="text-3xl font-bold">Directory Empty</h2>
-                </div>
+            <div class="fm-file-info">
+                <span class="file-name">{{ item.name }}</span>
             </div>
-            {% endif %}
+
+            <button class="ms-auto btn btn-sm" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse-{{ item.path | preg_replace('/[^a-z0-9]+/mi', "-") }}" aria-expanded="false"
+                aria-controls="collapse-{{ item.path | preg_replace('/[^a-z0-9]+/mi', "-") }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-chevron-down" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708" />
+                </svg>
+            </button>
+        </div>
+
+
+        {% set contentType = item.type == "directory" ? "directory" : "file" %}
+        {% set contentFile = item.path %}
+
+        <div class="collapse" id="collapse-{{ item.path | preg_replace('/[^a-z0-9]+/mi', "-") }}">
+            <div class="card card-body">
+                <a type="button" class="btn btn-sm btn-outline-secondary" 
+                href="?directory={{ item.path }}">
+                    <i class="w-[20px] opacity-70 text-center fa-solid fa-up-right-from-square"></i>
+                    Open {% if item.type == "directory" %}folder{% else %}file{% endif %}
+                </a>
+                <a type="button" class="btn btn-sm btn-outline-secondary" onclick="infoFile('{{ key }}')">
+                    <i class="w-[20px] opacity-70 text-center fa-solid fa-info"></i> File info
+                </a>
+                <a type="button" class="btn btn-sm btn-outline-secondary"
+                    onclick="renameFile({ file: '{{ contentFile }}', name: '{{ item.name }}', type: '{{ contentType }}' })">
+                    <i class="w-[20px] opacity-70 text-center fa-solid fa-pen"></i> Rename
+                </a>
+                <a type="button" class="btn btn-sm btn-outline-secondary"
+                    onclick="deleteFile({ file: '{{ contentFile }}', type: '{{ contentType }}' })">
+                    <i class="w-[20px] opacity-70 text-center fa-solid fa-trash"></i> Delete
+                </a>
+            </div>
         </div>
     </div>
+    {% endfor %}
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center vh-75 w-100" id="filemanager-directory-empty">
+        <div class="text-center">
+            <div class="opacity-50 p-5"><i class="fa-regular fa-folder-open fa-6x"></i></div>
+            <h2 class="text-3xl font-bold">Directory Empty</h2>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 
@@ -136,7 +115,7 @@
 {% set contentType = container.data.mime == "directory" ? "directory" : "file" %}
 {% set contentFile = container.data.path.relative %}
 
-<div class="w-full aspect-[6/3] bg-gray-900 max-h-[70vh] relative">
+<div class="file-container">
     {% if "image" in container.data.mime %}
 
     <img class="p-8 w-full max-h-[75vh] object-contain" src="{{ container.data.path.full }}"
@@ -207,7 +186,7 @@
 
 {% block javascript %}
 
-<script src="{{ '@filemanager/assets/dist/view.filemanager.bundle.js' | assets }}"></script>
+<script src="{{ '@filemanager/dist/filemanager.js' | assets }}"></script>
 <script>
 
 

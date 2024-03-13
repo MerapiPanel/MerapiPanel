@@ -32,9 +32,6 @@ class Guest extends Module
 
     public function index($entity)
     {
-
-       // $db = $this->getDatabase();
-
-        return View::render("content.html.twig");
+        return View::render("base.html.twig");
     }
 }

@@ -16,13 +16,11 @@ class EventRegister
     {
 
         if (isset($args["view"])) {
-            if (strtolower($args['env']) == "guest") {
+            if (strtolower($args['module']) == "site") {
 
                 $theme = Box::module("theme")->service()->getActive();
-
                 $view = View::newInstance([$theme['dirname']]);
                 $view->getTwig()->addExtension(new ViewFunction($args['view']->__toString()));
-
                 $request = new Request();
 
                 if ($request->getPath() == "/" || empty($request->getPath())) {

@@ -1,0 +1,61 @@
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/module/FileManager/assets/src/style.scss ***!
+  \*********************************************************************************************************************************************************************************/
+.fm-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+.fm-container .fm-file {
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.fm-container .fm-file .fm-file-content {
+  display: flex;
+  align-items: end;
+}
+.fm-container .fm-file .fm-file-content .fm-file-icon {
+  width: 35px;
+  height: 35px;
+  overflow: hidden;
+}
+.fm-container .fm-file .fm-file-content .fm-file-icon img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.fm-container .fm-file .fm-file-content .fm-file-info {
+  padding-left: 0.5rem;
+}
+.fm-container .fm-file:has(.fm-file-content:hover) {
+  border-radius: 0.3rem;
+  cursor: pointer;
+  background-color: rgb(var(--panel-primary-rgb), 0.15);
+}
+
+.file-container {
+  background-color: black;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+.file-container img {
+  max-height: 80vh;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.file-container video, .file-container object {
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  max-width: 1024px;
+}
+
+.panel-main .panel-container:has(.file-container) {
+  flex: 0 0 auto;
+}
