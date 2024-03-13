@@ -9,18 +9,20 @@ const stylesHandler = MiniCssExtractPlugin.loader;
 
 const entry = () => {
 
-    const entryFiles = glob.sync('./merapi/src/*.js').reduce((acc, item) => {
+    const entryModule = glob.sync("./merapi/module/**/src/*.js").reduce((acc, item) => {
 
+        const directoryPath = path.dirname(item);
+        const name = path.basename(item).replace(".js", "");
         const file = `./${item}`;
-        const name = path.basename(file).replace(".js", "");
-        if (name.endsWith("bundle")) return;
-        acc[name] = file;
+
+        acc[`..\\..\\..\\..\\${directoryPath}\\..\\dist\\${name}`] = file; // Use full file path as key
 
         return acc;
     }, {});
 
+    console.log(entryModule)
 
-    return { ...entryFiles };
+    return { ...entryModule };
 };
 
 
@@ -28,8 +30,8 @@ module.exports = {
     mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
     entry: entry(),
     output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(__dirname, "./merapi/dist"),
+        filename: '[name].js',
+        path: path.resolve(__dirname, "../../merapi/base/assets/dist"),
     },
 
     plugins: [

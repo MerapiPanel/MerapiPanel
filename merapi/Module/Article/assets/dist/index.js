@@ -16,7 +16,7 @@
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.scss */ \"./merapi/module/Article/assets/src/index.scss\");\n\n\n//# sourceURL=webpack://merapipanel/./merapi/module/Article/assets/src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.scss */ \"./merapi/module/Article/assets/src/index.scss\");\n\r\n\n\n//# sourceURL=webpack://merapipanel/./merapi/module/Article/assets/src/index.js?");
 
 /***/ }),
 

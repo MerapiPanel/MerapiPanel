@@ -7,6 +7,7 @@
     "@editorjs/embed": "^2.7.0",
     "@symfony/webpack-encore": "^4.6.1",
     "@types/jquery": "^3.5.29",
+    "@webpack-cli/generators": "^3.0.7",
     "babel-loader": "^9.1.3",
     "compression-webpack-plugin": "^10.0.0",
     "css-loader": "^6.9.1",
@@ -27,8 +28,8 @@
   "main": "./src/app.js",
   "scripts": {
     "watch": "webpack --mode development --watch",
-    "build": "webpack",
-    "tailwind:watch": "npx tailwindcss -i ./src/base/assets/app.css -o ./src/base/assets/output.css --watch"
+    "module": "webpack --config ./merapi/module/webpack.config.js",
+    "build": "webpack"
   },
   "dependencies": {
     "@codemirror/lang-css": "^6.2.1",

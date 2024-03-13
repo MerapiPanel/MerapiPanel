@@ -215,12 +215,12 @@ class AssetsService
             $moduleName = "module/" . $matches[1];
             $path = ltrim(str_replace("@" . $matches[1], "", $path), "\\/");
         }
-        if (!is_file($_SERVER['DOCUMENT_ROOT'] . "/src/" . $moduleName . "/" . $path) && strpos($path, "assets") !== 0) {
+        if (!is_file($_SERVER['DOCUMENT_ROOT'] . "/merapi/" . $moduleName . "/" . $path) && strpos($path, "assets") !== 0) {
             $path = "assets/" . ltrim($path, "\/");
         }
 
         $path = ltrim(rtrim($moduleName, "\/") . "/" . ltrim($path, "\/"), "\/");
-        return(preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/src/" . $path));
+        return(preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/merapi/" . $path));
     }
 
 
