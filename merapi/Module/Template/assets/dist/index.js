@@ -9,6 +9,17 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./merapi/module/Template/assets/src/index.js":
+/*!****************************************************!*\
+  !*** ./merapi/module/Template/assets/src/index.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var rasterizehtml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rasterizehtml */ \"./node_modules/rasterizehtml/dist/rasterizeHTML.js\");\n/* harmony import */ var rasterizehtml__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rasterizehtml__WEBPACK_IMPORTED_MODULE_0__);\n/* provided dependency */ var $ = __webpack_require__(/*! jquery */ \"./node_modules/jquery/dist/jquery-exposed.js\");\n\r\n\r\nconst renderTemplate = (url, id) => {\r\n\r\n    const canvas = $(`#${id}`).get(0);\r\n    rasterizehtml__WEBPACK_IMPORTED_MODULE_0__.drawURL(url, canvas, {\r\n        width: canvas.width,\r\n        height: canvas.height,\r\n        zoom: 1\r\n    });\r\n}\r\n\r\nmerapi.assign(\"template\", {\r\n    renderTemplate\r\n})\n\n//# sourceURL=webpack://merapipanel/./merapi/module/Template/assets/src/index.js?");
+
+/***/ }),
+
 /***/ "./node_modules/call-bind/callBound.js":
 /*!*********************************************!*\
   !*** ./node_modules/call-bind/callBound.js ***!
@@ -398,17 +409,6 @@ eval("var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPAC
 
 /***/ }),
 
-/***/ "./src/module/Template/assets/src/index.js":
-/*!*************************************************!*\
-  !*** ./src/module/Template/assets/src/index.js ***!
-  \*************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var rasterizehtml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rasterizehtml */ \"./node_modules/rasterizehtml/dist/rasterizeHTML.js\");\n/* harmony import */ var rasterizehtml__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(rasterizehtml__WEBPACK_IMPORTED_MODULE_0__);\n/* provided dependency */ var $ = __webpack_require__(/*! jquery */ \"./node_modules/jquery/dist/jquery-exposed.js\");\n\r\n\r\nconst renderTemplate = (url, id) => {\r\n\r\n    const canvas = $(`#${id}`).get(0);\r\n    rasterizehtml__WEBPACK_IMPORTED_MODULE_0__.drawURL(url, canvas, {\r\n        width: canvas.width,\r\n        height: canvas.height,\r\n        zoom: 1\r\n    });\r\n}\r\n\r\nmerapi.assign(\"template\", {\r\n    renderTemplate\r\n})\n\n//# sourceURL=webpack://merapipanel/./src/module/Template/assets/src/index.js?");
-
-/***/ }),
-
 /***/ "?4f7e":
 /*!********************************!*\
   !*** ./util.inspect (ignored) ***!
@@ -515,7 +515,7 @@ eval("/* (ignored) */\n\n//# sourceURL=webpack://merapipanel/./util.inspect_(ign
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/module/Template/assets/src/index.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./merapi/module/Template/assets/src/index.js");
 /******/ 	
 /******/ })()
 ;

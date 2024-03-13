@@ -10,23 +10,23 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/module/Article/assets/src/index.scss":
-/*!**************************************************!*\
-  !*** ./src/module/Article/assets/src/index.scss ***!
-  \**************************************************/
+/***/ "./merapi/module/Article/assets/src/index.js":
+/*!***************************************************!*\
+  !*** ./merapi/module/Article/assets/src/index.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://merapipanel/./src/module/Article/assets/src/index.scss?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.scss */ \"./merapi/module/Article/assets/src/index.scss\");\n\n\n//# sourceURL=webpack://merapipanel/./merapi/module/Article/assets/src/index.js?");
 
 /***/ }),
 
-/***/ "./src/module/Article/assets/src/index.js":
-/*!************************************************!*\
-  !*** ./src/module/Article/assets/src/index.js ***!
-  \************************************************/
+/***/ "./merapi/module/Article/assets/src/index.scss":
+/*!*****************************************************!*\
+  !*** ./merapi/module/Article/assets/src/index.scss ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.scss */ \"./src/module/Article/assets/src/index.scss\");\n\n\n//# sourceURL=webpack://merapipanel/./src/module/Article/assets/src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n\n\n//# sourceURL=webpack://merapipanel/./merapi/module/Article/assets/src/index.scss?");
 
 /***/ })
 
@@ -73,7 +73,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _ind
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/module/Article/assets/src/index.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./merapi/module/Article/assets/src/index.js");
 /******/ 	
 /******/ })()
 ;

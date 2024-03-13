@@ -9,13 +9,13 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/module/Dashboard/assets/src/widget-helper.js":
-/*!**********************************************************!*\
-  !*** ./src/module/Dashboard/assets/src/widget-helper.js ***!
-  \**********************************************************/
+/***/ "./merapi/module/Dashboard/assets/src/widget-helper.js":
+/*!*************************************************************!*\
+  !*** ./merapi/module/Dashboard/assets/src/widget-helper.js ***!
+  \*************************************************************/
 /***/ (() => {
 
-eval("// import merapi from '../../../../base/assets/merapi';\r\n// import $ from 'jquery';\r\n\r\n// window.$ = $;\r\n// window.merapi = require(\"../../../../base/assets/merapi\");\n\n//# sourceURL=webpack://merapipanel/./src/module/Dashboard/assets/src/widget-helper.js?");
+eval("// import merapi from '../../../../base/assets/merapi';\r\n// import $ from 'jquery';\r\n\r\n// window.$ = $;\r\n// window.merapi = require(\"../../../../base/assets/merapi\");\n\n//# sourceURL=webpack://merapipanel/./merapi/module/Dashboard/assets/src/widget-helper.js?");
 
 /***/ })
 
@@ -26,7 +26,7 @@ eval("// import merapi from '../../../../base/assets/merapi';\r\n// import $ fro
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./src/module/Dashboard/assets/src/widget-helper.js"]();
+/******/ 	__webpack_modules__["./merapi/module/Dashboard/assets/src/widget-helper.js"]();
 /******/ 	
 /******/ })()
 ;
