@@ -14,7 +14,7 @@ class Service
             throw new \Exception('Environment variable APP is not set');
         }
 
-        $directory = $_ENV['APP'] . '/public/themes/';
+        $directory = $_ENV['APP'] . '/content/themes/';
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
@@ -91,7 +91,7 @@ class Service
 
         $theme['thumbnail'] = $default_thumbnail;
         if (file_exists(rtrim($theme['dirname']) . "/thumbnail.jpg")) {
-            $theme["thumbnail"] = "/public/themes/" . $name . "/thumbnail.jpg";
+            $theme["thumbnail"] = "/content/themes/" . $name . "/thumbnail.jpg";
         }
         if (file_exists($file_info)) {
             $info = Yaml::parseFile($file_info) ?? [];
