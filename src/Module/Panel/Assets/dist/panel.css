@@ -16736,7 +16736,7 @@ body:has(.modal.show) {
   align-items: stretch;
   justify-content: flex-start;
   gap: 0.25rem;
-  border-bottom: 2px solid rgb(var(--panel-primary-rgb), 0.5);
+  border-bottom: 3px solid rgb(var(--panel-primary-rgb), 0.5);
 }
 .panel-main .panel-container .panel-subheader > * {
   background-color: white;

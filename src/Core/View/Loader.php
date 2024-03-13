@@ -11,24 +11,17 @@ class Loader extends FilesystemLoader
     {
 
         parent::__construct($paths);
-        $sections = ["admin", "parts", "guest"];
+       // $sections = ["admin", "parts", "guest"];
 
         $dir = realpath(__DIR__ . '/../../module');
         foreach (scandir($dir) as $file) {
 
             if(!is_dir($dir .'/'. $file)) continue;
-            
-            $this->addPath($dir . '/' . $file, "module::" . strtolower($file));
+            $base      = $dir . '/' . $file . '/views';
+            if(!file_exists($base)) continue;
+            $namespace = strtolower($file);
 
-            foreach ($sections as $section) {
-
-                $finalFile = $dir . '/' . $file . "/views/html_" . $section . '/';
-
-                if (file_exists($finalFile)) {
-
-                    $this->addPath($finalFile, "$section::" . strtolower($file));
-                }
-            }
+            $this->addPath($base, $namespace);
         }
     }
 }

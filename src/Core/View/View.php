@@ -162,41 +162,27 @@ class View
 
         $backtrace = debug_backtrace();
         $caller = $backtrace[0]; // Index 0 is the current function, index 1 is its caller
-        $metadata = [
-            "file_caller" => "",
-            "module_name" => "",
-            "module_location" => "",
-            "view" => ""
-        ];
-        if (isset($caller['file'])) {
+        $module_name = false;
 
+        if (isset($caller['file'])) {
+            
             $file_path = $caller['file'];
-            $metadata['file_caller'] = $file_path;
-            $env = rtrim(basename($file_path, ".php"), "\\/");
-            if (!in_array(strtolower($env), ["admin", "guest"]))
-                $env = "guest";
 
             $module_index = strpos($file_path, "\\Module");
             if ($module_index !== false) {
                 $module_path = substr($file_path, 0, $module_index + strlen("\\Module"));
                 $endfix = str_replace($module_path, "", $file_path);
                 $module_name = array_values(array_filter(explode("\\", $endfix)))[0];
-
-                $metadata['module_name'] = $module_name;
-                $metadata['module_location'] = "$module_path/$module_name";
             }
-
-            $metadata['view'] = "$metadata[module_location]/Views/html_" . strtolower($env) . "/" . ltrim($file, "\\/");
         }
 
 
         $view = self::getInstance();
-        $view->load(("@" . strtolower($env) . "::" . strtolower($metadata['module_name']) . "/" . ltrim($file, "\\/")));
+        $view->load(("@" . strtolower($module_name) . "/" . ltrim($file, "\\/")));
         $view->addVariable($data);
 
         $args = [
-            "view" => &$view,
-            "env" => $env,
+            "view" => &$view
         ];
         Box::event()->notify([self::class, "render"], $args);
         return $view;
