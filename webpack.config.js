@@ -9,7 +9,7 @@ const stylesHandler = MiniCssExtractPlugin.loader;
 
 const entry = () => {
 
-    const entryFiles = glob.sync('./src/base/assets/src/*.js').reduce((acc, item) => {
+    const entryFiles = glob.sync('./merapi/base/assets/src/*.js').reduce((acc, item) => {
 
         const file = `./${item}`;
         const name = path.basename(file).replace(".js", "");
@@ -18,7 +18,7 @@ const entry = () => {
         return acc;
     }, {});
 
-    const entryModule = glob.sync("./src/module/**/assets/src/*.js").reduce((acc, item) => {
+    const entryModule = glob.sync("./merapi/module/**/assets/src/*.js").reduce((acc, item) => {
 
         const directoryPath = path.dirname(item);
         const name = path.basename(item).replace(".js", "");
@@ -40,7 +40,7 @@ module.exports = {
     entry: entry(),
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, "./src/base/assets/dist"),
+        path: path.resolve(__dirname, "./merapi/base/assets/dist"),
     },
 
     plugins: [
