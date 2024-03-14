@@ -6,12 +6,11 @@
 <head>
 	{% block head %}
 
-	<title>{% block page_title %}Merapi panel{% endblock %}</title>
+	{% block meta %}
 	<meta charset="utf-8">
+	<title>{% block meta_title %}Merapi panel{% endblock %}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	
-	{% block meta %}{% endblock %}
+	{% endblock %}
 
 
 	{% block stylesheet %}
@@ -19,11 +18,9 @@
 	{% endblock %}
 
 
-
 	{% block head_javascript %}
 	<script src="{{ '/dist/index.js' | assets }}"></script>
 	{% endblock %}
-
 
 	{% endblock %}
 </head>

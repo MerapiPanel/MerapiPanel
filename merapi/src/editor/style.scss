@@ -1,0 +1,107 @@
+#editor {
+    //border: 3px solid #444;
+}
+/* Reset some default styling */
+.gjs-cv-canvas {
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+.gjs-block {
+    width: auto;
+    height: auto;
+    min-height: auto;
+}
+
+.editor_panels {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+
+    & .panel__top {
+        padding: 0;
+        width: 100%;
+        display: flex;
+        position: initial;
+        justify-content: center;
+        justify-content: space-between;
+        box-shadow: 0 3px 2px -2px rgba(0, 0, 0, 0.1);
+
+        & .panel__devices {
+            position: initial;
+            border: #444 1px solid;
+            border-radius: 10rem;
+            align-self: center;
+            padding: 0;
+        }
+    }
+    & .panel__left {
+        flex-basis: 230px;
+        position: relative;
+        overflow-y: auto;
+        box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
+    }
+    & .panel__right {
+        flex-basis: 230px;
+        position: relative;
+        overflow-y: auto;
+        box-shadow: -3px 0 2px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    & .editor-row {
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        flex-wrap: nowrap;
+        flex-grow: 1;
+
+        & .editor-canvas {
+            flex-grow: 1;
+            margin: 0.25rem;
+            padding: 0.25rem;
+        }
+    }
+}
+
+.panel__basic-actions {
+    position: initial;
+}
+
+.panel__right {
+    flex-basis: 230px;
+    position: relative;
+    overflow-y: auto;
+}
+
+.panel__switcher {
+    position: initial;
+}
+
+.panel__devices {
+    position: initial;
+}
+
+/* Theming */
+
+/* Primary color for the background */
+.gjs-one-bg {
+    background-color: #ffffff;
+}
+
+/* Secondary color for the text color */
+.gjs-two-color {
+    color: #333333;
+}
+
+/* Tertiary color for the background */
+.gjs-three-bg {
+    background-color: #e6e6e6;
+    color: #333333;
+}
+
+/* Quaternary color for the text color */
+.gjs-four-color,
+.gjs-four-color-h:hover {
+    color: #5896ec;
+}
