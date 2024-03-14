@@ -17,49 +17,47 @@
     width: 100vw;
 
     & .layout {
-        &__panel-top {
-            padding: 0;
-            width: 100%;
-            display: flex;
-            position: initial;
-            justify-content: center;
-            justify-content: space-between;
-            box-shadow: 0 3px 2px -2px rgba(0, 0, 0, 0.1);
+        &__panel {
+            &-top {
+                flex-basis: 40px;
+                padding: 0;
+                width: 100%;
+                display: flex;
+                position: initial;
+                justify-content: center;
+                justify-content: space-between;
+                box-shadow: 0 3px 2px -2px rgba(0, 0, 0, 0.1);
+                
+            }
+            &-right {
+                flex-basis: 330px;
+                position: relative;
+                overflow-y: auto;
+                box-shadow: -3px 0 2px -2px rgba(0, 0, 0, 0.1);
+            }
+            &-left {
+                flex-basis: 220px;
+                position: relative;
+                overflow-y: auto;
+                box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
+            }
+            &-row {
+                display: flex;
+                justify-content: flex-start;
+                align-items: stretch;
+                flex-wrap: nowrap;
+                flex-grow: 1;
+                overflow: hidden;
+
+                & .layout__panel-editor {
+                    flex-grow: 1;
+                    margin: 0.25rem;
+                    padding: 0.25rem;
+                }
+            }
         }
-        &__panel-row {
-            display: flex;
-            justify-content: flex-start;
-            align-items: stretch;
-            flex-wrap: nowrap;
-            flex-grow: 1;
-        }
-    }
-    & .panel__left {
-        flex-basis: 230px;
-        position: relative;
-        overflow-y: auto;
-        box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
-    }
-    & .panel__right {
-        flex-basis: 230px;
-        position: relative;
-        overflow-y: auto;
-        box-shadow: -3px 0 2px -2px rgba(0, 0, 0, 0.1);
     }
 
-    & .editor-row {
-        display: flex;
-        justify-content: flex-start;
-        align-items: stretch;
-        flex-wrap: nowrap;
-        flex-grow: 1;
-
-        & .editor-canvas {
-            flex-grow: 1;
-            margin: 0.25rem;
-            padding: 0.25rem;
-        }
-    }
 }
 
 .panel__basic-actions {

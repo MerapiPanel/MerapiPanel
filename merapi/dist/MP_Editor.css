@@ -26,6 +26,7 @@
   width: 100vw;
 }
 .container__editor .layout__panel-top {
+  flex-basis: 40px;
   padding: 0;
   width: 100%;
   display: flex;
@@ -34,33 +35,27 @@
   justify-content: space-between;
   box-shadow: 0 3px 2px -2px rgba(0, 0, 0, 0.1);
 }
+.container__editor .layout__panel-right {
+  flex-basis: 330px;
+  position: relative;
+  overflow-y: auto;
+  box-shadow: -3px 0 2px -2px rgba(0, 0, 0, 0.1);
+}
+.container__editor .layout__panel-left {
+  flex-basis: 220px;
+  position: relative;
+  overflow-y: auto;
+  box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
+}
 .container__editor .layout__panel-row {
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
   flex-wrap: nowrap;
   flex-grow: 1;
+  overflow: hidden;
 }
-.container__editor .panel__left {
-  flex-basis: 230px;
-  position: relative;
-  overflow-y: auto;
-  box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
-}
-.container__editor .panel__right {
-  flex-basis: 230px;
-  position: relative;
-  overflow-y: auto;
-  box-shadow: -3px 0 2px -2px rgba(0, 0, 0, 0.1);
-}
-.container__editor .editor-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-  flex-wrap: nowrap;
-  flex-grow: 1;
-}
-.container__editor .editor-row .editor-canvas {
+.container__editor .layout__panel-row .layout__panel-editor {
   flex-grow: 1;
   margin: 0.25rem;
   padding: 0.25rem;

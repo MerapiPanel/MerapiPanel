@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import 'grapesjs/dist/css/grapes.min.css';
 import '../style.scss';
-import grapesjs, { Editor } from 'grapesjs';
+import grapesjs, { EditorConfig } from 'grapesjs';
+import { EditorProps, EditorState } from '../_define';
 
 
 
-const Options = {
+const Options: EditorConfig = {
     fromElement: true,
     height: '100%',
     storageManager: false,
@@ -27,20 +28,11 @@ const Options = {
 };
 
 
-
-
-type onReady = (editor: Editor) => void
-
-
-
-interface EditorProps {
-    onReady: onReady
+const setOptions = (options: Partial<EditorConfig>) => {
+    Object.assign(Options, options);
 }
 
-
-
-// Define the type for the state variable
-type EditorState = Editor | null;
+const getOptions = () => Options;
 
 
 
@@ -48,12 +40,18 @@ type EditorState = Editor | null;
 const EditorPanel = ({ onReady }: EditorProps) => {
 
     const [editor, setEditor] = useState<EditorState>(null);
-
+    const [delay, setDelay] = useState(10);
 
 
     useEffect(() => {
 
         if (editor !== null) return;
+
+        if (delay > 0) {
+            console.log(delay);
+            setDelay(delay - 1);
+            return;
+        }
 
         Object.assign(Options, {
             container: '#editor',
@@ -64,7 +62,20 @@ const EditorPanel = ({ onReady }: EditorProps) => {
         setEditor(initializedEditor);
         onReady(initializedEditor);
 
-    }, [editor]);
+
+        initializedEditor.Commands.add('set-device-desktop', {
+            run: editor => editor.setDevice('Desktop')
+        });
+        initializedEditor.Commands.add('set-device-tablet', {
+            run: editor => editor.setDevice('Tablet')
+        })
+        initializedEditor.Commands.add('set-device-mobile', {
+            run: editor => editor.setDevice('Mobile')
+        });
+
+        initializedEditor.setComponents('<h1>Hello World</h1><p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p><div><img src="/merapi/base/assets/img/image-damaged.png" width="400" height="400" alt=""></div>');
+
+    }, [delay, editor]);
 
 
 
@@ -74,7 +85,8 @@ const EditorPanel = ({ onReady }: EditorProps) => {
 }
 
 
-
-
 export default EditorPanel;
-export type { onReady, EditorProps, EditorState };
+export {
+    setOptions,
+    getOptions
+}
