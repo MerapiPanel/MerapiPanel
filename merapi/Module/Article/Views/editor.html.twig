@@ -7,7 +7,7 @@
 
 {% block stylesheet %}
 {{ parent() }}
-<link rel="stylesheet" href="/merapi/dist/editor.css">
+<link rel="stylesheet" href="/merapi/dist/MP_Editor.css">
 <style>
     html,
     body {
@@ -51,16 +51,11 @@
 
 
 
-{% block head_javascript %}
-{{ parent() }}
-<script src="{{ '/merapi/dist/editor.bundle.js' }}"></script>
-{% endblock %}
-
-
-
 {% block body %}
 
-<div class="editor_panels">
+<div id="root"></div>
+
+{# <div class="editor_panels">
     <div class="panel__top">
         <div class="panel__basic-actions"></div>
         <div class="panel__devices"></div>
@@ -85,10 +80,8 @@
         </div>
     </div>
 </div>
-<div id="blocks"></div>
-<script>
-    const editor = MP_Editor.init({
-        selector: "#editor",
-    })
-</script>
+<div id="blocks"></div> #}
+
+
+<script src="{{ '/merapi/dist/MP_Editor.bundle.js' }}"></script>
 {% endblock %}

@@ -9,13 +9,11 @@ const stylesHandler = MiniCssExtractPlugin.loader;
 
 const entry = () => {
 
-    const entryFiles = glob.sync('./merapi/src/*.js').reduce((acc, item) => {
-
+    const entryFiles = glob.sync('./merapi/src/*.{js,ts,tsx}').reduce((acc, item) => {
         const file = `./${item}`;
-        const name = path.basename(file).replace(".js", "");
-        if (name.endsWith("bundle")) return;
+        const name = path.basename(file).replace(/\.[jt]sx?$/, "");
+        if (name.endsWith("bundle")) return acc;
         acc[name] = file;
-
         return acc;
     }, {});
 
@@ -44,6 +42,12 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.(js|ts|tsx)$/i,
+                exclude: /node_modules/,
+                use: "babel-loader"
+                
+            },
+            {
                 test: require.resolve("jquery"),
                 use: [{
                     loader: 'expose-loader',
@@ -62,11 +66,6 @@ module.exports = {
             {
                 test: /\.css$/i,
                 use: [stylesHandler, 'css-loader', 'postcss-loader'],
-            },
-            {
-                test: /\.tsx?$/,
-                use: 'babel-loader',
-                exclude: /node_modules/,
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,

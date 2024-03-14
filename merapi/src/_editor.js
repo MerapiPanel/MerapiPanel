@@ -26,7 +26,6 @@ const MP_Editor = {
             container: this.element,
             fromElement: true,
             height: '100%',
-
             storageManager: false,
 
             deviceManager: {
