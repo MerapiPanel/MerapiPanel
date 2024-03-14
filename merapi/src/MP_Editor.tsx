@@ -2,48 +2,23 @@ import React, { useState, StrictMode } from 'react';
 import { createRoot } from "react-dom/client";
 import LayoutPanelTop from './editor/LayoutPanelTop';
 import LayoutEditorRow from './editor/LayoutEditorRow';
-import "./editor/style.scss";
-import { EditorConfig } from 'grapesjs';
-
-
-const options: EditorConfig = {
-    fromElement: true,
-    height: '100%',
-    storageManager: false,
-    deviceManager: {
-        devices: [{
-            name: 'Desktop',
-            width: '1280px', // default size
-        }, {
-            name: 'Tablet',
-            width: '768px', // this value will be used on canvas width
-            widthMedia: '1024px', // this value will be used in CSS @media
-        }, {
-            name: 'Mobile',
-            width: '320px', // this value will be used on canvas width
-            widthMedia: '480px', // this value will be used in CSS @media
-        }]
-    },
-    panels: {
-        defaults: []
-    }
-}
-
+import { Editor } from 'grapesjs';
+import { EditorState } from './editor/panels/EditorPanel';
 
 
 const MP_Editor = () => {
 
-    const [editor, setEditor] = useState(null);
+    const [editor, setEditor] = useState<EditorState>(null);
 
-    function handleOnReady(editor) {
+    function handleOnReady(editor: Editor) {
         setEditor(editor);
     }
 
     return (
         <>
             <div className="container__editor">
-                <LayoutPanelTop editor={editor} options={options} />
-                <LayoutEditorRow onReady={handleOnReady} options={options} />
+                <LayoutPanelTop editor={editor} />
+                <LayoutEditorRow onReady={handleOnReady} />
             </div>
         </>
     );
@@ -51,7 +26,7 @@ const MP_Editor = () => {
 
 
 
-const root = createRoot(document.getElementById('root'));
+const root = createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
     <StrictMode>

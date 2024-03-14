@@ -1,26 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import 'grapesjs/dist/css/grapes.min.css';
-import grapesjs from 'grapesjs';
+import '../style.scss';
+import grapesjs, { Editor } from 'grapesjs';
 
-const EditorPanel = ({ onReady, options }) => {
 
-    const [editor, setEditor] = useState(null);
+
+const Options = {
+    fromElement: true,
+    height: '100%',
+    storageManager: false,
+    deviceManager: {
+        devices: [{
+            name: 'Desktop',
+            width: '1280px',
+        }, {
+            name: 'Tablet',
+            width: '768px',
+            widthMedia: '1024px',
+        }, {
+            name: 'Mobile',
+            width: '320px',
+            widthMedia: '480px',
+        }]
+    },
+    panels: { defaults: [] },
+};
+
+
+
+
+type onReady = (editor: Editor) => void
+
+
+
+interface EditorProps {
+    onReady: onReady
+}
+
+
+
+// Define the type for the state variable
+type EditorState = Editor | null;
+
+
+
+
+const EditorPanel = ({ onReady }: EditorProps) => {
+
+    const [editor, setEditor] = useState<EditorState>(null);
 
 
 
     useEffect(() => {
+
         if (editor !== null) return;
-        setTimeout(() => {
 
-            Object.assign(options, { container: '#editor' });
-            console.log(options);
+        Object.assign(Options, {
+            container: '#editor',
+        });
 
-            const initializedEditor = grapesjs.init(options);
+        const initializedEditor = grapesjs.init(Options);
 
-            setEditor(initializedEditor as any);
-            onReady(initializedEditor);
-        }, 1000);
-        
+        setEditor(initializedEditor);
+        onReady(initializedEditor);
+
     }, [editor]);
 
 
@@ -30,4 +73,8 @@ const EditorPanel = ({ onReady, options }) => {
     )
 }
 
+
+
+
 export default EditorPanel;
+export type { onReady, EditorProps, EditorState };

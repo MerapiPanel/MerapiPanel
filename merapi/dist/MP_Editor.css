@@ -25,7 +25,7 @@
   height: 100vh;
   width: 100vw;
 }
-.container__editor .panel__top {
+.container__editor .layout__panel-top {
   padding: 0;
   width: 100%;
   display: flex;
@@ -34,12 +34,12 @@
   justify-content: space-between;
   box-shadow: 0 3px 2px -2px rgba(0, 0, 0, 0.1);
 }
-.container__editor .panel__top .panel__devices {
-  position: initial;
-  border: #444 1px solid;
-  border-radius: 10rem;
-  align-self: center;
-  padding: 0;
+.container__editor .layout__panel-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  flex-grow: 1;
 }
 .container__editor .panel__left {
   flex-basis: 230px;
