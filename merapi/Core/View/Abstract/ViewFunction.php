@@ -19,4 +19,9 @@ class ViewFunction extends AbstractExtension
 
         return $regs;
     }
+
+    public function time()
+    {
+        return time();
+    }
 }

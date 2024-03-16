@@ -4,6 +4,7 @@ import { setOptions } from "./EditorPanel";
 import StyleContainer from "./containers/StylesContainer";
 import TraitsContainer from "./containers/TraitsContainer";
 import { Editor } from "grapesjs";
+import SelectedContainer from "./containers/SelectedContainer";
 
 
 
@@ -41,9 +42,9 @@ const RightPanel = ({ editor }: PanelProps) => {
 
         editor.Commands.add('show-styles', {
 
-           getEl(editor: Editor): HTMLElement|null|undefined {
-               return editor?.getContainer()?.closest('.layout__panel-row')?.querySelector('.styles-container');
-           },
+            getEl(editor: Editor): HTMLElement | null | undefined {
+                return editor?.getContainer()?.closest('.layout__panel-row')?.querySelector('.container-styles');
+            },
 
             run(editor, sender) {
                 const smEl = this.getEl(editor);
@@ -56,8 +57,8 @@ const RightPanel = ({ editor }: PanelProps) => {
         });
 
         editor.Commands.add('show-traits', {
-            getEl(editor: Editor): HTMLElement|null|undefined {
-                return editor?.getContainer()?.closest('.layout__panel-row')?.querySelector('.traits-container');
+            getEl(editor: Editor): HTMLElement | null | undefined {
+                return editor?.getContainer()?.closest('.layout__panel-row')?.querySelector('.container-traits');
             },
             run(editor: Editor, sender) {
                 this.getEl(editor).style.display = '';
@@ -72,6 +73,7 @@ const RightPanel = ({ editor }: PanelProps) => {
 
     return (
         <div className="layout__panel-right">
+            <SelectedContainer editor={editor} />
             <StyleContainer editor={editor} />
             <TraitsContainer editor={editor} />
         </div>

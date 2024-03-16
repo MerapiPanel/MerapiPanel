@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'grapesjs/dist/css/grapes.min.css';
 import '../style.scss';
-import grapesjs, { EditorConfig } from 'grapesjs';
+import grapesjs, { Editor, EditorConfig } from 'grapesjs';
 import { EditorProps, EditorState } from '../_define';
 
 
@@ -13,7 +13,7 @@ const Options: EditorConfig = {
     deviceManager: {
         devices: [{
             name: 'Desktop',
-            width: '1280px',
+            width: '',
         }, {
             name: 'Tablet',
             width: '768px',
@@ -36,22 +36,30 @@ const getOptions = () => Options;
 
 
 
+// Function to select the body block
+function selectBodyBlock(editor: Editor) {
+    editor.select(editor.DomComponents.getWrapper());
+}
+
 
 const EditorPanel = ({ onReady }: EditorProps) => {
 
     const [editor, setEditor] = useState<EditorState>(null);
-    const [delay, setDelay] = useState(10);
+    const [count, setCount] = useState(5);
 
 
     useEffect(() => {
 
-        if (editor !== null) return;
+        if (count > 0) {
+            setTimeout(() => {
+                console.log(count);
+                setCount(count - 1);
+            }, 200);
 
-        if (delay > 0) {
-            console.log(delay);
-            setDelay(delay - 1);
             return;
         }
+
+        if (editor !== null) return;
 
         Object.assign(Options, {
             container: '#editor',
@@ -73,9 +81,13 @@ const EditorPanel = ({ onReady }: EditorProps) => {
             run: editor => editor.setDevice('Mobile')
         });
 
-        initializedEditor.setComponents('<h1>Hello World</h1><p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p><div><img src="/merapi/base/assets/img/image-damaged.png" width="400" height="400" alt=""></div>');
+        initializedEditor.setComponents('<h1 class="block__title">Hello World</h1><p class="block__content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p><div class="block__image-container"><img class="block__image w-full" src="/merapi/base/assets/img/image-damaged.png" width="400" height="400" alt=""></div>');
 
-    }, [delay, editor]);
+        initializedEditor.on("load", () => {
+            selectBodyBlock(initializedEditor);
+        })
+
+    }, [count, editor]);
 
 
 

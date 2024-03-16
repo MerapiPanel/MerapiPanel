@@ -7,12 +7,12 @@ const TraitsContainer = ({ editor }: PanelProps) => {
 
     setOptions({
         traitManager: {
-            appendTo: '.traits-container',
+            appendTo: '.container-traits',
         }
     })
 
     return (
-        <div className="traits-container" style={{ display: 'none' }}></div>
+        <div className="container-traits" style={{ display: 'none' }}></div>
     )
 }
 

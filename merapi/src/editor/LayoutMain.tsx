@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Editor, EditorConfig } from 'grapesjs';
-import LayoutPanelTop from './LayoutPanelTop';
-import LayoutEditorRow from './LayoutEditorRow';
+import LayoutTop from './LayoutTop';
+import LayoutRow from './LayoutRow';
 import { EditorState } from './_define';
 
 
@@ -16,8 +16,8 @@ const LayoutMain = () => {
 
     return (
         <>
-            <LayoutPanelTop editor={editor} />
-            <LayoutEditorRow onReady={handleOnReady} />
+            <LayoutTop editor={editor} />
+            <LayoutRow onReady={handleOnReady} />
         </>
     )
 }

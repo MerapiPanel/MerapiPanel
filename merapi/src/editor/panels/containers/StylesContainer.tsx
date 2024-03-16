@@ -6,10 +6,10 @@ const StylesContainer = ({ editor }: PanelProps) => {
 
     setOptions({
         selectorManager: {
-            appendTo: '.styles-container'
+            appendTo: '.container-styles'
         },
         styleManager: {
-            appendTo: '.styles-container',
+            appendTo: '.container-styles',
             // sectors: [{
             //     name: 'Dimension',
             //     open: false,
@@ -23,7 +23,7 @@ const StylesContainer = ({ editor }: PanelProps) => {
             //             type: 'integer',
             //             name: 'The width', // Label for the property
             //             property: 'width', // CSS property (if buildProps contains it will be extended)
-            //             units: ['px', '%', 'em', 'rem','vw', 'vh'], // Units, available only for 'integer' types
+            //             units: ['px', '%', 'em', 'rem', 'vw', 'vh'], // Units, available only for 'integer' types
             //             defaults: 'auto', // Default value
             //             min: 0, // Min value, available only for 'integer' types
             //         } as any
@@ -49,10 +49,16 @@ const StylesContainer = ({ editor }: PanelProps) => {
             //     ]
             // }]
         },
+        colorPicker: {
+            appendTo: 'parent',
+            containerClassName: 'color-picker',
+            togglePaletteOnly: false,
+            offset: { top: 26, left: -180, },
+        },
     })
 
     return (
-        <div className='styles-container'></div>
+        <div className='container-styles'></div>
     )
 }
 

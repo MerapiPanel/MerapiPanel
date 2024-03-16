@@ -7,7 +7,7 @@
 
 {% block stylesheet %}
 {{ parent() }}
-<link rel="stylesheet" href="/merapi/dist/MP_Editor.css">
+<link rel="stylesheet" href="/merapi/dist/MP_Editor.css?v={{ time() }}">
 <style>
     html,
     body {
@@ -54,34 +54,6 @@
 {% block body %}
 
 <div id="root"></div>
-
-{# <div class="editor_panels">
-    <div class="panel__top">
-        <div class="panel__basic-actions"></div>
-        <div class="panel__devices"></div>
-        <div class="panel__switcher"></div>
-    </div>
-    <div class="editor-row">
-        <div class="panel__left">
-            <div class="layers-container"></div>
-        </div>
-
-        <div class="editor-canvas">
-            <div id="editor">
-                <h1>Hallo World</h1>
-                <div>
-                    <img src="/merapi/base/assets/img/image-damaged.png" width="400" height="400" alt="">
-                </div>
-            </div>
-        </div>
-        <div class="panel__right">
-            <div class="styles-container"></div>
-            <div class="traits-container"></div>
-        </div>
-    </div>
-</div>
-<div id="blocks"></div> #}
-
 
 <script src="{{ '/merapi/dist/MP_Editor.bundle.js' }}"></script>
 {% endblock %}
