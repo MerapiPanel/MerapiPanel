@@ -32,7 +32,9 @@ const SelectedContainer = ({ editor }: PanelProps) => {
 
             setIcon(_icon);
         });
-    })
+    }, [editor]);
+
+
     return (
         <div className="container-selected">
             <div className="component-icon" dangerouslySetInnerHTML={{ __html: icon }}></div>

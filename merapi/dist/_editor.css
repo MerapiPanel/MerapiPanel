@@ -7,10 +7,16 @@
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./merapi/src/editor/style.scss ***!
   \*****************************************************************************************************************************************************************/
 /* Reset some default styling */
-.gjs-cv-canvas {
+.gjs-editor {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.gjs-editor .gjs-cv-canvas {
   top: 0;
   width: 100%;
   height: 100%;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 .gjs-block {
@@ -67,6 +73,7 @@
   position: relative;
   flex-basis: 220px;
   overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
 }
 .container__editor .layout__panel-left .layers-breadcrumb {
@@ -265,4 +272,55 @@
 .gjs-layer.gjs-hovered .gjs-layer-children .gjs-layer-item {
   background-color: rgba(20, 86, 176, 0.2) !important;
   color: #fff !important;
+}
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 900;
+  transition: 1s;
+  opacity: 1;
+}
+.loading-screen.hide {
+  opacity: 0;
+}
+.loading-progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.loading-progress .progressbar {
+  --MP-loading-width: 0%;
+  width: 400px;
+  height: 7px;
+  background-color: #ccc;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  animation: 600ms linear 0s infinite normal none running loading_progress-blink;
+}
+.loading-progress .progressbar::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--MP-loading-width);
+  height: 100%;
+  background-color: #333;
+  animation: progress 2s linear infinite;
+  transition: 0.5s;
+}
+@keyframes loading_progress-blink {
+  from {
+    background-color: #ccc;
+  }
+  to {
+    background-color: #ebebeb;
+  }
 }

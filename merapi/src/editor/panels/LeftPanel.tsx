@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Component, Editor } from "grapesjs";
 import { PanelProps } from "../_define";
-import { setOptions } from "./EditorPanel";
 import LayersContainer from "./containers/LayersContainer";
 import { Button } from "grapesjs";
 import ReactDomServer from "react-dom/server";
@@ -102,6 +101,7 @@ const LeftPanel = ({ editor }: PanelProps) => {
             run(editor: Editor) {
 
                 console.log(this.getEl());
+
                 if (this.getEl().classList.contains('layout-opened')) {
                     this.getEl().classList.remove('layout-opened');
                     this.getEl().classList.add('layout-closed');
@@ -113,7 +113,7 @@ const LeftPanel = ({ editor }: PanelProps) => {
         });
 
 
-    });
+    }, [editor]);
 
 
     return (

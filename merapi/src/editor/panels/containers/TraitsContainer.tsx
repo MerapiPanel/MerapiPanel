@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { PanelProps } from "../../_define";
-import { setOptions } from "../EditorPanel";
+import { useOptions } from "../../provider/Options";
 
 
 const TraitsContainer = ({ editor }: PanelProps) => {
 
+    const { setOptions } = useOptions();
+
     setOptions({
-        traitManager: {
-            appendTo: '.container-traits',
+        editorOptions: {
+            traitManager: {
+                appendTo: '.container-traits',
+            }
         }
-    })
+    });
 
     return (
         <div className="container-traits" style={{ display: 'none' }}></div>

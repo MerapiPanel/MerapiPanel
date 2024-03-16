@@ -3,37 +3,7 @@ import 'grapesjs/dist/css/grapes.min.css';
 import '../style.scss';
 import grapesjs, { Editor, EditorConfig } from 'grapesjs';
 import { EditorProps, EditorState } from '../_define';
-
-
-
-const Options: EditorConfig = {
-    fromElement: true,
-    height: '100%',
-    storageManager: false,
-    deviceManager: {
-        devices: [{
-            name: 'Desktop',
-            width: '',
-        }, {
-            name: 'Tablet',
-            width: '768px',
-            widthMedia: '1024px',
-        }, {
-            name: 'Mobile',
-            width: '320px',
-            widthMedia: '480px',
-        }]
-    },
-    panels: { defaults: [] },
-};
-
-
-const setOptions = (options: Partial<EditorConfig>) => {
-    Object.assign(Options, options);
-}
-
-const getOptions = () => Options;
-
+import { useOptions } from '../provider/Options';
 
 
 // Function to select the body block
@@ -46,6 +16,7 @@ const EditorPanel = ({ onReady }: EditorProps) => {
 
     const [editor, setEditor] = useState<EditorState>(null);
     const [count, setCount] = useState(5);
+    const { editorOptions, setOptions } = useOptions();
 
 
     useEffect(() => {
@@ -61,11 +32,11 @@ const EditorPanel = ({ onReady }: EditorProps) => {
 
         if (editor !== null) return;
 
-        Object.assign(Options, {
-            container: '#editor',
-        });
+        if (!editorOptions.container) {
+            editorOptions.container = '#editor';
+        }
 
-        const initializedEditor = grapesjs.init(Options);
+        const initializedEditor = grapesjs.init(editorOptions);
 
         setEditor(initializedEditor);
         onReady(initializedEditor);
@@ -85,6 +56,15 @@ const EditorPanel = ({ onReady }: EditorProps) => {
 
         initializedEditor.on("load", () => {
             selectBodyBlock(initializedEditor);
+        });
+
+        setOptions({
+            progress: 100
+        });
+
+
+        document.addEventListener('click', () => {
+            initializedEditor.select();
         })
 
     }, [count, editor]);
@@ -98,7 +78,3 @@ const EditorPanel = ({ onReady }: EditorProps) => {
 
 
 export default EditorPanel;
-export {
-    setOptions,
-    getOptions
-}

@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { PanelProps } from "../../_define";
-import { setOptions } from "../EditorPanel";
+import { Options, useOptions } from "../../provider/Options";
 
 const LayersContainer = ({ editor }: PanelProps) => {
 
+    const { setOptions } = useOptions();
+
     setOptions({
-        layerManager: {
-            appendTo: '.container-layers',
+        editorOptions: {
+            layerManager: {
+                appendTo: '.container-layers',
+            }
         }
     });
+
 
     return (
         <div className="container-layers"></div>

@@ -1,6 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { PanelProps , EditorProps} from './_define';
+import { PanelProps, EditorProps } from './_define';
+import { Device } from './provider/Options';
+import { ButtonProps, Editor } from 'grapesjs';
 
+
+
+
+
+const updateDeviceUI = (editor: Editor) => {
+
+    const devices: Array<Device> = editor.Devices.getDevices();
+
+    editor.Panels.addPanel({
+        id: 'panel-devices',
+        el: '.panel__devices',
+        buttons: devices.map((device) => {
+
+            editor.Commands.add('set-device-' + device.get("name")?.toLowerCase(), {
+                run: (editor: Editor) => editor.setDevice(device.get("name") as any),
+                stop: () => {}
+            });
+
+            return {
+                id: 'device-' + device.get("name")?.toLowerCase(),
+                label: `<i class="fa-solid ${device.get("icon" as any)}"></i>`,
+                command: 'set-device-' + device.get("name")?.toLowerCase(),
+                active: (device.get("name")?.toLowerCase() == "desktop" ? true : false),
+                togglable: false
+            } as ButtonProps
+
+
+        }),
+    });
+}
 
 
 const LayoutTop = ({ editor }: PanelProps) => {
@@ -47,7 +79,9 @@ const LayoutTop = ({ editor }: PanelProps) => {
             ],
         });
 
-    });
+        updateDeviceUI(editor);
+
+    }, [editor, updateDeviceUI]);
 
     return (
         <div className="layout__panel-top">

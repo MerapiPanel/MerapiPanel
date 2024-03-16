@@ -1,28 +1,38 @@
-import React, { useState } from 'react';
-import EditorPanel, { setOptions } from './panels/EditorPanel';
-import { Editor } from 'grapesjs';
-import { EditorProps, EditorState } from './_define';
-import LeftPanel from './panels/LeftPanel';
-import RightPanel from './panels/RightPanel';
+import React, { useEffect } from 'react';
+import { LayoutProps } from './Layout';
+import { CanvasProps } from './Canvas';
+
+interface Props {
+    children?: React.ReactElement<LayoutProps|CanvasProps>[];
+}
 
 
+// const LayoutRow = ({ onReady }: EditorProps) => {
+
+//     const [editor, setEditor] = useState<EditorState>(null);
+
+//     function handleOnReady(editor: Editor) {
+//         onReady(editor);
+//         setEditor(editor);
+//     }
 
 
-const LayoutRow = ({ onReady }: EditorProps) => {
+//     return (
+//         <div className="layout__panel-row">
+//             <LeftPanel editor={editor} />
+//             <EditorPanel onReady={handleOnReady} />
+//             <RightPanel editor={editor} />
+//         </div>
+//     );
+// };
 
-    const [editor, setEditor] = useState<EditorState>(null);
+const LayoutRow = (props: Props) => {
 
-    function handleOnReady(editor: Editor) {
-        onReady(editor);
-        setEditor(editor);
-    }
 
 
     return (
-        <div className="layout__panel-row">
-            <LeftPanel editor={editor} />
-            <EditorPanel onReady={handleOnReady} />
-            <RightPanel editor={editor} />
+        <div className="editor__layout-row">
+            {props.children}
         </div>
     );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { PanelProps } from "../_define";
-import { setOptions } from "./EditorPanel";
 import StyleContainer from "./containers/StylesContainer";
 import TraitsContainer from "./containers/TraitsContainer";
 import { Editor } from "grapesjs";
@@ -9,8 +8,6 @@ import SelectedContainer from "./containers/SelectedContainer";
 
 
 const RightPanel = ({ editor }: PanelProps) => {
-
-
 
     useEffect(() => {
         if (editor === null) return;
@@ -68,7 +65,7 @@ const RightPanel = ({ editor }: PanelProps) => {
             },
         });
 
-    })
+    }, [editor]);
 
 
     return (
