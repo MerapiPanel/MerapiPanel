@@ -1,6 +1,11 @@
 {
-    "$schema": "https://raw.githubusercontent.com/MerapiPanel/MerapiPanel/main/schema/block.json",
-    "attribute": {
-        ""
-    }
+    "$schema": "https://raw.githubusercontent.com/MerapiPanel/MerapiPanel/main/schema/block.json?v=1.0.0",
+    "name": "Group",
+    "attribute": [
+        {
+            "name": "love",
+            "type": "uugygb",
+            "default": "hhhhhh"
+        }
+    ]
 }

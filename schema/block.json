@@ -15,7 +15,6 @@
                         "type": "string"
                     },
                     "type": {
-                        "type": "string",
                         "anyOf": [
                             {
                                 "type": "number"
