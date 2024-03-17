@@ -35,17 +35,6 @@ const MP_Editor = () => {
         },
     }
 
-    // return (
-    //     <>
-    //         <OptionsProvider>
-    //             <div className="container__editor">
-    //                 <LayoutMain />
-    //             </div>
-    //             <LoadingScreen />
-    //         </OptionsProvider>
-    //     </>
-    // );
-
     const onReadyHandle = (editor: Editor) => {
 
         editor.Commands.add('set-device-desktop', {
@@ -119,7 +108,13 @@ const MP_Editor = () => {
                     <LayersContainer />
                 </Layout>
 
-                <Canvas></Canvas>
+                <Canvas>
+                    <h1>Canvas</h1>
+                    <div className="image-container">
+                        <img src="https://picsum.photos/200/300" alt="Random Image" />
+                    </div>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas amet quia atque sunt, maiores ducimus, earum non minus provident quas dolores. Modi neque nostrum aut nihil dolorem reiciendis officia ab!</p>
+                </Canvas>
 
                 <Layout className='layout-right'>
 
