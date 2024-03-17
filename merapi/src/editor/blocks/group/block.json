@@ -1,11 +1,37 @@
 {
-    "$schema": "https://raw.githubusercontent.com/MerapiPanel/MerapiPanel/main/schema/block.json?v=1.0.1",
+    "$schema": "file:///F:/web/MerapiPanel/schema/block.json",
     "name": "Group",
-    "attribute": [
+    "attributes": [
         {
-            "name": "love",
+            "name": "title",
             "type": "string",
-            "default": null
+            "default": "Hallo World"
+        },
+        {
+            "name": "length",
+            "type": "number",
+            "default": 0
+        },
+        {
+            "name": "withoutTitle",
+            "type": "boolean",
+            "default": false
+        },
+        {
+            "name": "colors",
+            "type": "array",
+            "default": [
+                "red",
+                "green",
+                "blue"
+            ]
         }
-    ]
+    ],
+    "options": {
+        "droppable": true,
+        "children": [
+            "core/paragraph",
+            "core/heading"
+        ]
+    }
 }

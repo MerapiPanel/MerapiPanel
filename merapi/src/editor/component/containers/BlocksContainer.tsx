@@ -4,6 +4,9 @@ import { useRoot } from "../../RootEditor";
 import './BlocksContainer.scss';
 
 
+/**
+ * Blocks Container
+ */
 export const BlocksContainer = (props: ContainerProps) => {
 
     const { editor, config } = useRoot();
