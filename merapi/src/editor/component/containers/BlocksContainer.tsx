@@ -30,10 +30,32 @@ export const BlocksContainer = (props: ContainerProps) => {
     useEffect(() => {
         if (editor == null) return;
 
+        editor.BlockManager
+        editor.BlockManager.add('header', {
+            label: 'Header',
+            category: 'Basic',
+            attributes: { class: 'fa fa-header' },
+            content: "<h1>Header</h1>",
+            
+        });
+
+        editor.Components.addType('header', {
+            isComponent: (el) => el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'H5' || el.tagName === 'H6',
+            model: {
+                tagName: 'h1',
+                droppable: false,
+                attributes: { // Default attributes
+                    type: 'text',
+                    name: 'default-name',
+                    placeholder: 'Insert text here',
+                },
+            }
+        });
+
     }, [editor]);
 
     return (
-        <div className="blocks-container" id={props.id}>
+        <div className="blocks-container hide" id={props.id}>
             {props.children}
         </div>
     )

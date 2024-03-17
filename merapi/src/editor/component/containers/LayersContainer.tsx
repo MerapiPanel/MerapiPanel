@@ -12,7 +12,7 @@ const LayersContainer = (props: ContainerProps) => {
     }
 
     return (
-        <div className="container-layers" id={props.id} ></div>
+        <div className="container-layers hide" id={props.id} ></div>
     )
 }
 
