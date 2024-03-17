@@ -64,7 +64,11 @@
                     "default": {
                         "type": "null"
                     }
-                }
+                },
+                "required": [
+                    "name",
+                    "type"
+                ]
             }
         }
     },
