@@ -17,6 +17,7 @@ export const Canvas = (props: any) => {
     return (
         <div ref={canvasRef} className="editor__canvas">
             <h1>Canvas</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas amet quia atque sunt, maiores ducimus, earum non minus provident quas dolores. Modi neque nostrum aut nihil dolorem reiciendis officia ab!</p>
         </div>
     )
 }

@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { LayoutProps } from './Layout';
 import { CanvasProps } from './Canvas';
 
-interface Props {
-    children?: React.ReactElement<LayoutProps|CanvasProps>[];
+interface LayoutRowProps {
+    children?: React.ReactElement<LayoutProps | CanvasProps>[]
+    clasaName?: string
 }
 
 
@@ -26,12 +27,12 @@ interface Props {
 //     );
 // };
 
-const LayoutRow = (props: Props) => {
+const LayoutRow = (props: LayoutRowProps) => {
 
 
 
     return (
-        <div className="editor__layout-row">
+        <div className={"merapi__editor--layout-row" + (props.clasaName ? " " + props.clasaName : "")}>
             {props.children}
         </div>
     );

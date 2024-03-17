@@ -1,11 +1,13 @@
 import React from "react";
 
 interface ContainerProps {
+    children?: React.ReactElement<any>[]
 }
 
-const Container = () => {
+const Container = (props: ContainerProps) => {
     return (
         <>
+            {props.children}
         </>
     )
 }
