@@ -1,3 +1,6 @@
 {
-    "$schema": ""
+    "$schema": "https://raw.githubusercontent.com/MerapiPanel/MerapiPanel/main/schema/block.json",
+    "attribute": {
+        ""
+    }
 }
