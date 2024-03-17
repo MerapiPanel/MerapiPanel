@@ -1,17 +1,13 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
-import { useOptions } from "../provider/Options";
+import { useRoot } from "../RootEditor";
 
 
 const LoadingScreen = () => {
 
-    const { progress, setOptions } = useOptions();
-
+    const { progress } = useRoot();
 
     useEffect(() => {
-
         console.log("PROGRESS", progress);
-
-
         if (progress === 100) {
             document.querySelector('.loading-screen')?.classList.add('hide');
             setTimeout(() => {
@@ -20,7 +16,7 @@ const LoadingScreen = () => {
         }
     }, [progress]);
 
-    
+
 
     return (
         <div className="loading-screen">

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import grapesjs, { Editor, EditorConfig } from "grapesjs";
-import "./style.scss";
 
 
 function isObject(item) {
@@ -99,9 +98,12 @@ const findCanvasTypeInChildren = (children, callback) => {
 
 
 interface IRoot {
-    canvasRef: React.RefObject<HTMLDivElement>
+    progress: number,
+    setProgress: React.Dispatch<React.SetStateAction<number>>,
+    canvasRef: React.RefObject<HTMLDivElement>,
     editor: Editor | null,
-    options: EditorConfig
+    setEditor: React.Dispatch<React.SetStateAction<Editor | null>>,
+    config: EditorConfig
 }
 const RootContext = createContext({} as IRoot);
 
@@ -122,40 +124,61 @@ interface RootProps {
 
 const RootEditor = (props: RootProps) => {
 
-    const canvasRef = useRef<HTMLDivElement>(null);
-    const [editor, setEditor] = useState(null);
-
+    const canvasRef = useRef<HTMLDivElement | null>(null);
+    const [editor, setEditor] = useState<Editor | null>(null);
+    const [count, setCount] = useState<number>(5);
+    const [progress, setProgress] = useState<number>(0);
 
     const initial: IRoot = {
+        progress,
+        setProgress,
         canvasRef: canvasRef,
-        editor: editor,
-        options: {
-            height: "100%",
-            width: "100%",
+        editor,
+        setEditor,
+        config: {
             fromElement: true,
+            height: '100%',
+            width: "100%",
+            storageManager: false,
             layerManager: {
                 stylePrefix: "merapi__editor-"
             },
             stylePrefix: "merapi__editor-",
-            // Disable the storage manager for the moment
-            storageManager: false,
+            cssIcons: undefined,
+            colorPicker: {
+                containerClassName: 'color-picker',
+            },
             // Avoid any default panel
             panels: { defaults: [] },
         }
     };
 
+
+
     useEffect(() => {
         if (props.config) {
-            initial.options = DeepMerge(initial.options, props.config);
+            initial.config = DeepMerge(initial.config, props.config);
         }
     }, [props.config]);
 
+
+
     useEffect(() => {
 
-        if (editor !== null) return;
-        initial.options.container = canvasRef.current as HTMLElement;
+        if (count > 0) {
+            setTimeout(() => { setCount(count - 1); setProgress(40 - (count * 100) / 20); }, 200);
 
-        const initialEditor = grapesjs.init(initial.options);
+            return;
+        }
+        if (canvasRef.current === null) {
+            console.error("cant find canvas component");
+            return;
+        }
+
+
+        initial.config.container = canvasRef.current as HTMLElement;
+
+        const initialEditor = grapesjs.init(initial.config);
         setEditor(initialEditor as any);
         initialEditor.onReady(() => {
             if (props.onReady) {
@@ -163,7 +186,9 @@ const RootEditor = (props: RootProps) => {
             }
         });
 
-    }, [canvasRef]);
+        setProgress(100);
+
+    }, [count, canvasRef]);
 
     return (
         <RootContext.Provider value={initial}>

@@ -40,8 +40,6 @@ const findButtonTypeInChildren = (children: any[], callback: Function) => {
 
 const registerPanel = (editor: Editor, id: string, btnProps: ButtonProps[]) => {
 
-    console.log("UPDATE UI", id);
-
     editor.Panels.addPanel({
         id,
         el: `#${id}`,
@@ -49,10 +47,12 @@ const registerPanel = (editor: Editor, id: string, btnProps: ButtonProps[]) => {
             return {
                 id: btn.id,
                 className: btn.className,
-                label: typeof btn.label === 'string' ? btn.label : renderToStaticMarkup(btn.label),
+                label: typeof btn.children === 'string' ? btn.children : renderToStaticMarkup(btn.children),
                 command: btn.command,
                 attributes: btn.attributes,
                 active: btn.active,
+                togglable: btn.togglable,
+                context: btn.context
             }
         }),
     });

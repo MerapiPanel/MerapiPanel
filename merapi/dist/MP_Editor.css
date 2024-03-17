@@ -1,6 +1,37 @@
-/*!*****************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./merapi/src/editor/style.scss ***!
-  \*****************************************************************************************************************************************************************/
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./merapi/src/editor/component/containers/SelectedContainer.scss ***!
+  \**************************************************************************************************************************************************************************************************/
+.container-selected {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  padding: 0.75rem 0.5rem;
+}
+.container-selected .component-name {
+  font-weight: 700;
+  color: #1491da;
+  margin-bottom: 0.35rem;
+  margin-left: 0.35rem;
+  text-transform: uppercase;
+}
+.container-selected .component-icon {
+  margin: 0.15rem;
+  color: #1491da;
+}
+/*!***********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./merapi/src/editor/component/containers/StyleContainer.scss ***!
+  \***********************************************************************************************************************************************************************************************/
+.container-styles {
+  display: flex;
+  flex-direction: column-reverse;
+}
+/*!**********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./merapi/src/editor/style/main.scss ***!
+  \**********************************************************************************************************************************************************************/
+/* Dark theme */
+/* Light: #573454 Dark: #3b2639 -moz-linear-gradient(top, #fca99b 0%, #6e2842 100%) */
+/* l: #d8d7db */
 /* stylelint-disable */
 /* BASICS */
 .CodeMirror {
@@ -1184,70 +1215,70 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 .merapi__editor-one-bg {
-  background-color: var(--merapi__editor-primary-color);
+  background-color: var(--gjs-primary-color);
 }
 .merapi__editor-one-color {
-  color: var(--merapi__editor-primary-color);
+  color: var(--gjs-primary-color);
 }
 .merapi__editor-one-color-h:hover {
-  color: var(--merapi__editor-primary-color);
+  color: var(--gjs-primary-color);
 }
 .merapi__editor-two-bg {
-  background-color: var(--merapi__editor-secondary-color);
+  background-color: var(--gjs-secondary-color);
 }
 .merapi__editor-two-color {
-  color: var(--merapi__editor-secondary-color);
+  color: var(--gjs-secondary-color);
 }
 .merapi__editor-two-color-h:hover {
-  color: var(--merapi__editor-secondary-color);
+  color: var(--gjs-secondary-color);
 }
 .merapi__editor-three-bg {
-  background-color: var(--merapi__editor-tertiary-color);
+  background-color: var(--gjs-tertiary-color);
 }
 .merapi__editor-three-color {
-  color: var(--merapi__editor-tertiary-color);
+  color: var(--gjs-tertiary-color);
 }
 .merapi__editor-three-color-h:hover {
-  color: var(--merapi__editor-tertiary-color);
+  color: var(--gjs-tertiary-color);
 }
 .merapi__editor-four-bg {
-  background-color: var(--merapi__editor-quaternary-color);
+  background-color: var(--gjs-quaternary-color);
 }
 .merapi__editor-four-color {
-  color: var(--merapi__editor-quaternary-color);
+  color: var(--gjs-quaternary-color);
 }
 .merapi__editor-four-color-h:hover {
-  color: var(--merapi__editor-quaternary-color);
+  color: var(--gjs-quaternary-color);
 }
 .merapi__editor-danger-bg {
-  background-color: var(--merapi__editor-color-red);
+  background-color: var(--gjs-color-red);
 }
 .merapi__editor-danger-color {
-  color: var(--merapi__editor-color-red);
+  color: var(--gjs-color-red);
 }
 .merapi__editor-danger-color-h:hover {
-  color: var(--merapi__editor-color-red);
+  color: var(--gjs-color-red);
 }
 
 .merapi__editor-bg-main, .merapi__editor-sm-colorp-c, .merapi__editor-off-prv {
-  background-color: var(--merapi__editor-main-color);
+  background-color: var(--gjs-main-color);
 }
 
 .merapi__editor-color-main, .merapi__editor-sm-stack #merapi__editor-sm-add, .merapi__editor-off-prv {
-  color: var(--merapi__editor-font-color);
-  fill: var(--merapi__editor-font-color);
+  color: var(--gjs-font-color);
+  fill: var(--gjs-font-color);
 }
 .merapi__editor-color-active {
-  color: var(--merapi__editor-font-color-active);
-  fill: var(--merapi__editor-font-color-active);
+  color: var(--gjs-font-color-active);
+  fill: var(--gjs-font-color-active);
 }
 .merapi__editor-color-warn {
-  color: var(--merapi__editor-color-warn);
-  fill: var(--merapi__editor-color-warn);
+  color: var(--gjs-color-warn);
+  fill: var(--gjs-color-warn);
 }
 .merapi__editor-color-hl {
-  color: var(--merapi__editor-color-highlight);
-  fill: var(--merapi__editor-color-highlight);
+  color: var(--gjs-color-highlight);
+  fill: var(--gjs-color-highlight);
 }
 
 .merapi__editor-invis-invis, .merapi__editor-clm-tags #merapi__editor-clm-new,
@@ -1298,7 +1329,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 .merapi__editor-drag-helper {
-  background-color: var(--merapi__editor-color-blue) !important;
+  background-color: var(--gjs-color-blue) !important;
   pointer-events: none !important;
   position: absolute !important;
   z-index: 10 !important;
@@ -1328,7 +1359,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 .merapi__editor-editor-cont ::-webkit-scrollbar-track {
-  background: var(--merapi__editor-secondary-dark-color);
+  background: var(--gjs-secondary-dark-color);
 }
 
 .merapi__editor-editor-cont ::-webkit-scrollbar-thumb {
@@ -1341,39 +1372,39 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 /********************* MAIN ************************/
 :root {
-  --merapi__editor-main-color: #444;
-  --merapi__editor-primary-color: #ffffff;
-  --merapi__editor-secondary-color: #323232;
-  --merapi__editor-tertiary-color: #1491da;
-  --merapi__editor-quaternary-color: #3d8ad6;
-  --merapi__editor-font-color: #ddd;
-  --merapi__editor-font-color-active: #f8f8f8;
-  --merapi__editor-main-dark-color: rgba(0, 0, 0, 0.2);
-  --merapi__editor-secondary-dark-color: rgba(0, 0, 0, 0.1);
-  --merapi__editor-main-light-color: rgba(255, 255, 255, 0.1);
-  --merapi__editor-secondary-light-color: rgba(255, 255, 255, 0.7);
-  --merapi__editor-soft-light-color: rgba(255, 255, 255, 0.015);
-  --merapi__editor-color-blue: #3b97e3;
-  --merapi__editor-color-red: #dd3636;
-  --merapi__editor-color-yellow: #ffca6f;
-  --merapi__editor-color-green: #62c462;
-  --merapi__editor-left-width: 15%;
-  --merapi__editor-color-highlight: #71b7f1;
-  --merapi__editor-color-warn: #ffca6f;
-  --merapi__editor-handle-margin: -5px;
-  --merapi__editor-light-border: rgba(255, 255, 255, 0.05);
-  --merapi__editor-arrow-color: rgba(255, 255, 255, 0.7);
-  --merapi__editor-dark-text-shadow: rgba(0, 0, 0, 0.2);
-  --merapi__editor-color-input-padding: 22px;
-  --merapi__editor-input-padding: 5px;
-  --merapi__editor-padding-elem-classmanager: 5px 6px;
-  --merapi__editor-upload-padding: 150px 10px;
-  --merapi__editor-animation-duration: 0.2s;
-  --merapi__editor-main-font: Helvetica, sans-serif;
-  --merapi__editor-font-size: 0.75rem;
-  --merapi__editor-placeholder-background-color: var(--gjs-color-green);
-  --merapi__editor-canvas-top: 40px;
-  --merapi__editor-flex-item-gap: 5px;
+  --gjs-main-color: #eeeeee;
+  --gjs-primary-color: #f5f5f5;
+  --gjs-secondary-color: #1f1f1f;
+  --gjs-tertiary-color: #5d99c5;
+  --gjs-quaternary-color: #0053a7;
+  --gjs-font-color: #4f4f4f;
+  --gjs-font-color-active: #1e1e1e;
+  --gjs-main-dark-color: rgba(0, 0, 0, 0.2);
+  --gjs-secondary-dark-color: rgba(0, 0, 0, 0.1);
+  --gjs-main-light-color: rgba(255, 255, 255, 0.1);
+  --gjs-secondary-light-color: rgba(255, 255, 255, 0.7);
+  --gjs-soft-light-color: rgba(255, 255, 255, 0.015);
+  --gjs-color-blue: #3b97e3;
+  --gjs-color-red: #dd3636;
+  --gjs-color-yellow: #ffca6f;
+  --gjs-color-green: #62c462;
+  --gjs-left-width: 15%;
+  --gjs-color-highlight: #71b7f1;
+  --gjs-color-warn: #ffca6f;
+  --gjs-handle-margin: -5px;
+  --gjs-light-border: rgba(255, 255, 255, 0.05);
+  --gjs-arrow-color: #1f1f1f;
+  --gjs-dark-text-shadow: rgba(0, 0, 0, 0.2);
+  --gjs-color-input-padding: 22px;
+  --gjs-input-padding: 5px;
+  --gjs-padding-elem-classmanager: 5px 6px;
+  --gjs-upload-padding: 150px 10px;
+  --gjs-animation-duration: 0.2s;
+  --gjs-main-font: Helvetica, sans-serif;
+  --gjs-font-size: 0.75rem;
+  --gjs-placeholder-background-color: var(--gjs-color-green);
+  --gjs-canvas-top: 40px;
+  --gjs-flex-item-gap: 5px;
 }
 
 .clear {
@@ -1403,8 +1434,8 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   filter: alpha(opacity=50);
 }
 .merapi__editor-editor {
-  font-family: var(--merapi__editor-main-font);
-  font-size: var(--merapi__editor-font-size);
+  font-family: var(--gjs-main-font);
+  font-size: var(--gjs-font-size);
   position: relative;
   box-sizing: border-box;
   height: 100%;
@@ -1909,7 +1940,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 .merapi__editor-com-badge, .merapi__editor-badge {
   pointer-events: none;
-  background-color: var(--merapi__editor-color-blue);
+  background-color: var(--gjs-color-blue);
   color: #fff;
   padding: 2px 5px;
   position: absolute;
@@ -1920,7 +1951,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 .merapi__editor-badge-warning {
-  background-color: var(--merapi__editor-color-yellow);
+  background-color: var(--gjs-color-yellow);
 }
 
 .merapi__editor-placeholder,
@@ -1937,13 +1968,13 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   border-style: solid !important;
   outline: none;
   box-sizing: border-box;
-  transition: top var(--merapi__editor-animation-duration), left var(--merapi__editor-animation-duration), width var(--merapi__editor-animation-duration), height var(--merapi__editor-animation-duration);
+  transition: top var(--gjs-animation-duration), left var(--gjs-animation-duration), width var(--gjs-animation-duration), height var(--gjs-animation-duration);
 }
 
 .merapi__editor-placeholder.horizontal,
 .merapi__editor-com-placeholder.horizontal,
 .merapi__editor-placeholder.horizontal {
-  border-color: transparent var(--merapi__editor-placeholder-background-color);
+  border-color: transparent var(--gjs-placeholder-background-color);
   border-width: 3px 5px;
   margin: -3px 0 0;
 }
@@ -1951,7 +1982,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 .merapi__editor-placeholder.vertical,
 .merapi__editor-com-placeholder.vertical,
 .merapi__editor-placeholder.vertical {
-  border-color: var(--merapi__editor-placeholder-background-color) transparent;
+  border-color: var(--gjs-placeholder-background-color) transparent;
   border-width: 5px 3px;
   margin: 0 0 0 -3px;
 }
@@ -1959,7 +1990,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 .merapi__editor-placeholder-int,
 .merapi__editor-com-placeholder-int,
 .merapi__editor-placeholder-int {
-  background-color: var(--merapi__editor-placeholder-background-color);
+  background-color: var(--gjs-placeholder-background-color);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
   height: 100%;
   width: 100%;
@@ -2403,7 +2434,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 .merapi__editor-category-title, .merapi__editor-layer-title, .merapi__editor-block-category .merapi__editor-title, .merapi__editor-sm-sector-title, .merapi__editor-trait-category .merapi__editor-title {
   font-weight: lighter;
-  background-color: var(--merapi__editor-secondary-dark-color);
+  background-color: var(--gjs-secondary-dark-color);
   letter-spacing: 1px;
   padding: 9px 10px 9px 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
@@ -3363,7 +3394,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   float: left;
 }
 .merapi__editor-am-file-uploader > form {
-  background-color: var(--merapi__editor-secondary-dark-color);
+  background-color: var(--gjs-secondary-dark-color);
   border: 2px dashed;
   border-radius: 3px;
   position: relative;
@@ -3371,8 +3402,8 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   margin-bottom: 15px;
 }
 .merapi__editor-am-file-uploader > form.merapi__editor-am-hover {
-  border: 2px solid var(--merapi__editor-color-green);
-  color: color-mix(in srgb, var(--merapi__editor-color-green), white 5%);
+  border: 2px solid var(--gjs-color-green);
+  color: color-mix(in srgb, var(--gjs-color-green), white 5%);
 }
 .merapi__editor-am-file-uploader > form.merapi__editor-am-disabled {
   border-color: red;
@@ -3380,13 +3411,13 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 .merapi__editor-am-file-uploader > form #merapi__editor-am-uploadFile {
   opacity: 0;
   filter: alpha(opacity=0);
-  padding: var(--merapi__editor-upload-padding);
+  padding: var(--gjs-upload-padding);
   width: 100%;
   box-sizing: border-box;
 }
 .merapi__editor-am-file-uploader #merapi__editor-am-title {
   position: absolute;
-  padding: var(--merapi__editor-upload-padding);
+  padding: var(--gjs-upload-padding);
   width: 100%;
 }
 
@@ -3405,7 +3436,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 .merapi__editor-cm-editor#merapi__editor-cm-htmlmixed {
   padding-right: 10px;
-  border-right: 1px solid var(--merapi__editor-main-dark-color);
+  border-right: 1px solid var(--gjs-main-dark-color);
 }
 .merapi__editor-cm-editor#merapi__editor-cm-htmlmixed #merapi__editor-cm-title {
   color: #a97d44;
@@ -3417,7 +3448,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   color: #ddca7e;
 }
 .merapi__editor-cm-editor #merapi__editor-cm-title {
-  background-color: var(--merapi__editor-main-dark-color);
+  background-color: var(--gjs-main-dark-color);
   font-size: 12px;
   padding: 5px 10px 3px;
   text-align: right;
@@ -3480,15 +3511,15 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   right: 15%;
 }
 .merapi__editor-editor-cont .sp-container {
-  border: 1px solid var(--merapi__editor-main-dark-color);
-  box-shadow: 0 0 7px var(--merapi__editor-main-dark-color);
+  border: 1px solid var(--gjs-main-dark-color);
+  box-shadow: 0 0 7px var(--gjs-main-dark-color);
   border-radius: 3px;
 }
 .merapi__editor-editor-cont .sp-picker-container {
   border: none;
 }
 .merapi__editor-editor-cont .colpick_dark .colpick_color {
-  outline: 1px solid var(--merapi__editor-main-dark-color);
+  outline: 1px solid var(--gjs-main-dark-color);
 }
 .merapi__editor-editor-cont .sp-cancel, .merapi__editor-editor-cont .sp-cancel:hover {
   bottom: -8px;
@@ -3524,9 +3555,9 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   text-align: right;
 }
 .merapi__editor-editor-cont .sp-container button, .merapi__editor-editor-cont .sp-container button:hover, .merapi__editor-editor-cont .sp-container button:active {
-  background: var(--merapi__editor-main-dark-color);
-  border-color: var(--merapi__editor-main-dark-color);
-  color: var(--merapi__editor-font-color);
+  background: var(--gjs-main-dark-color);
+  border-color: var(--gjs-main-dark-color);
+  color: var(--gjs-font-color);
   text-shadow: none;
   box-shadow: none;
   padding: 3px 5px;
@@ -3597,10 +3628,38 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   height: 100vh;
   width: 100vw;
 }
+.merapi__editor div {
+  scrollbar-width: 8px !important;
+}
+.merapi__editor div::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+.merapi__editor div::-webkit-scrollbar-track {
+  width: 8px !important;
+  height: 8px !important;
+  background: rgba(238, 238, 238, 0);
+}
+.merapi__editor div::-webkit-scrollbar-thumb {
+  width: 8px !important;
+  background-color: #0053a7;
+  border-radius: 15px;
+}
+.merapi__editor div::-webkit-scrollbar-thumb:hover {
+  background-color: #003a74;
+}
+.merapi__editor div::-webkit-scrollbar-thumb:active {
+  background-color: #003a74;
+}
 .merapi__editor--layout {
   position: initial;
   box-shadow: 0 3px 2px -2px rgba(0, 0, 0, 0.1);
-  background: white;
+  background: #f5f5f5;
+  transition: 0.25s;
+}
+.merapi__editor--layout.hide {
+  overflow: hidden;
+  max-width: 0 !important;
 }
 .merapi__editor--layout.layout-top {
   flex-basis: 40px;
@@ -3612,6 +3671,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 .merapi__editor--layout.layout-right {
   flex-basis: 380px;
+  max-width: 380px;
   position: relative;
   overflow-y: auto;
   overflow-x: visible;
@@ -3620,6 +3680,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 .merapi__editor--layout.layout-left {
   position: relative;
   flex-basis: 220px;
+  max-width: 220px;
   overflow-y: auto;
   overflow-x: hidden;
   box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
@@ -3640,137 +3701,63 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 .merapi__editor--panel {
   position: relative;
 }
-.merapi__editor .editor__canvas {
-  padding: 0.25rem;
+.merapi__editor--panel.hide {
+  overflow: hidden;
+  max-width: 0;
 }
-
-.container__editor {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
+.merapi__editor .panel-group {
+  width: 100%;
+  padding: 0;
+  border-top: 1px solid #0053a7;
 }
-.container__editor div {
-  scrollbar-width: 8px !important;
+.merapi__editor .panel-group .merapi__editor-pn-btn {
+  width: 100%;
+  border-radius: 0;
+  margin: 0;
 }
-.container__editor div::-webkit-scrollbar {
-  width: 8px !important;
-}
-.container__editor div::-webkit-scrollbar-track {
-  width: 8px !important;
-  background: rgba(238, 238, 238, 0);
-}
-.container__editor div::-webkit-scrollbar-thumb {
-  width: 8px !important;
-  background-color: #86c2ff;
-  border-radius: 15px;
-}
-.container__editor div::-webkit-scrollbar-thumb:hover {
-  background-color: #53a8ff;
-}
-.container__editor div::-webkit-scrollbar-thumb:active {
-  background-color: #53a8ff;
-}
-.container__editor .layout__panel-right {
-  flex-basis: 380px;
-  position: relative;
-  overflow-y: auto;
-  overflow-x: visible;
-  box-shadow: -3px 0 2px -2px rgba(0, 0, 0, 0.1);
-}
-.container__editor .layout__panel-left {
-  position: relative;
-  flex-basis: 220px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  box-shadow: 3px 0 2px -2px rgba(0, 0, 0, 0.1);
-}
-.container__editor .layout__panel-left .layers-breadcrumb {
+.merapi__editor--breadcrumb {
   position: fixed;
   bottom: 0;
   user-select: none;
   z-index: 20;
+  padding-left: 0.5rem;
+  padding-bottom: 0.25rem;
 }
-.container__editor .layout__panel-left .layers-breadcrumb .component-name {
+.merapi__editor--breadcrumb .component-name {
   font-weight: 700;
-  color: #164e9b;
+  color: #0053a7;
+  text-transform: capitalize;
 }
-.container__editor .layout__panel-left .layers-breadcrumb .component-class {
+.merapi__editor--breadcrumb .component-class {
   font-weight: 600;
-  color: #9c7e13;
+  color: #5d99c5;
 }
-.container__editor .layout__panel-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-  flex-wrap: nowrap;
-  flex-grow: 1;
-  overflow: hidden;
-}
-.container__editor .layout__panel-row .layout__panel-editor {
-  flex-grow: 1;
-  margin: 0.25rem;
+.merapi__editor .editor__canvas {
   padding: 0.25rem;
 }
-.container__editor .layout-closed {
-  transition: 0.25s;
-  max-width: 0px;
-  overflow: hidden;
-  padding-left: 0;
-  padding-right: 0;
-}
-.container__editor .layout-opened {
-  transition: 0.25s;
-  max-width: 220px;
-}
-.container__editor .panel__initial {
-  position: initial;
-}
-.container__editor .container-styles {
-  position: relative;
+.merapi__editor-pn-btn {
   display: flex;
-  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
 }
-.container__editor .container-traits {
-  padding-top: 0.8rem;
-  position: relative;
-  display: flex;
-  flex-direction: column-reverse;
+.merapi__editor-pn-btn.border {
+  border: 1px solid #ccc;
 }
-.container__editor .container-layers {
-  position: relative;
-  display: flex;
-  flex-direction: column-reverse;
+.merapi__editor-pn-active {
+  background: #164e9b !important;
+  color: white;
 }
-.container__editor .container-selected {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: end;
-  padding: 0.75rem 0.5rem;
-  padding-bottom: 0;
-}
-.container__editor .container-selected .component-name {
-  font-weight: 700;
-  color: #1491da;
-  margin-bottom: 0.35rem;
-  margin-left: 0.35rem;
-  text-transform: uppercase;
-}
-.container__editor .container-selected .component-icon {
-  margin: 0.15rem;
-  color: #1491da;
-}
-.container__editor .color-picker {
+.merapi__editor .color-picker {
   border: 1px solid rgba(0, 0, 0, 0.1);
-  background-color: #a0d6f6;
+  background-color: primaryColor;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
   z-index: 15;
 }
-.container__editor .color-picker .sp-palette-container {
+.merapi__editor .color-picker .sp-palette-container {
   display: none;
 }
-.container__editor .color-picker .sp-button-container * {
+.merapi__editor .color-picker .sp-button-container * {
   border-radius: 0 !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
   line-height: 1rem !important;
@@ -3781,106 +3768,30 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   font-family: monospace, sans-serif;
   text-decoration: none;
 }
-.container__editor .color-picker .sp-button-container *:hover {
-  background-color: #1491da;
+.merapi__editor .color-picker .sp-button-container *:hover {
+  background-color: #5d99c5;
 }
-.container__editor .gjs-field-arrows {
+.merapi__editor-field-arrows {
   z-index: 1;
 }
-
-/* Theming */
-:root {
-  --gjs-main-color: #ffffff;
-  --gjs-main-dark-color: #f2f2f2;
-  --gjs-primary-color: #ffffff;
-  --gjs-secondary-color: #323232;
-  --gjs-tertiary-color: #1491da;
-  --gjs-quaternary-color: #1491da;
-  --gjs-arrow-color: #323232;
-  --gjs-font-color: #323232;
+.merapi__editor-layer-children {
+  border-left: 5px solid #5d7485;
 }
-
-.gjs-one-color {
-  color: #ffffff;
-}
-.gjs-one-bg {
-  background-color: #ffffff;
-  color: #2c2c2c;
-}
-.gjs-two-color {
-  color: #323232;
-}
-.gjs-two-bg {
-  background-color: #323232;
-  color: #ffffff;
-}
-.gjs-three-color {
-  color: #1491da;
-}
-.gjs-three-bg {
-  background-color: #1491da;
-  color: #ffffff;
-}
-.gjs-sm-sector {
-  background-color: #a0d6f6;
-  border-bottom: none !important;
-}
-.gjs-sm-sector-title {
-  background-color: #1491da;
-  color: #fff;
-}
-.gjs-field:has(:not(input, select)), .gjs-field:empty {
-  background-color: #ffffff;
-  color: #323232 !important;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-}
-.gjs-field input,
-.gjs-field select {
-  color: #323232;
-}
-.gjs-fields .gjs-field {
-  background-color: #ffffff;
-  color: #323232 !important;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-}
-.gjs-fields .gjs-field input,
-.gjs-fields .gjs-field select {
-  border: none !important;
-}
-.gjs-layer-item {
-  background-color: #094365;
-  color: #fff;
-  border-bottom: 0px !important;
-}
-.gjs-layer-item:hover {
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  color: #fff !important;
-}
-.gjs-layer-children {
-  border-left: 5px solid #094365;
-}
-.gjs-layer-children .gjs-layer-item {
-  background-color: rgba(20, 145, 218, 0.2);
-  color: rgb(51, 51, 51);
-}
-.gjs-layer-children:has(.gjs-hovered) .gjs-selected .gjs-layer-item {
-  background-color: rgba(9, 67, 101, 0.25) !important;
-}
-.gjs-layer.gjs-selected .gjs-layer-item {
-  background-color: #1491da;
+.merapi__editor-layer.merapi__editor-selected > .merapi__editor-layer-item {
+  background-color: #3f80b0 !important;
   color: rgb(255, 255, 255);
 }
-.gjs-layer.gjs-selected .gjs-layer-children .gjs-layer-item {
-  background-color: rgba(9, 67, 101, 0.05);
-  color: rgb(51, 51, 51);
-}
-.gjs-layer.gjs-hovered .gjs-layer-item {
-  background-color: #1491da !important;
+.merapi__editor-layer.merapi__editor-hovered > .merapi__editor-layer-item {
+  background-color: #bbd4e7 !important;
   color: #fff !important;
 }
-.gjs-layer.gjs-hovered .gjs-layer-children .gjs-layer-item {
-  background-color: rgba(9, 67, 101, 0.2) !important;
-  color: #fff !important;
+.merapi__editor-sm-sector {
+  background-color: rgba(93, 153, 197, 0.05);
+  border-bottom: none !important;
+}
+.merapi__editor-sm-sector-title {
+  background-color: #5d99c5;
+  color: #fff;
 }
 
 .loading-screen {
@@ -3891,19 +3802,21 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   height: 100%;
   background-color: #fff;
   z-index: 900;
-  transition: 1s;
+  transition: 0.75s;
   opacity: 1;
 }
 .loading-screen.hide {
   opacity: 0;
 }
 .loading-progress {
+  transition: 0.75s;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 .loading-progress .progressbar {
+  transition: 0.75s;
   --MP-loading-width: 0%;
   width: 400px;
   height: 7px;
@@ -3911,10 +3824,11 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   border-radius: 5px;
   position: relative;
   overflow: hidden;
-  animation: 600ms linear 0s infinite normal none running loading_progress-blink;
+  animation: 800ms linear 0s infinite normal none running loading_progress-blink;
 }
 .loading-progress .progressbar::before {
   content: "";
+  transition: 0.75s;
   display: block;
   position: absolute;
   top: 0;

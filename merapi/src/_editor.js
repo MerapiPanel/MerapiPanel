@@ -1,5 +1,5 @@
 import 'grapesjs/dist/css/grapes.min.css';
-import "./editor/style.scss";
+// import "./editor/style.scss";
 import grapesjs from 'grapesjs';
 
 
