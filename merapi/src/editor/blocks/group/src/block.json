@@ -33,5 +33,8 @@
             "core/paragraph",
             "core/heading"
         ]
-    }
+    },
+    "edit": "file:./edit.js",
+    "save": "file:./save.js",
+    "style": "file:./style.scss"    
 }

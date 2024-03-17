@@ -88,11 +88,32 @@
                 "droppable",
                 "children"
             ]
+        },
+        "edit": {
+            "type": "string",
+            "description": "the file edit script"
+        },
+        "edit-style": {
+            "type": "string",
+            "description": "the file edit style"
+        },
+        "save": {
+            "type": "string",
+            "description": "the file save script"
+        },
+        "render": {
+            "type": "string",
+            "description": "the file render script"
+        },
+        "style": {
+            "type": "string",
+            "description": "the block style"
         }
     },
     "required": [
         "name",
-        "attributes",
-        "options"
+        "edit",
+        "save",
+        "style"
     ]
 }
