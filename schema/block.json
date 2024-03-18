@@ -4,9 +4,17 @@
     "description": "Represents a block information.",
     "type": "object",
     "properties": {
+        "title": {
+            "type": "string",
+            "description": "The title of the block."
+        },
         "name": {
             "type": "string",
             "description": "The name of the block."
+        },
+        "description": {
+            "type": "string",
+            "description": "The description of the block."
         },
         "attributes": {
             "type": "array",
@@ -89,11 +97,11 @@
                 "children"
             ]
         },
-        "edit": {
+        "editScript": {
             "type": "string",
             "description": "the file edit script"
         },
-        "edit-style": {
+        "editStyle": {
             "type": "string",
             "description": "the file edit style"
         },
@@ -112,7 +120,9 @@
     },
     "required": [
         "name",
-        "edit",
+        "title",
+        "editScript",
+        "editStyle",
         "save",
         "style"
     ]

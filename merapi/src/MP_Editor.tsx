@@ -12,9 +12,10 @@ import SelectedContainer from './editor/component/containers/SelectedContainer';
 import StylesContainer from './editor/component/containers/StylesContainer';
 import Breadcrumb from './editor/component/Breadcrumb';
 import TraitsContainer from './editor/component/containers/TraitsContainer';
-import { MobileIcon, DesktopIcon, TabletIcon, TraitsIcon, LayersIcon, StyleIcon, VisibilityIcon, CodeIcon } from './editor/component/Icons';
+import { MobileIcon, DesktopIcon, TabletIcon, TraitsIcon, LayersIcon, StyleIcon, VisibilityIcon, CodeIcon, GridFillIcon } from './editor/component/Icons';
 import "./editor/style/main.scss";
 import LoadingScreen from './editor/component/LoadingScreen';
+import BlocksContainer from './editor/component/containers/BlocksContainer';
 
 
 
@@ -49,14 +50,31 @@ const MP_Editor = () => {
             run: editor => editor.setDevice('Mobile'),
             stop: () => { }
         });
+
+
+
         editor.Commands.add('sw-layers-toggle', {
             run: (editor: Editor) => {
-                document.getElementById("layout-left")?.classList.remove('hide');
+                document.getElementById("container-layers")?.classList.remove('hide');
+                document.getElementById("left-group")?.classList.remove('hide');
             },
             stop: () => {
-                document.getElementById("layout-left")?.classList.add('hide');
+                document.getElementById("container-layers")?.classList.add('hide');
+                document.getElementById("left-group")?.classList.add('hide');
             }
         });
+
+        editor.Commands.add("sw-blocks-toggle", {
+            run: (editor: Editor) => {
+                document.getElementById("container-blocks")?.classList.remove('hide');
+                document.getElementById("left-group")?.classList.remove('hide');
+            },
+            stop: () => {
+                document.getElementById("container-blocks")?.classList.add('hide');
+                document.getElementById("left-group")?.classList.add('hide');
+            }
+        });
+
 
         editor.Commands.add("sw-traits", {
             run: (editor: Editor) => {
@@ -79,8 +97,11 @@ const MP_Editor = () => {
                     <Button id='export' className='border' command='export-template' context='export-template' >
                         <CodeIcon />
                     </Button>
-                    <Button id='layers-toggle' className='border' command='sw-layers-toggle' context='layers' >
+                    <Button id='layers-toggle' className='border' command='sw-layers-toggle' context='left-panel' >
                         <LayersIcon />
+                    </Button>
+                    <Button id='blocks-toggle' className='border' command='sw-blocks-toggle' context='left-panel' >
+                        <GridFillIcon />
                     </Button>
                 </Panel>
 
@@ -104,8 +125,9 @@ const MP_Editor = () => {
 
             <LayoutRow>
 
-                <Layout className='layout-left hide' id='layout-left'>
-                    <LayersContainer />
+                <Layout className='layout-left hide' id='left-group'>
+                    <LayersContainer id='container-layers' />
+                    <BlocksContainer id='container-blocks' />
                 </Layout>
 
                 <Canvas>

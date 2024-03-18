@@ -81,6 +81,7 @@ const MP_ContentEditor = () => {
         editor.select(editor.getWrapper());
     }
 
+
     return (
         <RootEditor onReady={onReadyHandle} config={config}>
 
@@ -121,7 +122,7 @@ const MP_ContentEditor = () => {
 
             <LayoutRow>
 
-                <Layout className='layout-left' id='left-group'>
+                <Layout className='layout-left hide' id='left-group'>
                     <LayersContainer id='container-layers' />
                     <BlocksContainer id='container-blocks' />
                 </Layout>

@@ -11,11 +11,20 @@ class admin
     public function register(Router $router)
     {
         $index = $router->get('/admin/theme', "index");
+        $customize = $router->get('/admin/theme/customize', "customize");
+
         Box::module("panel")->addMenu([
             "name" => "Theme",
             "link" => $index,
             "order" => 2,
             "icon" => file_get_contents(__DIR__ . "/../icon.svg"),
+            "childs" => [
+                [
+                    "name" => "Customize",
+                    "link" => $customize,
+                    "order" => 1
+                ]
+            ]
         ]);
     }
 
@@ -23,5 +32,10 @@ class admin
     {
 
         return View::render("index.html.twig");
+    }
+
+    function customize()
+    {
+        return View::render("customize.html.twig");
     }
 }

@@ -3810,6 +3810,9 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   background-color: #5d99c5;
   color: #fff;
 }
+.merapi__editor-clm-tag {
+  color: #fff;
+}
 
 .loading-screen {
   position: fixed;
@@ -3863,4 +3866,20 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   to {
     background-color: #ebebeb;
   }
+}
+/*!************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./merapi/src/editor/component/containers/BlocksContainer.scss ***!
+  \************************************************************************************************************************************************************************************************/
+.blocks-container {
+  position: relative;
+  max-width: 250px;
+  transition: 0.15s;
+  opacity: 1;
+}
+.blocks-container.hide {
+  max-width: 0 !important;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

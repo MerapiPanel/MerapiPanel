@@ -1,0 +1,20 @@
+{% extends "@panel/base.html.twig" %}
+{% block header_title %}New Content{% endblock %}
+
+
+{% block meta %}{% endblock %}
+
+
+{% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="/merapi/dist/MP_Editor.css?v={{ time() }}">
+{% endblock %}
+
+
+
+{% block body %}
+
+<div id="root"></div>
+
+<script src="/merapi/dist/MP_Editor.bundle.js?v={{ time() }}"></script>
+{% endblock %}

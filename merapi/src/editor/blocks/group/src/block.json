@@ -1,6 +1,7 @@
 {
     "$schema": "file:///F:/web/MerapiPanel/schema/block.json",
-    "name": "Group",
+    "name": "core/group",
+    "title": "Group",
     "attributes": [
         {
             "name": "title",
@@ -34,7 +35,8 @@
             "core/heading"
         ]
     },
-    "edit": "file:./edit.js",
+    "editScript": "file:./edit.js",
+    "editStyle": "file:./edit.scss",
     "save": "file:./save.js",
     "style": "file:./style.scss"    
 }
