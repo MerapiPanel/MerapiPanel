@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "MerapiPanel",
+    "title": "MerapiPanel",
+    "type": "object",
+    "properties": {
+        "debug": {
+            "type": "boolean",
+            "description": "Enable debug mode."
+        },
+        "aes-key": {
+            "description": "The AES key used for encryption and decryption.",
+            "type": "string",
+            "minLength": 64
+        },
+        "admin": {
+            "type": "string",
+            "description": "Admin prefix for admin route."
+        },
+        "service": {
+            "type": "string",
+            "description": "The main module that will be executed first."
+        }
+    },
+    "required": [
+        ""
+    ]
+}

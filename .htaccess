@@ -1,3 +1,10 @@
 RewriteEngine on
+
+# Return 404 for specific files
+RewriteCond %{REQUEST_URI} ^/merapi/config/(.*) [NC,OR]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [NC,L,QSA]
+
+# RewriteEngine On
+# RewriteRule ^ index.php [L]

@@ -127,9 +127,7 @@ class Bundle extends \Twig\Extension\AbstractExtension
 
     function admin_url($path)
     {
-
-        $AppConfig = $this->box->getConfig();
-        return rtrim($AppConfig['admin'], "/") . "/" . ltrim($path, "/");
+        return rtrim($_ENV["__MP_ADMIN__"], "/") . "/" . ltrim($path, "/");
     }
 
 

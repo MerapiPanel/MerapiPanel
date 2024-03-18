@@ -1,9 +1,0 @@
-{
-    "$schema": "https://raw.githubusercontent.com/MerapiPanel/MerapiPanel/main/schema/theme.json",
-    "author": "il4mb",
-    "author-url": "https://github.com/il4mb",
-    "description": "MerapiPanel",
-    "license": "MIT",
-    "name": "MerapiPanel",
-    "website": "https://github.com/MerapiPanel/MerapiPanel"
-}

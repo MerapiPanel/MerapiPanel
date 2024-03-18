@@ -1,7 +1,4 @@
 <?php
-
-
-
 namespace MerapiPanel;
 
 ini_set("error_log", __DIR__ . "/php-error.log");
@@ -11,15 +8,23 @@ use Throwable;
 
 $GLOBALS['time_start'] = microtime(true);
 
-$conf = [];
-$conf['root'] = $_SERVER['DOCUMENT_ROOT'];
-$GLOBALS["conf"] = $conf;
-$GLOBALS["debug"] = true;
-$_ENV['AES_KEY'] = "a3af08095b8a63cf50d35129d514ca2703c89d159963dc7a53e5766361bbc3c9";
-$_ENV['ROOT'] = __DIR__;
-$_ENV['APP'] = realpath(__DIR__ . "/..");
+$config = [
+    "START_TIME" => microtime(true),
+    "APP" => realpath(__DIR__ . "/..")
+];
 
-// error_log($_ENV['AES_KEY']);
+$loaded_config = json_decode(file_get_contents(__DIR__ . "/config/env.json"), true);
+
+$config = array_merge($config, $loaded_config);
+if (isset ($config['$schema'])) {
+    unset($config['$schema']);
+}
+$config = array_combine(array_map(fn($x) => ("__MP_" . preg_replace("/[^A-Z]+/im", "_", strtoupper($x)) . "__"), array_keys($config)), $config);
+
+foreach ($config as $key => $value) {
+    $_ENV[$key] = $value;
+}
+
 
 /**
  * Description: Main class for the MerapiPanel application. 
@@ -34,9 +39,6 @@ $_ENV['APP'] = realpath(__DIR__ . "/..");
  */
 class App extends Box
 {
-
-
-    const app_config = __DIR__ . "/config/app.yml";
     /**
      * Constructor function for initializing the class.
      * 
@@ -49,18 +51,11 @@ class App extends Box
     {
 
         $this->__registerEvent();
-        parent::setConfig(self::app_config);
         $this->Core_Exception_Handler();
-        // $this->Module_ViewEngine();
-        $this->setConfig(self::app_config);
         $this->__registerController();
 
-
-
-
-        if ($this->getConfig()->get("service")) {
-
-            $service = $this->getConfig()->get("service");
+        if (isset ($_ENV['__MP_SERVICE__'])) {
+            $service = $_ENV['__MP_SERVICE__'];
             $this->$service();
         }
     }

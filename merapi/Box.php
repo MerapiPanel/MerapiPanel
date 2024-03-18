@@ -50,32 +50,32 @@ class Box
     }
 
 
-    final public function setConfig(string $fileYml)
-    {
+    // final public function setConfig(string $jsonFile)
+    // {
 
-        $this->cog = new Config($fileYml);
+    //     $this->cog = new Config($jsonFile);
 
-        if (!isset($this->cog['debug'])) {
-            throw new \Exception("Cofig error: debug not found, check config file the key 'debug' is missing, 'debug' is required with the value 'true' or 'false'");
-        }
-        if (!isset($this->cog['admin'])) {
-            throw new \Exception("Cofig error: admin not found, check config file the key 'admin' is missing, 'admin' is url path to admin segment");
-        }
+    //     if (!isset($this->cog['debug'])) {
+    //         throw new \Exception("Cofig error: debug not found, check config file the key 'debug' is missing, 'debug' is required with the value 'true' or 'false'");
+    //     }
+    //     if (!isset($this->cog['admin'])) {
+    //         throw new \Exception("Cofig error: admin not found, check config file the key 'admin' is missing, 'admin' is url path to admin segment");
+    //     }
 
-        if (!isset($this->cog['service'])) {
-            throw new \Exception("Cofig error: services not found, check config file the key 'services' is missing, 'services' is array of services");
-        }
+    //     if (!isset($this->cog['service'])) {
+    //         throw new \Exception("Cofig error: services not found, check config file the key 'services' is missing, 'services' is array of services");
+    //     }
 
-        $GLOBALS['config'] = $this->cog;
-    }
-
-
+    //     $GLOBALS['config'] = $this->cog;
+    // }
 
 
-    final public function getConfig(): Config
-    {
-        return $this->cog;
-    }
+
+
+    // final public function getConfig(): Config
+    // {
+    //     return $this->cog;
+    // }
 
 
 

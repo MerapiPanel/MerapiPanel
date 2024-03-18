@@ -10,6 +10,8 @@ import { AddComponentTypeOptions, BlockProperties, ComponentAddType } from "grap
  */
 export const BlocksContainer = (props: ContainerProps) => {
 
+   
+
     const { editor, config } = useRoot();
 
     config.blockManager = {
@@ -18,6 +20,7 @@ export const BlocksContainer = (props: ContainerProps) => {
 
 
     useEffect(() => {
+
         if (editor === null) return;
 
         editor.Components.addType('header', {
@@ -29,13 +32,10 @@ export const BlocksContainer = (props: ContainerProps) => {
                 defaults: {
                     tagName: 'h1',
                     content: 'hello world'
-                },
-                is(component) {
-                    console.log(component);
-                    return true;
                 }
             },
             extend: 'text',
+
         } as AddComponentTypeOptions);
 
 
@@ -48,8 +48,7 @@ export const BlocksContainer = (props: ContainerProps) => {
             }
         });
 
-        console.log(editor.getHtml());
-        editor.setComponents(editor.getHtml())
+        editor.setComponents(editor.getHtml());
 
     }, [editor]);
 

@@ -3,8 +3,8 @@ const webpack = require('webpack');
 const LodashModule = require("lodash-webpack-plugin");
 const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
 const stylesHandler = MiniCssExtractPlugin.loader;
+const utils = require("./merapi/src/utils.js");
 
 
 const entry = () => {
@@ -17,8 +17,7 @@ const entry = () => {
         return acc;
     }, {});
 
-
-    return { ...entryFiles };
+    return { ...entryFiles }
 };
 
 
@@ -37,7 +36,7 @@ module.exports = {
             jquery: "jQuery",
             "window.jQuery": "jquery"
         }),
-        new LodashModule()
+        new LodashModule(),
     ],
     module: {
         rules: [
@@ -45,7 +44,7 @@ module.exports = {
                 test: /\.(js|ts|tsx)$/i,
                 exclude: /node_modules/,
                 use: "babel-loader"
-                
+
             },
             {
                 test: require.resolve("jquery"),

@@ -16,6 +16,7 @@ import { MobileIcon, DesktopIcon, TabletIcon, TraitsIcon, LayersIcon, StyleIcon,
 import "./editor/style/main.scss";
 import LoadingScreen from './editor/component/LoadingScreen';
 import BlocksContainer from './editor/component/containers/BlocksContainer';
+import { Block, BlockRegister } from './editor/blocks/BlockRegister';
 
 
 
@@ -127,7 +128,9 @@ const MP_Editor = () => {
 
                 <Layout className='layout-left hide' id='left-group'>
                     <LayersContainer id='container-layers' />
-                    <BlocksContainer id='container-blocks' />
+                    <BlocksContainer id='container-blocks' >
+                        <BlockRegister />
+                    </BlocksContainer>
                 </Layout>
 
                 <Canvas>

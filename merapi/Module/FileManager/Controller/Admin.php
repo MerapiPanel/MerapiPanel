@@ -14,7 +14,7 @@ class Admin extends Module
     {
 
         $panel = $this->getBox()->Module_Panel();
-        setcookie("fm-adm-pth", $panel->adminLink(), time() + (86400 * 30), $panel->adminLink());
+    //    setcookie("fm-adm-pth", $panel->adminLink(), time() + (86400 * 30), $panel->adminLink());
 
         $router->get('/filemanager/fetch-endpoint', "fetchEndpoint", self::class);
         $router->get("/filemanager/fetchJson", "fetchJson", self::class);

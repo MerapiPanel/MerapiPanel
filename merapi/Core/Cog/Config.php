@@ -3,59 +3,57 @@
 namespace MerapiPanel\Core\Cog;
 
 use ArrayAccess;
-use Symfony\Component\Yaml\Yaml;
+
 
 /**
  * Config class
  * used for reading config file
  * also for setting and getting
  */
-class Config implements \ArrayAccess
+class Config implements ArrayAccess
 {
 
     protected $config = [];
-    protected $yml;
+    protected $json;
 
 
-    public function __construct($yml = null)
+    public function __construct($json = null)
     {
-        if ($yml) {
+        if ($json) {
 
-            if (!pathinfo($yml, PATHINFO_EXTENSION) === 'yml') {
+            if (!pathinfo($json, PATHINFO_EXTENSION) === 'json') {
 
-                throw new \Exception('Config file must be a .yml file');
+                throw new \Exception('Config file must be a .json file');
             }
 
-            if (!file_exists($yml)) {
+            if (!file_exists($json)) {
                 throw new \Exception('Config file does not exist');
             }
 
-            $yml = realpath($yml);
-            $value = Yaml::parseFile($yml);
-
-            $this->config =  $value;
-            $this->yml    = $yml;
+            $json = realpath($json);
+            $this->config = json_decode(file_get_contents($json), true);
+            $this->json = $json;
         } else {
             $this->config = [];
         }
     }
 
 
-    function offsetExists($k) : bool
+    function offsetExists($k): bool
     {
-        return isset($this->config[$k]);
+        return isset ($this->config[$k]);
     }
-    function offsetGet($k) : mixed
+    function offsetGet($k): mixed
     {
 
         return $this->config[$k];
     }
-    function offsetSet($k, $v) : void
+    function offsetSet($k, $v): void
     {
 
         $this->config[$k] = $v;
     }
-    function offsetUnset($k) : void
+    function offsetUnset($k): void
     {
         unset($this->config[$k]);
     }
@@ -72,15 +70,15 @@ class Config implements \ArrayAccess
 
         $this->config[$key] = $value;
 
-        if ($this->yml) {
-            file_put_contents($this->yml, Yaml::dump($this->config));
+        if ($this->json) {
+            file_put_contents($this->json, json_encode($this->config));
         }
     }
 
     public function save()
     {
-        if ($this->yml) {
-            file_put_contents($this->yml, Yaml::dump($this->config));
+        if ($this->json) {
+            file_put_contents($this->json, json_encode($this->config));
         }
     }
 

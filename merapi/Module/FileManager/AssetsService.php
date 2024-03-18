@@ -10,7 +10,7 @@ class AssetsService
 {
 
     private AssetMap $assetsMap;
-    public string $routeLink = "/public/filemanager/_assets/{data}";
+    public string $routeLink = "/public/assets/{data}";
 
     public function __construct()
     {

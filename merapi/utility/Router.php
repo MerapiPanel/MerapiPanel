@@ -25,7 +25,6 @@ class Router extends Component
     ];
     protected Box $box;
     protected $adminPrefix = '/panel/admin';
-    protected Config $config;
     protected $controller = [
         "class" => "",
         "method" => ""
@@ -37,11 +36,9 @@ class Router extends Component
 
         parent::__construct();
         $this->box = $box;
-        $this->config = $this->box->getConfig();
 
-        if (isset($this->config['admin'])) {
-
-            $this->adminPrefix = $this->config['admin'];
+        if (isset($_ENV['__MP_ADMIN__'])) {
+            $this->adminPrefix = $_ENV['__MP_ADMIN__'];
         }
     }
 

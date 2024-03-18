@@ -154,6 +154,12 @@ const RootEditor = (props: RootProps) => {
     };
 
 
+    fetch('/merapi/config/app.yml')
+        .then(response => response.json())
+        .then(data => {
+            initial.config = DeepMerge(initial.config, data);
+        });
+
 
     useEffect(() => {
         if (props.config) {
@@ -175,6 +181,7 @@ const RootEditor = (props: RootProps) => {
             return;
         }
 
+        fetch('/merapi/config/app.yml')
 
         initial.config.container = canvasRef.current as HTMLElement;
 

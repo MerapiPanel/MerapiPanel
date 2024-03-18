@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ContainerProps {
-    children?: React.ReactElement<any>[]
+    children?: React.ReactNode
     id?: string,
     style?: React.CSSProperties
 }
