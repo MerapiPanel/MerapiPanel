@@ -21,9 +21,9 @@ class Response
     public function __construct(string|array|object $content = '', int $statusCode = 200, array $headers = [])
     {
 
-        $this->content    = $content;
+        $this->content = $content;
         $this->statusCode = $statusCode;
-        $this->headers    = $headers;
+        $this->headers = $headers;
     }
 
 
@@ -135,7 +135,7 @@ class Response
     /**
      * Sends the HTTP response with the specified status code and headers.
      *
-     * @throws Error if there is an error in sending the response.
+     * @throws \Exception if there is an error in sending the response.
      * @return void
      */
     public function send(): void
@@ -149,7 +149,7 @@ class Response
 
         self::http_response_code($this->statusCode);
 
-        if (isset($this->headers['location'])) {
+        if (isset ($this->headers['location'])) {
             $redirect = $this->headers['location'];
             unset($this->headers['location']);
         }
@@ -158,16 +158,15 @@ class Response
             header("$name: $value");
         }
 
-        if (isset($redirect)) {
+    
+        if (isset ($redirect)) {
             header("Location: $redirect");
         }
-
-        header("Content-Length: " . strlen(gettype($this->content) == "string" ? $this->content : json_encode($this->content)));
     }
 
 
 
-    private static function  http_response_code(int $code): void
+    private static function http_response_code(int $code): void
     {
 
         if (!function_exists('http_response_code')) {
@@ -285,11 +284,11 @@ class Response
                     $text = 'HTTP Version not supported';
                     break;
                 default:
-                    exit('Unknown http status code "' . htmlentities($code) . '"');
+                    exit ('Unknown http status code "' . htmlentities($code) . '"');
                     break;
             }
 
-            $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+            $protocol = (isset ($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 
             header($protocol . ' ' . $code . ' ' . $text);
         } else {
@@ -322,7 +321,7 @@ class Response
 
 class Action
 {
-    
+
     private Response $res;
 
     public function __construct(Response $res)

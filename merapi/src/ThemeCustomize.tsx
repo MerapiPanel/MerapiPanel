@@ -1,24 +1,13 @@
 import React, { StrictMode } from 'react';
 import { createRoot } from "react-dom/client";
-import RootEditor from './editor/RootEditor';
-import Layout from './editor/Layout';
-import Panel from './editor/component/Panel';
-import Button from './editor/component/Button';
-import { CodeIcon, DesktopIcon, GridFillIcon, LayersIcon, MobileIcon, StyleIcon, TabletIcon, TraitsIcon, VisibilityIcon } from './editor/component/Icons';
-import LayoutRow from './editor/LayoutRow';
-import LayersContainer from './editor/component/containers/LayersContainer';
-import Canvas from './editor/Canvas';
-import SelectedContainer from './editor/component/containers/SelectedContainer';
 import { Editor } from 'grapesjs';
-import StylesContainer from './editor/component/containers/StylesContainer';
-import TraitsContainer from './editor/component/containers/TraitsContainer';
-import Breadcrumb from './editor/component/Breadcrumb';
-import LoadingScreen from './editor/component/LoadingScreen';
-import "./editor/style/main.scss";
-import BlocksContainer from './editor/component/containers/BlocksContainer';
+import { RootElement, Panel, Layout, LayoutRow, Button, Canvas, Icons, LayersContainer, BlocksContainer, Breadcrumb, LoadingScreen, useRoot, SelectedContainer, StylesContainer, TraitsContainer } from "@il4mb/merapipanel";
+import { fetchWithProgress } from "@il4mb/merapipanel/dist/tools";
+import "@il4mb/merapipanel/dist/editor/style.css";
+import { RootConfig } from '@il4mb/merapipanel/dist/editor/Root';
 
 
-const MP_ContentEditor = () => {
+const App = () => {
 
     const config = {
         deviceManager: {
@@ -35,22 +24,22 @@ const MP_ContentEditor = () => {
         },
     }
 
-    const onReadyHandle = (editor: Editor) => {
+    const onReadyHandle = (config: RootConfig) => {
 
-        editor.Commands.add('set-device-desktop', {
+        config?.editor?.Commands.add('set-device-desktop', {
             run: editor => editor.setDevice('Desktop'),
             stop: () => { }
         });
-        editor.Commands.add('set-device-tablet', {
+        config?.editor?.Commands.add('set-device-tablet', {
             run: editor => editor.setDevice('Tablet'),
             stop: () => { }
         });
-        editor.Commands.add('set-device-mobile', {
+        config?.editor?.Commands.add('set-device-mobile', {
             run: editor => editor.setDevice('Mobile'),
             stop: () => { }
         });
 
-        editor.Commands.add('sw-layers-toggle', {
+        config?.editor?.Commands.add('sw-layers-toggle', {
             run: (editor: Editor) => {
                 document.getElementById("container-layers")?.classList.remove('hide');
                 document.getElementById("left-group")?.classList.remove('hide');
@@ -61,7 +50,7 @@ const MP_ContentEditor = () => {
             }
         });
 
-        editor.Commands.add("sw-blocks-toggle", {
+        config?.editor?.Commands.add("sw-blocks-toggle", {
             run: (editor: Editor) => {
                 document.getElementById("container-blocks")?.classList.remove('hide');
                 document.getElementById("left-group")?.classList.remove('hide');
@@ -72,73 +61,86 @@ const MP_ContentEditor = () => {
             }
         });
 
-        editor.Commands.add("sw-traits", {
+
+        config?.editor?.Commands.add("sw-traits", {
             run: (editor: Editor) => {
 
             }
         });
 
-        editor.select(editor.getWrapper());
+        config?.editor?.select(config?.editor?.getWrapper());
+
+
+        config?.setProgress(100);
+
+
+        type windowType = {
+            [key: string]: any
+        }
+        // Assuming window.payload.endpoint contains the URL to fetch from
+        fetchWithProgress({
+            url: (window as windowType).payload.endpoint.load,
+            onProgress: (loaded: number, total: number) => {
+                // This callback will be called as the download progresses
+                console.log(`Progress: ${(loaded / total * 100).toFixed(2)}%`);
+            }
+        }).then(res => {
+            console.log(res); // Logging the response object once the fetch is complete
+        }).catch(error => {
+            console.error('Fetch error:', error); // Handling any errors that occur during fetch
+        });
+
+
     }
 
-
     return (
-        <RootEditor onReady={onReadyHandle} config={config}>
-
-            <Layout className='layout-top'>
+        <RootElement onReady={onReadyHandle} config={config}>
+            <Layout id='top-group' className='layout-top'>
 
                 <Panel id='panel-top-left'>
                     <Button id='visibility' className='border' command='sw-visibility' active >
-                        <VisibilityIcon />
+                        <Icons.Visibility />
                     </Button>
                     <Button id='export' className='border' command='export-template' context='export-template' >
-                        <CodeIcon />
+                        <Icons.Code />
                     </Button>
                     <Button id='layers-toggle' className='border' command='sw-layers-toggle' context='left-panel' >
-                        <LayersIcon />
+                        <Icons.Layers />
                     </Button>
                     <Button id='blocks-toggle' className='border' command='sw-blocks-toggle' context='left-panel' >
-                        <GridFillIcon />
+                        <Icons.GridFill />
                     </Button>
                 </Panel>
 
                 <Panel id='panel-top-center'>
-                    <Button id='device-desktop' command='set-device-desktop' togglable={false} active>
-                        <DesktopIcon />
+                    <Button id='set-device-desktop' className='border' command='set-device-desktop' >
+                        <Icons.Desktop />
                     </Button>
-                    <Button id='device-tablet' command='set-device-tablet' togglable={false}>
-                        <TabletIcon />
+                    <Button id='set-device-tablet' className='border' command='set-device-tablet' >
+                        <Icons.Tablet />
                     </Button>
-                    <Button id='device-mobile' command='set-device-mobile' togglable={false}>
-                        <MobileIcon />
+                    <Button id='set-device-mobile' className='border' command='set-device-mobile' >
+                        <Icons.Mobile />
                     </Button>
                 </Panel>
 
-                <Panel id='panel-top-right'>
-
-                </Panel>
+                <Panel id='panel-top-right'></Panel>
 
             </Layout>
 
             <LayoutRow>
-
                 <Layout className='layout-left hide' id='left-group'>
                     <LayersContainer id='container-layers' />
                     <BlocksContainer id='container-blocks' />
                 </Layout>
 
-                <Canvas>
-                    <h1>Canvas</h1>
-                    <div className="image-container">
-                        <img src="https://picsum.photos/200/300" alt="Random Image" />
-                    </div>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas amet quia atque sunt, maiores ducimus, earum non minus provident quas dolores. Modi neque nostrum aut nihil dolorem reiciendis officia ab!</p>
+                <Canvas id='center-group'>
+                    <h1>Hallo World</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                 </Canvas>
 
                 <Layout className='layout-right'>
-
                     <SelectedContainer />
-
                     <Panel id='panel-style' className='panel-group'>
 
                         <Button id='btn-style'
@@ -152,7 +154,7 @@ const MP_ContentEditor = () => {
                                     (document.getElementById('container-styles') as any).style.display = 'none';
                                 }
                             }}  >
-                            <StyleIcon />
+                            <Icons.Style />
                         </Button>
 
                         <Button id='btn-traits'
@@ -165,21 +167,20 @@ const MP_ContentEditor = () => {
                                     (document.getElementById('container-traits') as any).style.display = 'none';
                                 }
                             }} >
-                            <TraitsIcon />
+                            <Icons.Traits />
                         </Button>
 
                     </Panel>
 
                     <StylesContainer id='container-styles' />
                     <TraitsContainer id='container-traits' />
-
                 </Layout>
-            </LayoutRow>
 
+            </LayoutRow>
             <Breadcrumb />
             <LoadingScreen />
-        </RootEditor>
-    );
+        </RootElement>
+    )
 };
 
 
@@ -188,6 +189,6 @@ const root = createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
     <StrictMode>
-        <MP_ContentEditor />
+        <App />
     </StrictMode>
 )

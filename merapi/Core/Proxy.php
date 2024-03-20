@@ -10,7 +10,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use Symfony\Component\Yaml\Yaml;
-use MerapiPanel\Core\Mod\Cache\Cache;
+
 
 final class Proxy
 {
@@ -68,7 +68,7 @@ final class Proxy
                     )
                 ) {
 
-                    throw new \Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
+                    throw new Exception("Not allowed to use " . self::class . " or " . $this::class . " in constructor");
                 } else {
 
                     $paramName = $param->getName();
@@ -83,7 +83,7 @@ final class Proxy
                         if (count($arguments) === count($classParams)) {
                             $passedParams = $arguments;
                         } else {
-                            throw new \Exception("Missing argument: $paramName at key: $key");
+                            throw new Exception("Missing argument: $paramName at key: $key");
                         }
                     }
                 }
@@ -179,9 +179,8 @@ final class Proxy
                             assert($paramType instanceof ReflectionNamedType);
 
 
-                            // error_log(strtolower(get_class($argument)) . "::" . strtolower($paramType->getName()));
-                            // For class types, check if the argument is an instance of the parameter type
-                            if (is_array($argument) || (strtolower(get_class($argument)) == strtolower($paramType->getName()))) {
+                            // For class types, check if the argument is an instance of the parameter type                      
+                            if (is_array($argument) || (is_object($argument) && strtolower(get_class($argument)) == strtolower($paramType->getName()))) {
                                 // Attempt conversion or handling for class types here
                                 // For now, we'll skip conversion and assume proper types are passed
                                 $invocationArgs[] = $argument;

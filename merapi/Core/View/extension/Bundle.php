@@ -65,11 +65,27 @@ class Bundle extends \Twig\Extension\AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('admin_url', [$this, 'admin_url']),
+            new TwigFilter('admin_url', [$this, 'admin_path']),
+            new TwigFilter('admin_path', [$this, 'admin_path']),
             new TwigFilter('assets', [$this, 'assets']),
             new TwigFilter('url', [$this, 'url']),
             new TwigFilter('preg_replace', [$this, 'preg_replace']),
+            new TwigFilter('aes_decrypt', [$this, 'aes_decrypt']),
+            new TwigFilter('aes_encrypt', [$this, 'aes_encrypt']),
         ];
+    }
+
+
+    function aes_decrypt($data)
+    {
+
+        return AES::decrypt($data);
+    }
+
+    function aes_encrypt($data)
+    {
+
+        return AES::encrypt($data);
     }
 
     function preg_replace($subject, $pattern, $replacement)
@@ -107,10 +123,10 @@ class Bundle extends \Twig\Extension\AbstractExtension
     function url($path)
     {
         $parse = parse_url($path);
-        if (!isset($parse['scheme'])) {
+        if (!isset ($parse['scheme'])) {
             $parse['scheme'] = $_SERVER['REQUEST_SCHEME'];
         }
-        if (!isset($parse['host'])) {
+        if (!isset ($parse['host'])) {
             $parse['host'] = $_SERVER['HTTP_HOST'];
         }
 
@@ -125,7 +141,7 @@ class Bundle extends \Twig\Extension\AbstractExtension
 
 
 
-    function admin_url($path)
+    function admin_path($path)
     {
         return rtrim($_ENV["__MP_ADMIN__"], "/") . "/" . ltrim($path, "/");
     }
@@ -137,7 +153,7 @@ class Bundle extends \Twig\Extension\AbstractExtension
     function setJsModule($module)
     {
 
-        $_module = isset($_COOKIE["_module"]) ? json_decode($_COOKIE["_module"], true) : [];
+        $_module = isset ($_COOKIE["_module"]) ? json_decode($_COOKIE["_module"], true) : [];
         $module = array_unique(array_merge($_module, [$module]));
         setcookie("_module", json_encode($module), time() + (86400 * 30), "/");
     }

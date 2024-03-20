@@ -7,7 +7,14 @@
 
 {% block stylesheet %}
 {{ parent() }}
-<link rel="stylesheet" href="/merapi/dist/MP_Editor.css?v={{ time() }}">
+<script>
+    window.payload = {
+        endpoint: {
+            load:  "{{ '/editor/load' | admin_url | aes_encrypt | url }}"
+        }
+    }
+</script>
+<link rel="stylesheet" href="/merapi/dist/themecustomize.css?v={{ time() }}">
 {% endblock %}
 
 
@@ -16,5 +23,5 @@
 
 <div id="root"></div>
 
-<script src="/merapi/dist/MP_Editor.bundle.js?v={{ time() }}"></script>
+<script src="/merapi/dist/themecustomize.bundle.js?v={{ time() }}"></script>
 {% endblock %}

@@ -42,7 +42,7 @@ class AssetsService
         $keyMap = self::createMapKey($absoluteFilePath);
 
         // Check if the URL for the key map exists in the assets map and is not expired
-        if (isset($this->assetsMap[$keyMap]["url"]) && time() - $this->assetsMap[$keyMap]["time"] < 3600) {
+        if (isset ($this->assetsMap[$keyMap]["url"]) && time() - $this->assetsMap[$keyMap]["time"] < 3600) {
             return $this->assetsMap[$keyMap]["url"];
         }
 
@@ -68,13 +68,13 @@ class AssetsService
 
         $referer_path = parse_url($req->http("referer"), PHP_URL_PATH);
 
-        if (!empty($referer_path) && $this->assetsMap->contains($referer_path)) {
+        if (!empty ($referer_path) && $this->assetsMap->contains($referer_path)) {
 
             $pattern = preg_replace("/\//", "\/", $this->routeLink);
             $pattern = "/" . str_replace("{data}", "(.*)", $pattern) . "$/";
 
             preg_match($pattern, $req->http("referer"), $matches);
-            if (isset($matches[1])) {
+            if (isset ($matches[1])) {
 
                 $base = AES::decrypt(rawurldecode($matches[1]));
                 if ($base[0] === "!") {
@@ -93,7 +93,7 @@ class AssetsService
 
         $path = AES::decrypt(rawurldecode($req->data));
 
-        if ($path[0] !== "!" && !$req->http("referer")) {
+        if (($path && $path[0]) !== "!" && !$req->http("referer")) {
             return [
                 "code" => 403,
                 "message" => "Forbidden - Not allowed!"
@@ -211,7 +211,7 @@ class AssetsService
         preg_match("/\@(\w+)/i", $path, $matches);
         $moduleName = "base";
 
-        if (isset($matches[1])) {
+        if (isset ($matches[1])) {
             $moduleName = "module/" . $matches[1];
             $path = ltrim(str_replace("@" . $matches[1], "", $path), "\\/");
         }
@@ -220,7 +220,7 @@ class AssetsService
         }
 
         $path = ltrim(rtrim($moduleName, "\/") . "/" . ltrim($path, "\/"), "\/");
-        return(preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/merapi/" . $path));
+        return (preg_replace("/\?.*/", "", $_SERVER['DOCUMENT_ROOT'] . "/merapi/" . $path));
     }
 
 
@@ -253,7 +253,7 @@ class AssetMap implements \ArrayAccess
 
     function offsetExists(mixed $offset): bool
     {
-        return isset($this->stack_data[$offset]);
+        return isset ($this->stack_data[$offset]);
     }
 
 

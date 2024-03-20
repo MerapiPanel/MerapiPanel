@@ -51,7 +51,7 @@ class App extends Box
     {
 
         $this->__registerEvent();
-        $this->Core_Exception_Handler();
+        $this->core_exception_handler();
         $this->__registerController();
 
         if (isset ($_ENV['__MP_SERVICE__'])) {
@@ -67,6 +67,7 @@ class App extends Box
     public function run(): void
     {
 
+        ob_start();
         try {
 
             $request = Proxy::Real($this->utility_http_request());
@@ -76,5 +77,7 @@ class App extends Box
             // send to exception handler to find the error
             $this->core_exception_handler()->handle_error($e);
         }
+
+        ob_end_flush();
     }
 }

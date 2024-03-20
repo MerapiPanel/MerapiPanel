@@ -6,7 +6,7 @@ use MerapiPanel\Core\View\View;
 
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
-error_reporting(E_ALL);
+error_reporting(0);
 
 class Handler
 {
@@ -16,6 +16,7 @@ class Handler
 
     public function __construct()
     {
+        ob_start();
         register_shutdown_function([$this, 'handleFatalError']);
     }
 
@@ -26,6 +27,7 @@ class Handler
     public function handleFatalError()
     {
 
+
         $error = error_get_last();
 
         if ($this->isErrorHandled)
@@ -33,6 +35,7 @@ class Handler
         if ($error === null)
             return;
 
+            $this->isErrorHandled = true;
         $errorString = $error['message'];
 
         $message = $this->extractMessageFromString($errorString);
@@ -44,6 +47,12 @@ class Handler
             $type = $this->extractTypeFromString($errorString);
         }
 
+        if(ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        header("HTTP/1.1 " . $error['code'] . " " . $error['message']);
+        header("Content-Type: text/html; charset=UTF-8");
         echo $this->view([
             "file" => $error['file'],
             "line" => $error['line'],
@@ -53,6 +62,8 @@ class Handler
             "stack_trace" => $stackTrace,
             "snippet" => $snippet
         ]);
+        end($stackTrace);
+        exit();
     }
 
 
@@ -60,12 +71,13 @@ class Handler
 
     /**
      * Description: Handle and display the error
-     * @param Throwable $error
+     * @param \Throwable $error
      */
     function handle_error(\Throwable $error)
     {
+
         $this->isErrorHandled = true;
-        header("HTTP/1.1 " . $error->getCode() . " " . $error->getMessage());
+        
 
         $errorData = [
             "file" => $error->getFile(),
@@ -77,7 +89,15 @@ class Handler
             "snippet" => $this->getCodeSnippet($error->getFile(), $error->getLine()),
         ];
 
+        if(ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        header("HTTP/1.1 " . $error->getCode() . " " . $error->getMessage());
+        header("Content-Type: text/html; charset=UTF-8");
         echo $this->view($errorData);
+        end($errorData['stack_trace']);
+        exit();
     }
 
 
@@ -225,6 +245,8 @@ class Handler
             "snippet" => ""
         ]
     ) {
+
+        header("Content-Type: text/html; charset=UTF-8");
 
         $view = View::newInstance([__DIR__ . "/views"]);
         return $view->load("error.html.twig")->render([

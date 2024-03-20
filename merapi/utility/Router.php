@@ -5,7 +5,7 @@ namespace MerapiPanel\Utility;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Core\Cog\Config;
+use MerapiPanel\Core\AES;
 use MerapiPanel\Core\Proxy;
 use MerapiPanel\Core\View\View;
 use MerapiPanel\Utility\Middleware\Component;
@@ -37,7 +37,7 @@ class Router extends Component
         parent::__construct();
         $this->box = $box;
 
-        if (isset($_ENV['__MP_ADMIN__'])) {
+        if (isset ($_ENV['__MP_ADMIN__'])) {
             $this->adminPrefix = $_ENV['__MP_ADMIN__'];
         }
     }
@@ -235,7 +235,7 @@ class Router extends Component
 
         foreach (debug_backtrace() as $call) {
             // only in module
-            if (isset($call['file']) && in_array("module", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"), $call['file'])))) {
+            if (isset ($call['file']) && in_array("module", array_map("strtolower", explode((PHP_OS == "WINNT" ? "\\" : "/"), $call['file'])))) {
                 $file = $call['file'];
                 break;
             }
@@ -258,47 +258,41 @@ class Router extends Component
     {
 
         $method = $request->getMethod();
-
         $path = $request->getPath();
 
-        // if (!isset($this->routeStack[$method])) {
-        //     throw new Exception("Unsupported HTTP method: $method", 405);
-        // } else if (strtoupper($method) !== "GET" && $path !== "/") {
-
-        //     $token = urldecode($request->mToken());
-
-        //     if (empty($token)) {
-
-        //         throw new Exception("Request token is empty", 400);
-        //     } elseif (!Token::validate($token)) {
-
-        //         throw new Exception("Request token is invalid", 400);
-        //     }
-        // }
-
-        //  echo "dispatch $method $path";
 
         /**
          * @var Route $route
          * find route from route stack
          */
         foreach ($this->routeStack[$method] as $route) {
-
-            //  print_r([$route->getPath(), $path]);
-
             if ($this->matchRoute($route->getPath(), $path)) {
-
                 $routeParams = $this->extractRouteParams($route->getPath(), $path);
-
                 $request->setParams($routeParams);
-
                 return $this->handle($request, $route);
             }
         }
 
 
 
-        throw new Exception("Route not found $path", 404);
+        if (@AES::decrypt(ltrim($path, "\\/"))) {
+            $path = @AES::decrypt(ltrim($path, "\\/"));
+        }
+
+
+
+
+        foreach ($this->routeStack[$method] as $route) {
+            if ($this->matchRoute($route->getPath(), $path)) {
+                $routeParams = $this->extractRouteParams($route->getPath(), $path);
+                $request->setParams($routeParams);
+                return $this->handle($request, $route);
+            }
+        }
+
+
+
+        throw new Exception("Route not found " . $request->getPath(), 404);
     }
 
 
@@ -334,7 +328,7 @@ class Router extends Component
             }
         }
 
-        return !empty($matches);
+        return !empty ($matches);
     }
 
 
@@ -400,8 +394,6 @@ class Router extends Component
             return $response;
         }
 
-        // print_r($this->routeStack);
-
         // Jika tidak ada middleware atau middleware telah selesai dieksekusi,
         // jalankan callback untuk mendapatkan responsnya.
         return $this->callCallback($request, $callback);
@@ -416,7 +408,7 @@ class Router extends Component
      *
      * @param Request $request The request object.
      * @param mixed $callback The callback function to be called.
-     * @throws Error If the callback is a string and the controller or method is not found.
+     * @throws Exception If the callback is a string and the controller or method is not found.
      * @return Response The response returned by the callback function or a new Response object.
      */
     protected function callCallback(Request $request, $callback): Response
@@ -432,7 +424,7 @@ class Router extends Component
                 return $output;
             }
 
-            if (is_array($output) || is_object($output) && isset($output['code'])) {
+            if (is_array($output) || is_object($output) && isset ($output['code'])) {
                 $response->setStatusCode($output['code']);
             }
             $response->setContent($output);
@@ -470,7 +462,7 @@ class Router extends Component
             ob_start();
             $output = $controllerInstance->$method(...[$request, &$response]);
             ob_end_clean();
-
+            // no stream output
 
             if ($output instanceof Response) {
                 return $output;
@@ -522,13 +514,13 @@ class Router extends Component
 
         if (is_array($result)) {
 
-            if (isset($result["code"])) {
+            if (isset ($result["code"])) {
                 $content["code"] = $result["code"];
             }
-            if (isset($result["message"])) {
+            if (isset ($result["message"])) {
                 $content["message"] = $result["message"];
             }
-            if (isset($result["data"])) {
+            if (isset ($result["data"])) {
                 $content["data"] = $result["data"];
             }
         } elseif (is_string($result)) {
@@ -537,13 +529,13 @@ class Router extends Component
 
             if (json_last_error() === JSON_ERROR_NONE) {
 
-                if (isset($json["code"])) {
+                if (isset ($json["code"])) {
                     $content["code"] = $json["code"];
                 }
-                if (isset($json["message"])) {
+                if (isset ($json["message"])) {
                     $content["message"] = $json["message"];
                 }
-                if (isset($json["data"])) {
+                if (isset ($json["data"])) {
                     $content["data"] = $json["data"];
                 }
             } else {
@@ -554,7 +546,7 @@ class Router extends Component
             }
         }
 
-        if (isset($content['data']) && $content['data'] == null) {
+        if (isset ($content['data']) && $content['data'] == null) {
             // unset($content['data']);
         }
 

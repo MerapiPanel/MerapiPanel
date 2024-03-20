@@ -10,8 +10,8 @@ class admin
 
     public function register(Router $router)
     {
-        $index = $router->get('/admin/theme', "index");
-        $customize = $router->get('/admin/theme/customize', "customize");
+        $index = $router->get('/theme', "index");
+        $customize = $router->get('/theme/customize', "customize");
 
         Box::module("panel")->addMenu([
             "name" => "Theme",

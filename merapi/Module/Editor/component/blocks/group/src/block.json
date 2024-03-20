@@ -1,0 +1,11 @@
+{
+    "$schema": "file:///F:/web/MerapiPanel/schema/block.json",
+    "name": "core/group",
+    "title": "group",
+
+
+    "editScript": "file:./edit.js",
+    "editStyle": "file:./edit.scss",
+    "index": "file:./index.js",
+    "view": "file:./view.js"
+}

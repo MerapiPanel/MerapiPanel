@@ -12,9 +12,17 @@
             "type": "string",
             "description": "The name of the block."
         },
+        "icon": {
+            "type": "string",
+            "description": "The icon of the block."
+        },
         "description": {
             "type": "string",
             "description": "The description of the block."
+        },
+        "category": {
+            "type": "string",
+            "description": "The category of the block."
         },
         "attributes": {
             "type": "array",
@@ -90,6 +98,10 @@
                         "type": "string"
                     },
                     "description": "An array of strings representing the types of children allowed for the block."
+                },
+                "extend": {
+                    "type": "string",
+                    "description": "The name of the block to extend."
                 }
             },
             "required": [
