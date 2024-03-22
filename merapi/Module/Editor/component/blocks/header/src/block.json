@@ -2,8 +2,25 @@
     "$schema": "file:///F:/web/MerapiPanel/schema/block.json",
     "name": "core/header",
     "title": "header",
-    "editScript": "file:./edit.js",
-    "editStyle": "file:./edit.scss",
+    "category": "General",
+    "attributes": [
+        {
+            "name": "text",
+            "label": "Text",
+            "type": "string",
+            "default": "Header"
+        },
+        {
+            "name": "level",
+            "label": "Level",
+            "type": "number",
+            "default": 1
+        }
+    ],
+    "options": {
+        "editable": true,
+        "extend": "text"
+    },
     "index": "file:./index.js",
     "view": "file:./view.js"
 }

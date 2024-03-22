@@ -34,6 +34,10 @@
                         "type": "string",
                         "description": "The name of the attribute."
                     },
+                    "label": {
+                        "type": "string",
+                        "description": "The label of the attribute."
+                    },
                     "type": {
                         "description": "The type of the attribute.",
                         "oneOf": [
@@ -88,26 +92,51 @@
             "type": "object",
             "description": "Options for the block.",
             "properties": {
-                "droppable": {
+                "removable": {
                     "type": "boolean",
-                    "description": "Indicates whether the block is droppable or not."
+                    "description": "Indicates whether the block is removable or not."
                 },
-                "children": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "description": "An array of strings representing the types of children allowed for the block."
+                "draggable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is draggable or not."
+                },
+                "badgable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is badgable or not."
+                },
+                "stylable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is stylable or not."
+                },
+                "highlightable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is highlightable or not."
+                },
+                "selectable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is selectable or not."
+                },
+                "copyable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is copyable or not."
+                },
+                "resizable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is resizable or not."
+                },
+                "editable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is editable or not."
+                },
+                "hoverable": {
+                    "type": "boolean",
+                    "description": "Indicates whether the block is hoverable or not."
                 },
                 "extend": {
                     "type": "string",
                     "description": "The name of the block to extend."
                 }
-            },
-            "required": [
-                "droppable",
-                "children"
-            ]
+            }
         },
         "editScript": {
             "type": "string",

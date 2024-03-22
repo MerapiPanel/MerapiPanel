@@ -10,6 +10,8 @@ import { RootConfig } from '@il4mb/merapipanel/dist/editor/Root';
 const App = () => {
 
     const config = {
+        width: "100vw",
+        height: "100vh",
         deviceManager: {
             devices: [{
                 name: 'Desktop',
@@ -23,6 +25,9 @@ const App = () => {
             }]
         }
     }
+
+
+
 
     const onReadyHandle = (config: RootConfig) => {
 
@@ -80,98 +85,23 @@ const App = () => {
             }
         })
             .then(res => res.json())
-            .then((async (json: any) => await import(/*webpackIgnore: true*/(json.data[0].index as string))))
+            .then(((json: any) => json.data?.map(async (item: any) => await import(/*webpackIgnore: true*/(item.index as string)))))
             .catch((error: any) => {
                 console.error('Fetch error:', error); // Handling any errors that occur during fetch
             });
-
     }
 
     return (
         <RootElement onReady={onReadyHandle} config={config}>
-            <Layout id='top-group' className='layout-top'>
 
-                <Panel id='panel-top-left'>
-                    <Button id='visibility' className='border' command='sw-visibility' active >
-                        <Icons.Visibility />
-                    </Button>
-                    <Button id='export' className='border' command='export-template' context='export-template' >
-                        <Icons.Code />
-                    </Button>
-                    <Button id='layers-toggle' className='border' command='sw-layers-toggle' context='left-panel' >
-                        <Icons.Layers />
-                    </Button>
-                    <Button id='blocks-toggle' className='border' command='sw-blocks-toggle' context='left-panel' >
-                        <Icons.GridFill />
-                    </Button>
-                </Panel>
+            <Canvas id='center-group'>
+                <h1>Hallo World</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                <div>
+                    <img src="https://via.placeholder.com/300" alt="" />
+                </div>
+            </Canvas>
 
-                <Panel id='panel-top-center'>
-                    <Button id='set-device-desktop' className='border' command='set-device-desktop' >
-                        <Icons.Desktop />
-                    </Button>
-                    <Button id='set-device-tablet' className='border' command='set-device-tablet' >
-                        <Icons.Tablet />
-                    </Button>
-                    <Button id='set-device-mobile' className='border' command='set-device-mobile' >
-                        <Icons.Mobile />
-                    </Button>
-                </Panel>
-
-                <Panel id='panel-top-right'></Panel>
-
-            </Layout>
-
-            <LayoutRow>
-                <Layout className='layout-left hide' id='left-group'>
-                    <LayersContainer id='container-layers' />
-                    <BlocksContainer id='container-blocks' />
-                </Layout>
-
-                <Canvas id='center-group'>
-                    <h1>Hallo World</h1>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </Canvas>
-
-                <Layout className='layout-right'>
-                    <SelectedContainer />
-                    <Panel id='panel-style' className='panel-group'>
-
-                        <Button id='btn-style'
-                            active
-                            togglable={false}
-                            command={{
-                                run: (editor: Editor) => {
-                                    (document.getElementById('container-styles') as any).style.display = '';
-                                },
-                                stop: () => {
-                                    (document.getElementById('container-styles') as any).style.display = 'none';
-                                }
-                            }}  >
-                            <Icons.Style />
-                        </Button>
-
-                        <Button id='btn-traits'
-                            togglable={false}
-                            command={{
-                                run: (editor: Editor) => {
-                                    (document.getElementById('container-traits') as any).style.display = '';
-                                },
-                                stop: () => {
-                                    (document.getElementById('container-traits') as any).style.display = 'none';
-                                }
-                            }} >
-                            <Icons.Traits />
-                        </Button>
-
-                    </Panel>
-
-                    <StylesContainer id='container-styles' />
-                    <TraitsContainer id='container-traits' />
-                </Layout>
-
-            </LayoutRow>
-            <Breadcrumb />
             <LoadingScreen />
         </RootElement>
     )

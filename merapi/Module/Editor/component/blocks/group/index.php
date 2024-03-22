@@ -1,4 +1,4 @@
 <?php
 
 
-registerBlockType("merapi/group", file_get_contents(__DIR__ . "/dist/block.json"));
+registerBlockType("core/group", file_get_contents(__DIR__ . "/dist/block.json"));
