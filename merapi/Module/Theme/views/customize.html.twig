@@ -8,10 +8,8 @@
 {% block stylesheet %}
 {{ parent() }}
 <script>
-    window.payload = {
-        endpoint: {
-            load:  "{{ '/editor/load' | admin_url | aes_encrypt | url }}"
-        }
+    window.endpoints = {
+        block: "{{ '/editor/load' | admin_url | aes_encrypt | url }}"
     }
 </script>
 <link rel="stylesheet" href="/merapi/dist/themecustomize.css?v={{ time() }}">

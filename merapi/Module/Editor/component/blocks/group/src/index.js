@@ -1,4 +1,5 @@
 import block from "./block.json";
+import { registerBlock } from "@il4mb/merapipanel/block";
 
 
 

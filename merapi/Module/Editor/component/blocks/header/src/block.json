@@ -1,0 +1,9 @@
+{
+    "$schema": "file:///F:/web/MerapiPanel/schema/block.json",
+    "name": "core/header",
+    "title": "header",
+    "editScript": "file:./edit.js",
+    "editStyle": "file:./edit.scss",
+    "index": "file:./index.js",
+    "view": "file:./view.js"
+}

@@ -1448,8 +1448,12 @@
     "@types/react" "^18.2.67"
     "@types/react-dom" "^18.2.22"
     "codemirror" "^5.65.16"
+    "css-loader" "^6.10.0"
     "grapesjs" "^0.21.9"
+    "lodash-webpack-plugin" "^0.11.6"
     "mini-css-extract-plugin" "^2.8.1"
+    "postcss-loader" "^8.1.1"
+    "sass-loader" "^14.1.1"
     "ts-loader" "^9.5.1"
 
 "@isaacs/cliui@^8.0.2":

@@ -2,8 +2,8 @@ import React, { StrictMode } from 'react';
 import { createRoot } from "react-dom/client";
 import { Editor } from 'grapesjs';
 import { RootElement, Panel, Layout, LayoutRow, Button, Canvas, Icons, LayersContainer, BlocksContainer, Breadcrumb, LoadingScreen, useRoot, SelectedContainer, StylesContainer, TraitsContainer } from "@il4mb/merapipanel";
-import { fetchWithProgress } from "@il4mb/merapipanel/dist/tools";
-import "@il4mb/merapipanel/dist/editor/style.css";
+import { fetchWithProgress } from "@il4mb/merapipanel/tools";
+import "@il4mb/merapipanel/editor/style";
 import { RootConfig } from '@il4mb/merapipanel/dist/editor/Root';
 
 
@@ -21,7 +21,7 @@ const App = () => {
                 name: 'Mobile',
                 width: '320px'
             }]
-        },
+        }
     }
 
     const onReadyHandle = (config: RootConfig) => {
@@ -69,27 +69,21 @@ const App = () => {
         });
 
         config?.editor?.select(config?.editor?.getWrapper());
-
-
         config?.setProgress(100);
 
-
-        type windowType = {
-            [key: string]: any
-        }
         // Assuming window.payload.endpoint contains the URL to fetch from
         fetchWithProgress({
-            url: (window as windowType).payload.endpoint.load,
+            url: (window as any).endpoints.block,
             onProgress: (loaded: number, total: number) => {
                 // This callback will be called as the download progresses
-                console.log(`Progress: ${(loaded / total * 100).toFixed(2)}%`);
+                // console.log(`Progress: ${(loaded / total * 100).toFixed(2)}%`);
             }
-        }).then(res => {
-            console.log(res); // Logging the response object once the fetch is complete
-        }).catch(error => {
-            console.error('Fetch error:', error); // Handling any errors that occur during fetch
-        });
-
+        })
+            .then(res => res.json())
+            .then((async (json: any) => await import(/*webpackIgnore: true*/(json.data[0].index as string))))
+            .catch((error: any) => {
+                console.error('Fetch error:', error); // Handling any errors that occur during fetch
+            });
 
     }
 

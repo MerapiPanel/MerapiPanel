@@ -3,13 +3,14 @@ namespace MerapiPanel\Module\Editor\Component;
 
 class Block
 {
-    const required = ['title', 'name', 'editScript', 'editStyle', 'save', 'style'];
-    public readonly string $name; // required
-    public readonly string $title; // required
-    public readonly string $editScript; // required
-    public readonly string  $editStyle; // required
-    public readonly string  $save; // required
-    public readonly string  $style; // required
+    const required = ['title', 'name', 'index', 'save', 'style'];
+    public readonly null|string $name; // required
+    public readonly null|string $title; // required
+    public readonly null|string $editScript; // required
+    public readonly null|string $editStyle; // required
+    public readonly null|string $save; // required
+    public readonly null|string $style; // required
+    public readonly null|string $index;
 
     public string $category;
     public mixed $icon;
@@ -19,18 +20,20 @@ class Block
     public mixed $render;
 
 
-    public function __construct($name, array $props)
+    public function __construct($name, mixed $props)
     {
-        // Check if all required keys exist in the props array
-        if (count(array_diff(self::required, array_keys($props))) > 0) {
-            throw new \Exception('Invalid props array. Missing required keys.');
-        }
+        
+        // // Check if all required keys exist in the props array
+        // if (count(array_diff(self::required, array_keys($props))) > 0) {
+        //     throw new \Exception('Invalid props array. Missing required keys ' . implode(", ",array_diff(self::required, array_keys($props))));
+        // }
 
         // Set class properties from the props array
         $this->name = $name;
-        $this->title = $props['title'];
-        $this->editScript = $props['editScript'];
-        $this->editStyle = $props['editStyle'];
+        $this->title = $props['title'] ?? null;
+        $this->save = $props['save'] ?? null;
+        $this->style = $props['style'] ?? null;
+        $this->index = $props['index'] ?? null;
 
         // Set additional class properties from the props array
         $this->description = $props['description'] ?? null;

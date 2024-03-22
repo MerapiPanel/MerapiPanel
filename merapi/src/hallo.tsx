@@ -1,7 +1,7 @@
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RootElement, Layout, Canvas } from "@il4mb/merapipanel";
-import "@il4mb/merapipanel/dist/editor/style.css";
+import "@il4mb/merapipanel/editor/style";
 
 
 

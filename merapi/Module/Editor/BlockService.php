@@ -23,7 +23,7 @@ namespace MerapiPanel\Module\Editor {
             return $this->stack;
         }
 
-        function registerBlockType(string $name, array $blockProps)
+        function registerBlockType(string $name, mixed $blockProps)
         {
 
             $this->stack[] = new Block($name, $blockProps);
@@ -38,7 +38,31 @@ namespace {
 
     function registerBlockType(string $name, $block)
     {
-        Box::module("Editor")->service("block")->registerBlockType($name, $block);
+        if (isset (debug_backtrace()[0]['file'])) {
+            $dirname = dirname(debug_backtrace()[0]['file']);
+
+            if (is_string($block)) {
+                if (file_exists($block)) {
+                    $block = json_decode(file_get_contents($block), true);
+                } else {
+                    $block = json_decode($block, true);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        return;
+                    }
+                }
+
+                foreach ($block as $key => $item) {
+                    if (is_string($item) && strpos($item, 'file:') === 0) {
+                        $file    = ltrim(pathinfo($item, PATHINFO_BASENAME), "\\/");
+                        $path    = ltrim(realpath(substr($item, 5)), "\\/");
+                        $dirname = trim(str_replace($_ENV['__MP_APP__'], '', $dirname), "\\/");
+                        $block[$key] = "/".str_replace('\\', '/', (!empty ($path) ? ($dirname . "/" . $path) : $dirname) . "/dist/" . $file);
+                    }
+                }
+            }
+
+            Box::module("Editor")->service("block")->registerBlockType($name, $block);
+        }
     }
 
 
