@@ -4,8 +4,8 @@ namespace MerapiPanel\Module\Editor\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Core\View\Component\ViewComponent;
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\Component\ViewComponent;
+use MerapiPanel\Core\Views\View;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Http\Response;
 use Twig\Loader\ArrayLoader;

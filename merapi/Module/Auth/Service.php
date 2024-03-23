@@ -9,6 +9,16 @@ use MerapiPanel\Core\AES;
 class Service extends Module
 {
 
+    public function admin() {
+
+        return true;
+    }
+
+    public function client() {
+
+        return true;
+    }
+
     public function isAdmin()
     {
 

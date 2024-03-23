@@ -12,20 +12,32 @@ class Request
     protected RequestForm $form;
     protected $method;
     protected $path;
+    private static $instance;
 
     /**
      * Constructs a new instance of the class.
      *
      * @return void
      */
-    public function __construct()
+    private function __construct()
     {
 
-        $this->method  = $_SERVER['REQUEST_METHOD'];
-        $this->path    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $this->header = new RequestHeader();
-        $this->query  = new RequestQuery();
-        $this->form   = new RequestForm();
+        $this->query = new RequestQuery();
+        $this->form = new RequestForm();
+
+    }
+
+
+    public static function getInstance() : Request
+    {
+
+        if (!isset (self::$instance)) {
+            self::$instance = new Request();
+        }
+        return self::$instance;
     }
 
 
@@ -101,10 +113,11 @@ class Request
     /**
      * http method use for return header value
      */
-    public function http($name): string | false
+    public function http($name): string|false
     {
         $name = $this->camelCaseToKebabCase($name);
-        if (!isset($this->header->$name)) return false;
+        if (!isset ($this->header->$name))
+            return false;
         return $this->header->$name;
     }
 
@@ -114,12 +127,13 @@ class Request
     /**
      * Magic method use for return from value
      */
-    function __call($name, $arguments): string | false
+    function __call($name, $arguments): string|false
     {
 
         $name = $this->camelCaseToKebabCase($name);
-        if (!isset($this->form->$name)) {
-            if (empty($arguments)) return $this->__get($name);
+        if (!isset ($this->form->$name)) {
+            if (empty ($arguments))
+                return $this->__get($name);
             return false;
         }
         return $this->form->$name;
@@ -132,12 +146,13 @@ class Request
      * Magic method use fro return get query value
      * if not set will forward to __get
      */
-    public function __get($name): string | false
+    public function __get($name): string|false
     {
 
         // error_log("From Request Traying Get : " . $name);
         $name = $this->camelCaseToKebabCase($name);
-        if (!isset($this->query->$name)) return false;
+        if (!isset ($this->query->$name))
+            return false;
         return $this->query->$name;
     }
 
@@ -209,7 +224,7 @@ class RequestHeader extends MagicAccess
 
     public function __isset($key)
     {
-        return isset($this->stack_data[$key]);
+        return isset ($this->stack_data[$key]);
     }
 
     public function __unset($key)
@@ -243,7 +258,7 @@ class RequestQuery extends MagicAccess
 
     public function __isset($key)
     {
-        return isset($this->stack_data[$key]);
+        return isset ($this->stack_data[$key]);
     }
 
     public function __unset($key)
@@ -268,7 +283,8 @@ class RequestForm extends MagicAccess
 
         if (strtolower($_SERVER['REQUEST_METHOD']) == "post") {
             $this->dataFromPost();
-        } else $this->dataFromPut();
+        } else
+            $this->dataFromPut();
     }
 
 
@@ -299,7 +315,7 @@ class RequestForm extends MagicAccess
 
             // Loop data blocks
             foreach ($a_blocks as $id => $block) {
-                if (empty($block)) {
+                if (empty ($block)) {
                     continue;
                 }
 
@@ -311,7 +327,7 @@ class RequestForm extends MagicAccess
                     // Match "name" and optional value in between newline sequences
                     preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
                 }
-                if (!empty($matches[1])) {
+                if (!empty ($matches[1])) {
                     $this->stack_data[$matches[1]] = $matches[2];
                 }
             }
@@ -326,9 +342,9 @@ class RequestForm extends MagicAccess
      */
     private static function getBoundary()
     {
-        if (!empty($_SERVER['CONTENT_TYPE'])) {
+        if (!empty ($_SERVER['CONTENT_TYPE'])) {
             preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
-            if (isset($matches[1])) {
+            if (isset ($matches[1])) {
                 return $matches[1];
             }
         }
@@ -350,7 +366,7 @@ class RequestForm extends MagicAccess
 
     public function __isset($key)
     {
-        return isset($this->stack_data[$key]);
+        return isset ($this->stack_data[$key]);
     }
 
     public function __unset($key)

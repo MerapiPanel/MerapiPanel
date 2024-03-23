@@ -6,23 +6,21 @@ ini_set("error_log", __DIR__ . "/php-error.log");
 use MerapiPanel\Core\Proxy;
 use Throwable;
 
-$GLOBALS['time_start'] = microtime(true);
-
 $config = [
-    "START_TIME" => microtime(true),
-    "APP" => realpath(__DIR__ . "/..")
+    "START_TIME" => microtime(true), // start time
+    "CWD" => realpath(__DIR__ . "/..") // current working directory
 ];
 
-$loaded_config = json_decode(file_get_contents(__DIR__ . "/config/env.json"), true);
+$loaded_config = json_decode(file_get_contents(__DIR__ . "/config/env.json"), true); // load config
 
 $config = array_merge($config, $loaded_config);
 if (isset ($config['$schema'])) {
-    unset($config['$schema']);
+    unset($config['$schema']); // remove $schema
 }
-$config = array_combine(array_map(fn($x) => ("__MP_" . preg_replace("/[^A-Z]+/im", "_", strtoupper($x)) . "__"), array_keys($config)), $config);
+$config = array_combine(array_map(fn($x) => ("__MP_" . preg_replace("/[^A-Z]+/im", "_", strtoupper($x)) . "__"), array_keys($config)), $config); // convert all keys to uppercase
 
 foreach ($config as $key => $value) {
-    $_ENV[$key] = $value;
+    $_ENV[$key] = $value; // set environment variable
 }
 
 

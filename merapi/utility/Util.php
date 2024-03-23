@@ -2,6 +2,10 @@
 
 namespace MerapiPanel\Utility;
 
+use Exception;
+use MerapiPanel\Box;
+use MerapiPanel\Core\Abstract\Module;
+
 class Util
 {
 
@@ -74,7 +78,7 @@ class Util
 
         $fileContent = file_get_contents($filePath);
         if ($fileContent === false) {
-            throw new \Exception("Unable to read the file: $filePath");
+            throw new Exception("Unable to read the file: $filePath");
         }
 
         // Regular expressions for matching the namespace and class name
@@ -180,7 +184,7 @@ class Util
     public static function siteURL()
     {
         // Check if the current request is using HTTPS
-        $is_https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+        $is_https = isset ($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
 
         // Get the protocol
         $protocol = $is_https ? "https://" : "http://";
@@ -192,5 +196,39 @@ class Util
         $site_url = $protocol . $host;
 
         return $site_url;
+    }
+
+
+
+    public static function callAccessHandler($handler)
+    {
+        if (function_exists($handler)) {
+            return $handler() === true;
+        } else if (str_contains($handler, "@")) {
+
+            [$className, $methodName] = explode("@", $handler);
+            if (str_contains($className, "module")) { // for namespace
+
+                try {
+                    $module = Box::module(Module::getModuleName($className));
+                    return $module->$methodName() === true;
+
+                } catch (Exception $e) {
+                    // silent
+                    return false;
+                }
+            } else if (class_exists($className)) {
+                if (method_exists($className, $methodName)) {
+                    return $className::$methodName() === true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public static function getAccessName()
+    {
+        return $_ENV["__MP_ACCESS_NAME__"] ?? "guest";
     }
 }

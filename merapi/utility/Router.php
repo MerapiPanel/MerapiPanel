@@ -7,7 +7,7 @@ use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Core\AES;
 use MerapiPanel\Core\Proxy;
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\View;
 use MerapiPanel\Utility\Middleware\Component;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
@@ -24,6 +24,7 @@ class Router extends Component
         "DELETE" => []
     ];
     protected Box $box;
+    protected $access = [];
     protected $adminPrefix = '/panel/admin';
     protected $controller = [
         "class" => "",
@@ -37,8 +38,9 @@ class Router extends Component
         parent::__construct();
         $this->box = $box;
 
-        if (isset ($_ENV['__MP_ADMIN__'])) {
-            $this->adminPrefix = $_ENV['__MP_ADMIN__'];
+        if (isset ($_ENV['__MP_ACCESS__'])) {
+            $this->access = $_ENV['__MP_ACCESS__'];
+            //  $this->adminPrefix = $_ENV['__MP_ADMIN__'];
         }
     }
 
@@ -74,10 +76,13 @@ class Router extends Component
             throw new \InvalidArgumentException("Callback is invalid");
         }
 
-        $sectionName = strtolower(basename($caller ?? "", ".php"));
-        if ($sectionName === "admin") {
-            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
+        $accessName = strtolower(basename($caller ?? "", ".php"));
+        if (isset ($this->access[$accessName])) {
+            $path = $this->access[$accessName]["prefix"] . "/" . trim($path, "/");
         }
+        // if ($accessName === "admin") {
+        //     $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
+        // }
 
         $route = new Route(Route::GET, $path, $callback);
         return $this->addRoute(Route::GET, $route);
@@ -117,9 +122,9 @@ class Router extends Component
             throw new \InvalidArgumentException("Callback is invalid");
         }
 
-        $sectionName = strtolower(basename($caller ?? "", ".php"));
-        if ($sectionName === "admin") {
-            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
+        $accessName = strtolower(basename($caller ?? "", ".php"));
+        if (isset ($this->access[$accessName])) {
+            $path = $this->access[$accessName]["prefix"] . "/" . trim($path, "/");
         }
         $route = new Route(Route::POST, $path, $callback);
         return $this->addRoute(Route::POST, $route);
@@ -159,9 +164,9 @@ class Router extends Component
             throw new \InvalidArgumentException("Callback is invalid");
         }
 
-        $sectionName = strtolower(basename($caller ?? "", ".php"));
-        if ($sectionName === "admin") {
-            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
+        $accessName = strtolower(basename($caller ?? "", ".php"));
+        if (isset ($this->access[$accessName])) {
+            $path = $this->access[$accessName]["prefix"] . "/" . trim($path, "/");
         }
 
         $route = new Route(Route::PUT, $path, $callback);
@@ -201,9 +206,9 @@ class Router extends Component
             throw new \InvalidArgumentException("Callback is invalid");
         }
 
-        $sectionName = strtolower(basename($caller ?? "", ".php"));
-        if ($sectionName === "admin") {
-            $path = rtrim($this->adminPrefix, "/") . "/" . trim($path, "/");
+        $accessName = strtolower(basename($caller ?? "", ".php"));
+        if (isset ($this->access[$accessName])) {
+            $path = $this->access[$accessName]["prefix"] . "/" . trim($path, "/");
         }
 
         $route = new Route(Route::DELETE, $path, $callback);
@@ -259,6 +264,18 @@ class Router extends Component
 
         $method = $request->getMethod();
         $path = $request->getPath();
+
+        foreach ($this->access as $key => $value) {
+
+            if (strpos($path, $value["prefix"]) === 0) {
+                $handler = $value["handler"];
+                if (!Util::callAccessHandler($handler)) {
+                    throw new Exception("Access Denied", 403);
+                }
+                $_ENV['__MP_ACCESS_NAME__'] = $key;
+                break;
+            }
+        }
 
 
         /**

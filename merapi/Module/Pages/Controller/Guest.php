@@ -4,7 +4,7 @@ namespace MerapiPanel\Module\Pages\Controller;
 
 use MerapiPanel\BoxModule;
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\View;
 use MerapiPanel\Module\Pages\Views\PageViewFunction;
 use MerapiPanel\Utility\Http\Request;
 

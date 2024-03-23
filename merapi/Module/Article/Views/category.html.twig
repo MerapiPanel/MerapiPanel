@@ -13,8 +13,8 @@
 {% endblock %}
 
 {% block breadcrumb_item %}
-<li class="breadcrumb-item"><a href="{{ '/' | admin_url }}">Home</a></li>
-<li class="breadcrumb-item"><a href="{{ '/article' | admin_url }}">Article</a></li>
+<li class="breadcrumb-item"><a href="{{ '/' | url_path }}">Home</a></li>
+<li class="breadcrumb-item"><a href="{{ '/article' | url_path }}">Article</a></li>
 <li class="breadcrumb-item active" aria-current="page">Category</li>
 {% endblock %}
 
@@ -63,7 +63,7 @@
     function deleteCategory(prop) {
         merapi.dialog.confirmDanger("Are you sure?", "Are you sure you want to delete this category?").then((act) => {
             if (act) {
-                merapi.http.post("{{ '/article/endpoint/category/delete' | admin_url }}", { id: prop }).then((data, text, xhr) => {
+                merapi.http.post("{{ '/article/endpoint/category/delete' | url_path }}", { id: prop }).then((data, text, xhr) => {
                     if (xhr.status === 200 && data.code === 200) {
                         merapi.toast(data.message, 5, "text-success");
                         $("#category-" + prop).remove();
@@ -98,7 +98,7 @@
 
                     modal.hide();
                     // send request to server
-                    merapi.http.post("{{ '/article/endpoint/category/edit' | admin_url }}", {
+                    merapi.http.post("{{ '/article/endpoint/category/edit' | url_path }}", {
                         name: input.val(),
                         id: id
                     }).then((response, text, xhr) => {
@@ -177,7 +177,7 @@
 
                     modal.hide();
                     // send request to server
-                    merapi.http.post("{{ '/article/endpoint/category/create' | admin_url }}", {
+                    merapi.http.post("{{ '/article/endpoint/category/create' | url_path }}", {
                         name: input.val()
                     }).then((response, text, xhr) => {
 

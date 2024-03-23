@@ -19,14 +19,11 @@ final class Proxy
     protected string $className;
     private ?object $instance = null;
     protected $args = [];
-    // protected $identify;
     protected $meta = [];
 
 
     function __construct($className, $arguments)
     {
-
-        //$this->identify = Cache::getIdentify($className);
         $this->className = $className;
         $this->args = $arguments;
     }
@@ -72,10 +69,10 @@ final class Proxy
                 } else {
 
                     $paramName = $param->getName();
-                    if (isset($arguments[$paramName])) {
+                    if (isset ($arguments[$paramName])) {
 
                         $passedParams[] = $arguments[$paramName];
-                    } elseif (isset($arguments[$key])) {
+                    } elseif (isset ($arguments[$key])) {
 
                         $passedParams[] = $arguments[$key];
                     } else {
@@ -89,10 +86,26 @@ final class Proxy
                 }
             }
 
-            if (!empty($passedParams)) {
-                $instance = $reflection->newInstanceArgs($passedParams);
+            if ($reflection->getConstructor()->isPublic()) {
+                if (!empty ($passedParams)) {
+                    $instance = $reflection->newInstanceArgs($passedParams);
+                } else {
+                    $instance = $reflection->newInstance();
+                }
             } else {
-                $instance = $reflection->newInstance();
+                $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+                foreach ($methods as $method) {
+                    // Check if the method has a return type and it is an object or a specific class
+                    if ($returnType = $method->getReturnType()) {
+
+                        // Check if the return type is an object or a specific class name
+                        // For generic object detection, PHP 7.2+ allows using 'object' as a return type
+                        if (strtolower($returnType) === strtolower($className)) {
+                            error_log($method->getName() . " return type: " . $returnType);
+                            $instance = $method->invokeArgs($this->instance, $passedParams);
+                        }
+                    }
+                }
             }
         } else {
             $instance = $reflection->newInstanceWithoutConstructor();
@@ -170,7 +183,7 @@ final class Proxy
                 foreach ($parameters as $key => $param) {
 
 
-                    if (isset($arguments[$key])) {
+                    if (isset ($arguments[$key])) {
 
                         $argument = $arguments[$key];
 
@@ -234,7 +247,7 @@ final class Proxy
     private function initMeta(ReflectionClass $reflection)
     {
 
-        if (!isset($this->instance)) {
+        if (!isset ($this->instance)) {
             $this->createInstance($this->className);
         }
 
@@ -266,19 +279,19 @@ final class Proxy
         if (file_exists($yml)) {
             $array = Yaml::parseFile($yml);
 
-            if (isset($array["name"])) {
+            if (isset ($array["name"])) {
                 $this->meta["name"] = $array["name"];
             }
-            if (isset($array["version"])) {
+            if (isset ($array["version"])) {
                 $this->meta["version"] = $array["version"];
             }
-            if (isset($array["author"])) {
+            if (isset ($array["author"])) {
                 $this->meta["author"] = $array["author"];
             }
-            if (isset($array["description"])) {
+            if (isset ($array["description"])) {
                 $this->meta["description"] = $array["description"];
             }
-            if (isset($array["image"]) && !empty($array["image"])) {
+            if (isset ($array["image"]) && !empty ($array["image"])) {
                 $this->meta["image"] = $array["image"];
             }
         }

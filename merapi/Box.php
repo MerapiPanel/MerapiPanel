@@ -8,6 +8,7 @@ use MerapiPanel\Core\Exception\ModuleNotFound;
 use MerapiPanel\Core\Exception\ServiceNotFound;
 use MerapiPanel\Core\Exception\MethodNotFoud;
 use MerapiPanel\Core\Proxy;
+use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Util;
 use Symfony\Component\Yaml\Yaml;
 
@@ -33,9 +34,9 @@ class Box
     private static Box $instance;
 
 
-    public static function Get(object $object): Box
+    public static function get(object $object): Box
     {
-        if (!isset(self::$instance))
+        if (!isset (self::$instance))
             self::$instance = new Box();
         return self::$instance;
     }
@@ -43,39 +44,11 @@ class Box
 
     private static function getInstance(): Box
     {
-        if (!isset(self::$instance)) {
+        if (!isset (self::$instance)) {
             self::$instance = new Box();
         }
         return self::$instance;
     }
-
-
-    // final public function setConfig(string $jsonFile)
-    // {
-
-    //     $this->cog = new Config($jsonFile);
-
-    //     if (!isset($this->cog['debug'])) {
-    //         throw new \Exception("Cofig error: debug not found, check config file the key 'debug' is missing, 'debug' is required with the value 'true' or 'false'");
-    //     }
-    //     if (!isset($this->cog['admin'])) {
-    //         throw new \Exception("Cofig error: admin not found, check config file the key 'admin' is missing, 'admin' is url path to admin segment");
-    //     }
-
-    //     if (!isset($this->cog['service'])) {
-    //         throw new \Exception("Cofig error: services not found, check config file the key 'services' is missing, 'services' is array of services");
-    //     }
-
-    //     $GLOBALS['config'] = $this->cog;
-    // }
-
-
-
-
-    // final public function getConfig(): Config
-    // {
-    //     return $this->cog;
-    // }
 
 
 
@@ -83,7 +56,7 @@ class Box
     final public function __call($name, $arguments)
     {
 
-        if (!isset(self::$instance))
+        if (!isset (self::$instance))
             self::$instance = $this;
 
         if (!class_exists($name)) {
@@ -112,7 +85,7 @@ class Box
         $instance = &$this->stack;
 
         // if instance is exist return it
-        if (isset($instance[$theKey])) {
+        if (isset ($instance[$theKey])) {
             return $instance[$theKey];
         }
 
@@ -133,7 +106,7 @@ class Box
 
     public static function module(string $moduleName, array $args = [])
     {
-        if (!isset(self::$instance))
+        if (!isset (self::$instance))
             self::$instance = new Box();
         return self::$instance->callModule($moduleName, $args);
     }
@@ -183,7 +156,7 @@ class Box
 
     final static function __callStatic($name, $arguments)
     {
-        if (!isset(self::$instance))
+        if (!isset (self::$instance))
             self::$instance = new Box();
         return self::$instance->__call($name, $arguments);
     }
@@ -196,7 +169,7 @@ class Box
 
         $call = null;
         foreach (debug_backtrace() as $trace) {
-            if (isset($trace['file']) && realpath($trace['file']) != realpath(__FILE__)) {
+            if (isset ($trace['file']) && realpath($trace['file']) != realpath(__FILE__)) {
                 $call = $trace['file'];
             }
         }
@@ -214,7 +187,7 @@ class Box
 
     final public function getEvent()
     {
-        if (!isset($this->event))
+        if (!isset ($this->event))
             $this->event = new Event();
         return $this->event;
     }
@@ -234,6 +207,9 @@ class Box
         }
     }
 
+
+    
+
     public function __registerController()
     {
 
@@ -246,22 +222,21 @@ class Box
         $namespacePattern = __NAMESPACE__ . '\\module\\';
         $controllers = [];
 
-        $zones = ['guest'];
-        if ($this->Module_Auth()->isAdmin()) {
-            $zones[] = 'admin';
-            //error_log("section: admin");
+        $access = ['guest'];
+        if (isset ($_ENV['__MP_ACCESS__'])) {
+            foreach ($_ENV['__MP_ACCESS__'] as $key => $value) {
+                if (Util::callAccessHandler($value['handler']) && strpos(Request::getInstance()->getPath(), $value['prefix']) === 0) {
+                    $access[] = $key;
+                }
+            }
         }
 
+        error_log("access: " . json_encode($access));
+
         foreach ($phpFiles as $file) {
-
             $mod = basename($file);
-
-            foreach ($zones as $zone) {
-
-                $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst($zone);
-
-                //  error_log("className: " . $className);
-
+            foreach ($access as $accessName) {
+                $className = $namespacePattern . ucfirst($mod) . "\\Controller\\" . ucfirst($accessName);
                 if (class_exists($className)) {
                     $controllers[] = [
                         "name" => $mod,
@@ -291,7 +266,7 @@ class Box
 
         setcookie('auth', 'admin', time() + 3600, "/");
 
-        return isset($_COOKIE['auth']) ? "admin" : "guest";
+        return isset ($_COOKIE['auth']) ? "admin" : "guest";
     }
 }
 
@@ -334,9 +309,9 @@ class BoxModule
 
         $className = $this->findServiceClassName();
 
-        if ($name === "service" && !empty($args)) {
+        if ($name === "service" && !empty ($args)) {
 
-            if (isset($args[0]) && is_string($args[0])) {
+            if (isset ($args[0]) && is_string($args[0])) {
 
                 $className = $this->findServiceClassName($args[0]);
                 return Box::$className();
@@ -352,7 +327,7 @@ class BoxModule
 
 
 
-            if (isset($args[1]) && is_array($args[1])) {
+            if (isset ($args[1]) && is_array($args[1])) {
 
                 $arguments = $args[1];
                 $methods = array_keys($arguments);
@@ -404,7 +379,7 @@ class BoxModule
 
         $serviceClassName = $this->baseModule . "/service";
 
-        if (!empty($name) && is_string($name)) {
+        if (!empty ($name) && is_string($name)) {
 
             $name = strtolower($name);
             if (class_exists("{$this->baseModule}\\{$name}")) {
@@ -482,7 +457,7 @@ class BoxModule
 
         unset($info["icon"]);
         $icon = $this->findIcon();
-        if (!empty($icon)) {
+        if (!empty ($icon)) {
             $info["icon"] = Box::module("FileManager")->service("Assets")->url("@{$this->getModuleName()}/{$icon}");
         }
 

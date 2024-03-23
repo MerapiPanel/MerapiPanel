@@ -10,10 +10,10 @@
 {% endblock %}
 
 {% block subheader_menu %}
-<a href="{{ 'article/create' | admin_url }}" class="menu-item">
+<a href="{{ 'article/create' | url_path }}" class="menu-item">
     <i class="fa fa-plus"></i> new article
 </a>
-<a href="{{ 'article/options' | admin_url }}" class="menu-item">
+<a href="{{ 'article/options' | url_path }}" class="menu-item">
     <svg class="inline-block" viewBox="0 0 536.41 506.22" width="16" height="16" fill="currentColor"
         xmlns="http://www.w3.org/2000/svg">
         <path
@@ -30,7 +30,7 @@
 
 
 {% block breadcrumb_item %}
-<li class="breadcrumb-item"><a href="{{ '/' | admin_url }}">Home</a></li>
+<li class="breadcrumb-item"><a href="{{ '/' | url_path }}">Home</a></li>
 <li class="breadcrumb-item">Article</li>
 {% endblock %}
 
@@ -44,7 +44,7 @@
         <div class="navbar-expand-lg p-0 border-bottom">
             <h3 class="d-flex align-items-center text-bs ps-3 py-0 pt-1 mb-1">
                 <a class="text-decoration-none text-dark text-hover-primary light-5"
-                    href="{{ '/article/category' | admin_url }}"><span class="font-semibold">Categorys</span> </a>
+                    href="{{ '/article/category' | url_path }}"><span class="font-semibold">Categorys</span> </a>
                 <button onclick="createNewCategory()" class="ms-auto btn text-dark text-hover-primary light-5">
                     <i class="fa-solid fa-plus"></i>
                 </button>
@@ -72,7 +72,7 @@
             <h3 class="modal-title">Edit Attribute of Article</h3>
             <button class="btn btn-close"></button>
         </div>
-        <form method="xhr::post" id="form-quick-edit" action="{{ '/article/endpoint/update' | admin_url }}"
+        <form method="xhr::post" id="form-quick-edit" action="{{ '/article/endpoint/update' | url_path }}"
             class="modal-content">
             <div class="mb-3">
                 <label>
@@ -151,7 +151,7 @@
     function changeStatus(el, id) {
         let article = articles.find(article => article.id == id);
         article.status = article.status == 1 ? 0 : 1;
-        merapi.http.post("{{ '/article/endpoint/update_status' | admin_url }}", { id: article.id, status: article.status }).then((res, text, xhr) => {
+        merapi.http.post("{{ '/article/endpoint/update_status' | url_path }}", { id: article.id, status: article.status }).then((res, text, xhr) => {
             if (xhr.status === 200 && res.code === 200) {
 
                 merapi.toast(res.message, 5, 'text-success');
@@ -194,7 +194,7 @@
             text: "Yes",
             class: "btn-danger",
             callback: () => {
-                merapi.http.post("{{ '/article/endpoint/delete' | admin_url }}", { id: article.id }).then((res, text, xhr) => {
+                merapi.http.post("{{ '/article/endpoint/delete' | url_path }}", { id: article.id }).then((res, text, xhr) => {
                     if (xhr.status === 200 && res.code === 200) {
                         merapi.toast(res.message, 5, 'text-success');
                         articles = articles.filter(article => article.id != id);
@@ -272,7 +272,7 @@
 
 
     function editArticle(el, id) {
-        window.location.href = "{{ '/article/edit' | admin_url }}/" + id;
+        window.location.href = "{{ '/article/edit' | url_path }}/" + id;
     }
 
     function renderArticles() {
@@ -283,7 +283,7 @@
                     <div class='card-body'>
                         <h3 class='card-title'> <i class="fa-regular fa-circle-question"></i> This Page is Empty</h3>
                         <p class='card-text'>You don't have any articles at all. You can create one by pressing the button below</p>
-                        <a class="btn btn-outline-primary btn-sm" href="{{ '/article/create' | admin_url }}">Create New Article</a>
+                        <a class="btn btn-outline-primary btn-sm" href="{{ '/article/create' | url_path }}">Create New Article</a>
                     </div>
                 </div>
             </div>`);
@@ -389,7 +389,7 @@
                 return;
             }
 
-            merapi.http.post("{{ '/article/endpoint/category/create' | admin_url }}", { name: input.val() }).then((data) => {
+            merapi.http.post("{{ '/article/endpoint/category/create' | url_path }}", { name: input.val() }).then((data) => {
                 console.log(data);
             })
 

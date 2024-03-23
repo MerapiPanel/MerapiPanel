@@ -2,11 +2,11 @@
 
 namespace MerapiPanel\Core\Exception;
 
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\View;
 
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-error_reporting(0);
+// ini_set('display_errors', 0);
+// ini_set('display_startup_errors', 0);
+// error_reporting(0);
 
 class Handler
 {

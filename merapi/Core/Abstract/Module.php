@@ -139,5 +139,10 @@ abstract class Module
         }
         return false;
     }
-    
+
+    public static function moduleExist($name)
+    {
+
+        return is_dir($_ENV["__MP_CWD__"] . "/merapi/module/$name");
+    }
 }

@@ -3,7 +3,7 @@
 namespace MerapiPanel\Module\Pages\Views;
 
 use MerapiPanel\Box;
-use MerapiPanel\Core\View\Abstract\ViewFunction;
+use MerapiPanel\Core\Views\Abstract\ViewFunction;
 
 class PageViewFunction extends ViewFunction
 {

@@ -3,7 +3,7 @@
 namespace MerapiPanel\Module\Auth\Controller;
 
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\View;
 use MerapiPanel\Utility\Http\Request;
 
 class Admin extends Module

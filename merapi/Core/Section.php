@@ -3,8 +3,6 @@
 namespace MerapiPanel\Core;
 
 use MerapiPanel\Box;
-use MerapiPanel\Core\Abstract\Module;
-use Throwable;
 
 class Section
 {

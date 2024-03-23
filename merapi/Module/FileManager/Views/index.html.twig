@@ -196,14 +196,14 @@
 
         merapi.FileManager.createFolder({
             parent: parent,
-            endpoint: "{{ 'filemanager/create_folder' | admin_url }}"
+            endpoint: "{{ 'filemanager/create_folder' | url_path }}"
         }).then((result) => {
             window.location.reload();
         })
     }
 
     function deleteFile(args, popback = false) {
-        const opts = Object.assign({ file: null, type: 'directory', endpoint: "{{ 'filemanager/delete_file' | admin_url }}" }, args);
+        const opts = Object.assign({ file: null, type: 'directory', endpoint: "{{ 'filemanager/delete_file' | url_path }}" }, args);
         merapi.FileManager.deleteFile(opts).then((result) => {
             if (popback) {
                 const urlObj = new URL(window.location.href);
@@ -222,7 +222,7 @@
     }
 
     function renameFile(args) {
-        const opts = Object.assign({ file: null, name: null, type: 'directory', endpoint: "{{ 'filemanager/rename_file' | admin_url }}" }, args);
+        const opts = Object.assign({ file: null, name: null, type: 'directory', endpoint: "{{ 'filemanager/rename_file' | url_path }}" }, args);
         // console.log(opts)
         merapi.FileManager.renameFile(opts).then((result) => {
             const urlObj = new URL(window.location.href);
@@ -247,7 +247,7 @@
     function uploadFile() {
         merapi.FileManager.uploadFile({
             parent: "{{ directory }}",
-            endpoint: "{{ 'filemanager/upload_file' | admin_url }}",
+            endpoint: "{{ 'filemanager/upload_file' | url_path }}",
         });
     }
 

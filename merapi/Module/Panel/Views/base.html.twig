@@ -42,12 +42,12 @@
             <ol class="breadcrumb">
 
                 {% block breadcrumb_item %}
-                <li class="breadcrumb-item"><a href="{{ '/' |admin_url}}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ '/' | access_path | url }}">Home</a></li>
                 {% endblock %}
 
             </ol>
             {% endblock %}
-            
+
         </nav>
         {% endblock %}
 

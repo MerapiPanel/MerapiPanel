@@ -2,15 +2,14 @@
 
 namespace MerapiPanel\Module\Panel;
 
+use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
 
 class Service extends Module
 {
 
     protected $box;
-
     protected $ListMenu = [];
-
 
 
     public function foo()
@@ -23,23 +22,8 @@ class Service extends Module
     {
 
         $this->box = $box;
-        $this->ListMenu = [
-            [
-                'order' => 0,
-                'name' => 'Dashboard',
-                'icon' => 'fa-solid fa-house',
-                'link' => $this->box->module_site()->adminLink()
-            ]
-        ];
+        $this->ListMenu = [];
     }
-
-
-
-    function adminLink($path = "")
-    {
-        return rtrim($_ENV["__MP_ADMIN__"], "\\/") . "/" . ltrim($path, "\\/");
-    }
-
 
 
     public function getMenu()
@@ -71,14 +55,14 @@ class Service extends Module
 
         foreach ($items as $key => $item) {
 
-            $parent = isset($item['parent']) && !empty($item['parent']) ? strtolower($item['parent']) : null;
+            $parent = isset ($item['parent']) && !empty ($item['parent']) ? strtolower($item['parent']) : null;
             // Check if the current item has a "parent" key that matches the provided $parentId.
             if ($parent === $parentId) {
                 // If it does, recursively call the function to find its children.
                 $childItems = $this->buildMenuHierarchy($items, strtolower($item['name']));
 
                 // If the current item has children, add them as the "children" attribute.
-                if (!empty($childItems)) {
+                if (!empty ($childItems)) {
                     $item['childs'] = $childItems;
                 }
 
@@ -95,50 +79,56 @@ class Service extends Module
     }
 
 
-    public function assignToParent(&$source, $item)
-    {
-    }
 
-
-
-    public function addMenu($menu = [
-        'order' => 100,
-        'name' => '',
-        'icon' => '',
-        'link' => '',
-    ])
-    {
-        if (empty($menu['name'])) {
+    public function addMenu(
+        $menu = [
+            'order' => 100,
+            'name' => '',
+            'icon' => '',
+            'link' => '',
+        ]
+    ) {
+        if (empty ($menu['name'])) {
             throw new \Exception("The name of the menu is required");
         }
-        if (empty($menu['link'])) {
+        if (empty ($menu['link'])) {
             throw new \Exception("The link of the menu is required");
         }
 
         $menu['order'] = $menu['order'] ?? count($this->ListMenu) + 1;
 
-        if (!empty($menu['icon'])) {
+        if (!empty ($menu['icon'])) {
             $icon = $menu['icon'];
-            if (strpos($icon, 'fa-') !== false) {
-                $menu['icon'] = '<i class="w-[14] ' . $icon . '"></i>';
+            if (strpos($icon, 'fa') === 0) {
+                $menu['icon'] = "<i class='$icon'></i>";
             } elseif (strpos(trim($icon), '<svg') !== false) {
                 $icon = str_replace('<svg', '<svg width="15" height="16" class="inline-block align-middle"', $icon);
                 $menu['icon'] = $icon;
             }
         }
 
-        if (!empty($menu['childs'])) {
+        $childrens = [];
+
+        if (!empty ($menu['childs'])) {
             $childItems = $menu['childs'];
             assert(is_array($childItems));
 
-            $childrens = array_map(function ($item) use ($menu) {
+            $childrens = array_merge($childrens, array_map(function ($item) use ($menu) {
                 $item['parent'] = $menu['name'];
                 return $item;
-            }, $childItems);
+            }, $childItems));
+        }
+        if (!empty ($menu['children'])) {
+            $childItems = $menu['children'];
+            assert(is_array($childItems));
 
-            foreach ($childrens as $child) {
-                $this->addMenu($child);
-            }
+            $childrens = array_merge($childrens, array_map(function ($item) use ($menu) {
+                $item['parent'] = $menu['name'];
+                return $item;
+            }, $childItems));
+        }
+        foreach ($childrens as $child) {
+            $this->addMenu($child);
         }
 
         $this->ListMenu[] = $menu;
@@ -169,20 +159,20 @@ class Service extends Module
     }
 
 
-    public function getBase()
-    {
-        return $this->box->getConfig()->get('admin');
-    }
+    // public function getBase()
+    // {
+    //     return $this->box->getConfig()->get('admin');
+    // }
 
 
-    public function getAuthedUsers()
-    {
+    // public function getAuthedUsers()
+    // {
 
-        $mod_user = $this->box->module_user();
-        $user = $mod_user->getUserByEmail("admin@user.com");
+    //     $mod_user = $this->box->module_user();
+    //     $user = $mod_user->getUserByEmail("admin@user.com");
 
-        return $user;
-    }
+    //     return $user;
+    // }
 
 
     private function isCurrent($link)

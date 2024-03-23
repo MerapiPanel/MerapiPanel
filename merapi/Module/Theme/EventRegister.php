@@ -12,28 +12,28 @@ use Twig\TwigFunction;
 
 class EventRegister
 {
-    static function core_view_view_render(&$args)
-    {
+    // static function core_view_view_render(&$args)
+    // {
 
-        if (isset($args["view"])) {
-            if (strtolower($args['module']) == "site") {
+    //     if (isset($args["view"])) {
+    //         if (strtolower($args['module']) == "site") {
 
-                $theme = Box::module("theme")->service()->getActive();
-                $view = View::newInstance([$theme['dirname']]);
-                $view->getTwig()->addExtension(new ViewFunction($args['view']->__toString()));
-                $request = new Request();
+    //             $theme = Box::module("theme")->service()->getActive();
+    //             $view = View::newInstance([$theme['dirname']]);
+    //             $view->getTwig()->addExtension(new ViewFunction($args['view']->__toString()));
+    //             $request = Request::getInstance();
 
-                if ($request->getPath() == "/" || empty($request->getPath())) {
-                    $view->load("index.html");
-                } else {
-                    $view->load("page.html");
-                }
+    //             if ($request->getPath() == "/" || empty($request->getPath())) {
+    //                 $view->load("index.html");
+    //             } else {
+    //                 $view->load("page.html");
+    //             }
 
 
-                $args["view"] = $view;
-            }
-        }
-    }
+    //             $args["view"] = $view;
+    //         }
+    //     }
+    // }
 }
 
 class ViewFunction extends AbstractExtension
@@ -45,9 +45,10 @@ class ViewFunction extends AbstractExtension
 
     public function __construct($content)
     {
+        libxml_use_internal_errors(false);
         $this->content = $content;
         $this->dom = new DOMDocument();
-        @$this->dom->loadHTML($content);
+        @$this->dom->loadHTML($content, LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_COMPACT | LIBXML_PARSEHUGE);
         $this->xpath = new DOMXPath($this->dom);
     }
 

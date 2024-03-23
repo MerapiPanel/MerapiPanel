@@ -2,7 +2,7 @@
 namespace MerapiPanel\Module\Theme\Controller;
 
 use MerapiPanel\Box;
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\View;
 use MerapiPanel\Utility\Router;
 
 class admin

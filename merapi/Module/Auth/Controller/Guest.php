@@ -4,7 +4,7 @@ namespace MerapiPanel\Module\Auth\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\View;
 use MerapiPanel\Database\DB;
 use MerapiPanel\Module\Auth\Middleware\Login;
 use MerapiPanel\Utility\Http\Response;

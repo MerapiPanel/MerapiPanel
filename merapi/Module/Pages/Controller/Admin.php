@@ -4,7 +4,7 @@ namespace MerapiPanel\Module\Pages\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Core\View\View;
+use MerapiPanel\Core\Views\View;
 
 class Admin extends Module
 {

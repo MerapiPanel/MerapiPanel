@@ -1,0 +1,60 @@
+{% extends "@panel/base.html.twig" %}
+{% block header_title %}Users{% endblock %}
+{% set users = admin.user_alluser %}
+
+{% block content %}
+
+<span>Total {{ users|length }}</span>
+
+<ul class="pt-8">
+
+    {% for user in users %}
+    <li class="flex items-center shadow pe-8 ps-2 py-2">
+        <div class="w-14 h-14 rounded-full bg-slate-800 overflow-hidden">
+            <img class="w-full h-full object-cover" src="{{ api.getAvatar(user.email) }}" alt="{{ user.username }}">
+        </div>
+
+        <div class="ps-4">
+            <h5 class="text-blue-500 text-xl font-medium">{{ user.username }} {% if user.username == admin.Auth_username %}<span class="text-slate-500 text-sm"><i>( You )</i></span>{% endif %}</h5>
+            <p class="text-slate-500">{{ user.email }}</p>
+        </div>
+
+        <div class="ms-auto grid grid-cols-2 gap-4">
+            <button onclick="confirmDeletion('{{ user.id }}')"
+                class="rounded border outline-none shadow px-4 py-2 text-red-500 hover:bg-red-500 hover:text-white">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+            <button
+                class="rounded border outline-none shadow px-4 py-2 text-blue-500 hover:bg-blue-500 hover:text-white">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+        </div>
+    </li>
+    {% endfor %}
+
+</ul>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    function confirmDeletion(id) {
+
+        const modal = merapi.createModal('Confirm deletion', 'Are you sure you want to delete this user?');
+
+        modal.setAction('+', {
+            text: "Confirm",
+            class: "btn btn-danger",
+            callback: () => {
+                modal.hide();
+                merapi.toast('User deleted', 5, 'text-success');
+            }
+        });
+
+        modal.show();
+
+    }
+</script>
+
+{% endblock %}
