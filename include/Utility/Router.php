@@ -7,8 +7,6 @@ use MerapiPanel\Exception\HTTP_CODE;
 use MerapiPanel\Exception\HttpException;
 use MerapiPanel\Box;
 use MerapiPanel\Core\Abstract\Module;
-use MerapiPanel\Core\Proxy;
-use MerapiPanel\Core\Views\View;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Route;

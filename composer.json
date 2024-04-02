@@ -1,5 +1,5 @@
 {
-    "name": "il4mb/mpanel",
+    "name": "il4mb/merapipanel",
     "description": "Merapi panel package",
     "type": "project",
     "require": {
@@ -15,7 +15,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "MerapiPanel\\": "merapi/"
+            "MerapiPanel\\": "include/"
         }
     },
     "authors": [

@@ -62,6 +62,7 @@ class Bundle extends Extension
         return rtrim($prefix, "/") . "/" . ltrim($path, "/");
     }
 
+    
 
     function fl_preg_replace($pattern, $replacement, $subject)
     {
