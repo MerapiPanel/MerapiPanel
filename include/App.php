@@ -60,24 +60,24 @@ namespace MerapiPanel {
             // initialize parent first to preventive any error
             parent::__construct();
             // send signal to prepare
-            //$this->prepare();
+            $this->prepare();
         }
 
 
-        public function prepare()
+        protected function prepare()
         {
 
             // send signal for prepare to all modules in parent
             parent::initialize();
 
-            $service = $_ENV['__MP_SERVICE__'];
-            if (is_array($service)) {
-                foreach ($service as $module) {
-                    $module = Box::module($module)->Service;
-                }
-            } else if (is_string($service)) {
-                Box::module($service);
-            }
+            // $service = $_ENV['__MP_SERVICE__'];
+            // if (is_array($service)) {
+            //     foreach ($service as $module) {
+            //         $module = Box::module($module)->Service;
+            //     }
+            // } else if (is_string($service)) {
+            //     Box::module($service);
+            // }
         }
 
 
