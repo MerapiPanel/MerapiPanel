@@ -1,0 +1,137 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Admin{% endblock %}
+
+
+{% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ '@panel/dist/panel.css' | assets }}?v={{ time() }}">
+{% endblock %}
+
+
+{% block head_javascript %}
+{{ parent() }}
+<script src="{{ '@panel/dist/panel.bundle.js' | assets }}"></script>
+{% endblock %}
+
+
+{% block body %}
+
+<body class="panel-body" id="panel-body">
+
+    {% include "@panel/navigation.html.twig" %}
+
+    {% block main %}
+    <main class="panel-main mb-5" id="panel-main">
+
+        {% block header %}
+        <header class="panel-header">
+
+            <button class="sidebar-toggle" onclick="openNav()" id="sidebar-toggle"></button>
+
+            {% block header_title_outer %}
+            <h1 class="panel-title">{% block header_title %}MerapiPanel{% endblock %}</h1>
+            {% endblock %}
+
+        </header>
+        {% endblock %}
+
+        {% block breadcrumb_outer %}
+        <nav class="flex w-full px-3" aria-label="breadcrumb">
+
+            {% block breadcrumb %}
+            <ol class="breadcrumb">
+
+                {% block breadcrumb_item %}
+                <li class="breadcrumb-item"><a href="{{ '/' | access_path | url }}">Home</a></li>
+                {% endblock %}
+
+            </ol>
+            {% endblock %}
+
+        </nav>
+        {% endblock %}
+
+
+        {% block container %}
+        <div class="panel-container">
+
+
+            {% block subheader_outer %}
+            <div class="panel-subheader" id="panel-subheader">
+                {% block subheader %}
+
+
+                {% block subheader_search_outer %}
+
+                <form class="panel-search" id="panel-subheader-search">
+                    {% block subheader_search %}
+
+                    <input class="form-control" type="text" placeholder="Search" name="search">
+                    <button class="ms-2 btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                    {% endblock %}
+                </form>
+
+                {% endblock %}
+
+
+                {% block subheader_actions_outer %}
+                <div id="subheader-actions" class="subheader-actions">
+                    {% block subheader_actions %}
+                    <button class="btn menu-toggle" onclick="toggleMenu()"></button>
+                    {% block subheader_menu_outer %}
+                    <div id="subheader-menu" class="subheader-menu">
+                        {% block subheader_menu %}{% endblock %}
+                    </div>
+                    {% endblock %}
+
+                    {% endblock %}
+                </div>
+                {% endblock %}
+
+                {% endblock %}
+
+
+            </div>
+            {% endblock %}
+
+            {% block content_outer %}
+            <div class="panel-content">
+                {% block content %}
+                <div class="flex-grow-1 align-content-center" id="panel-content">
+                    <div class="text-center">
+                        <h2 class="fs-2 fw-bold">Coming Soon</h2>
+                        <p>this is base template, you should not see this</p>
+                    </div>
+                </div>
+                {% endblock %}
+            </div>
+            {% endblock %}
+
+        </div>
+        {% endblock %}
+
+    </main>
+    {% endblock %}
+
+    <script>
+        function toggleMenu() {
+            $("#subheader-actions").toggleClass("open");
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('#subheader-actions').length) {
+                    $("#subheader-actions").removeClass("open");
+                }
+            })
+        }
+    </script>
+
+    {% block javascript %}
+    {{ parent() }}
+    {% endblock %}
+
+</body>
+
+{% endblock %}

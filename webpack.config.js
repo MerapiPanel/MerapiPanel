@@ -6,27 +6,54 @@ const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const stylesHandler = MiniCssExtractPlugin.loader;
 
+const moduleEntry = () => {
+    return glob.sync("include/module/**/assets/src/*.{js,ts,tsx}", {
+        ignore: ['./node_modules/**', 'dist/**', './.git/**', './.vscode/**', './.vscode-test/**', 'vendor/**', './tests/**'], // Ignore node_modules directory
+        //nodir: true, // Treat directories as files
+        maxDepth: 2 // Limit the depth of the search to 2 directory levels
+    }).reduce((acc, item) => {
 
-const entry = () => {
+        const file = `./${item}`;
+        const name = path.basename(file).replace(/\.[jt]sx?$/, "");
+        if (name.endsWith("bundle")) return acc;
+        acc[".\\..\\..\\..\\" + path.dirname(item) + "\\..\\dist\\" + name] = file;
+        return acc;
 
-    const entryFiles = glob.sync('./merapi/src/*.{js,ts,tsx}').reduce((acc, item) => {
+    }, {});
+}
+
+const buildinEntry = () => {
+
+    return glob.sync("include/buildin/**/src/main.{js,ts,tsx}", {
+        ignore: ['./node_modules/**', 'dist/**', './.git/**', './.vscode/**', './.vscode-test/**', 'vendor/**', './tests/**'], // Ignore node_modules directory
+        //nodir: true, // Treat directories as files
+        maxDepth: 2 // Limit the depth of the search to 2 directory levels
+    }).reduce((acc, item) => {
+
         const file = `./${item}`;
         const name = path.basename(file).replace(/\.[jt]sx?$/, "");
         if (name.endsWith("bundle")) return acc;
         acc[name] = file;
         return acc;
-    }, {});
 
-    return { ...entryFiles }
+    }, {});
 };
 
+console.log(moduleEntry(), buildinEntry());
+
+const entry = () => {
+    return {
+        ...moduleEntry(),
+        ...buildinEntry()
+    }
+}
 
 module.exports = {
     mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
     entry: entry(),
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, "./merapi/dist"),
+        path: path.resolve(__dirname, "./include/buildin/dist"),
     },
 
     plugins: [

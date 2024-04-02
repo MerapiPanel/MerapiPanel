@@ -1,0 +1,195 @@
+<nav class="x-navbar fixed top-0 w-full z-50 shadow">
+    <div class="container mx-auto flex items-center py-3 px-5">
+        <a href="{{ '/:lang' | url({lang: lang }) }}">
+            <img class="brightness-[100]" width="200" height="150" src="{{ '@site/img/logo.png' | assets }}"
+                alt="MerapiPanel">
+        </a>
+        <button class="x-navbar-toggler ms-auto"></button>
+
+        <div class="x-navbar-menu ms-auto text-sm">
+
+
+            <button class="menu-item !flex justify-between items-center gap-1 md:w-full" x-toggler="#menu-product"
+                x-on="this.find('.ic').removeClass('ic-chevron-down').addClass('ic-chevron-up')"
+                x-off="this.find('.ic').removeClass('ic-chevron-up').addClass('ic-chevron-down')">
+                {{ 'product' |trans | capitalize }}
+                <div class="ic ic-chevron-down"></div>
+            </button>
+
+
+            <a class="menu-item px-3 py-1 hover:bg-blue-500 hover:text-white"
+                href="{{ '/:lang/about' | url({lang: lang })}}">{{ 'about' |trans | capitalize }}
+            </a>
+
+            <a class="menu-item px-3 py-1 bg-blue-500 hover:text-white" target="_blank"
+                href="{{ '/:lang/contact-us' | url({lang: lang })}}">{{ 'get intouch' |trans | capitalize }}
+            </a>
+
+            <a class="menu-item px-3 py-1 flex items-center" href="https://github.com/merapipanel/merapipanel"
+                target="_blank">
+                <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-github" viewBox="0 0 16 16">
+                    <path
+                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
+                </svg>
+                <span class="ms-1">Github</span>
+            </a>
+
+            <ul class="menu-item x-dropdown relative inline-block text-left !p-0">
+
+                <button type="button"
+                    class="x-toggler text-nowrap flex w-full items-center gap-x-1.5 rounded-md px-3 py-1 text-white font-semibold shadow-sm hover:bg-gray-50/10"
+                    id="menu-button" aria-expanded="true" aria-haspopup="true"
+                    x-on="this.find('.ic').removeClass('ic-chevron-down').addClass('ic-chevron-up')"
+                    x-off="this.find('.ic').removeClass('ic-chevron-up').addClass('ic-chevron-down')">
+                    <span class="w-full text-start">
+                        {% if lang=='en' %}
+                        <span class="fi fi-gb"></span> English
+                        {% elseif lang=='id' %}
+                        <span class="fi fi-id"></span> Indonesia
+                        {% elseif lang=='es' %}
+                        <span class="fi fi-es"></span> Español
+                        {% elseif lang=='ru' %}
+                        <span class="fi fi-ru"></span> Русский
+                        {% elseif lang=='cn' %}
+                        <span class="fi fi-cn"></span> 中文
+                        {% elseif lang=='jp' %}
+                        <span class="fi fi-jp"></span> 日本
+                        {% else %}
+                        <span class="fi fi-gb"></span> English
+                        {% endif %}
+                    </span>
+
+                    <i class="ic ic-chevron-down"></i>
+                </button>
+
+                <div class="x-dropdown-menu absolute right-0 z-10 mt-2 min-w-max w-full origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                    <ul class="py-1">
+                        <li class="px-3 mb-2 hover:bg-gray-100 cursor-pointer{% if lang=='en' %} bg-blue-500 text-white hover:bg-orange-300{% endif %}"
+                            onclick="javascript:swithchLang('en')">
+                            <span class="fi fi-gb"></span> English
+                        </li>
+                        <li class="px-3 mb-2 hover:bg-gray-100 cursor-pointer{% if lang=='id' %} bg-blue-500 text-white hover:bg-orange-300{% endif %}"
+                            onclick="javascript:swithchLang('id')">
+                            <span class="fi fi-id"></span> Indonesia
+                        </li>
+                        <li class="px-3 mb-2 hover:bg-gray-100 cursor-pointer{% if lang=='es' %} bg-blue-500 text-white hover:bg-orange-300{% endif %}"
+                            onclick="javascript:swithchLang('es')">
+                            <span class="fi fi-es"></span> Español
+                        </li>
+                        <li class="px-3 mb-2 hover:bg-gray-100 cursor-pointer{% if lang=='ru' %} bg-blue-500 text-white hover:bg-orange-300{% endif %}"
+                            onclick="javascript:swithchLang('ru')">
+                            <span class="fi fi-ru"></span> Русский
+                        </li>
+                        <li class="px-3 mb-2 hover:bg-gray-100 cursor-pointer{% if lang=='cn' %} bg-blue-500 text-white hover:bg-orange-300{% endif %}"
+                            onclick="javascript:swithchLang('cn')">
+                            <span class="fi fi-cn"></span> 简体
+                        </li>
+                        <li class="px-3 mb-2 hover:bg-gray-100 cursor-pointer{% if lang=='jp' %} bg-blue-500 text-white hover:bg-orange-300{% endif %}"
+                            onclick="javascript:swithchLang('jp')">
+                            <span class="fi fi-jp"></span> 日本
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <div class="fill-blur absolute top-0 left-0 w-full h-full -z-10"></div>
+
+    <ul class="x-collapse overflow-y-auto" id="menu-product" role="menu">
+
+        <li class="group-container px-3 mb-3">
+            <div class="group-title pt-5">{{ 'build a website' | trans }}</div>
+            <div class="group-menu gap-8 flex-wrap my-2">
+                <div class="menu-item">
+                    <div>
+                        <i class="text-[35px] ic ic-palette"></i>
+                    </div>
+                    <div>
+                        <div>{{ 'designer' | trans }}</div>
+                        <div>{{ 'designer.is' | trans }}</div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div>
+                        <i class="text-[45px] ic ic-cms"></i>
+                    </div>
+                    <div>
+                        <div>{{ 'cms' | trans }}</div>
+                        <div>{{ 'cms.is' | trans }}</div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div>
+                        <i class="text-[35px] ic ic-bag-fill-heart"></i>
+                    </div>
+                    <div>
+                        <div>{{ 'online-shop' | trans }}</div>
+                        <div>{{ 'online-shop.is' | trans }}</div>
+                    </div>
+                </div>
+
+
+            </div>
+        </li>
+
+        <li class="group-container px-3 pb-5">
+            <div class="group-title pt-4">{{ 'optimization' | trans }}</div>
+            <div class="group-menu gap-8 flex-wrap my-2">
+                <div class="menu-item">
+                    <div>
+                        <i class="text-[35px] ic ic-google"></i>
+                    </div>
+                    <div>
+                        <div>{{ 'google-ads' | trans }}</div>
+                        <div>{{ 'google-ads.is' | trans }}</div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div>
+                        <i class="text-[45px] ic ic-speedometer"></i>
+                    </div>
+                    <div>
+                        <div>{{ 'accelerate' | trans }}</div>
+                        <div>{{ 'accelerate.is' | trans }}</div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div>
+                        <i class="text-[35px] ic ic-search-optimize"></i>
+                    </div>
+                    <div>
+                        <div>{{ 'seo' | trans }}</div>
+                        <div>{{ 'seo.is' | trans }}</div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</nav>
+
+<div class="h-[65px]">
+    <script>
+
+        function swithchLang(lang) {
+            const currentLang = '{{ lang }}';
+            const url = new URL(window.location.href);
+
+            if (!currentLang) {
+                window.location.href = `${lang}${url.pathname}${url.search}`;
+            } else {
+                window.location.href = url.href.replace(currentLang, lang);
+            }
+        }
+        function toggleMenu() {
+            const menu = document.querySelector(".x-dropdown-menu");
+            menu.classList.toggle("open");
+        }
+    </script>
+</div>

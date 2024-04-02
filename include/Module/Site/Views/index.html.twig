@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block lang %}{{ lang }}{% endblock %}
+
+
+{% block meta %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ '@site/meta/apple-touch-icon.png' | assets(false) | url }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ '@site/meta/favicon-32x32.png' | assets(false) | url }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ '@site/meta/favicon-16x16.png' | assets(false) | url }}">
+<link rel="manifest" href="{{ '@site/meta/site.webmanifest' | assets(false) | url}}">
+<link rel="mask-icon" href="{{ '@site/meta/safari-pinned-tab.svg' | assets(false) | url }}" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#2b5797">
+<meta name="theme-color" content="#ffffff">
+
+<title>{{ 'meta.title' | trans }}</title>
+<meta name="title" content="{{ 'meta.title' | trans }}" />
+<meta name="description" content="{{ 'meta.description' | trans }}" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://merapihost.com" />
+<meta property="og:title" content="{{ 'meta.title' | trans }}" />
+<meta property="og:description" content="{{ 'meta.description' | trans }}" />
+<meta property="og:image" content="{{ '@site/img/g2664.png' | assets(false) | url }}" />
+
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://merapihost.com" />
+<meta property="twitter:title" content="{{ 'meta.title' | trans }}" />
+<meta property="twitter:description" content="{{ 'meta.description' | trans }}" />
+<meta property="twitter:image" content="{{ '@site/img/g2664.png' | assets(false) | url }}" />
+
+
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ '@site/dist/main.css' | assets }}?v={{ time() }}">
+{% endblock %}
+
+
+
+
+{% block body %}
+
+<body class="max-w-[100vw]">
+    {% include "@site/_nav.html.twig" %}
+
+    <main class="overflow-x-hidden">
+        {% block content %}
+
+        <div class="relative max-w-[1200px] mx-auto mb-16 min-h-[550px] px-3 overflow-visible">
+            <header class="w-full absolute top-1/2 -translate-y-1/2 z-10 filter drop-shadow-[0_5px_7px_#562d69] me-3">
+                <h1 class="text-4xl font-extrabold">{{ 'welcome' | trans }}</h1>
+                <i>{{ 'exceeding the boundaries' | trans }}</i>
+            </header>
+            <div class="text-end float-end w-[550px] h-[550px] -me-[200px] md:-me-0 relative">
+                <img class="w-full h-full object-contain inline-block" src="{{ '@site/img/g2664.png' | assets | url }}"
+                    alt="">
+                <div
+                    class="animate-pulse absolute -z-[1] bg-[radial-gradient(#c584c575,transparent_50%)] w-[175%] h-[175%] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ms-[50px] mt-[25px]">
+                </div>
+            </div>
+        </div>
+
+        <section class="max-w-[1024px] mx-auto p-3 mb-16">
+
+            <header class="mb-3">
+                <h2 class="text-3xl font-semibold">{{ 'unleash the power' | trans }}</h2>
+                <i>{{ 'beyond just a cms' | trans }}</i>
+            </header>
+
+
+            <article>
+                <div class="flex gap-3 flex-wrap md:flex-nowrap">
+                    <div class="inline-block">
+                        <div class="rounded-lg w-[200px] p-5 inset-4 shadow">
+                            <img class="w-full object-contain brightness-[100]"
+                                src="{{ '@site/img/merapipanel.png' | assets | url }}" alt="MerapiPanel">
+                        </div>
+                    </div>
+                    <p class="mb-3 inline-block">
+                        {{ 'merapipanel.is.robust' | trans }}
+                    </p>
+                </div>
+                <ul class="list-disc list-outer ms-5">
+                    <li>{{ 'user-centric design' | trans}}: {{ 'merapipanel.is.user-centric' | trans }}</li>
+                    <li> {{ 'open-source freedom' | trans }}: {{ 'merapipanel.is.open-source' | trans }}</li>
+                    <li>{{ 'modular architecture' | trans }}: {{ 'merapipanel.is.modular-architecture' | trans }}'</li>
+                </ul>
+            </article>
+        </section>
+
+
+        <div class="text-center">
+            <div class="inline-block w-[400px]">
+                <img class="w-full h-auto object-contain" src="{{ '@site/img/Agile_Method.png' | assets | url }}"
+                    alt="">
+            </div>
+        </div>
+
+        <section class="max-w-[1024px] mx-auto p-3 mb-16">
+
+            <header>
+                <h2 class="text-3xl font-semibold">{{ 'our premiere services' | trans }}</h2>
+            </header>
+
+            <article class="ms-5">
+                <div class="mb-3">
+                    <h3 class="text-2xl font-semibold">{{ 'services.web-hosting' | trans }}</h3>
+                    <i>{{ 'services.sub.web-hosting' | trans }}</i>
+                    <p>{{ 'services.is.web-hosting' | trans }}</p>
+                </div>
+                <div class="mb-3 ms-3">
+                    <h3 class="text-2xl font-semibold">{{ 'services.vps-solutions' | trans }}</h3>
+                    <i>{{ 'services.sub.vps-solutions' | trans }}</i>
+                    <p>{{ 'services.is.vps-solutions' | trans }}</p>
+                </div>
+                <div class="mb-3 ms-6">
+                    <h3 class="text-2xl font-semibold">{{ 'services.web-development' | trans }}</h3>
+                    <i>{{ 'services.sub.web-development' | trans }} </i>
+                    <p>{{ 'services.is.web-development' | trans }}</p>
+                </div>
+            </article>
+        </section>
+
+
+        <section class="max-w-[1024px] mx-auto p-3 mb-16">
+
+            <header>
+                <h2 class="text-3xl font-semibold">{{ 'why.merapihost' | trans }}</h2>
+            </header>
+
+            <article>
+                <p>
+                <ul class="list-disc list-outer ms-5">
+                    <li>{{'why.competitive-edge' | trans}}: {{'why.is.competitive-edge' | trans}}</li>
+                    <li>{{'why.professional-services' | trans}}: {{'why.is.professional-services' | trans}}</li>
+                    <li>{{'why.innovative-tools' | trans}}: {{'why.is.innovative-tools' | trans}}</li>
+                    <li>{{ 'why.expert-guidance' | trans }}: {{ 'why.is.expert-guidance' | trans }}</li>
+                </ul>
+                </p>
+            </article>
+        </section>
+
+        <section class="max-w-[1024px] mx-auto p-3 mb-16">
+
+            <header>
+                <h2 class="text-3xl font-semibold">{{ 'elevate._' | trans }}</h2>
+            </header>
+
+            <article>
+                <p class="mb-3">{{ 'elevate.is._' | trans }}</p>
+            </article>
+        </section>
+
+
+        {% endblock %}
+
+    </main>
+
+
+    {% include "@site/_footer.html.twig" %}
+
+    {% block javascript %}
+    <script src="{{ '@site/dist/main.js' | assets }}?v={{ time() }}"></script>
+    {% endblock %}
+</body>
+{% endblock %}

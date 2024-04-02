@@ -1,0 +1,184 @@
+# Views\intl.yaml
+en:
+  message: message
+  title: title
+  description: description
+  default: default
+  Welcome to: Welcome to
+  product: product
+  home: home
+  contact: contact
+  about: about
+  get intouch: get intouch
+  what we offer: what we offer
+  build a website: build a website
+  designer: Designer
+  designer.is: Let our creative team build your website
+  cms: CMS
+  cms.is: Awesome modular architecture content management system
+  online-shop: Online Shop
+  online-shop.is: Increase sales with an online store
+  optimization: Optimization
+  google-ads: Google ADS
+  google-ads.is: Increase traffic to your website
+  accelerate: Accelerate
+  accelerate.is: Accelerate your website performance
+  seo: Search Engine Optimization
+  seo.is: Enhance your website's search engine optimization
+  meta:
+    title: Merapihost — Exceeding the Boundaries of Digital Services and Web Development
+    description: MerapiHost.com was founded with a simple yet ambitious goal to make the process of establishing and managing an online presence accessible to everyone. Our journey began with a vision of creating a hosting platform that prioritizes affordability, reliability, and user-friendliness. Over the years, we've evolved into a comprehensive web services provider, offering a wide range of solutions to meet the diverse needs of our clients.
+
+id:
+  message: pesan
+  title: judul
+  description: descripsi
+  default: bawaan
+  Welcome to: Selamat Datang di
+  product: produk
+  home: beranda
+  contact: kontak
+  about: tentang
+  get intouch: hubungi kami
+  what we offer: apa yang kami tawarkan
+  build a website: Bangun sebuah situs web
+  designer: Desainer
+  designer.is: Biarkan tim kreatif kami membangun situs web Anda
+  cms: CMS
+  cms.is: Sistem manajemen konten modular yang luar biasa
+  online-shop: Toko Online
+  online-shop.is: Tingkatkan penjualan dengan toko online
+  optimization: Optimisasi
+  google-ads: Google ADS
+  google-ads.is: Tingkatkan lalu lintas ke situs web Anda
+  accelerate: Mempercepat
+  accelerate.is: Tingkatkan kinerja situs web Anda
+  seo: Optimisasi mesin pencari
+  seo.is: Tingkatkan optimisasi situs web Anda untuk mesin pencari
+  meta:
+      title: Merapihost — Melampaui Batas Layanan Digital dan Pengembangan Web
+      description: MerapiHost.com didirikan dengan tujuan sederhana namun ambisius untuk membuat proses pembentukan dan pengelolaan keberadaan online dapat diakses oleh semua orang. Perjalanan kami dimulai dengan visi untuk menciptakan platform hosting yang memprioritaskan keterjangkauan, keandalan, dan kemudahan penggunaan. Seiring berjalannya waktu, kami telah berkembang menjadi penyedia layanan web komprehensif, menawarkan berbagai solusi untuk memenuhi beragam kebutuhan klien kami.
+
+es:
+  message: mensaje
+  title: tiÀtulo
+  description: descripción
+  default: defecto
+  Welcome to: Bienvenido a
+  product: producto
+  home: casa
+  contact: contacto
+  about: acerca
+  get intouch: obteneòr contacto
+  what we offer: que ofrecemos
+  build a website: Construir un sitio web
+  designer: diseñador
+  designer.is: Deja que nuestro equipo creativo construya tu sitio web
+  cms: CMS
+  cms.is: Impresionante sistema de gestión de contenido con arquitectura modular
+  online-shop: Tienda en línea
+  online-shop.is: Aumenta las ventas con una tienda en línea
+  optimization: Optimización
+  google-ads: Google ADS
+  google-ads.is: Aumenta el tráfico a tu sitio web
+  accelerate: Acelerar
+  accelerate.is: Acelera el rendimiento de tu sitio web
+  seo: Optimización para motores de búsqueda
+  seo.is: Mejora la optimización de tu sitio web para los motores de búsqueda
+  meta:
+    title: Merapihost — Superando los Límites de los Servicios Digitales y el Desarrollo Web
+    description: MerapiHost.com fue fundado con un objetivo simple pero ambicioso hacer que el proceso de establecer y gestionar una presencia en línea sea accesible para todos. Nuestro viaje comenzó con la visión de crear una plataforma de alojamiento que priorizara la asequibilidad, la confiabilidad y la facilidad de uso. Con el tiempo, hemos evolucionado hacia un proveedor de servicios web integral, ofreciendo una amplia gama de soluciones para satisfacer las diversas necesidades de nuestros clientes.
+
+
+ru:
+  message: сообщение
+  title: заголовок
+  description: описание
+  default: по умолчанию
+  Welcome to: Добро пожаловать в
+  product: продукт
+  home: главную
+  contact: контакты
+  about: о нас
+  get intouch: свяжитесь с нами
+  what we offer: что мы предлагаем
+  build a website: Создание веб-сайта
+  designer: дизайнер
+  designer.is: Позвольте нашей креативной команде создать ваш веб-сайт
+  cms: CMS
+  cms.is: Удивительная модульная система управления контентом
+  online-shop: Интернет-магазин
+  online-shop.is: Увеличьте продажи с помощью интернет-магазина
+  optimization: Оптимизация
+  google-ads: Google ADS
+  google-ads.is: Увеличьте трафик на ваш сайт
+  accelerate: Ускорение
+  accelerate.is: Ускорьте работу вашего сайта
+  seo: Оптимизация для поисковых систем
+  seo.is: Улучшите видимость вашего сайта в поисковых системах
+  meta:
+    title: Merapihost — Превышение Границ Цифровых Услуг и Разработки Веб-Сайтов
+    description: MerapiHost.com был основан с простой, но амбициозной целью — сделать процесс создания и управления онлайн-присутствием доступным для всех. Наш путь начался с видения создания хостинговой платформы, которая приоритизирует доступность, надежность и удобство использования. Со временем мы превратились в комплексного провайдера веб-услуг, предлагая широкий спектр решений, чтобы удовлетворить разнообразные потребности наших клиентов.
+
+
+cn:
+  message: 消息
+  title: 标题
+  description: 描述
+  default: 默认
+  Welcome to: 欢迎来到
+  product: 产品
+  home: 主页
+  contact: 联系
+  about: 关于
+  get intouch: 联系我们
+  what we offer: 我们提供什么
+  build a website: 搭建网站
+  designer: 设计师
+  designer.is: 让我们的创意团队为您构建网站
+  cms: 内容管理系统
+  cms.is: 令人惊叹的模块化架构内容管理系统
+  online-shop: 网上商店
+  online-shop.is: 通过在线商店增加销售额
+  optimization: 优化
+  google-ads: Google广告
+  google-ads.is: 增加到您网站的流量
+  accelerate: 加速
+  accelerate.is: 提升您网站的性能
+  seo: 搜索引擎优化
+  seo.is: 通过搜索引擎优化提升您的网站
+  meta:
+    title: Merapihost — 超越数字服务和网站开发的边界
+    description: MerapiHost.com 的创立旨在实现一个简单却雄心勃勃的目标，即使每个人都能够轻松建立和管理在线存在的过程。我们的旅程始于创造一个注重价格合理、可靠性和用户友好性的托管平台的愿景。多年来，我们已发展成为一个全面的网络服务提供商，提供各种解决方案，以满足客户的多样化需求。
+
+
+jp:
+  message: メッセージ
+  title: タイトル
+  description: 説明
+  default: デフォルト
+  Welcome to: ウェブホストサービス
+  product: プロダクト
+  home: ホーム
+  contact: コンタクト
+  about: ブラウザ
+  get intouch: お問い合わせ
+  what we offer: 提供
+  build a website: ウェブサイトを作成する
+  designer: デザイナー
+  designer.is: 当社のクリエイティブチームにあなたのウェブサイトを構築させてください
+  cms: CMS
+  cms.is: 素晴らしいモジュール式アーキテクチャのコンテンツ管理システム
+  online-shop: オンラインショップ
+  online-shop.is: オンラインストアでの売上を増やす
+  optimization: 最適化
+  google-ads: Google広告
+  google-ads.is: ウェブサイトへのトラフィックを増やす
+  accelerate: 加速する
+  accelerate.is: ウェブサイトのパフォーマンスを加速する
+  seo: 検索エンジン最適化
+  seo.is: ウェブサイトの検索エンジン最適化を強化する
+  meta:
+    title: Merapihost — デジタルサービスとウェブ開発の領域を超える
+    description: MerapiHost.com は、オンラインプレゼンスの確立と管理プロセスを誰もが利用できるようにするという単純かつ野心的な目標で設立されました。私たちの旅は、手頃な価格、信頼性、および使いやすさを重視するホスティングプラットフォームを作成するというビジョンから始まりました。時が経つにつれて、私たちは多様なニーズに応えるためのさまざまなソリューションを提供する包括的なウェブサービスプロバイダーに成長しました。
+

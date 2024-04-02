@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="{% block lang %}en{% endblock %}">
+{% block html %}
+
+<head>
+	{% block head %}
+
+	{% block meta %}
+	<meta charset="utf-8">
+	<title>{% block meta_title %}Merapi panel{% endblock %}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	{% endblock %}
+
+
+	{% block stylesheet %}
+	<link rel="stylesheet" href="{{ '/dist/index.css' | assets }}">
+	{% endblock %}
+
+
+	{% block head_javascript %}
+	<script src="{{ '/dist/index.js' | assets }}"></script>
+	{% endblock %}
+
+	{% endblock %}
+</head>
+
+
+<body>
+	{% block body %}
+	<main class="h-[100vh] w-[100vw] flex justify-center items-center text-white bg-black">
+		{% block content %}
+		<div clas="text-center">
+			<h1 class="text-6xl font-bold mb-4">This is the base template</h1>
+			<p class="text-lg text-center">You need to replace this view by add
+				<span class="font-bold">{{"{%"}} <span class="text-purple-300">block</span> <span
+						class="text-blue-300">content</span> {{ "%}" }}</span> in you template
+			</p>
+		</div>
+		{% endblock %}
+	</main>
+
+
+	{% block javascript %}{% endblock %}
+	{% endblock %}
+</body>
+
+{% endblock %}
+
+</html>

@@ -1,0 +1,96 @@
+{% extends "@site/index.html.twig" %}
+
+
+
+{% block content %}
+
+
+<section class="mb-14">
+    <div class="relative max-w-[1200px] mx-auto py-10 min-h-[550px] px-3">
+        <header class="w-full absolute top-1/2 -translate-y-1/2 z-10 filter drop-shadow-[0_5px_7px_#562d69] me-3">
+            <h1 class="text-4xl font-extrabold">{{ 'about.us' | trans }}</h1>
+            <i>{{ 'about.us.sub' | trans }}</i>
+        </header>
+        <div class="text-end float-end w-[450px] h-[450px] -me-[200px] md:-me-0 relative">
+            <img class="w-full h-full object-contain inline-block" src="{{ '@site/img/3dicon.png' | assets }}" alt="">
+            <div
+                class="animate-pulse absolute -z-[1] bg-[radial-gradient(rgba(0,128,255,0.15),transparent_50%)] w-[175%] h-[175%] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ms-[50px] mt-[25px]">
+            </div>
+        </div>
+    </div>
+    <article class="max-w-[1024px] p-3 mx-auto">
+        <p>{{ 'about.us.is' | trans }}</p>
+    </article>
+</section>
+
+
+<section class="max-w-[1024px] p-3 mx-auto mb-16">
+    <header class="text-center mb-5">
+        <h2 class="text-3xl font-bold">{{ 'our.story' | trans }}</h2>
+    </header>
+    <article class="text-center">
+        <p>{{ 'our.story.is' | trans }}</p>
+    </article>
+</section>
+
+
+<section class="max-w-[1024px] p-3 mx-auto mb-16">
+    <header class="text-center mb-3">
+        <h2 class="text-3xl font-bold">{{ 'why.choose' | trans }}</h2>
+    </header>
+    <article class="text-center max-w-[800px] mx-auto">
+
+        <div class="mb-3">
+            <h3 class="text-xl font-semibold">{{ 'why.choose.because.reliable' | trans }}</h3>
+            <p>{{ 'why.choose.because.reliable.is' | trans }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h3 class="text-xl font-semibold">{{ 'why.choose.because.innovative' | trans }}</h3>
+            <p>{{ 'why.choose.because.innovative.is' | trans }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h3 class="text-xl font-semibold">{{ 'why.choose.because.exceptional' | trans }}</h3>
+            <p>{{ 'why.choose.because.exceptional.is' | trans }}</p>
+        </div>
+
+        <div class="mb-3">
+            <h3 class="text-xl font-semibold">{{ 'why.choose.because.affordable' | trans }}</h3>
+            <p>{{ 'why.choose.because.affordable.is' | trans }}</p>
+        </div>
+
+    </article>
+</section>
+
+
+<section class="max-w-[1024px] p-3 mx-auto text-center mb-16">
+    <header>
+        <h2 class="text-3xl font-bold">{{ 'our.commitment' | trans }}</h2>
+    </header>
+    <article>
+        <p>{{ 'our.commitment.is' | trans }}</p>
+    </article>
+</section>
+
+
+<section class="max-w-[1024px] p-3 mx-auto text-center mb-16">
+    <header>
+        <h2 class="text-3xl font-bold">{{ 'get.started' | trans }}</h2>
+    </header>
+    <article>
+        <p>{{ 'get.started.is' | trans }}</p>
+    </article>
+</section>
+
+
+<section class="max-w-[1024px] p-3 mx-auto text-center mb-[160px]">
+    <header>
+        <h2 class="text-3xl font-bold">{{ 'contact.us' | trans }}</h2>
+    </header>
+    <article>
+        <p>{{ 'contact.us.is' | trans }}</p>
+    </article>
+</section>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "@panel/base.html.twig" %}
+{% block header_title %}Authentication{% endblock %}
+{% block subheader %}{% endblock %}
+{% set settings = admin.auth_settings %}
+{% block content %}
+<form class="py-5 max-w-[800px]">
+    <section class="bg-white mb-3 p-4 rounded shadow">
+        <header>
+            <h2 class="text-xl">Session Duration</h2>
+        </header>
+        <article>
+            <p class="text-sm opacity-50 ms-3">How long the session will expired</p>
+            <div class="py-3">
+                <label class="w-full" for="session_expired">Select Duration</label>
+                <select class="text-input" name="session_expired" id="session_expired">
+                    <option value="1" {{ settings.session_expired==1 ? 'selected' : '' }}>only 24 hours</option>
+                    <option value="2" {{ settings.session_expired==2 ? 'selected' : '' }}>one week</option>
+                    <option value="3" {{ settings.session_expired==3 ? 'selected' : '' }}>one month</option>
+                </select>
+                <small class="text-yellow-600 opacity-50"><i>for a security reason you should set the session expired
+                        duration in 24 hours</i></small>
+            </div>
+        </article>
+    </section>
+    <section class="bg-white mb-3 p-4 rounded shadow">
+        <header>
+            <h2 class="text-xl">Session name</h2>
+        </header>
+        <article>
+            <p class="text-sm opacity-50 ms-3">A name of the session</p>
+            <div class="py-3">
+                <label class="w-full" for="session_name">Enter Session Name</label>
+                <input class="text-input" id="session_name" name="session_name" value="{{ settings.session_name }}"
+                    placeholder="Enter the name" />
+                <ul class="text-[small] list-disc ms-5">
+                    <li><i>if name is not set the default session name will be used</i></li>
+                    <li><i>changing the name will reset the session</i></li>
+                </ul>
+            </div>
+        </article>
+    </section>
+    <div class="flex mt-5">
+        <button type="submit" class="ms-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+            save
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('form').on('submit', function (e) {
+
+            e.preventDefault();
+            let data = new FormData(e.currentTarget);
+
+            merapi.post('', data).then((result) => {
+
+                if (result.code == 200) {
+                    merapi.toast(result.message, 5, 'text-success');
+                } else throw new Error(result.message, result.code);
+
+            }).catch((err) => {
+
+                merapi.toast(err.merapi ? err.merapi.message : err, 5, 'text-danger');
+
+            });
+        })
+    })
+</script>
+{% endblock %}

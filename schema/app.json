@@ -13,12 +13,18 @@
             "type": "string",
             "minLength": 64
         },
-        "admin": {
-            "type": "string",
-            "description": "Admin prefix for admin route."
-        },
         "service": {
-            "type": "string",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            ],
             "description": "The main module that will be executed first."
         }
     },
