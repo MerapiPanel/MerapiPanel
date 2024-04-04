@@ -19,7 +19,7 @@ const buildinEntry = () => {
 
         if (name.endsWith("bundle")) return item;
 
-        acc["./../../../" + (path.dirname(item).split(path.sep).pop()).replace(/src$/, "dist") + "/" + path.basename(file)] = "./" + item;
+        acc["./../../../" + (path.dirname(item).split(path.sep).pop()).replace(/src$/, "dist") + "/" + path.basename(file).replace(/\.[jt]sx?$/, "")] = "./" + path.dirname(item) + "/" + path.basename(item).replace(/\.[jt]sx?$/, "");
         return acc;
 
     }, {});
