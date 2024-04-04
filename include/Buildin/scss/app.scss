@@ -15,4 +15,7 @@ $font-size-base:              .85rem; // Assumes the browser default, typically 
 $font-size-sm:                $font-size-base * .875;
 $font-size-lg:                $font-size-base * 1.25;
 
-@import "../plugins/bootstrap/scss/bootstrap.scss";
+@import "../vendor/bootstrap/scss/bootstrap.scss";
+
+
+@import "modal";

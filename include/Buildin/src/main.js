@@ -1,9 +1,24 @@
 import "../scss/app.scss";
-import "../plugins/fontawesome/css/all.min.css";
+import "../vendor/fontawesome/css/all.min.css";
+import $ from "jquery";
+import { toast } from "@il4mb/merapipanel";
 
-// window.$ = $;
-// window.merapi = require("./merapi");
+window.$ = $;
 
+$.ajax({
+    error: (e) => {
+        console.log(e);
+
+        if (e.responseJSON && e.responseJSON.message) {
+            toast(e.responseJSON.message, 10, 'text-' + (e.code >= 401 ? 'danger' : 'warning'));
+        } else {
+            toast(e.statusText || e.responseText, 10, 'text-' + (e.code >= 401 ? 'danger' : 'warning'));
+        }
+    }
+})
+
+
+// console.log(window)
 
 $(() => {
     $("img").each(function () {

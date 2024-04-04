@@ -1441,7 +1441,7 @@
 
 "@il4mb/merapipanel@file:../modules/merapipanel":
   "resolved" "file:../modules/merapipanel"
-  "version" "1.0.2"
+  "version" "1.0.3"
   dependencies:
     "@reduxjs/toolkit" "^2.2.2"
     "@types/jest" "^29.5.12"

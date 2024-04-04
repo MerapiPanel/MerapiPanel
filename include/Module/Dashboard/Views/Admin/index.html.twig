@@ -1,0 +1,43 @@
+{% extends "@panel/base.html.twig" %}
+
+
+{% block head_javascript %}
+{{ parent() }}
+<script>
+    var widgetPayload = {
+        endpoint_edit: "{{ '/widget/edit' | access_path | url }}",
+        endpoint_save: "{{ '/widget/save' | access_path | url }}",
+        endpoint_load: "{{ '/widget/load' | access_path | url }}"
+    }
+</script>
+{% endblock %}
+
+
+{% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ '@dashboard/dist/index.css' | assets | url }}?v={{ time() }}">
+{% endblock %}
+
+
+
+
+{% block subheader_search_outer %}{% endblock %}
+
+{% block subheader_menu %}
+<button class="menu-item" id="edit-widget-button"><i class="fa-regular fa-pen-to-square"></i> Edit Widget</button>
+{% endblock %}
+
+
+
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ '@dashboard/dist/index.js' | assets | url }}?v={{ time() }}"></script>
+{% endblock %}
+
+
+
+
+{% block content %}
+<div id="root"></div>
+{% endblock %}

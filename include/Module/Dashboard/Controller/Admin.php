@@ -7,6 +7,7 @@ use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Views\View;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Router;
+use Symfony\Component\Filesystem\Path;
 
 class Admin extends __Fragment
 {
@@ -18,10 +19,10 @@ class Admin extends __Fragment
     public function register()
     {
 
-        Router::GET("/widget/fetch", "widgetFetch", self::class);
+        Router::GET("/widget/edit", "widgetEdit", self::class);
         Router::GET("/widget/load/{name}", "widgetLoadComponent", self::class);
         Router::GET("/widget/load", "widgetLoad", self::class);
-        Router::GET("/widget/save", "widgetSave", self::class);
+        Router::POST("/widget/save", "widgetSave", self::class);
 
         $route = Router::GET("/", "index", self::class);
 
@@ -37,6 +38,26 @@ class Admin extends __Fragment
     public function index($view)
     {
         return View::render("index.html.twig");
+    }
+
+
+
+    function widgetEdit(Request $req)
+    {
+
+        $widgets = [];
+        foreach (glob(Path::join($_ENV['__MP_APP__'], "Module", "**", "Widgets", "index.php")) as $file) {
+            /**
+             * @var array $data
+             */
+            $data = require $file;
+            $widgets = array_merge($widgets, $data);
+        }
+        return [
+            "code" => 200,
+            "message" => "success",
+            "data" => $widgets
+        ];
     }
 
 
@@ -69,6 +90,7 @@ class Admin extends __Fragment
         return [
             "code" => 200,
             "message" => "success",
+            "data" => is_string($data) ? json_decode($data, true) : $data
         ];
     }
 
@@ -76,7 +98,7 @@ class Admin extends __Fragment
     function widgetLoadComponent(Request $req)
     {
 
-        return Box::module("Dashboard")->service("Widget")->renderWidget($req->name());
+        return Box::module("Dashboard")->Widget->renderWidget($req->name());
     }
 
 

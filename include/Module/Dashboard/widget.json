@@ -1,1 +1,1 @@
-[{"title":"","blocks":[{"name":"users:welcome","title":"No title","content":{"0":{"__vdevtools__injected":true},"length":1},"attribute":{"width":1203,"height":80}}]}]
+[{"name":"@dashboard/hallo","title":"hallo","description":"","option":{"width":792,"height":380},"icon":""},{"name":"@dashboard/welcome","title":"Welcome","description":"Welcome Message to the User","option":{"width":169,"height":60},"icon":""}]
