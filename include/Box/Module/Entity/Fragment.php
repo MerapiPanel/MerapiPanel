@@ -103,5 +103,13 @@ namespace MerapiPanel\Box\Module\Entity {
         {
             return "Fragment: {$this->resolvePath()}";
         }
+
+        public function getContent()
+        {
+            if (is_file($this->path)) {
+                return file_get_contents($this->path);
+            }
+            return null;
+        }
     }
 }

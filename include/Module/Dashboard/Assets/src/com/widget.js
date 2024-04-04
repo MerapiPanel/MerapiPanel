@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useContainer } from "./container";
 
 
-export const Widget = ({ name, title, description, option = {
+export const Widget = ({ id, name, title, description, option = {
     width: 200,
     height: 200
 }, focus = false }) => {
@@ -119,7 +119,7 @@ export const Widget = ({ name, title, description, option = {
         setIsResizeX(false);
         setIsResizeY(false);
 
-        const index = contents.findIndex(item => item.props.name === name);
+        const index = contents.findIndex(item => item.props.id === id);
         if (index === -1) {
             return;
         }
@@ -128,6 +128,11 @@ export const Widget = ({ name, title, description, option = {
         setContents([...contents]);
     }
 
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const onLoad = () => {
+        setTimeout(() => setIsLoaded(true), 400);
+    }
 
     return (
         <>
@@ -137,23 +142,31 @@ export const Widget = ({ name, title, description, option = {
                 onClick={clickHandle}
                 style={{ width: option.width, height: option.height }}>
 
-                {!isEdit && <iframe
-                    className="widget-frame"
-                    src={endpoint_load + "/" + name}
-                    width="100%"
-                    height="100%"
-                    frameBorder="0"
-                    scrolling={"no"}></iframe>}
+                {!isEdit && <>
+
+                    <iframe
+                        style={{ display: isLoaded ? 'block' : 'none' }}
+                        onLoad={onLoad}
+                        className="widget-frame"
+                        src={endpoint_load + "/" + name}
+                        width="100%"
+                        height="100%"
+                        frameBorder="0"
+                        scrolling={"no"}></iframe>
+                    <div className="widget-loading" style={{ display: isLoaded ? 'none' : '' }}>
+                        <i className="fa-solid fa-spinner fa-spin-pulse fa-2x"></i>
+                        <span className="mt-2">Loading...</span>
+                    </div>
+                </>}
 
                 {isEdit &&
                     (
                         <>
                             <span>{name}</span>
                             <div className="widget-edit-tool">
-                                <button className="tool-btn tool-move">
-                                    <i className="fa-solid fa-up-down-left-right"></i>
-                                </button>
-                                <button className="tool-btn tool-delete" onClick={removeHandle}>
+                                <button
+                                    className="tool-btn tool-delete"
+                                    onClick={removeHandle}>
                                     <i className="fa-solid fa-xmark"></i>
                                 </button>
                                 <button

@@ -3,21 +3,17 @@
 namespace MerapiPanel\Views;
 
 use Exception;
-use MerapiPanel\Box;
-use MerapiPanel\Box\Module\Entity\Module;
 use MerapiPanel\Views\Loader;
-use MerapiPanel\Views\Component\ProcessingComponent;
 use MerapiPanel\Utility\Http\Request;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Filesystem\Path;
-use Twig\Extension\AbstractExtension;
 use Twig\Loader\ArrayLoader;
-use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface;
 use Twig\TemplateWrapper;
 
 class View
 {
+
     protected $twig;
     protected $loader;
     protected $variables = [];
@@ -25,8 +21,6 @@ class View
     protected Intl $intl;
     protected $lang = false;
     private TemplateWrapper $wrapper;
-
-
 
 
     public function __construct(array|ArrayLoader $loader = [])

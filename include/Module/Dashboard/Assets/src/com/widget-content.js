@@ -50,6 +50,7 @@ export const WidgetContent = ({ children }) => {
                     const tempContents = [];
                     response.data.forEach((item) => {
                         tempContents.push(<Widget
+                            id={item.id}
                             name={item.name}
                             title={item.title}
                             description={item.description || ''}

@@ -8,20 +8,23 @@ const stylesHandler = MiniCssExtractPlugin.loader;
 
 const buildinEntry = () => {
 
-    return glob.sync("include/buildin/**/src/main.{js,ts,tsx}", {
-        ignore: ['./node_modules/**', 'dist/**', './.git/**', './.vscode/**', './.vscode-test/**', 'vendor/**', './tests/**'], // Ignore node_modules directory
-        //nodir: true, // Treat directories as files
-        maxDepth: 2 // Limit the depth of the search to 2 directory levels
+    return glob.sync("include/*/src/main.{js,ts,tsx}", {
+        ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**', '**/.vscode/**', '**/.vscode-test/**', '**/vendor/**', '**/tests/**'], // Ignore node_modules directory
+        // nodir: true, // Treat directories as files
+        // maxDepth: 2 // Limit the depth of the search to 2 directory levels
     }).reduce((acc, item) => {
 
-        const file = `./${item}`;
-        const name = path.basename(file).replace(/\.[jt]sx?$/, "");
-        if (name.endsWith("bundle")) return acc;
-        acc[name] = file;
+        const file = path.resolve(__dirname, item);
+        const name = path.basename(item).replace(/\.[jt]sx?$/, "");
+
+        if (name.endsWith("bundle")) return item;
+
+        acc["./../../../" + (path.dirname(item).split(path.sep).pop()).replace(/src$/, "dist") + "/" + path.basename(file)] = "./" + item;
         return acc;
 
     }, {});
 };
+
 
 const entry = () => {
     return {
@@ -33,7 +36,7 @@ module.exports = {
     mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
     entry: entry(),
     output: {
-        filename: '[name].bundle.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, "./include/buildin/dist"),
     },
 

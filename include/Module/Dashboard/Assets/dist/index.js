@@ -1,10 +1,10 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./include/Module/dashboard/Assets/src/com/container.js":
-/*!**************************************************************!*\
-  !*** ./include/Module/dashboard/Assets/src/com/container.js ***!
-  \**************************************************************/
+/***/ "./Assets/src/com/container.js":
+/*!*************************************!*\
+  !*** ./Assets/src/com/container.js ***!
+  \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -13,9 +13,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   Container: () => (/* binding */ Container),
 /* harmony export */   useContainer: () => (/* binding */ useContainer)
 /* harmony export */ });
-/* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @il4mb/merapipanel */ "../modules/merapipanel/dist/index.js");
+/* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @il4mb/merapipanel */ "../../../../modules/merapipanel/dist/index.js");
 /* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "../../../../modules/merapipanel/node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -114,10 +114,10 @@ var Container = function Container(_ref) {
 
 /***/ }),
 
-/***/ "./include/Module/dashboard/Assets/src/com/widget-add.js":
-/*!***************************************************************!*\
-  !*** ./include/Module/dashboard/Assets/src/com/widget-add.js ***!
-  \***************************************************************/
+/***/ "./Assets/src/com/widget-add.js":
+/*!**************************************!*\
+  !*** ./Assets/src/com/widget-add.js ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -125,9 +125,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   WidgetAdd: () => (/* binding */ WidgetAdd)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../../../../modules/merapipanel/node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./include/Module/dashboard/Assets/src/com/container.js");
+/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./Assets/src/com/container.js");
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure " + obj); }
 
 
@@ -155,10 +155,10 @@ var WidgetAdd = function WidgetAdd(_ref) {
 
 /***/ }),
 
-/***/ "./include/Module/dashboard/Assets/src/com/widget-content.js":
-/*!*******************************************************************!*\
-  !*** ./include/Module/dashboard/Assets/src/com/widget-content.js ***!
-  \*******************************************************************/
+/***/ "./Assets/src/com/widget-content.js":
+/*!******************************************!*\
+  !*** ./Assets/src/com/widget-content.js ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -166,13 +166,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   WidgetContent: () => (/* binding */ WidgetContent)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../../../../modules/merapipanel/node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./include/Module/dashboard/Assets/src/com/container.js");
-/* harmony import */ var _widget_add__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./widget-add */ "./include/Module/dashboard/Assets/src/com/widget-add.js");
-/* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @il4mb/merapipanel */ "../modules/merapipanel/dist/index.js");
+/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./Assets/src/com/container.js");
+/* harmony import */ var _widget_add__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./widget-add */ "./Assets/src/com/widget-add.js");
+/* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @il4mb/merapipanel */ "../../../../modules/merapipanel/dist/index.js");
 /* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _widget__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./widget */ "./include/Module/dashboard/Assets/src/com/widget.js");
+/* harmony import */ var _widget__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./widget */ "./Assets/src/com/widget.js");
 
 
 
@@ -228,6 +228,7 @@ var WidgetContent = function WidgetContent(_ref) {
           var tempContents = [];
           response.data.forEach(function (item) {
             tempContents.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_widget__WEBPACK_IMPORTED_MODULE_4__.Widget, {
+              id: item.id,
               name: item.name,
               title: item.title,
               description: item.description || '',
@@ -255,10 +256,10 @@ var WidgetContent = function WidgetContent(_ref) {
 
 /***/ }),
 
-/***/ "./include/Module/dashboard/Assets/src/com/widget-menu.js":
-/*!****************************************************************!*\
-  !*** ./include/Module/dashboard/Assets/src/com/widget-menu.js ***!
-  \****************************************************************/
+/***/ "./Assets/src/com/widget-menu.js":
+/*!***************************************!*\
+  !*** ./Assets/src/com/widget-menu.js ***!
+  \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -268,10 +269,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   MenuItems: () => (/* binding */ MenuItems),
 /* harmony export */   WidgetMenu: () => (/* binding */ WidgetMenu)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../../../../modules/merapipanel/node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./include/Module/dashboard/Assets/src/com/container.js");
-/* harmony import */ var _widget__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./widget */ "./include/Module/dashboard/Assets/src/com/widget.js");
+/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./Assets/src/com/container.js");
+/* harmony import */ var _widget__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./widget */ "./Assets/src/com/widget.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -307,7 +308,7 @@ var MenuGroup = function MenuGroup(_ref) {
       title: item.title,
       description: item.description,
       icon: item.icon,
-      options: item.options
+      option: item.option
     });
   })));
 };
@@ -317,25 +318,31 @@ var MenuItems = function MenuItems(_ref2) {
     _ref2$icon = _ref2.icon,
     icon = _ref2$icon === void 0 ? "<i class=\"fa-regular fa-face-smile\"></i>" : _ref2$icon,
     description = _ref2.description,
-    options = _ref2.options;
+    option = _ref2.option;
   var _useContainer = (0,_container__WEBPACK_IMPORTED_MODULE_1__.useContainer)(),
     setOpenMenu = _useContainer.setOpenMenu,
     addContent = _useContainer.addContent,
     setChanged = _useContainer.setChanged;
   var handleClick = function handleClick() {
+    console.log(name, title, icon, description, option);
     setOpenMenu(false);
     setChanged(true);
     addContent( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_widget__WEBPACK_IMPORTED_MODULE_2__.Widget, {
+      id: new Date().getTime().toString(36),
       name: name,
       title: title,
       description: description,
       option: Object.assign({
         width: 200,
         height: 100
-      }, options),
+      }, option || {}),
       focus: true
     }));
   };
+  if (icon.startsWith("<svg")) {
+    var viewBox = icon.match(/viewBox="([^"]+)"/)[1];
+    icon = icon.replace(/\<svg.*\>/, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" fill=\"currentColor\" viewBox=\"" + viewBox + "\">");
+  }
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "menu-item",
     "data-name": name,
@@ -404,10 +411,10 @@ var WidgetMenu = function WidgetMenu(_ref3) {
 
 /***/ }),
 
-/***/ "./include/Module/dashboard/Assets/src/com/widget.js":
-/*!***********************************************************!*\
-  !*** ./include/Module/dashboard/Assets/src/com/widget.js ***!
-  \***********************************************************/
+/***/ "./Assets/src/com/widget.js":
+/*!**********************************!*\
+  !*** ./Assets/src/com/widget.js ***!
+  \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -415,9 +422,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Widget: () => (/* binding */ Widget)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../../../../modules/merapipanel/node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./include/Module/dashboard/Assets/src/com/container.js");
+/* harmony import */ var _container__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./container */ "./Assets/src/com/container.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
@@ -431,7 +438,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var Widget = function Widget(_ref) {
-  var name = _ref.name,
+  var id = _ref.id,
+    name = _ref.name,
     title = _ref.title,
     description = _ref.description,
     _ref$option = _ref.option,
@@ -556,13 +564,22 @@ var Widget = function Widget(_ref) {
     setIsResizeX(false);
     setIsResizeY(false);
     var index = contents.findIndex(function (item) {
-      return item.props.name === name;
+      return item.props.id === id;
     });
     if (index === -1) {
       return;
     }
     contents.splice(index, 1);
     setContents(_toConsumableArray(contents));
+  };
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    isLoaded = _useState8[0],
+    setIsLoaded = _useState8[1];
+  var onLoad = function onLoad() {
+    setTimeout(function () {
+      return setIsLoaded(true);
+    }, 400);
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     ref: ref,
@@ -573,20 +590,29 @@ var Widget = function Widget(_ref) {
       width: option.width,
       height: option.height
     }
-  }, !isEdit && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("iframe", {
+  }, !isEdit && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("iframe", {
+    style: {
+      display: isLoaded ? 'block' : 'none'
+    },
+    onLoad: onLoad,
     className: "widget-frame",
     src: endpoint_load + "/" + name,
     width: "100%",
     height: "100%",
     frameBorder: "0",
     scrolling: "no"
-  }), isEdit && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "widget-loading",
+    style: {
+      display: isLoaded ? 'none' : ''
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("i", {
+    className: "fa-solid fa-spinner fa-spin-pulse fa-2x"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "mt-2"
+  }, "Loading..."))), isEdit && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "widget-edit-tool"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    className: "tool-btn tool-move"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("i", {
-    className: "fa-solid fa-up-down-left-right"
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     className: "tool-btn tool-delete",
     onClick: removeHandle
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("i", {
@@ -608,10 +634,10 @@ var Widget = function Widget(_ref) {
 
 /***/ }),
 
-/***/ "../modules/merapipanel/dist/index.js":
-/*!********************************************!*\
-  !*** ../modules/merapipanel/dist/index.js ***!
-  \********************************************/
+/***/ "../../../../modules/merapipanel/dist/index.js":
+/*!*****************************************************!*\
+  !*** ../../../../modules/merapipanel/dist/index.js ***!
+  \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -652,24 +678,24 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.modal = exports.cookie = exports.dialog = exports.http = exports.toast = void 0;
-var toast_1 = __webpack_require__(/*! ./partials/toast */ "../modules/merapipanel/dist/partials/toast.js");
+var toast_1 = __webpack_require__(/*! ./partials/toast */ "../../../../modules/merapipanel/dist/partials/toast.js");
 Object.defineProperty(exports, "toast", ({
   enumerable: true,
   get: function get() {
     return toast_1.toast;
   }
 }));
-exports.http = __importStar(__webpack_require__(/*! ./partials/http */ "../modules/merapipanel/dist/partials/http.js"));
-exports.dialog = __importStar(__webpack_require__(/*! ./partials/dialog */ "../modules/merapipanel/dist/partials/dialog.js"));
-exports.cookie = __importStar(__webpack_require__(/*! ./partials/cookie */ "../modules/merapipanel/dist/partials/cookie.js"));
-exports.modal = __importStar(__webpack_require__(/*! ./partials/modal */ "../modules/merapipanel/dist/partials/modal.js"));
+exports.http = __importStar(__webpack_require__(/*! ./partials/http */ "../../../../modules/merapipanel/dist/partials/http.js"));
+exports.dialog = __importStar(__webpack_require__(/*! ./partials/dialog */ "../../../../modules/merapipanel/dist/partials/dialog.js"));
+exports.cookie = __importStar(__webpack_require__(/*! ./partials/cookie */ "../../../../modules/merapipanel/dist/partials/cookie.js"));
+exports.modal = __importStar(__webpack_require__(/*! ./partials/modal */ "../../../../modules/merapipanel/dist/partials/modal.js"));
 
 /***/ }),
 
-/***/ "../modules/merapipanel/dist/partials/cookie.js":
-/*!******************************************************!*\
-  !*** ../modules/merapipanel/dist/partials/cookie.js ***!
-  \******************************************************/
+/***/ "../../../../modules/merapipanel/dist/partials/cookie.js":
+/*!***************************************************************!*\
+  !*** ../../../../modules/merapipanel/dist/partials/cookie.js ***!
+  \***************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -706,10 +732,10 @@ exports.cookie_delete = cookie_delete;
 
 /***/ }),
 
-/***/ "../modules/merapipanel/dist/partials/dialog.js":
-/*!******************************************************!*\
-  !*** ../modules/merapipanel/dist/partials/dialog.js ***!
-  \******************************************************/
+/***/ "../../../../modules/merapipanel/dist/partials/dialog.js":
+/*!***************************************************************!*\
+  !*** ../../../../modules/merapipanel/dist/partials/dialog.js ***!
+  \***************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -724,7 +750,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.danger = exports.confirm = void 0;
-var modal_1 = __importDefault(__webpack_require__(/*! ./modal */ "../modules/merapipanel/dist/partials/modal.js"));
+var modal_1 = __importDefault(__webpack_require__(/*! ./modal */ "../../../../modules/merapipanel/dist/partials/modal.js"));
 var confirm = function confirm(title, message) {
   var modal = modal_1["default"].create(title, message);
   modal.show();
@@ -757,10 +783,10 @@ exports.danger = danger;
 
 /***/ }),
 
-/***/ "../modules/merapipanel/dist/partials/http.js":
-/*!****************************************************!*\
-  !*** ../modules/merapipanel/dist/partials/http.js ***!
-  \****************************************************/
+/***/ "../../../../modules/merapipanel/dist/partials/http.js":
+/*!*************************************************************!*\
+  !*** ../../../../modules/merapipanel/dist/partials/http.js ***!
+  \*************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -778,7 +804,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.del = exports.patch = exports.put = exports.post = exports.get = exports.CreateXmlHttpRequest = void 0;
-var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "../modules/merapipanel/node_modules/jquery/dist/jquery.js"));
+var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "../../../../modules/merapipanel/node_modules/jquery/dist/jquery.js"));
 var proggressbars = (0, jquery_1["default"])("<div class='http-progress'><div class='download running-strip'></div><div class='upload running-strip'></div></div>");
 (0, jquery_1["default"])(document).on("ajaxSend", function (e) {
   (0, jquery_1["default"])('.http-progress').remove();
@@ -959,10 +985,10 @@ exports.del = del;
 
 /***/ }),
 
-/***/ "../modules/merapipanel/dist/partials/modal.js":
-/*!*****************************************************!*\
-  !*** ../modules/merapipanel/dist/partials/modal.js ***!
-  \*****************************************************/
+/***/ "../../../../modules/merapipanel/dist/partials/modal.js":
+/*!**************************************************************!*\
+  !*** ../../../../modules/merapipanel/dist/partials/modal.js ***!
+  \**************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -1465,10 +1491,10 @@ exports["default"] = Modal;
 
 /***/ }),
 
-/***/ "../modules/merapipanel/dist/partials/toast.js":
-/*!*****************************************************!*\
-  !*** ../modules/merapipanel/dist/partials/toast.js ***!
-  \*****************************************************/
+/***/ "../../../../modules/merapipanel/dist/partials/toast.js":
+/*!**************************************************************!*\
+  !*** ../../../../modules/merapipanel/dist/partials/toast.js ***!
+  \**************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -1562,10 +1588,10 @@ exports.toast = toast;
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/jquery/dist/jquery.js":
-/*!*****************************************************************!*\
-  !*** ../modules/merapipanel/node_modules/jquery/dist/jquery.js ***!
-  \*****************************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/jquery/dist/jquery.js":
+/*!**************************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/jquery/dist/jquery.js ***!
+  \**************************************************************************/
 /***/ (function(module, exports) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -12289,10 +12315,10 @@ return jQuery;
 
 /***/ }),
 
-/***/ "./include/Module/dashboard/Assets/src/scss/main.scss":
-/*!************************************************************!*\
-  !*** ./include/Module/dashboard/Assets/src/scss/main.scss ***!
-  \************************************************************/
+/***/ "./Assets/src/scss/main.scss":
+/*!***********************************!*\
+  !*** ./Assets/src/scss/main.scss ***!
+  \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -12302,10 +12328,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/react-dom/cjs/react-dom.development.js":
-/*!**********************************************************************************!*\
-  !*** ../modules/merapipanel/node_modules/react-dom/cjs/react-dom.development.js ***!
-  \**********************************************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/react-dom/cjs/react-dom.development.js":
+/*!*******************************************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/react-dom/cjs/react-dom.development.js ***!
+  \*******************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -12334,8 +12360,8 @@ if (
 ) {
   __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
 }
-          var React = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
-var Scheduler = __webpack_require__(/*! scheduler */ "../modules/merapipanel/node_modules/scheduler/index.js");
+          var React = __webpack_require__(/*! react */ "../../../../modules/merapipanel/node_modules/react/index.js");
+var Scheduler = __webpack_require__(/*! scheduler */ "../../../../modules/merapipanel/node_modules/scheduler/index.js");
 
 var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 
@@ -42176,16 +42202,16 @@ if (
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/react-dom/client.js":
-/*!***************************************************************!*\
-  !*** ../modules/merapipanel/node_modules/react-dom/client.js ***!
-  \***************************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/react-dom/client.js":
+/*!************************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/react-dom/client.js ***!
+  \************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var m = __webpack_require__(/*! react-dom */ "../modules/merapipanel/node_modules/react-dom/index.js");
+var m = __webpack_require__(/*! react-dom */ "../../../../modules/merapipanel/node_modules/react-dom/index.js");
 if (false) {} else {
   var i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
   exports.createRoot = function(c, o) {
@@ -42209,10 +42235,10 @@ if (false) {} else {
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/react-dom/index.js":
-/*!**************************************************************!*\
-  !*** ../modules/merapipanel/node_modules/react-dom/index.js ***!
-  \**************************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/react-dom/index.js":
+/*!***********************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/react-dom/index.js ***!
+  \***********************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -42247,16 +42273,16 @@ function checkDCE() {
 }
 
 if (false) {} else {
-  module.exports = __webpack_require__(/*! ./cjs/react-dom.development.js */ "../modules/merapipanel/node_modules/react-dom/cjs/react-dom.development.js");
+  module.exports = __webpack_require__(/*! ./cjs/react-dom.development.js */ "../../../../modules/merapipanel/node_modules/react-dom/cjs/react-dom.development.js");
 }
 
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/react/cjs/react.development.js":
-/*!**************************************************************************!*\
-  !*** ../modules/merapipanel/node_modules/react/cjs/react.development.js ***!
-  \**************************************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/react/cjs/react.development.js":
+/*!***********************************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/react/cjs/react.development.js ***!
+  \***********************************************************************************/
 /***/ ((module, exports, __webpack_require__) => {
 
 "use strict";
@@ -45004,26 +45030,26 @@ if (
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/react/index.js":
-/*!**********************************************************!*\
-  !*** ../modules/merapipanel/node_modules/react/index.js ***!
-  \**********************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/react/index.js":
+/*!*******************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/react/index.js ***!
+  \*******************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 if (false) {} else {
-  module.exports = __webpack_require__(/*! ./cjs/react.development.js */ "../modules/merapipanel/node_modules/react/cjs/react.development.js");
+  module.exports = __webpack_require__(/*! ./cjs/react.development.js */ "../../../../modules/merapipanel/node_modules/react/cjs/react.development.js");
 }
 
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/scheduler/cjs/scheduler.development.js":
-/*!**********************************************************************************!*\
-  !*** ../modules/merapipanel/node_modules/scheduler/cjs/scheduler.development.js ***!
-  \**********************************************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/scheduler/cjs/scheduler.development.js":
+/*!*******************************************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/scheduler/cjs/scheduler.development.js ***!
+  \*******************************************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -45665,17 +45691,17 @@ if (
 
 /***/ }),
 
-/***/ "../modules/merapipanel/node_modules/scheduler/index.js":
-/*!**************************************************************!*\
-  !*** ../modules/merapipanel/node_modules/scheduler/index.js ***!
-  \**************************************************************/
+/***/ "../../../../modules/merapipanel/node_modules/scheduler/index.js":
+/*!***********************************************************************!*\
+  !*** ../../../../modules/merapipanel/node_modules/scheduler/index.js ***!
+  \***********************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 if (false) {} else {
-  module.exports = __webpack_require__(/*! ./cjs/scheduler.development.js */ "../modules/merapipanel/node_modules/scheduler/cjs/scheduler.development.js");
+  module.exports = __webpack_require__(/*! ./cjs/scheduler.development.js */ "../../../../modules/merapipanel/node_modules/scheduler/cjs/scheduler.development.js");
 }
 
 
@@ -45765,17 +45791,17 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!******************************************************!*\
-  !*** ./include/Module/dashboard/Assets/src/index.js ***!
-  \******************************************************/
+/*!*****************************!*\
+  !*** ./Assets/src/index.js ***!
+  \*****************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../../../../modules/merapipanel/node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "../modules/merapipanel/node_modules/react-dom/client.js");
-/* harmony import */ var _com_container__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./com/container */ "./include/Module/dashboard/Assets/src/com/container.js");
-/* harmony import */ var _com_widget_menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./com/widget-menu */ "./include/Module/dashboard/Assets/src/com/widget-menu.js");
-/* harmony import */ var _com_widget_content__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./com/widget-content */ "./include/Module/dashboard/Assets/src/com/widget-content.js");
-/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./scss/main.scss */ "./include/Module/dashboard/Assets/src/scss/main.scss");
+/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "../../../../modules/merapipanel/node_modules/react-dom/client.js");
+/* harmony import */ var _com_container__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./com/container */ "./Assets/src/com/container.js");
+/* harmony import */ var _com_widget_menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./com/widget-menu */ "./Assets/src/com/widget-menu.js");
+/* harmony import */ var _com_widget_content__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./com/widget-content */ "./Assets/src/com/widget-content.js");
+/* harmony import */ var _scss_main_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./scss/main.scss */ "./Assets/src/scss/main.scss");
 
 
 

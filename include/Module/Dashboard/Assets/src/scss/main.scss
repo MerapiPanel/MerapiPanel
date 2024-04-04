@@ -4,6 +4,7 @@
     min-height: 600px;
     width: 100%;
     height: 100%;
+    padding: 0.5rem;
 
     & .widget-content {
         display: flex;
@@ -16,12 +17,30 @@
 
         & .widget {
             position: relative;
+            box-shadow: 0 0 2px rgb(0, 0, 0, 0.075);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            padding: 0.5rem;
             & .widget-frame {
                 width: 100%;
                 height: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                overflow: hidden;
+            }
+            & .widget-loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.75);
             }
         }
     }
@@ -136,8 +155,9 @@
             }
             & .menu-item-title {
                 position: absolute;
-                font-size: 0.7rem;
+                font-size: 0.6rem;
                 font-weight: 600;
+                text-align: center;
                 top: 100%;
                 color: currentColor;
             }
@@ -189,6 +209,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: visible;
 
             &.focus {
                 background-color: rgb(var(--bs-primary-rgb), 0.25);

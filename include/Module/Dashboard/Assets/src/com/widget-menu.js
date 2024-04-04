@@ -14,7 +14,7 @@ export const MenuGroup = ({ name, items = [], isOpen = false }) => {
             <div className="menu-group-items">
                 {items.map((item, index) => {
                     return (
-                        <MenuItems key={index} name={item.name} title={item.title} description={item.description} icon={item.icon} options={item.options} />
+                        <MenuItems key={index} name={item.name} title={item.title} description={item.description} icon={item.icon} option={item.option} />
                     )
                 })}
             </div>
@@ -27,15 +27,32 @@ export const MenuGroup = ({ name, items = [], isOpen = false }) => {
 
 
 
-export const MenuItems = ({ name, title, icon = `<i class="fa-regular fa-face-smile"></i>`, description, options }) => {
+export const MenuItems = ({ name, title, icon = `<i class="fa-regular fa-face-smile"></i>`, description, option }) => {
 
     const { setOpenMenu, addContent, setChanged } = useContainer();
 
     const handleClick = () => {
+
+        console.log(name, title, icon, description, option)
         setOpenMenu(false);
         setChanged(true);
-        addContent(<Widget name={name} title={title} description={description} option={Object.assign({ width: 200, height: 100 }, options)} focus={true} />);
+        addContent(<Widget
+            id={(new Date().getTime()).toString(36)}
+            name={name}
+            title={title}
+            description={description}
+            option={Object.assign({ width: 200, height: 100 }, option || {})}
+            focus={true} />);
     }
+
+
+
+    if (icon.startsWith("<svg")) {
+        const viewBox = icon.match(/viewBox="([^"]+)"/)[1];
+        icon = icon.replace(/\<svg.*\>/, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" fill=\"currentColor\" viewBox=\"" + viewBox + "\">");
+    }
+
+
     return (
         <div className="menu-item" data-name={name} onClick={handleClick}>
             <div className="menu-item-icon" dangerouslySetInnerHTML={{ __html: icon }}></div>

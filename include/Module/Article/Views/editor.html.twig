@@ -53,6 +53,13 @@
 
 {% block body %}
 
+
+{{ editor({
+    'id' : 'article-editor',
+    'height' : '500px',
+    'content' : '',
+}) }}
+
 <div id="root"></div>
 
 <script src="{{ '/merapi/dist/hallo.bundle.js' }}"></script>
