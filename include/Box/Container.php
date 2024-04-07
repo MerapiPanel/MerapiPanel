@@ -5,6 +5,14 @@ namespace MerapiPanel\Box {
     use MerapiPanel\Box\Module\Entity\Module;
     use Throwable;
 
+    /**
+     * Description: Box Container
+     * @author      ilham b <durianbohong@gmail.com>
+     * @copyright   Copyright (c) 2022 MerapiPanel
+     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+     * @lastUpdate  2024-02-10
+     * @package     Box
+     */
     class Container
     {
 

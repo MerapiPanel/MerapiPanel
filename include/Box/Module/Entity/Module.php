@@ -8,6 +8,13 @@ namespace MerapiPanel\Box\Module\Entity {
     use ReflectionObject;
     use ReflectionProperty;
 
+    /**
+     * Description: Module Entity.
+     * @author      ilham b <durianbohong@gmail.com>
+     * @copyright   Copyright (c) 2022 MerapiPanel
+     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+     * @lastUpdate  2024-02-10
+     */
     class Module
     {
 

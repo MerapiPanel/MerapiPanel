@@ -1,8 +1,6 @@
 <?php
 namespace MerapiPanel {
 
-    use MerapiPanel\Standlone\ENV;
-    use MerapiPanel\Standlone\ENV_Container;
     use MerapiPanel\Utility\Http\Request;
     use MerapiPanel\Utility\Router;
 

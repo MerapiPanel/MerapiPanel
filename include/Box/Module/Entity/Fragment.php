@@ -6,6 +6,13 @@ namespace MerapiPanel\Box\Module\Entity {
     use Exception;
     use Symfony\Component\Filesystem\Path;
 
+    /**
+     * Description: Module Fragment Entity.
+     * @author      ilham b <durianbohong@gmail.com>
+     * @copyright   Copyright (c) 2022 MerapiPanel
+     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+     * @lastUpdate  2024-02-10
+     */
     class Fragment
     {
         public readonly Fragment|Module $parent;

@@ -4,6 +4,14 @@ namespace MerapiPanel\Box {
 
     use Symfony\Component\Filesystem\Path;
 
+    /**
+     * Description: File Loader for MerapiPanel.
+     * @author      ilham b <durianbohong@gmail.com>
+     * @copyright   Copyright (c) 2022 MerapiPanel
+     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+     * @lastUpdate  2024-02-10
+     * @package     Box
+     */
 
     class FileLoader
     {
@@ -32,6 +40,14 @@ namespace MerapiPanel\Box {
 
 
 
+    /**
+     * Description: File Fragment for MerapiPanel.
+     * @author      ilham b <durianbohong@gmail.com>
+     * @copyright   Copyright (c) 2022 MerapiPanel
+     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+     * @lastUpdate  2024-02-10
+     * @package     Box
+     */
 
     class FileFragment
     {

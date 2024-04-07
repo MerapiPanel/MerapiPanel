@@ -12,13 +12,21 @@ namespace MerapiPanel\Box\Module {
     use Symfony\Component\Filesystem\Path;
     use Throwable;
 
+    /**
+     * Description: Module Loader for Container.
+     * @author      ilham b <durianbohong@gmail.com>
+     * @copyright   Copyright (c) 2022 MerapiPanel
+     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
+     * @lastUpdate  2024-02-10
+     */
+
     class ModuleLoader extends AbstractLoader
     {
 
         protected string $directory;
         protected string $classNamePrefix = "\\MerapiPanel\\Module";
 
-        
+
         public function __construct(string $directory)
         {
             $this->directory = $directory;
@@ -58,7 +66,7 @@ namespace MerapiPanel\Box\Module {
                             } catch (Throwable $e) {
                                 error_log("Unable to register controller: $module, " . $e->getMessage());
                             }
-                        } 
+                        }
                     }
                 }
             }
