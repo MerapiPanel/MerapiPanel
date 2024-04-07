@@ -1,6 +1,6 @@
-/*!***********************************************************************************************************************************************************************************!*\
-  !*** css ../../../node_modules/css-loader/dist/cjs.js!../../../node_modules/postcss-loader/dist/cjs.js!../../../node_modules/sass-loader/dist/cjs.js!./Assets/src/scss/main.scss ***!
-  \***********************************************************************************************************************************************************************************/
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./include/Module/dashboard/Assets/src/scss/main.scss ***!
+  \***************************************************************************************************************************************************************************************/
 .widget-container {
   display: flex;
   flex-direction: column;
@@ -64,7 +64,7 @@
   overflow: hidden;
 }
 .widget-container .widget-menu.open {
-  max-width: 250px;
+  max-width: 220px;
   overflow: visible;
 }
 .widget-container .widget-menu .menu-group {

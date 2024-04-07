@@ -67,17 +67,18 @@ namespace MerapiPanel {
         protected function prepare()
         {
 
+            $service = $_ENV['__MP_SERVICE__'];
+            if (is_array($service)) {
+                foreach ($service as $module) {
+                    $module = Box::module($module)->Service;
+                    error_log("from service: " . $module->path);
+                }
+            } else if (is_string($service)) {
+                Box::module($service)->Service;
+            }
+
             // send signal for prepare to all modules in parent
             parent::initialize();
-
-            // $service = $_ENV['__MP_SERVICE__'];
-            // if (is_array($service)) {
-            //     foreach ($service as $module) {
-            //         $module = Box::module($module)->Service;
-            //     }
-            // } else if (is_string($service)) {
-            //     Box::module($service);
-            // }
         }
 
 
@@ -93,7 +94,7 @@ namespace MerapiPanel {
             ob_end_clean();
 
             // send signal for shutdown to all modules in parent
-            // parent::shutdown();
+            parent::shutdown();
 
             echo $output;
         }

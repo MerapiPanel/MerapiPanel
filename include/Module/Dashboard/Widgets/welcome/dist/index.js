@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./Widgets/welcome/src/style.scss":
-/*!****************************************!*\
-  !*** ./Widgets/welcome/src/style.scss ***!
-  \****************************************/
+/***/ "./include/Module/dashboard/Widgets/welcome/src/style.scss":
+/*!*****************************************************************!*\
+  !*** ./include/Module/dashboard/Widgets/welcome/src/style.scss ***!
+  \*****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -56,11 +56,11 @@ __webpack_require__.r(__webpack_exports__);
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!**************************************!*\
-  !*** ./Widgets/welcome/src/index.js ***!
-  \**************************************/
+/*!***************************************************************!*\
+  !*** ./include/Module/dashboard/Widgets/welcome/src/index.js ***!
+  \***************************************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./style.scss */ "./Widgets/welcome/src/style.scss");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./style.scss */ "./include/Module/dashboard/Widgets/welcome/src/style.scss");
 
 })();
 

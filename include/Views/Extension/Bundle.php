@@ -68,16 +68,4 @@ class Bundle extends Extension
     {
         return preg_replace($pattern, $replacement, $subject);
     }
-
-
-    /**
-     * @param array $option
-     * @option needs_environment true
-     */
-    function fn_editor(\Twig\Environment $env, $option = [])
-    {
-
-        $script = "<script type=\"text/javascript\">window.editor = {};\nwindow.editor.option = " . json_encode($option) . ";\nconsole.log(window.editor);</script>";
-        return new \Twig\Markup($script, $env->getCharset());
-    }
 }

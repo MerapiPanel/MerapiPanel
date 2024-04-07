@@ -13,6 +13,34 @@
             "type": "string",
             "minLength": 64
         },
+        "cache": {
+            "type": "boolean",
+            "description": "Enable cache."
+        },
+        "access": {
+            "type": "object",
+            "description": "Access configuration.",
+            "properties": {
+                "admin": {
+                    "type": "object",
+                    "description": "Admin access configuration.",
+                    "properties": {
+                        "prefix": {
+                            "type": "string",
+                            "description": "The prefix for admin access."
+                        },
+                        "middleware": {
+                            "type": "string",
+                            "description": "The middleware for admin access."
+                        }
+                    },
+                    "required": [
+                        "prefix",
+                        "middleware"
+                    ]
+                }
+            }
+        },
         "service": {
             "oneOf": [
                 {

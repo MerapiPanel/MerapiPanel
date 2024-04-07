@@ -3,6 +3,7 @@
 namespace MerapiPanel\Views;
 
 use Exception;
+use MerapiPanel\Views\Abstract\Extension;
 use MerapiPanel\Views\Loader;
 use MerapiPanel\Utility\Http\Request;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
@@ -64,6 +65,11 @@ class View
         $this->addGlobal("api", new ApiServices());
     }
 
+
+
+    function addExtension(Extension $extension) {
+        $this->twig->addExtension($extension);
+    }
 
 
 

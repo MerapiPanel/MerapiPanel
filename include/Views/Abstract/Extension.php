@@ -18,16 +18,16 @@ use Twig\TwigFunction;
  */
 class Extension extends AbstractExtension
 {
-    protected View $view;
+    protected View|null $view;
 
-    public function __construct(View $view)
+    public function __construct(View|null $view = null)
     {
         $this->view = $view;
     }
 
 
 
-    protected function getView()
+    protected function getView(): View|null
     {
         return $this->view;
     }

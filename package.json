@@ -48,7 +48,7 @@
     "bootstrap-icons": "^1.11.3",
     "codemirror": "^6.0.1",
     "grapejs": "^2.1.2",
-    "grapesjs": "^0.21.9",
+    "grapesjs": "^0.21.10",
     "grapesjs-blocks-basic": "^1.0.2",
     "grapesjs-plugin-forms": "^2.0.6",
     "grapesjs-script-editor": "^1.0.3",

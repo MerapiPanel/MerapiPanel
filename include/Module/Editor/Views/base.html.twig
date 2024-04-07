@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}Editor{% endblock %}</title>
+	{% block styles %}
+	<link rel="stylesheet" href="{{ '/dist/main.css' | assets }}">
+	<link rel="stylesheet" href="{{ '@editor/dist/main.css' | assets }}?v={{ time() }}">
+	{% endblock %}
+
+	{% block option %}
+	{{ editor_option({
+		width: "100vw",
+		height: "100vh",
+		container: "#editor",
+		'menubar': false,
+	}) }}
+	{% endblock %}
+</head>
+
+<body>
+
+	{% block content %}
+	<div id="editor"></div>
+	{% endblock %}
+	{% block scripts %}
+	<script src="{{ '@editor/dist/main.js' | assets }}"></script>
+	{% endblock %}
+	
+</body>
+
+</html>

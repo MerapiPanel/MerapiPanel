@@ -1441,7 +1441,7 @@
 
 "@il4mb/merapipanel@file:../modules/merapipanel":
   "resolved" "file:../modules/merapipanel"
-  "version" "1.0.3"
+  "version" "1.0.6"
   dependencies:
     "@reduxjs/toolkit" "^2.2.2"
     "@types/jest" "^29.5.12"
@@ -4508,10 +4508,10 @@
   dependencies:
     "css" "^3.0.0"
 
-"grapesjs@^0.21.9":
-  "integrity" "sha512-xChu5GAgtTx5rJUKb9JaGzYm0FN+9k7d9/dzVPH3KXXO8VdmY09SNH56StAtqy1VYOBu5S043n7BfgF8M732eg=="
-  "resolved" "https://registry.npmjs.org/grapesjs/-/grapesjs-0.21.9.tgz"
-  "version" "0.21.9"
+"grapesjs@^0.21.10":
+  "integrity" "sha512-wvOBa8kjBLDeH006p4/krSzGNze2H7Rsncv37LxvDzC6QCQucEjQ7Lb+Fd50jDSWNnxavRRJLJPnXyPTGZYGuQ=="
+  "resolved" "https://registry.npmjs.org/grapesjs/-/grapesjs-0.21.10.tgz"
+  "version" "0.21.10"
   dependencies:
     "@types/backbone" "^1.4.15"
     "backbone" "1.4.1"
