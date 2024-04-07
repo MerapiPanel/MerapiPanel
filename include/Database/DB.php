@@ -1,5 +1,6 @@
 <?php
 namespace MerapiPanel\Database;
+
 use PDO;
 
 
@@ -217,7 +218,7 @@ final class Table
      */
     public function insert($data): InsertQuery
     {
-        return new InsertQuery($this->getName(), $data);
+        return new InsertQuery($this, $data);
     }
 
     /**
@@ -382,7 +383,7 @@ final class Where
         $this->value = $val;
         return $this->whereBuilder->where($this);
     }
-    
+
 
 
     /**
@@ -397,7 +398,7 @@ final class Where
         $this->value = $val;
         return $this->whereBuilder->where($this);
     }
-    
+
 
 
     /**
@@ -412,7 +413,7 @@ final class Where
         $this->value = $val;
         return $this->whereBuilder->where($this);
     }
-    
+
 
 
     /**
@@ -427,7 +428,7 @@ final class Where
         $this->value = $val;
         return $this->whereBuilder->where($this);
     }
-    
+
 
 
     /**
@@ -442,7 +443,7 @@ final class Where
         $this->value = $val;
         return $this->whereBuilder->where($this);
     }
-    
+
 
 
     /**
@@ -456,7 +457,7 @@ final class Where
         $this->value = "NULL";
         return $this->whereBuilder->where($this);
     }
-    
+
 
 
     /**
@@ -470,7 +471,7 @@ final class Where
         $this->value = "NULL";
         return $this->whereBuilder->where($this);
     }
-    
+
 
 
     /**
@@ -499,7 +500,7 @@ final class Where
         // Return the built query condition
         return "{$this->column} {$this->operator} {$value}";
     }
-    
+
 
 
     /**
@@ -612,7 +613,7 @@ class WhereQueryBuilder
         return $this;
     }
 
-    
+
 
 
     /**
@@ -824,10 +825,10 @@ final class InsertQuery
     /**
      * Constructor for initializing the table and data.
      *
-     * @param string $table The table name.
+     * @param Table $table The table object.
      * @param array $data The data to be inserted.
      */
-    public function __construct($table, $data)
+    public function __construct(Table $table, $data = [])
     {
         $this->table = $table;
         $this->data = $data;
