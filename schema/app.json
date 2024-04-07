@@ -54,9 +54,50 @@
                 }
             ],
             "description": "The main module that will be executed first."
+        },
+        "database": {
+            "type": "object",
+            "description": "Database configuration.",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "The database type."
+                },
+                "host": {
+                    "type": "string",
+                    "description": "The database host."
+                },
+                "port": {
+                    "type": "integer",
+                    "description": "The database port."
+                },
+                "username": {
+                    "type": "string",
+                    "description": "The database username."
+                },
+                "password": {
+                    "type": "string",
+                    "description": "The database password."
+                },
+                "database": {
+                    "type": "string",
+                    "description": "The database name."
+                }
+            },
+            "required": [
+                "type",
+                "host",
+                "port",
+                "username",
+                "password",
+                "database"
+            ]
         }
     },
     "required": [
-        ""
+        "service",
+        "database",
+        "aes-key",
+        "debug"
     ]
 }
