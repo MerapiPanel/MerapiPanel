@@ -1,6 +1,6 @@
 <?php
 
-namespace MerapiPanel\Core;
+namespace MerapiPanel\Utility;
 
 class AES
 {
