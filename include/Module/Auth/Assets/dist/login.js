@@ -1,10 +1,10 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/App.js":
-/*!*****************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/App.js ***!
-  \*****************************************************************/
+/***/ "../modules/merapipanel/dist/editor/App.js":
+/*!*************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/App.js ***!
+  \*************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -65,11 +65,11 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.App = exports.useApp = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var grapesjs_blocks_basic_1 = __importDefault(__webpack_require__(/*! grapesjs-blocks-basic */ "../../../../../web/modules/merapipanel/node_modules/grapesjs-blocks-basic/dist/index.js"));
-var grapesjs_plugin_ckeditor_1 = __importDefault(__webpack_require__(/*! grapesjs-plugin-ckeditor */ "../../../../../web/modules/merapipanel/node_modules/grapesjs-plugin-ckeditor/dist/index.js"));
-var CodeEditor_1 = __webpack_require__(/*! ./plugins/CodeEditor */ "../../../../../web/modules/merapipanel/dist/editor/plugins/CodeEditor.js");
-var grapesjs_parser_postcss_1 = __importDefault(__webpack_require__(/*! grapesjs-parser-postcss */ "../../../../../web/modules/merapipanel/node_modules/grapesjs-parser-postcss/dist/index.js"));
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var grapesjs_blocks_basic_1 = __importDefault(__webpack_require__(/*! grapesjs-blocks-basic */ "../modules/merapipanel/node_modules/grapesjs-blocks-basic/dist/index.js"));
+var grapesjs_plugin_ckeditor_1 = __importDefault(__webpack_require__(/*! grapesjs-plugin-ckeditor */ "../modules/merapipanel/node_modules/grapesjs-plugin-ckeditor/dist/index.js"));
+var CodeEditor_1 = __webpack_require__(/*! ./plugins/CodeEditor */ "../modules/merapipanel/dist/editor/plugins/CodeEditor.js");
+var grapesjs_parser_postcss_1 = __importDefault(__webpack_require__(/*! grapesjs-parser-postcss */ "../modules/merapipanel/node_modules/grapesjs-parser-postcss/dist/index.js"));
 var AppContex = (0, react_1.createContext)({});
 var useApp = function useApp() {
   return (0, react_1.useContext)(AppContex);
@@ -251,10 +251,10 @@ exports.App = App;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/EditorBody.js":
-/*!************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/EditorBody.js ***!
-  \************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/EditorBody.js":
+/*!********************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/EditorBody.js ***!
+  \********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -295,7 +295,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.EditorBody = exports.useContainer = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
 var ContainerContext = (0, react_1.createContext)({});
 var useContainer = function useContainer() {
   return (0, react_1.useContext)(ContainerContext);
@@ -310,10 +310,10 @@ exports.EditorBody = EditorBody;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/EditorCanvas.js":
-/*!**************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/EditorCanvas.js ***!
-  \**************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/EditorCanvas.js":
+/*!**********************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/EditorCanvas.js ***!
+  \**********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -359,9 +359,9 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.EditorCanvas = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var grapesjs_1 = __importDefault(__webpack_require__(/*! grapesjs */ "../../../../../web/modules/merapipanel/node_modules/grapesjs/dist/grapes.min.js"));
-var App_1 = __webpack_require__(/*! ./App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var grapesjs_1 = __importDefault(__webpack_require__(/*! grapesjs */ "../modules/merapipanel/node_modules/grapesjs/dist/grapes.min.js"));
+var App_1 = __webpack_require__(/*! ./App */ "../modules/merapipanel/dist/editor/App.js");
 var EditorCanvas = function EditorCanvas() {
   var _ref = (0, App_1.useApp)(),
     config = _ref.config,
@@ -391,10 +391,10 @@ exports.EditorCanvas = EditorCanvas;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/Navbar.js":
-/*!********************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/Navbar.js ***!
-  \********************************************************************/
+/***/ "../modules/merapipanel/dist/editor/Navbar.js":
+/*!****************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/Navbar.js ***!
+  \****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -409,8 +409,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.Navbar = void 0;
-var react_1 = __importDefault(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var App_1 = __webpack_require__(/*! ./App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importDefault(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var App_1 = __webpack_require__(/*! ./App */ "../modules/merapipanel/dist/editor/App.js");
 var Navbar = function Navbar(_ref) {
   var children = _ref.children;
   var _ref2 = (0, App_1.useApp)(),
@@ -423,10 +423,10 @@ exports.Navbar = Navbar;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/Sidebar.js":
-/*!*********************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/Sidebar.js ***!
-  \*********************************************************************/
+/***/ "../modules/merapipanel/dist/editor/Sidebar.js":
+/*!*****************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/Sidebar.js ***!
+  \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -467,8 +467,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.Sidebar = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var App_1 = __webpack_require__(/*! ./App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var App_1 = __webpack_require__(/*! ./App */ "../modules/merapipanel/dist/editor/App.js");
 var Sidebar = function Sidebar(_ref) {
   var children = _ref.children;
   var _ref2 = (0, App_1.useApp)(),
@@ -494,10 +494,10 @@ exports.Sidebar = Sidebar;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/index.js":
-/*!*******************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/index.js ***!
-  \*******************************************************************/
+/***/ "../modules/merapipanel/dist/editor/index.js":
+/*!***************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/index.js ***!
+  \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -541,19 +541,19 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.partial = void 0;
-__exportStar(__webpack_require__(/*! ./EditorBody */ "../../../../../web/modules/merapipanel/dist/editor/EditorBody.js"), exports);
-__exportStar(__webpack_require__(/*! ./EditorCanvas */ "../../../../../web/modules/merapipanel/dist/editor/EditorCanvas.js"), exports);
-__exportStar(__webpack_require__(/*! ./Navbar */ "../../../../../web/modules/merapipanel/dist/editor/Navbar.js"), exports);
-__exportStar(__webpack_require__(/*! ./Sidebar */ "../../../../../web/modules/merapipanel/dist/editor/Sidebar.js"), exports);
-__exportStar(__webpack_require__(/*! ./App */ "../../../../../web/modules/merapipanel/dist/editor/App.js"), exports);
-exports.partial = __importStar(__webpack_require__(/*! ./partial */ "../../../../../web/modules/merapipanel/dist/editor/partial/index.js"));
+__exportStar(__webpack_require__(/*! ./EditorBody */ "../modules/merapipanel/dist/editor/EditorBody.js"), exports);
+__exportStar(__webpack_require__(/*! ./EditorCanvas */ "../modules/merapipanel/dist/editor/EditorCanvas.js"), exports);
+__exportStar(__webpack_require__(/*! ./Navbar */ "../modules/merapipanel/dist/editor/Navbar.js"), exports);
+__exportStar(__webpack_require__(/*! ./Sidebar */ "../modules/merapipanel/dist/editor/Sidebar.js"), exports);
+__exportStar(__webpack_require__(/*! ./App */ "../modules/merapipanel/dist/editor/App.js"), exports);
+exports.partial = __importStar(__webpack_require__(/*! ./partial */ "../modules/merapipanel/dist/editor/partial/index.js"));
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/partial/BlockManager.js":
-/*!**********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/partial/BlockManager.js ***!
-  \**********************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/partial/BlockManager.js":
+/*!******************************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/partial/BlockManager.js ***!
+  \******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -594,8 +594,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.BlockManager = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var App_1 = __webpack_require__(/*! ../App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var App_1 = __webpack_require__(/*! ../App */ "../modules/merapipanel/dist/editor/App.js");
 var BlockManager = function BlockManager(_ref) {
   var className = _ref.className;
   var _ref2 = (0, App_1.useApp)(),
@@ -618,10 +618,10 @@ exports.BlockManager = BlockManager;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/partial/Btn.js":
-/*!*************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/partial/Btn.js ***!
-  \*************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/partial/Btn.js":
+/*!*********************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/partial/Btn.js ***!
+  \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -636,7 +636,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.Btn = void 0;
-var react_1 = __importDefault(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
+var react_1 = __importDefault(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
 var Btn = function Btn(_ref) {
   var id = _ref.id,
     command = _ref.command,
@@ -649,10 +649,10 @@ exports.Btn = Btn;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/partial/LayerManager.js":
-/*!**********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/partial/LayerManager.js ***!
-  \**********************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/partial/LayerManager.js":
+/*!******************************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/partial/LayerManager.js ***!
+  \******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -693,8 +693,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.LayerManager = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var App_1 = __webpack_require__(/*! ../App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var App_1 = __webpack_require__(/*! ../App */ "../modules/merapipanel/dist/editor/App.js");
 var LayerManager = function LayerManager(_ref) {
   var className = _ref.className;
   var _ref2 = (0, App_1.useApp)(),
@@ -716,10 +716,10 @@ exports.LayerManager = LayerManager;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/partial/Panel.js":
-/*!***************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/partial/Panel.js ***!
-  \***************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/partial/Panel.js":
+/*!***********************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/partial/Panel.js ***!
+  \***********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -767,9 +767,9 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.Panel = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var server_1 = __webpack_require__(/*! react-dom/server */ "../../../../../web/modules/merapipanel/node_modules/react-dom/server.browser.js");
-var App_1 = __webpack_require__(/*! ../App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var server_1 = __webpack_require__(/*! react-dom/server */ "../modules/merapipanel/node_modules/react-dom/server.browser.js");
+var App_1 = __webpack_require__(/*! ../App */ "../modules/merapipanel/dist/editor/App.js");
 var Panel = function Panel(_ref) {
   var id = _ref.id,
     children = _ref.children,
@@ -826,10 +826,10 @@ exports.Panel = Panel;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/partial/StyleManager.js":
-/*!**********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/partial/StyleManager.js ***!
-  \**********************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/partial/StyleManager.js":
+/*!******************************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/partial/StyleManager.js ***!
+  \******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -870,8 +870,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.StyleManager = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var App_1 = __webpack_require__(/*! ../App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var App_1 = __webpack_require__(/*! ../App */ "../modules/merapipanel/dist/editor/App.js");
 var StyleManager = function StyleManager() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     className = _ref.className;
@@ -894,10 +894,10 @@ exports.StyleManager = StyleManager;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/partial/TraitsManager.js":
-/*!***********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/partial/TraitsManager.js ***!
-  \***********************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/partial/TraitsManager.js":
+/*!*******************************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/partial/TraitsManager.js ***!
+  \*******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -938,8 +938,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.TraitsManager = void 0;
-var react_1 = __importStar(__webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js"));
-var App_1 = __webpack_require__(/*! ../App */ "../../../../../web/modules/merapipanel/dist/editor/App.js");
+var react_1 = __importStar(__webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js"));
+var App_1 = __webpack_require__(/*! ../App */ "../modules/merapipanel/dist/editor/App.js");
 var TraitsManager = function TraitsManager(_ref) {
   var className = _ref.className;
   var _ref2 = (0, App_1.useApp)(),
@@ -961,10 +961,10 @@ exports.TraitsManager = TraitsManager;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/partial/index.js":
-/*!***************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/partial/index.js ***!
-  \***************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/partial/index.js":
+/*!***********************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/partial/index.js ***!
+  \***********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -992,19 +992,19 @@ var __exportStar = this && this.__exportStar || function (m, exports) {
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-__exportStar(__webpack_require__(/*! ./Btn */ "../../../../../web/modules/merapipanel/dist/editor/partial/Btn.js"), exports);
-__exportStar(__webpack_require__(/*! ./Panel */ "../../../../../web/modules/merapipanel/dist/editor/partial/Panel.js"), exports);
-__exportStar(__webpack_require__(/*! ./BlockManager */ "../../../../../web/modules/merapipanel/dist/editor/partial/BlockManager.js"), exports);
-__exportStar(__webpack_require__(/*! ./StyleManager */ "../../../../../web/modules/merapipanel/dist/editor/partial/StyleManager.js"), exports);
-__exportStar(__webpack_require__(/*! ./LayerManager */ "../../../../../web/modules/merapipanel/dist/editor/partial/LayerManager.js"), exports);
-__exportStar(__webpack_require__(/*! ./TraitsManager */ "../../../../../web/modules/merapipanel/dist/editor/partial/TraitsManager.js"), exports);
+__exportStar(__webpack_require__(/*! ./Btn */ "../modules/merapipanel/dist/editor/partial/Btn.js"), exports);
+__exportStar(__webpack_require__(/*! ./Panel */ "../modules/merapipanel/dist/editor/partial/Panel.js"), exports);
+__exportStar(__webpack_require__(/*! ./BlockManager */ "../modules/merapipanel/dist/editor/partial/BlockManager.js"), exports);
+__exportStar(__webpack_require__(/*! ./StyleManager */ "../modules/merapipanel/dist/editor/partial/StyleManager.js"), exports);
+__exportStar(__webpack_require__(/*! ./LayerManager */ "../modules/merapipanel/dist/editor/partial/LayerManager.js"), exports);
+__exportStar(__webpack_require__(/*! ./TraitsManager */ "../modules/merapipanel/dist/editor/partial/TraitsManager.js"), exports);
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/editor/plugins/CodeEditor.js":
-/*!********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/editor/plugins/CodeEditor.js ***!
-  \********************************************************************************/
+/***/ "../modules/merapipanel/dist/editor/plugins/CodeEditor.js":
+/*!****************************************************************!*\
+  !*** ../modules/merapipanel/dist/editor/plugins/CodeEditor.js ***!
+  \****************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1023,12 +1023,12 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.CodeEditor = void 0;
-var codemirror_1 = __webpack_require__(/*! codemirror */ "../../../../../web/modules/merapipanel/node_modules/codemirror/dist/index.cjs");
-var autocomplete_1 = __webpack_require__(/*! @codemirror/autocomplete */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs");
-var lang_html_1 = __webpack_require__(/*! @codemirror/lang-html */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-html/dist/index.cjs");
-var lang_css_1 = __webpack_require__(/*! @codemirror/lang-css */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs");
-var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "../../../../../web/modules/merapipanel/node_modules/jquery/dist/jquery.js"));
-var js_beautify_1 = __webpack_require__(/*! js-beautify */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/index.js");
+var codemirror_1 = __webpack_require__(/*! codemirror */ "../modules/merapipanel/node_modules/codemirror/dist/index.cjs");
+var autocomplete_1 = __webpack_require__(/*! @codemirror/autocomplete */ "../modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs");
+var lang_html_1 = __webpack_require__(/*! @codemirror/lang-html */ "../modules/merapipanel/node_modules/@codemirror/lang-html/dist/index.cjs");
+var lang_css_1 = __webpack_require__(/*! @codemirror/lang-css */ "../modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs");
+var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "../modules/merapipanel/node_modules/jquery/dist/jquery.js"));
+var js_beautify_1 = __webpack_require__(/*! js-beautify */ "../modules/merapipanel/node_modules/js-beautify/js/index.js");
 var beautyOptions = {
   "arrowParens": "always",
   "bracketSameLine": false,
@@ -1186,10 +1186,10 @@ exports.CodeEditor = CodeEditor;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/index.js":
-/*!************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/index.js ***!
-  \************************************************************/
+/***/ "../modules/merapipanel/dist/index.js":
+/*!********************************************!*\
+  !*** ../modules/merapipanel/dist/index.js ***!
+  \********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1230,25 +1230,25 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.editor = exports.modal = exports.cookie = exports.dialog = exports.http = exports.toast = void 0;
-var toast_1 = __webpack_require__(/*! ./partials/toast */ "../../../../../web/modules/merapipanel/dist/partials/toast.js");
+var toast_1 = __webpack_require__(/*! ./partials/toast */ "../modules/merapipanel/dist/partials/toast.js");
 Object.defineProperty(exports, "toast", ({
   enumerable: true,
   get: function get() {
     return toast_1.toast;
   }
 }));
-exports.http = __importStar(__webpack_require__(/*! ./partials/http */ "../../../../../web/modules/merapipanel/dist/partials/http.js"));
-exports.dialog = __importStar(__webpack_require__(/*! ./partials/dialog */ "../../../../../web/modules/merapipanel/dist/partials/dialog.js"));
-exports.cookie = __importStar(__webpack_require__(/*! ./partials/cookie */ "../../../../../web/modules/merapipanel/dist/partials/cookie.js"));
-exports.modal = __importStar(__webpack_require__(/*! ./partials/modal */ "../../../../../web/modules/merapipanel/dist/partials/modal.js"));
-exports.editor = __importStar(__webpack_require__(/*! ./editor */ "../../../../../web/modules/merapipanel/dist/editor/index.js"));
+exports.http = __importStar(__webpack_require__(/*! ./partials/http */ "../modules/merapipanel/dist/partials/http.js"));
+exports.dialog = __importStar(__webpack_require__(/*! ./partials/dialog */ "../modules/merapipanel/dist/partials/dialog.js"));
+exports.cookie = __importStar(__webpack_require__(/*! ./partials/cookie */ "../modules/merapipanel/dist/partials/cookie.js"));
+exports.modal = __importStar(__webpack_require__(/*! ./partials/modal */ "../modules/merapipanel/dist/partials/modal.js"));
+exports.editor = __importStar(__webpack_require__(/*! ./editor */ "../modules/merapipanel/dist/editor/index.js"));
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/partials/cookie.js":
-/*!**********************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/partials/cookie.js ***!
-  \**********************************************************************/
+/***/ "../modules/merapipanel/dist/partials/cookie.js":
+/*!******************************************************!*\
+  !*** ../modules/merapipanel/dist/partials/cookie.js ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -1285,10 +1285,10 @@ exports.cookie_delete = cookie_delete;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/partials/dialog.js":
-/*!**********************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/partials/dialog.js ***!
-  \**********************************************************************/
+/***/ "../modules/merapipanel/dist/partials/dialog.js":
+/*!******************************************************!*\
+  !*** ../modules/merapipanel/dist/partials/dialog.js ***!
+  \******************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1303,7 +1303,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.danger = exports.confirm = void 0;
-var modal_1 = __importDefault(__webpack_require__(/*! ./modal */ "../../../../../web/modules/merapipanel/dist/partials/modal.js"));
+var modal_1 = __importDefault(__webpack_require__(/*! ./modal */ "../modules/merapipanel/dist/partials/modal.js"));
 var confirm = function confirm(title, message) {
   var modal = modal_1["default"].create(title, message);
   modal.show();
@@ -1336,10 +1336,10 @@ exports.danger = danger;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/partials/http.js":
-/*!********************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/partials/http.js ***!
-  \********************************************************************/
+/***/ "../modules/merapipanel/dist/partials/http.js":
+/*!****************************************************!*\
+  !*** ../modules/merapipanel/dist/partials/http.js ***!
+  \****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1357,7 +1357,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.del = exports.patch = exports.put = exports.post = exports.get = exports.CreateXmlHttpRequest = void 0;
-var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "../../../../../web/modules/merapipanel/node_modules/jquery/dist/jquery.js"));
+var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "../modules/merapipanel/node_modules/jquery/dist/jquery.js"));
 var proggressbars = (0, jquery_1["default"])("<div class='http-progress'><div class='download running-strip'></div><div class='upload running-strip'></div></div>");
 (0, jquery_1["default"])(document).on("ajaxSend", function (e) {
   (0, jquery_1["default"])('.http-progress').remove();
@@ -1538,10 +1538,10 @@ exports.del = del;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/partials/modal.js":
-/*!*********************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/partials/modal.js ***!
-  \*********************************************************************/
+/***/ "../modules/merapipanel/dist/partials/modal.js":
+/*!*****************************************************!*\
+  !*** ../modules/merapipanel/dist/partials/modal.js ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -2044,10 +2044,10 @@ exports["default"] = Modal;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/dist/partials/toast.js":
-/*!*********************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/dist/partials/toast.js ***!
-  \*********************************************************************/
+/***/ "../modules/merapipanel/dist/partials/toast.js":
+/*!*****************************************************!*\
+  !*** ../modules/merapipanel/dist/partials/toast.js ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -2141,10 +2141,10 @@ exports.toast = toast;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/grapesjs-blocks-basic/dist/index.js":
-/*!***********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/grapesjs-blocks-basic/dist/index.js ***!
-  \***********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/grapesjs-blocks-basic/dist/index.js":
+/*!*******************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/grapesjs-blocks-basic/dist/index.js ***!
+  \*******************************************************************************/
 /***/ (function(module) {
 
 /*! grapesjs-blocks-basic - 1.0.2 */
@@ -2153,10 +2153,10 @@ exports.toast = toast;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/grapesjs-parser-postcss/dist/index.js":
-/*!*************************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/grapesjs-parser-postcss/dist/index.js ***!
-  \*************************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/grapesjs-parser-postcss/dist/index.js":
+/*!*********************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/grapesjs-parser-postcss/dist/index.js ***!
+  \*********************************************************************************/
 /***/ (function(module) {
 
 /*! grapesjs-parser-postcss - 1.0.3 */
@@ -2165,10 +2165,10 @@ exports.toast = toast;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/grapesjs-plugin-ckeditor/dist/index.js":
-/*!**************************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/grapesjs-plugin-ckeditor/dist/index.js ***!
-  \**************************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/grapesjs-plugin-ckeditor/dist/index.js":
+/*!**********************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/grapesjs-plugin-ckeditor/dist/index.js ***!
+  \**********************************************************************************/
 /***/ (function(module) {
 
 /*! grapesjs-plugin-ckeditor - 1.0.1 */
@@ -2177,10 +2177,10 @@ exports.toast = toast;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/grapesjs/dist/grapes.min.js":
-/*!***************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/grapesjs/dist/grapes.min.js ***!
-  \***************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/grapesjs/dist/grapes.min.js":
+/*!***********************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/grapesjs/dist/grapes.min.js ***!
+  \***********************************************************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 /*! grapesjs - 0.21.9 */
@@ -2189,10 +2189,10 @@ exports.toast = toast;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/jquery/dist/jquery.js":
-/*!*********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/jquery/dist/jquery.js ***!
-  \*********************************************************************************/
+/***/ "../modules/merapipanel/node_modules/jquery/dist/jquery.js":
+/*!*****************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/jquery/dist/jquery.js ***!
+  \*****************************************************************/
 /***/ (function(module, exports) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -12916,10 +12916,10 @@ return jQuery;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/index.js":
-/*!***********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/js-beautify/js/index.js ***!
-  \***********************************************************************************/
+/***/ "../modules/merapipanel/node_modules/js-beautify/js/index.js":
+/*!*******************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/js-beautify/js/index.js ***!
+  \*******************************************************************/
 /***/ ((module, exports, __webpack_require__) => {
 
 "use strict";
@@ -12992,9 +12992,9 @@ function get_beautify(js_beautify, css_beautify, html_beautify) {
 if (true) {
   // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
   !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-    __webpack_require__(/*! ./lib/beautify */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js"),
-    __webpack_require__(/*! ./lib/beautify-css */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js"),
-    __webpack_require__(/*! ./lib/beautify-html */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-html.js")
+    __webpack_require__(/*! ./lib/beautify */ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js"),
+    __webpack_require__(/*! ./lib/beautify-css */ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js"),
+    __webpack_require__(/*! ./lib/beautify-html */ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-html.js")
   ], __WEBPACK_AMD_DEFINE_RESULT__ = (function(js_beautify, css_beautify, html_beautify) {
     return get_beautify(js_beautify, css_beautify, html_beautify);
   }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
@@ -13003,10 +13003,10 @@ if (true) {
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js":
-/*!**********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js ***!
-  \**********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js":
+/*!******************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js ***!
+  \******************************************************************************/
 /***/ ((module, exports) => {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* AUTO-GENERATED. DO NOT MODIFY. */
@@ -14697,10 +14697,10 @@ if (true) {
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-html.js":
-/*!***********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-html.js ***!
-  \***********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-html.js":
+/*!*******************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-html.js ***!
+  \*******************************************************************************/
 /***/ ((module, exports, __webpack_require__) => {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* AUTO-GENERATED. DO NOT MODIFY. */
@@ -17896,9 +17896,9 @@ var style_html = legacy_beautify_html;
 /* Footer */
 if (true) {
     // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, __webpack_require__(/*! ./beautify */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js"), __webpack_require__(/*! ./beautify-css */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function(requireamd) {
-        var js_beautify = __webpack_require__(/*! ./beautify */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js");
-        var css_beautify = __webpack_require__(/*! ./beautify-css */ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js");
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, __webpack_require__(/*! ./beautify */ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js"), __webpack_require__(/*! ./beautify-css */ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function(requireamd) {
+        var js_beautify = __webpack_require__(/*! ./beautify */ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js");
+        var css_beautify = __webpack_require__(/*! ./beautify-css */ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify-css.js");
 
         return {
             html_beautify: function(html_source, options) {
@@ -17914,10 +17914,10 @@ if (true) {
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js":
-/*!******************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js ***!
-  \******************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js":
+/*!**************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/js-beautify/js/lib/beautify.js ***!
+  \**************************************************************************/
 /***/ ((module, exports) => {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* AUTO-GENERATED. DO NOT MODIFY. */
@@ -21964,10 +21964,10 @@ if (true) {
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/react-dom/cjs/react-dom-server-legacy.browser.development.js":
-/*!************************************************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/react-dom/cjs/react-dom-server-legacy.browser.development.js ***!
-  \************************************************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/react-dom/cjs/react-dom-server-legacy.browser.development.js":
+/*!********************************************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/react-dom/cjs/react-dom-server-legacy.browser.development.js ***!
+  \********************************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -21987,7 +21987,7 @@ if (true) {
   (function() {
 'use strict';
 
-var React = __webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js");
+var React = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
 
 var ReactVersion = '18.2.0';
 
@@ -28993,10 +28993,10 @@ exports.version = ReactVersion;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/react-dom/cjs/react-dom-server.browser.development.js":
-/*!*****************************************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/react-dom/cjs/react-dom-server.browser.development.js ***!
-  \*****************************************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/react-dom/cjs/react-dom-server.browser.development.js":
+/*!*************************************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/react-dom/cjs/react-dom-server.browser.development.js ***!
+  \*************************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -29016,7 +29016,7 @@ if (true) {
   (function() {
 'use strict';
 
-var React = __webpack_require__(/*! react */ "../../../../../web/modules/merapipanel/node_modules/react/index.js");
+var React = __webpack_require__(/*! react */ "../modules/merapipanel/node_modules/react/index.js");
 
 var ReactVersion = '18.2.0';
 
@@ -36007,10 +36007,10 @@ exports.version = ReactVersion;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/react-dom/server.browser.js":
-/*!***************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/react-dom/server.browser.js ***!
-  \***************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/react-dom/server.browser.js":
+/*!***********************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/react-dom/server.browser.js ***!
+  \***********************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -36018,8 +36018,8 @@ exports.version = ReactVersion;
 
 var l, s;
 if (false) {} else {
-  l = __webpack_require__(/*! ./cjs/react-dom-server-legacy.browser.development.js */ "../../../../../web/modules/merapipanel/node_modules/react-dom/cjs/react-dom-server-legacy.browser.development.js");
-  s = __webpack_require__(/*! ./cjs/react-dom-server.browser.development.js */ "../../../../../web/modules/merapipanel/node_modules/react-dom/cjs/react-dom-server.browser.development.js");
+  l = __webpack_require__(/*! ./cjs/react-dom-server-legacy.browser.development.js */ "../modules/merapipanel/node_modules/react-dom/cjs/react-dom-server-legacy.browser.development.js");
+  s = __webpack_require__(/*! ./cjs/react-dom-server.browser.development.js */ "../modules/merapipanel/node_modules/react-dom/cjs/react-dom-server.browser.development.js");
 }
 
 exports.version = l.version;
@@ -36032,10 +36032,10 @@ exports.renderToReadableStream = s.renderToReadableStream;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/react/cjs/react.development.js":
-/*!******************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/react/cjs/react.development.js ***!
-  \******************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/react/cjs/react.development.js":
+/*!**************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/react/cjs/react.development.js ***!
+  \**************************************************************************/
 /***/ ((module, exports, __webpack_require__) => {
 
 "use strict";
@@ -38783,34 +38783,34 @@ if (
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/react/index.js":
-/*!**************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/react/index.js ***!
-  \**************************************************************************/
+/***/ "../modules/merapipanel/node_modules/react/index.js":
+/*!**********************************************************!*\
+  !*** ../modules/merapipanel/node_modules/react/index.js ***!
+  \**********************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 if (false) {} else {
-  module.exports = __webpack_require__(/*! ./cjs/react.development.js */ "../../../../../web/modules/merapipanel/node_modules/react/cjs/react.development.js");
+  module.exports = __webpack_require__(/*! ./cjs/react.development.js */ "../modules/merapipanel/node_modules/react/cjs/react.development.js");
 }
 
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs":
-/*!***************************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs ***!
-  \***************************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs":
+/*!***********************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs ***!
+  \***********************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var language = __webpack_require__(/*! @codemirror/language */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var language = __webpack_require__(/*! @codemirror/language */ "../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
 
 /**
 An instance of this is passed to completion source functions.
@@ -40866,19 +40866,19 @@ exports.startCompletion = startCompletion;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/commands/dist/index.cjs":
-/*!***********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/commands/dist/index.cjs ***!
-  \***********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/commands/dist/index.cjs":
+/*!*******************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/commands/dist/index.cjs ***!
+  \*******************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var language = __webpack_require__(/*! @codemirror/language */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
-var common = __webpack_require__(/*! @lezer/common */ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var language = __webpack_require__(/*! @codemirror/language */ "../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
+var common = __webpack_require__(/*! @lezer/common */ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
 
 /**
 Comment or uncomment the current selection. Will use line comments
@@ -42603,10 +42603,10 @@ exports.undoSelection = undoSelection;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs":
-/*!***********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs ***!
-  \***********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs":
+/*!*******************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs ***!
+  \*******************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -42614,9 +42614,9 @@ exports.undoSelection = undoSelection;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var css$1 = __webpack_require__(/*! @lezer/css */ "../../../../../web/modules/merapipanel/node_modules/@lezer/css/dist/index.cjs");
-var language = __webpack_require__(/*! @codemirror/language */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
-var common = __webpack_require__(/*! @lezer/common */ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
+var css$1 = __webpack_require__(/*! @lezer/css */ "../modules/merapipanel/node_modules/@lezer/css/dist/index.cjs");
+var language = __webpack_require__(/*! @codemirror/language */ "../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
+var common = __webpack_require__(/*! @lezer/common */ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
 
 let _properties = null;
 function properties() {
@@ -42878,21 +42878,21 @@ exports.defineCSSCompletionSource = defineCSSCompletionSource;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-html/dist/index.cjs":
-/*!************************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-html/dist/index.cjs ***!
-  \************************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/lang-html/dist/index.cjs":
+/*!********************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/lang-html/dist/index.cjs ***!
+  \********************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var html$1 = __webpack_require__(/*! @lezer/html */ "../../../../../web/modules/merapipanel/node_modules/@lezer/html/dist/index.cjs");
-var langCss = __webpack_require__(/*! @codemirror/lang-css */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs");
-var langJavascript = __webpack_require__(/*! @codemirror/lang-javascript */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-javascript/dist/index.cjs");
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var language = __webpack_require__(/*! @codemirror/language */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
+var html$1 = __webpack_require__(/*! @lezer/html */ "../modules/merapipanel/node_modules/@lezer/html/dist/index.cjs");
+var langCss = __webpack_require__(/*! @codemirror/lang-css */ "../modules/merapipanel/node_modules/@codemirror/lang-css/dist/index.cjs");
+var langJavascript = __webpack_require__(/*! @codemirror/lang-javascript */ "../modules/merapipanel/node_modules/@codemirror/lang-javascript/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var language = __webpack_require__(/*! @codemirror/language */ "../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
 
 const Targets = ["_blank", "_self", "_top", "_parent"];
 const Charsets = ["ascii", "utf-8", "utf-16", "latin1", "latin1"];
@@ -43564,21 +43564,21 @@ exports.htmlPlain = htmlPlain;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-javascript/dist/index.cjs":
-/*!******************************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/lang-javascript/dist/index.cjs ***!
-  \******************************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/lang-javascript/dist/index.cjs":
+/*!**************************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/lang-javascript/dist/index.cjs ***!
+  \**************************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var javascript$1 = __webpack_require__(/*! @lezer/javascript */ "../../../../../web/modules/merapipanel/node_modules/@lezer/javascript/dist/index.cjs");
-var language = __webpack_require__(/*! @codemirror/language */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var autocomplete = __webpack_require__(/*! @codemirror/autocomplete */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs");
-var common = __webpack_require__(/*! @lezer/common */ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
+var javascript$1 = __webpack_require__(/*! @lezer/javascript */ "../modules/merapipanel/node_modules/@lezer/javascript/dist/index.cjs");
+var language = __webpack_require__(/*! @codemirror/language */ "../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var autocomplete = __webpack_require__(/*! @codemirror/autocomplete */ "../modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs");
+var common = __webpack_require__(/*! @lezer/common */ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
 
 /**
 A collection of JavaScript-related
@@ -44084,20 +44084,20 @@ exports.typescriptSnippets = typescriptSnippets;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs":
-/*!***********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs ***!
-  \***********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs":
+/*!*******************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs ***!
+  \*******************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var common = __webpack_require__(/*! @lezer/common */ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var highlight = __webpack_require__(/*! @lezer/highlight */ "../../../../../web/modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
-var styleMod = __webpack_require__(/*! style-mod */ "../../../../../web/modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs");
+var common = __webpack_require__(/*! @lezer/common */ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var highlight = __webpack_require__(/*! @lezer/highlight */ "../modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
+var styleMod = __webpack_require__(/*! style-mod */ "../modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs");
 
 var _a;
 /**
@@ -46797,18 +46797,18 @@ exports.unfoldEffect = unfoldEffect;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lint/dist/index.cjs":
-/*!*******************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/lint/dist/index.cjs ***!
-  \*******************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/lint/dist/index.cjs":
+/*!***************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/lint/dist/index.cjs ***!
+  \***************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var elt = __webpack_require__(/*! crelt */ "../../../../../web/modules/merapipanel/node_modules/crelt/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var elt = __webpack_require__(/*! crelt */ "../modules/merapipanel/node_modules/crelt/dist/index.cjs");
 
 class SelectedDiagnostic {
     constructor(from, to, diagnostic) {
@@ -47612,18 +47612,18 @@ exports.setDiagnosticsEffect = setDiagnosticsEffect;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/search/dist/index.cjs":
-/*!*********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/search/dist/index.cjs ***!
-  \*********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/search/dist/index.cjs":
+/*!*****************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/search/dist/index.cjs ***!
+  \*****************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var elt = __webpack_require__(/*! crelt */ "../../../../../web/modules/merapipanel/node_modules/crelt/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var elt = __webpack_require__(/*! crelt */ "../modules/merapipanel/node_modules/crelt/dist/index.cjs");
 
 const basicNormalize = typeof String.prototype.normalize == "function"
     ? x => x.normalize("NFKD") : x => x;
@@ -48862,10 +48862,10 @@ exports.setSearchQuery = setSearchQuery;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs":
-/*!********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs ***!
-  \********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs":
+/*!****************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs ***!
+  \****************************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -52832,18 +52832,18 @@ exports.fromCodePoint = fromCodePoint;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs":
-/*!*******************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs ***!
-  \*******************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs":
+/*!***************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs ***!
+  \***************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var styleMod = __webpack_require__(/*! style-mod */ "../../../../../web/modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs");
-var w3cKeyname = __webpack_require__(/*! w3c-keyname */ "../../../../../web/modules/merapipanel/node_modules/w3c-keyname/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var styleMod = __webpack_require__(/*! style-mod */ "../modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs");
+var w3cKeyname = __webpack_require__(/*! w3c-keyname */ "../modules/merapipanel/node_modules/w3c-keyname/index.cjs");
 
 function getSelection(root) {
     let target;
@@ -63606,10 +63606,10 @@ exports.tooltips = tooltips;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs":
-/*!****************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs ***!
-  \****************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs":
+/*!************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs ***!
+  \************************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -65793,10 +65793,10 @@ exports.parseMixed = parseMixed;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@lezer/css/dist/index.cjs":
-/*!*************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@lezer/css/dist/index.cjs ***!
-  \*************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@lezer/css/dist/index.cjs":
+/*!*********************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@lezer/css/dist/index.cjs ***!
+  \*********************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -65804,8 +65804,8 @@ exports.parseMixed = parseMixed;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var lr = __webpack_require__(/*! @lezer/lr */ "../../../../../web/modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs");
-var highlight = __webpack_require__(/*! @lezer/highlight */ "../../../../../web/modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
+var lr = __webpack_require__(/*! @lezer/lr */ "../modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs");
+var highlight = __webpack_require__(/*! @lezer/highlight */ "../modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
 
 // This file was generated by lezer-generator. You probably shouldn't edit it.
 const descendantOp = 99,
@@ -65932,16 +65932,16 @@ exports.parser = parser;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs":
-/*!*******************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs ***!
-  \*******************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs":
+/*!***************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs ***!
+  \***************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var common = __webpack_require__(/*! @lezer/common */ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
+var common = __webpack_require__(/*! @lezer/common */ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
 
 let nextTagID = 0;
 /**
@@ -66842,10 +66842,10 @@ exports.tags = tags;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@lezer/html/dist/index.cjs":
-/*!**************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@lezer/html/dist/index.cjs ***!
-  \**************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@lezer/html/dist/index.cjs":
+/*!**********************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@lezer/html/dist/index.cjs ***!
+  \**********************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -66853,9 +66853,9 @@ exports.tags = tags;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var lr = __webpack_require__(/*! @lezer/lr */ "../../../../../web/modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs");
-var highlight = __webpack_require__(/*! @lezer/highlight */ "../../../../../web/modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
-var common = __webpack_require__(/*! @lezer/common */ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
+var lr = __webpack_require__(/*! @lezer/lr */ "../modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs");
+var highlight = __webpack_require__(/*! @lezer/highlight */ "../modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
+var common = __webpack_require__(/*! @lezer/common */ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
 
 // This file was generated by lezer-generator. You probably shouldn't edit it.
 const scriptText = 54,
@@ -67217,10 +67217,10 @@ exports.parser = parser;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@lezer/javascript/dist/index.cjs":
-/*!********************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@lezer/javascript/dist/index.cjs ***!
-  \********************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@lezer/javascript/dist/index.cjs":
+/*!****************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@lezer/javascript/dist/index.cjs ***!
+  \****************************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -67228,8 +67228,8 @@ exports.parser = parser;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var lr = __webpack_require__(/*! @lezer/lr */ "../../../../../web/modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs");
-var highlight = __webpack_require__(/*! @lezer/highlight */ "../../../../../web/modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
+var lr = __webpack_require__(/*! @lezer/lr */ "../modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs");
+var highlight = __webpack_require__(/*! @lezer/highlight */ "../modules/merapipanel/node_modules/@lezer/highlight/dist/index.cjs");
 
 // This file was generated by lezer-generator. You probably shouldn't edit it.
 const noSemi = 309,
@@ -67412,16 +67412,16 @@ exports.parser = parser;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs":
-/*!************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs ***!
-  \************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs":
+/*!********************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/@lezer/lr/dist/index.cjs ***!
+  \********************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var common = __webpack_require__(/*! @lezer/common */ "../../../../../web/modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
+var common = __webpack_require__(/*! @lezer/common */ "../modules/merapipanel/node_modules/@lezer/common/dist/index.cjs");
 
 /**
 A parse stack. These are used internally by the parser to track
@@ -69301,10 +69301,10 @@ exports.Stack = Stack;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/codemirror/dist/index.cjs":
-/*!*************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/codemirror/dist/index.cjs ***!
-  \*************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/codemirror/dist/index.cjs":
+/*!*********************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/codemirror/dist/index.cjs ***!
+  \*********************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -69312,13 +69312,13 @@ exports.Stack = Stack;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var view = __webpack_require__(/*! @codemirror/view */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
-var state = __webpack_require__(/*! @codemirror/state */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
-var language = __webpack_require__(/*! @codemirror/language */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
-var commands = __webpack_require__(/*! @codemirror/commands */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/commands/dist/index.cjs");
-var search = __webpack_require__(/*! @codemirror/search */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/search/dist/index.cjs");
-var autocomplete = __webpack_require__(/*! @codemirror/autocomplete */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs");
-var lint = __webpack_require__(/*! @codemirror/lint */ "../../../../../web/modules/merapipanel/node_modules/@codemirror/lint/dist/index.cjs");
+var view = __webpack_require__(/*! @codemirror/view */ "../modules/merapipanel/node_modules/@codemirror/view/dist/index.cjs");
+var state = __webpack_require__(/*! @codemirror/state */ "../modules/merapipanel/node_modules/@codemirror/state/dist/index.cjs");
+var language = __webpack_require__(/*! @codemirror/language */ "../modules/merapipanel/node_modules/@codemirror/language/dist/index.cjs");
+var commands = __webpack_require__(/*! @codemirror/commands */ "../modules/merapipanel/node_modules/@codemirror/commands/dist/index.cjs");
+var search = __webpack_require__(/*! @codemirror/search */ "../modules/merapipanel/node_modules/@codemirror/search/dist/index.cjs");
+var autocomplete = __webpack_require__(/*! @codemirror/autocomplete */ "../modules/merapipanel/node_modules/@codemirror/autocomplete/dist/index.cjs");
+var lint = __webpack_require__(/*! @codemirror/lint */ "../modules/merapipanel/node_modules/@codemirror/lint/dist/index.cjs");
 
 // (The superfluous function calls around the list of extensions work
 // around current limitations in tree-shaking software.)
@@ -69416,10 +69416,10 @@ exports.minimalSetup = minimalSetup;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/crelt/dist/index.cjs":
-/*!********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/crelt/dist/index.cjs ***!
-  \********************************************************************************/
+/***/ "../modules/merapipanel/node_modules/crelt/dist/index.cjs":
+/*!****************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/crelt/dist/index.cjs ***!
+  \****************************************************************/
 /***/ ((module) => {
 
 "use strict";
@@ -69458,10 +69458,10 @@ module.exports = crelt;
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs":
-/*!****************************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs ***!
-  \****************************************************************************************/
+/***/ "../modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs":
+/*!************************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/style-mod/dist/style-mod.cjs ***!
+  \************************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 var C = "\u037c"
@@ -69633,10 +69633,10 @@ StyleSet.prototype.setNonce = function setNonce (nonce) {
 
 /***/ }),
 
-/***/ "../../../../../web/modules/merapipanel/node_modules/w3c-keyname/index.cjs":
-/*!*********************************************************************************!*\
-  !*** ../../../../../web/modules/merapipanel/node_modules/w3c-keyname/index.cjs ***!
-  \*********************************************************************************/
+/***/ "../modules/merapipanel/node_modules/w3c-keyname/index.cjs":
+/*!*****************************************************************!*\
+  !*** ../modules/merapipanel/node_modules/w3c-keyname/index.cjs ***!
+  \*****************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -69867,11 +69867,11 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!*****************************!*\
-  !*** ./Assets/src/login.js ***!
-  \*****************************/
+/*!*************************************************!*\
+  !*** ./include/Module/auth/Assets/src/login.js ***!
+  \*************************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @il4mb/merapipanel */ "../../../../../web/modules/merapipanel/dist/index.js");
+/* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @il4mb/merapipanel */ "../modules/merapipanel/dist/index.js");
 /* harmony import */ var _il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__);
 
 $("#login-form").on("submit", function (e) {
@@ -69879,6 +69879,9 @@ $("#login-form").on("submit", function (e) {
   if (!this.checkValidity()) {
     return;
   }
+  $("#loading").removeClass("d-none");
+  $("#login-btn").prop("disabled", true);
+  $("#error").addClass("d-none");
   var form = $(this);
   var data = form.serialize();
   var url = form.attr("action");
@@ -69888,13 +69891,26 @@ $("#login-form").on("submit", function (e) {
     method: method,
     data: data,
     success: function success(response) {
-      if (response) {
-        window.location.reload();
-      }
+      setTimeout(function () {
+        if (_il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__.cookie.cookie_get(response.data["cookie-name"])) {
+          window.location.reload();
+        } else {
+          (0,_il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__.toast)("Can't start session, make sure you have enabled cookies in your browser", 10, "text-danger");
+          $("#error").removeClass("d-none");
+          $("#error").text("Can't start session, make sure you have enabled cookies in your browser");
+        }
+        $("#loading").addClass("d-none");
+        $("#login-btn").prop("disabled", false);
+      }, 1000);
+      (0,_il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__.toast)(response.message, 5, "text-success");
     },
     error: function error(response) {
-      var _response$responseJSO;
+      var _response$responseJSO, _response$responseJSO2;
       (0,_il4mb_merapipanel__WEBPACK_IMPORTED_MODULE_0__.toast)(((_response$responseJSO = response.responseJSON) === null || _response$responseJSO === void 0 ? void 0 : _response$responseJSO.message) || response.statusText, 5, "text-danger");
+      $("#loading").addClass("d-none");
+      $("#login-btn").prop("disabled", false);
+      $("#error").removeClass("d-none");
+      $("#error").text(((_response$responseJSO2 = response.responseJSON) === null || _response$responseJSO2 === void 0 ? void 0 : _response$responseJSO2.message) || response.statusText);
     }
   });
 });

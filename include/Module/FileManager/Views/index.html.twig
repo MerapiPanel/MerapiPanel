@@ -1,5 +1,8 @@
 {% extends "@panel/base.html.twig" %}
 
+{% set FM = api.FileManager %}
+{% set parent = FM.getParent %}
+
 
 {% block stylesheet %}
 {{parent()}}
@@ -12,158 +15,80 @@
 
 {% block header_title %}File Manager{% endblock %}
 
+
+
 {% block breadcrumb_item %}
-<a class="breadcrumb-item" href="?directory="><i class="fa-solid fa-house"></i></a>
-{% if directory %}
-{% set paths = directory | split('/') %}
-{% set link = "" %}
-{% for key, item in paths %}
-{% set link = link ~ "/" ~ item %}
-<a class="breadcrumb-item" href="?directory={{ link | trim('/') }}">{{ item }}</a>
+{% set parent = "/" %}
+{% for i, item in FM.getArrayParent %}
+{% if i == 0 %}
+<li class="breadcrumb-item"><a href="?d={{ parent }}">ROOT</a></li>
+{% else %}
+{% set parent = parent ~ "/" ~ item %}
+<li class="breadcrumb-item"><a href="?d={{ parent }}">{{ item }}</a></li>
+{% endif %}
 {% endfor %}
+{% endblock %}
+
+
+
+{% block subheader_outer %}
+{% if not FM.state_is_file %}
+{{parent()}}
 {% endif %}
 {% endblock %}
 
 
 {% block subheader_menu %}
-<li class="menu-item btn" onclick="createFolder('{{ directory }}')"><i class="fa-solid fa-folder-plus"></i> new folder
-</li>
+<li class="menu-item btn" onclick="createFolder('{{ directory }}')"><i class="fa-solid fa-folder-plus"></i> new folder</li>
 <li class="menu-item btn" onclick="uploadFile()"><i class="fa-solid fa-file-arrow-up"></i> upload file</li>
 {% endblock %}
 
 
 
-{% set fm = api.FileManager %}
+
 
 {% block content %}
 
+{% if FM.state_is_file %}
+
+<div class="ratio ratio-16x9">
+    <object data="{{ FM.state_path }}" type="image/jpeg"></object>
+</div>
+
+{% else %}
 
 <ul class="list-group list-group-flush">
 
-    {% for item in fm.fetch %}
+    {% for item in FM.fetch %}
+
+    <li class="list-group-item" style="max-width: 800px;">
+        <a href="?d={{parent}}/{{ item | trim }}">
+            <div class="d-flex align-items-center">
+                {% if FM.is_file(item) %}
+                <i class="fa-regular fa-file"></i>
+                {% else %}
+                <i class="fa-regular fa-folder-closed"></i>
+                {% endif %}
+                <span class="ms-2">{{ item }}</span>
+            </div>
+        </a>
+    </li>
+
+    {% else %}
+
 
     <li class="list-group-item">
-        {% if fm.is_file(item) %}
-        <i class="fa-regular fa-file"></i>
-        {% else %}
-        <i class="fa-regular fa-folder-closed"></i>
-        {% endif %}
+        <div class="d-flex align-items-center justify-content-center flex-column fs-4 w-100" style="min-height: 400px;">
+            <i class="fa-regular fa-folder-open fa-2x"></i>
 
-        {{ item }}</li>
+            <span class="mt-2">Directory is empty</span>
+        </div>
+    </li>
+
 
     {% endfor %}
 </ul>
 
+{% endif %}
+
 {% endblock %}
-
-
-{# {% block javascript %}
-
-<script src="{{ '@filemanager/dist/filemanager.js' | assets }}"></script>
-<script>
-
-
-    merapi.FileManager.setContainer("{{ container | json_encode }}");
-
-    function createFolder(parent) {
-
-        merapi.FileManager.createFolder({
-            parent: parent,
-            endpoint: "{{ 'filemanager/create_folder' | access_path }}"
-        }).then((result) => {
-            window.location.reload();
-        })
-    }
-
-    function deleteFile(args, popback = false) {
-        const opts = Object.assign({ file: null, type: 'directory', endpoint: "{{ 'filemanager/delete_file' | access_path }}" }, args);
-        merapi.FileManager.deleteFile(opts).then((result) => {
-            if (popback) {
-                const urlObj = new URL(window.location.href);
-                const directoryParam = urlObj.searchParams.get('directory');
-                if (directoryParam) {
-                    let pathSegments = directoryParam.split('/');
-                    pathSegments.pop();
-                    let newPath = pathSegments.join('/');
-                    urlObj.searchParams.set('directory', newPath);
-                    window.location.href = urlObj.toString();
-                }
-            } else {
-                window.location.reload();
-            }
-        })
-    }
-
-    function renameFile(args) {
-        const opts = Object.assign({ file: null, name: null, type: 'directory', endpoint: "{{ 'filemanager/rename_file' | access_path }}" }, args);
-        // console.log(opts)
-        merapi.FileManager.renameFile(opts).then((result) => {
-            const urlObj = new URL(window.location.href);
-            const directoryParam = urlObj.searchParams.get('directory');
-            if (directoryParam) {
-                if (directoryParam == opts.file && result.data.new_path) {
-                    urlObj.searchParams.set('directory', result.data.new_path);
-                    window.location.href = urlObj.toString();
-                } else {
-                    window.location.reload();
-                }
-            } else {
-                window.location.reload();
-            }
-        })
-    }
-
-    function infoFile(x) {
-        merapi.FileManager.infoFile(x);
-    }
-
-    function uploadFile() {
-        merapi.FileManager.uploadFile({
-            parent: "{{ directory }}",
-            endpoint: "{{ 'filemanager/upload_file' | access_path }}",
-        });
-    }
-
-    function copyToClipboard(text) {
-
-
-        if (text.charAt(0) === '/') text = text.substring(1);
-        const urlObject = new URL(`${window.location.protocol}//${window.location.hostname}/${text}`);
-        const url = urlObject.toString();
-
-        // Use the modern Clipboard API if available
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(url)
-                .then(() => {
-                    window.merapi.toast("Link copied to clipboard", 5, "text-success");
-                    //console.log(window.merapi.toast)
-                })
-                .catch(err => {
-                    window.merapi.toast('Failed to copy link', 5, 'text-danger');
-                });
-        } else {
-            // Fallback to the older method for browsers that don't support the Clipboard API
-            var textArea = document.createElement("textarea");
-            textArea.value = url;
-
-            // Avoid scrolling to bottom
-            textArea.style.top = "0";
-            textArea.style.left = "0";
-            textArea.style.position = "fixed";
-
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-
-            try {
-                var successful = document.execCommand('copy');
-                var msg = successful ? 'successful' : 'unsuccessful';
-                window.merapi.toast(msg + " copied to clipboard", 5, successful ? "text-success" : "text-danger");
-            } catch (err) {
-                window.merapi.toast(err, 5, 'text-danger');
-            }
-            document.body.removeChild(textArea);
-        }
-    }
-</script>
-{% endblock %} #}

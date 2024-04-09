@@ -25,9 +25,13 @@ class Router
 
     private static Router $instance;
 
+
+
     private function __construct()
     {
     }
+
+
 
     public static function getInstance(): Router
     {
@@ -47,16 +51,14 @@ class Router
 
         $file = $caller["file"];
         if (is_string($method)) {
-
-            if (PHP_OS == "WINNT") {
-                preg_match("/\\\Module\\\(.*?)\\\.*\\\(.*)\\..*/im", $file, $matches);
+            if(PHP_OS == "WINNT"){
+                preg_match("/\\\\Module\\\\(.*)\\\\.*\\\\(.*)\.php$/", $file, $matches);
             } else {
-                preg_match("/\\\Module\\\(.*?)\\\.*\\\(.*)\\..*/im", $file, $matches);
+                preg_match("/\/Module\/(.*)\/.*\/(.*)\.php$/", $file, $matches);
             }
 
-            if (isset($matches[1], $matches[2])) {
+            if(isset($matches[1]) && isset($matches[2])) {
                 $className = "\\MerapiPanel\\Module\\{$matches[1]}\\Controller\\{$matches[2]}";
-
                 if (class_exists($className)) {
                     return $className . "@" . $method;
                 }
@@ -65,6 +67,7 @@ class Router
 
         return null;
     }
+
 
 
 
@@ -95,13 +98,10 @@ class Router
 
 
             if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                // is in admin
                 $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
                 $path = $adminPrefix . "/" . trim($path, "/");
                 if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
                     $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
                 }
             }
         }
@@ -141,13 +141,10 @@ class Router
 
 
             if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-
                 $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
                 $path = $adminPrefix . "/" . trim($path, "/");
                 if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
                     $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
                 }
             }
         }
@@ -188,13 +185,10 @@ class Router
 
 
             if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                // is in admin
                 $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
                 $path = $adminPrefix . "/" . trim($path, "/");
                 if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
                     $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
                 }
             }
         }
@@ -237,8 +231,6 @@ class Router
                 $path = $adminPrefix . "/" . trim($path, "/");
                 if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
                     $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
                 }
             }
         }
@@ -412,10 +404,16 @@ class Router
         return $routeParams;
     }
 
+
+
+
     public function getRoute(): Route|null
     {
         return $this->route;
     }
+
+
+    
 
     /**
      * Handles the request and returns the response.
@@ -429,9 +427,6 @@ class Router
 
         $route = $this->getRoute();
         $callback = $route->getController();
-
-
-        error_log("From Router Handle : " . $callback);
         // Get the middlewares for this route.
         $middlewares = new Middlewares($route->getMiddlewares());
 

@@ -87,7 +87,7 @@ const Box = {
                 return data.valid;
             }
             $(this).on("submit", function (e) {
-
+                e.preventDefault();
                 if (!this.checkValidity()) {
                     e.preventDefault();
                     e.stopPropagation();

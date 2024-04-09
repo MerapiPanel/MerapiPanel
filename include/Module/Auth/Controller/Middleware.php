@@ -15,13 +15,13 @@ class Middleware extends __Middleware
     function handle(Request $request, Closure $next)
     {
 
-        $setting = $this->module->getSetting();
-        $cookieName = $setting->cookie_name;
-
-        $s_token = $_COOKIE[$cookieName] ?? null;
+        $setting     = $this->module->getSetting();
+        $cookieName  = $setting->cookie_name;
+        $s_token     = $_COOKIE[$cookieName] ?? null;
 
         if ($s_token) {
             $query = DB::table("session_token")->select("*")->where("token")->equals($s_token)->execute();
+            
             if ($query->rowCount() > 0) {
 
                 $session = $query->fetch(PDO::FETCH_ASSOC);
@@ -29,7 +29,9 @@ class Middleware extends __Middleware
                     return $next($request);
                 }
             }
-            unset($_COOKIE[$cookieName]);
+
+            error_log("Session Token Expired");
+            // unset($_COOKIE[$cookieName]);
         }
 
         return new Response(View::render("login.html.twig", [

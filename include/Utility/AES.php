@@ -31,28 +31,28 @@ class AES
         $key = self::getKey();
         if (!$key) {
             // Restore original error reporting level before returning
-           // error_reporting($originalErrorReporting);
+            // error_reporting($originalErrorReporting);
             return false;
         }
         try {
-            
+
             [$encryptedData, $iv] = @explode('::', base64_decode($data), 2);
-            if(!$encryptedData || !$iv) {
+            if (!$encryptedData || !$iv) {
                 // Restore original error reporting level before returning
-              //  error_reporting($originalErrorReporting);
+                //  error_reporting($originalErrorReporting);
                 return false;
             }
             $decryptedData = @openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
 
             // Restore original error reporting level before returning
-           // error_reporting($originalErrorReporting);
+            // error_reporting($originalErrorReporting);
 
             return $decryptedData;
         } catch (\Throwable $e) {
             // Restore original error reporting level before returning
-           // error_reporting($originalErrorReporting);
+            // error_reporting($originalErrorReporting);
             return false;
-        } 
+        }
     }
 
 }

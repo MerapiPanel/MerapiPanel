@@ -5,7 +5,7 @@ namespace MerapiPanel\Module\FileManager\Controller;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
-use MerapiPanel\Core\Views\View;
+use MerapiPanel\Views\View;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Router;
 
@@ -40,6 +40,14 @@ class Admin extends __Fragment
             'icon' => 'fa-regular fa-folder',
             'link' => $route
         ]);
+    }
+
+
+    
+    public function index($req)
+    {
+        
+        return View::render("index.html.twig");
     }
 
 
@@ -284,82 +292,6 @@ class Admin extends __Fragment
 
 
 
-    public function index($req)
-    {
-
-        $showHidden = $req->showHidden;
-        $directory = $req->directory;
-
-        $root = $_SERVER['DOCUMENT_ROOT'] . '/public/upload/' . (!empty($directory) ? ltrim($directory, "\\/") : "");
-
-        $container = [];
-
-        if (!is_file($root)) {
-            $data = [];
-            $files = scandir($root);
-
-            usort($files, function ($a, $b) use ($root) {
-                $pathA = $root . '/' . $a;
-                $pathB = $root . '/' . $b;
-
-                $isDirA = is_dir($pathA);
-                $isDirB = is_dir($pathB);
-
-                // Both are directories or both are files
-                if ($isDirA && $isDirB) {
-                    // Sort directories alphabetically in descending order
-                    return strcasecmp($b, $a);
-                } elseif ($isDirA) {
-                    // Directory comes before file
-                    return -1;
-                } elseif ($isDirB) {
-                    // Directory comes before file
-                    return 1;
-                }
-
-                // Sort files alphabetically in descending order
-                return strcasecmp($b, $a);
-            });
-
-            foreach ($files as $f) {
-
-                if ($f == '.' || $f == '..' || (!$showHidden && strpos($f, '.') === 0)) {
-                    continue;
-                }
-                $filePath = $root . "/{$f}";
-
-                $data[] = [
-                    "name" => $f,
-                    "path" => trim(str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload", '', $filePath), '\\/'),
-                    "size" => filesize($filePath),
-                    "time" => date("Y-M-d H:i:s", filemtime($filePath)),
-                    "type" => mime_content_type($filePath),
-                    "icon" => $this->module->getIconName($filePath)
-                ];
-            }
-            $container['type'] = "navigate";
-        } else {
-            $data = [
-                "name" => basename($root),
-                "mime" => mime_content_type($root),
-                "size" => filesize($root),
-                "time" => date("Y-M-d H:i:s", filemtime($root)),
-                "path" => [
-                    "relative" => trim(str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload", '', $root), '\\/'),
-                    "full" => str_replace($_SERVER['DOCUMENT_ROOT'], '', $root)
-                ]
-            ];
-            $container['type'] = "open";
-        }
-
-        $container["root"] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $root);
-        $container["data"] = $data;
-
-
-        return View::render("index.html.twig", [
-            'container' => $container
-        ]);
-    }
 
 
     function uploadFile(Request $req)

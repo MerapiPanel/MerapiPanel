@@ -137,9 +137,6 @@ final class Table
      */
     public function getName(): string
     {
-        if (self::containsSpecialChars($this->name)) {
-            return "'$this->name'";
-        }
         return $this->name;
     }
 
@@ -152,31 +149,6 @@ final class Table
     public function lastInsertId()
     {
         return $this->db->lastInsertId();
-    }
-
-
-
-
-    /**
-     * Query to check if the table exists
-     */
-    public function isExist()
-    {
-
-        // Query to check if the table exists
-        $query = "SELECT name FROM sqlite_master WHERE type='table' AND name=:table_name";
-
-        // Prepare the statement
-        $stmt = $this->getDB()->prepare($query);
-        $stmt->bindValue(':table_name', $this->getName());
-
-        // Execute the statement
-        $stmt->execute();
-
-        // Fetch the result
-        $tableExists = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return isset($tableExists['name']);
     }
 
 
@@ -203,7 +175,7 @@ final class Table
     {
 
         if (is_array($columns)) {
-            $columns = implode(",", $columns);
+            $columns = "`" . implode("`, `", $columns) . "`";
         }
         return new SelectQuery($this, $columns);
     }
@@ -489,7 +461,7 @@ final class Where
             // Map the wrapped values to an array
             $arr = array_map([$this, "wrapValue"], $value);
             // Wrap the array and assign to value
-            $value = "(" . implode(", ", $arr) . ")";
+            $value = "(`" . implode(", `", $arr) . "`)";
         }
         // Check if the value is a string
         elseif (is_string($value)) {
@@ -498,7 +470,7 @@ final class Where
         }
 
         // Return the built query condition
-        return "{$this->column} {$this->operator} {$value}";
+        return "`{$this->column}` {$this->operator} {$value}";
     }
 
 
@@ -730,19 +702,6 @@ class WhereQueryBuilder
 
 
     /**
-     * Wraps the given value in quotes and escapes it if it's a string.
-     * 
-     * @param mixed $val The value to be wrapped
-     * @return mixed The wrapped value
-     */
-    public function wrapValue($val)
-    {
-        return is_string($val) ? "'" . addslashes($val) . "'" : $val;
-    }
-
-
-
-    /**
      * Build the SQL query based on the set query parameters
      *
      * @return string The generated SQL query
@@ -867,7 +826,7 @@ final class InsertQuery
     public function build(): string
     {
         // Create a comma-separated list of column names
-        $columns = implode(",", array_keys($this->data));
+        $columns = "`" . implode("`, `", array_keys($this->data)) . "`";
 
         // Create a comma-separated list of escaped values
         $values = implode(",", array_map(function ($value) {
@@ -875,7 +834,7 @@ final class InsertQuery
         }, $this->data));
 
         // Return the formatted SQL INSERT statement
-        return "INSERT INTO {$this->table->getName()} ({$columns}) VALUES ({$values})";
+        return "INSERT INTO `{$this->table->getName()}` ({$columns}) VALUES ({$values})";
     }
 
 
@@ -902,7 +861,7 @@ final class SelectQuery extends WhereQueryBuilder
 {
 
     private Table $table;
-    private string $columns;
+    private string|array $columns;
 
 
 
@@ -912,7 +871,7 @@ final class SelectQuery extends WhereQueryBuilder
      * @param Table $table The table object
      * @param string $columns The array of column names
      */
-    public function __construct(Table $table, string $columns)
+    public function __construct(Table $table, string|array $columns)
     {
         $this->table = $table;
         $this->columns = $columns;
@@ -928,10 +887,10 @@ final class SelectQuery extends WhereQueryBuilder
     public function execute(): \PDOStatement|int
     {
         // Construct the SQL query
-        $columns = $this->columns;
+        $columns = is_array($this->columns) ? "`" . implode('`, `', $this->columns) . "`" : $this->columns;
         $table = $this->table->getName();
         $conditions = !empty($this->build()) ? " " . $this->build() : "";
-        $sql = "SELECT $columns FROM $table" . "$conditions";
+        $sql = "SELECT $columns FROM `" . stripslashes($table) . "`" . "$conditions";
 
         // Execute the SQL query
         return $this->table->getDB()->query($sql);
@@ -947,11 +906,11 @@ final class SelectQuery extends WhereQueryBuilder
     public function __toString()
     {
         // Generate the SQL query
-        $columns = is_array($this->columns) ? implode(', ', $this->columns) : $this->columns;
+        $columns = is_array($this->columns) ? "`" . implode('`, `', $this->columns) . "`" : $this->columns;
         $tableName = $this->table->getName();
-        $conditions = !empty($this->build()) ? " " . $this->build() : "";
+        $conditions = !empty($this->build()) ? $this->build() : "";
 
-        $sql = 'SELECT ' . $columns . ' FROM `' . $tableName . "`" . $conditions;
+        $sql = 'SELECT ' . $columns . ' FROM `' . $tableName . "` " . $conditions;
 
         return $sql;
     }
@@ -1008,14 +967,14 @@ final class UpdateQuery extends WhereQueryBuilder
         // Iterate through the data array and build the SET parts
         foreach ($this->data as $column => $value) {
             // If the value is a string, add slashes and wrap it in quotes
-            $setParts[] = "{$column} = " . (is_string($value) ? "'" . addslashes($value) . "'" : (empty($value) ? 'NULL' : $value));
+            $setParts[] = "`{$column}` = " . (is_string($value) ? "'" . addslashes($value) . "'" : (empty($value) ? 'NULL' : $value));
         }
 
         // Build the WHERE part of the SQL query
         $wherePart = $this->build();
 
         // Assemble the UPDATE query string
-        return "UPDATE {$this->table->getName()} SET " . implode(",", $setParts) . (!empty($wherePart) ? " {$wherePart}" : "");
+        return "UPDATE `{$this->table->getName()}` SET " . implode(",", $setParts) . (!empty($wherePart) ? " {$wherePart}" : "");
     }
 }
 
@@ -1063,6 +1022,6 @@ final class DeleteQuery extends WhereQueryBuilder
         $wherePart = $this->build();
 
         // Construct and return the DELETE SQL query
-        return "DELETE FROM {$this->table->getName()}" . (!empty($wherePart) ? " {$wherePart}" : "");
+        return "DELETE FROM `{$this->table->getName()}`" . (!empty($wherePart) ? " {$wherePart}" : "");
     }
 }

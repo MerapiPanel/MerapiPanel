@@ -157,6 +157,11 @@ namespace MerapiPanel\Box\Module\Entity {
             $query = "REPLACE INTO settings (name, value) VALUES (:name, :value)";
             DB::instance()->prepare($query)->execute(['name' => $this->moduleName . '.' . $name, 'value' => $value]);
         }
+
+
+        public function __toString() {
+            return json_encode($this->stack);
+        }
     }
 
 

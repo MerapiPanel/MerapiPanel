@@ -8,7 +8,6 @@ namespace MerapiPanel\Box\Module {
     use MerapiPanel\Box\Module\Entity\Fragment;
     use MerapiPanel\Box\Module\Entity\Proxy;
     use MerapiPanel\Utility\Http\Request;
-    use MerapiPanel\Utility\Util;
     use Symfony\Component\Filesystem\Path;
     use Throwable;
 

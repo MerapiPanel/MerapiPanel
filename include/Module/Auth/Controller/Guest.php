@@ -8,7 +8,6 @@ use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Views\View;
 use MerapiPanel\Database\DB;
 use MerapiPanel\Utility\Http\Request;
-use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Router;
 use PDO;
 use Throwable;
@@ -26,17 +25,10 @@ class Guest extends __Fragment
     public function register()
     {
 
-
-
         if (isset($_ENV["__MP_ADMIN__"]['prefix'])) {
 
             Router::POST("/auth/api/" . ltrim($_ENV["__MP_ADMIN__"]['prefix'], "/"), "GoogleAuth", self::class);
-
-            Router::GET("/auth/" . ltrim($_ENV["__MP_ADMIN__"]['prefix'], "/"), function () {
-                return "Hallo ";
-            });
             Router::POST("/auth/" . ltrim($_ENV["__MP_ADMIN__"]['prefix'], "/"), "Login", self::class);
-
         }
     }
 
@@ -151,6 +143,7 @@ class Guest extends __Fragment
     public function Login($req)
     {
 
+        setcookie("__MP_GUEST__", "true", time() + 3600, "/");
         $email = $req->email();
         $password = $req->password();
 
@@ -186,14 +179,15 @@ class Guest extends __Fragment
                     ];
                 }
 
-
-                error_log(date_default_timezone_get() . " " . date("Y-m-d H:i:s"));
-
-
+                unset($user['password']);
                 return [
                     "code" => 200,
                     "message" => "success",
-                    "data" => $user
+                    "data" => [
+                        "cookie-name" => $setting->cookie_name,
+                        "token" => $token,
+                        "user" => $user
+                    ]
                 ];
 
             }

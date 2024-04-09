@@ -7,27 +7,32 @@ use MerapiPanel\Utility\Util;
 
 class ApiServices
 {
-    
+
     protected $accessName = "guest";
 
 
     public function __construct()
     {
-        $this->accessName = Util::getAccessName();
+        $this->accessName = isset($_ENV['__MP_ACCESS__']) ? $_ENV['__MP_ACCESS__'] : "guest";
     }
 
 
 
     public function __call($name, $arguments)
     {
+        $default_api = Box::module(ucfirst($name))->Views->Api;
 
         if ($this->accessName != "guest") {
             $accessName = ucfirst($this->accessName);
-            $api = Box::module(ucfirst($name))->Views->$accessName->Api;
-        } else {
-            $api = Box::module(ucfirst($name))->Views->Api;
+            if (Box::module(ucfirst($name))->Views->$accessName) {
+                $_api = Box::module(ucfirst($name))->Views->$accessName->Api;
+
+                if ($_api) {
+                    $default_api = $_api;
+                }
+            }
         }
 
-        return $api;
+        return $default_api;
     }
 }

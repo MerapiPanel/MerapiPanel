@@ -18,6 +18,7 @@ class Client extends __Fragment
     public function register()
     {
         $index = Router::GET("/filemanager", "index", self::class);
+
         Box::module("Panel")->addMenu([
             "order" => 2,
             "name" => "File Manager",
@@ -26,8 +27,20 @@ class Client extends __Fragment
         ]);
     }
 
-    public function index()
+    public function index($req)
     {
+        if($req->open) {
+            return $this->open($req);
+        }
         return View::render("index.html.twig");
+    }
+
+
+
+    public function open($req)
+    {
+        return View::render("open.html.twig", [
+            "path" => $req->path
+        ]);
     }
 }

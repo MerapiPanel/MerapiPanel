@@ -141,7 +141,7 @@ class Response
     public function send(): string
     {
 
-        if (!headers_sent()) {
+        if (headers_sent()) {
             header_remove();
         }
 
@@ -153,7 +153,7 @@ class Response
 
         self::http_response_code($this->statusCode);
 
-        if (isset ($this->headers['location'])) {
+        if (isset($this->headers['location'])) {
             $redirect = $this->headers['location'];
             unset($this->headers['location']);
         }
@@ -163,7 +163,7 @@ class Response
         }
 
 
-        if (isset ($redirect)) {
+        if (isset($redirect)) {
             header("Location: $redirect");
         }
 
@@ -290,10 +290,11 @@ class Response
                     $text = 'HTTP Version not supported';
                     break;
                 default:
-                    exit ('Unknown http status code "' . htmlentities($code) . '"');
+                    exit('Unknown http status code "' . htmlentities($code) . '"');
+                    break;
             }
 
-            $protocol = (isset ($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+            $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 
             header($protocol . ' ' . $code . ' ' . $text);
         } else {

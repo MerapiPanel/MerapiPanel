@@ -3,7 +3,6 @@
 namespace MerapiPanel\Views\Abstract;
 
 
-use MerapiPanel\Views\View;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -18,19 +17,7 @@ use Twig\TwigFunction;
  */
 class Extension extends AbstractExtension
 {
-    protected View|null $view;
 
-    public function __construct(View|null $view = null)
-    {
-        $this->view = $view;
-    }
-
-
-
-    protected function getView(): View|null
-    {
-        return $this->view;
-    }
 
     public function getFunctions()
     {

@@ -2,11 +2,15 @@
 
 namespace MerapiPanel\Module\Pages;
 
-use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Box\Module\__Fragment;
 use PDO;
 
-class Service extends Module
+class Service extends __Fragment
 {
+    
+    function onCreate(\MerapiPanel\Box\Module\Entity\Module $module) {
+
+    }
 
 
     public function createPage($title, $slug)

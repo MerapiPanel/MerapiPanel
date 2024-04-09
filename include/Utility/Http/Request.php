@@ -2,6 +2,8 @@
 
 namespace MerapiPanel\Utility\Http;
 
+use MerapiPanel\Core\Abstract\MagicAccess;
+
 class Request
 {
 
@@ -173,25 +175,14 @@ class Request
     }
 
 
-    // public function __toJson()
-    // {
-
-    //     return [
-    //         'headers' => $this->header,
-    //         'body' => $this->body,
-    //         'params' => $this->params,
-    //         'query' => $this->query,
-    //         'method' => $this->method,
-    //         'path' => $this->path,
-    //     ];
-    // }
+    
 }
 
 
 
 
 
-class RequestHeader
+class RequestHeader 
 {
     private $stack_data = [];
     public function __construct()
@@ -234,7 +225,7 @@ class RequestHeader
 
 
 
-class RequestQuery
+class RequestQuery 
 {
     private $stack_data = [];
     public function __construct()
@@ -269,7 +260,7 @@ class RequestQuery
 
 
 
-class RequestForm
+class RequestForm 
 {
 
 
