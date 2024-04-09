@@ -5,13 +5,6 @@ namespace MerapiPanel\Box\Module\Entity {
     use MerapiPanel\Box\Module\__Fragment;
     use ReflectionClass;
 
-    /**
-     * Description: Module Proxy Entity.
-     * @author      ilham b <durianbohong@gmail.com>
-     * @copyright   Copyright (c) 2022 MerapiPanel
-     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
-     * @lastUpdate  2024-02-10
-     */
     class Proxy extends Fragment
     {
 
@@ -28,8 +21,8 @@ namespace MerapiPanel\Box\Module\Entity {
             unset($this->childrens);
 
             $this->className = $this->resolveClassName();
-            $reflector = new ReflectionClass($this->className);
-            $this->instance = $reflector->newInstanceWithoutConstructor();
+            $reflector       = new ReflectionClass($this->className);
+            $this->instance  = $reflector->newInstanceWithoutConstructor();
 
             if (!($this->instance instanceof __Fragment)) {
                 throw new \Exception("The class " . $this->className . " should extend " . __Fragment::class);
@@ -37,9 +30,9 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
             if (method_exists($this->instance, "onCreate")) {
-                ob_start();
+                //ob_start();
                 $this->instance->onCreate($this->getModule());
-                ob_end_clean();
+                //ob_end_clean();
             }
         }
 
@@ -92,6 +85,10 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
+        public function method_exists($method) {
+
+            return method_exists($this->instance, $method);
+        }
 
         public function __toString()
         {

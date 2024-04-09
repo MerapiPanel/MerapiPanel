@@ -6,23 +6,21 @@ use Exception;
 use MerapiPanel\Exception\HTTP_CODE;
 use MerapiPanel\Exception\HttpException;
 use MerapiPanel\Box;
-use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
-use MerapiPanel\Utility\Middlewares;
 use MerapiPanel\Utility\Route;
 
 class Router
 {
 
-    protected Route|null $route = null;
     protected $routeStack = [
         "GET" => [],
         "POST" => [],
         "PUT" => [],
         "DELETE" => []
     ];
-
+    protected Box $box;
+    protected $access = [];
     private static Router $instance;
 
     private function __construct()
@@ -38,8 +36,6 @@ class Router
 
         return self::$instance;
     }
-
-
 
 
     private static function resolveCallback($method, $caller)
@@ -67,7 +63,6 @@ class Router
     }
 
 
-
     /**
      * Retrieves a route object for a GET request.
      *
@@ -82,31 +77,26 @@ class Router
 
         $instance = Router::getInstance();
         $callback = $method;
-        $middleware = null;
 
         if (!is_callable($method)) {
 
 
             $caller = debug_backtrace()[0];
             $callback = self::resolveCallback($method, $caller);
+      
             if (!$callback) {
                 throw new \InvalidArgumentException("Callback is invalid");
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                // is in admin
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
-                }
+            $access = $_ENV['__MP_ACCESS__'];
+            $accessName = strtolower(basename($caller['file'] ?? "", ".php"));
+            if (isset($access[$accessName])) {
+                $path = $access[$accessName]["prefix"] . "/" . trim($path, "/");
             }
         }
 
-        $route = new Route(Route::GET, $path, $callback, $middleware);
+        $route = new Route(Route::GET, $path, $callback);
         return $instance->addRoute(Route::GET, $route);
     }
 
@@ -127,7 +117,6 @@ class Router
 
         $instance = Router::getInstance();
         $callback = $method;
-        $middleware = null;
 
 
         if (!is_callable($method)) {
@@ -140,20 +129,14 @@ class Router
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
-                }
+            $access = $_ENV['__MP_ACCESS__'];
+            $accessName = strtolower(basename($caller['file'] ?? "", ".php"));
+            if (isset($access[$accessName])) {
+                $path = $access[$accessName]["prefix"] . "/" . trim($path, "/");
             }
         }
 
-
-        $route = new Route(Route::POST, $path, $callback, $middleware);
+        $route = new Route(Route::POST, $path, $callback);
         return $instance->addRoute(Route::POST, $route);
     }
 
@@ -174,7 +157,6 @@ class Router
 
         $instance = Router::getInstance();
         $callback = $method;
-        $middleware = null;
 
 
         if (!is_callable($method)) {
@@ -187,19 +169,14 @@ class Router
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                // is in admin
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
-                }
+            $access = $_ENV['__MP_ACCESS__'];
+            $accessName = strtolower(basename($caller['file'] ?? "", ".php"));
+            if (isset($access[$accessName])) {
+                $path = $access[$accessName]["prefix"] . "/" . trim($path, "/");
             }
         }
 
-        $route = new Route(Route::PUT, $path, $callback, $middleware);
+        $route = new Route(Route::PUT, $path, $callback);
         return $instance->addRoute(Route::PUT, $route);
     }
 
@@ -219,7 +196,6 @@ class Router
 
         $instance = Router::getInstance();
         $callback = $method;
-        $middleware = null;
 
 
         if (!is_callable($method)) {
@@ -232,19 +208,15 @@ class Router
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                } else {
-                    error_log("WARNING: Middleware not found for " . $_ENV["__MP_ACCESS__"]);
-                }
+            $access = $_ENV['__MP_ACCESS__'];
+            $accessName = strtolower(basename($caller['file'] ?? "", ".php"));
+            if (isset($access[$accessName])) {
+                $path = $access[$accessName]["prefix"] . "/" . trim($path, "/");
             }
         }
 
 
-        $route = new Route(Route::DELETE, $path, $callback, $middleware);
+        $route = new Route(Route::DELETE, $path, $callback);
         return $instance->addRoute(Route::DELETE, $route);
     }
 
@@ -277,6 +249,7 @@ class Router
 
 
 
+
     /**
      * Dispatches the HTTP request to the appropriate route handler.
      *
@@ -291,6 +264,19 @@ class Router
         $instance = Router::getInstance();
         $method = $request->getMethod();
         $path = $request->getPath();
+
+        foreach ($instance->access as $key => $value) {
+
+            if (strpos($path, $value["prefix"]) === 0) {
+                $handler = $value["handler"];
+                if (!Util::callAccessHandler($handler)) {
+                    throw new Exception("Access Denied", 403);
+                }
+                $_ENV['__MP_ACCESS_NAME__'] = $key;
+                break;
+            }
+        }
+
 
         $stack = $instance->routeStack[$method];
 
@@ -320,10 +306,9 @@ class Router
          */
         foreach ($stack as $route) {
             if ($instance->matchRoute($route->getPath(), $path)) {
-                $instance->route = $route;
-                $routeParams = $instance->extractRouteParams($instance->route->getPath(), $path);
+                $routeParams = $instance->extractRouteParams($route->getPath(), $path);
                 $request->setParams($routeParams);
-                return $instance->handle($request);
+                return $instance->handle($request, $route);
             }
         }
 
@@ -412,12 +397,10 @@ class Router
         return $routeParams;
     }
 
-    public function getRoute(): Route|null
-    {
-        return $this->route;
-    }
 
-    /**
+    
+
+        /**
      * Handles the request and returns the response.
      *
      * @param Request $request The request object.
@@ -429,9 +412,6 @@ class Router
 
         $route = $this->getRoute();
         $callback = $route->getController();
-
-
-        error_log("From Router Handle : " . $callback);
         // Get the middlewares for this route.
         $middlewares = new Middlewares($route->getMiddlewares());
 
@@ -490,6 +470,8 @@ class Router
             if (isset($matches[1], $matches[2])) {
 
                 $module = Box::module(ucfirst($matches[1]));
+                // error_log(print_r(Box::module(), true));
+                // error_log(print_r([$matches[1], $matches[2]], true));
                 if (!$module) {
                     throw new Exception("Module {{$matches[1]}} not found ");
                 }
@@ -508,7 +490,11 @@ class Router
                 throw new Exception("Controller not found ");
             }
 
+            // execute controller method
+            ob_start();
             $output = $controller->$method(...[$request, &$response]);
+            ob_end_flush();
+
 
             if ($output instanceof Response) {
                 error_clear_last(); // clear last error
@@ -517,21 +503,27 @@ class Router
             }
 
 
+            if ($request->getMethod() === Route::GET) {
 
-            if (is_string($output)) {
+                if (is_string($output)) {
 
-                error_clear_last(); // clear last error
-                $response->setContent($output);
-                return $response;
-            }
-            // event method get return an array
-            elseif (is_array($output)) {
-                error_clear_last(); // clear last error
-                return $this->handleApiResponse($output);
-            } else {
+                    error_clear_last(); // clear last error
+                    $response->setContent($output);
+                    return $response;
+                }
+                // event method get return an array
+                elseif (is_array($output)) {
+                    error_clear_last(); // clear last error
+                    return $this->handleApiResponse($output);
+                }
 
                 throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($output) . " returned", 400);
+
             }
+
+            // event method not get return an object or array or string
+            return $this->handleApiResponse($output);
+
 
         } else {
 

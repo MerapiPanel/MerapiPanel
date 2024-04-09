@@ -208,16 +208,14 @@ class Assets extends __Fragment
             return $response;
         }
 
-
-        ob_start();
-        echo file_get_contents($file);
-        $output = ob_get_flush();
-        ob_clean();
+        $output = file_get_contents($file);
 
         $mimeTypes = json_decode(file_get_contents(__DIR__ . "/mimeType.json"), true);
 
         // Set the appropriate Content-Type header
         $contentType = $mimeTypes[strtolower(pathinfo($file, PATHINFO_EXTENSION))] ?? 'application/octet-stream'; // Default to binary if MIME type is application/octet-stream
+        // error_log("From Assets Traying Get : " . $contentType);
+
         $response->setHeader("Content-Type", $contentType);
         $response->setContent($output);
 

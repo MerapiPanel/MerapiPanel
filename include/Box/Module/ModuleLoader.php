@@ -12,14 +12,6 @@ namespace MerapiPanel\Box\Module {
     use Symfony\Component\Filesystem\Path;
     use Throwable;
 
-    /**
-     * Description: Module Loader for Container.
-     * @author      ilham b <durianbohong@gmail.com>
-     * @copyright   Copyright (c) 2022 MerapiPanel
-     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
-     * @lastUpdate  2024-02-10
-     */
-
     class ModuleLoader extends AbstractLoader
     {
 
@@ -41,12 +33,11 @@ namespace MerapiPanel\Box\Module {
 
         public final function registerController($container)
         {
+
             $access = ['guest'];
-            if (isset($_ENV['__MP_ACCESS__'])) {
-                foreach ($_ENV['__MP_ACCESS__'] as $key => $value) {
-                    if (Util::callAccessHandler($value['handler']) && strpos(Request::getInstance()->getPath(), $value['prefix']) === 0) {
-                        $access[] = $key;
-                    }
+            if (isset($_ENV['__MP_ADMIN__']['prefix'])) {
+                if (strpos(Request::getInstance()->getPath(), $_ENV['__MP_ADMIN__']['prefix']) === 0) {
+                    $access[] = "admin";
                 }
             }
 
@@ -64,16 +55,17 @@ namespace MerapiPanel\Box\Module {
                             try {
                                 $controller->$accessName->register();
                             } catch (Throwable $e) {
-                                error_log("Unable to register controller: $module, " . $e->getMessage());
+                                //  error_log("Unable to register controller: $module, " . $e->getMessage());
                             }
                         }
                     }
                 }
             }
+
         }
 
 
-        function loadFragment(string $name, Module|Fragment $parent): Fragment|false
+        function loadFragment(string $name, Module|Fragment $parent): Fragment|null
         {
             if ($parent instanceof Fragment) {
 
@@ -83,7 +75,7 @@ namespace MerapiPanel\Box\Module {
                         return new Fragment($name, $parent);
                     }
 
-                    return false;
+                    return null;
                 }
 
                 return new Proxy($name, $parent);
@@ -94,12 +86,12 @@ namespace MerapiPanel\Box\Module {
                     if (file_exists(Path::join($parent->path, $name))) {
                         return new Fragment($name, $parent);
                     }
-                    return false;
+                    return null;
                 }
                 return new Proxy($name, $parent);
             }
 
-            return false;
+            return null;
         }
 
 

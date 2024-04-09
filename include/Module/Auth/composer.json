@@ -1,0 +1,6 @@
+{
+    "require": {
+        "google/apiclient": "2.15.0",
+        "firebase/php-jwt": "^6.10"
+    }
+}

@@ -3,9 +3,9 @@ namespace MerapiPanel {
 
     use MerapiPanel\Utility\Http\Request;
     use MerapiPanel\Utility\Router;
+    use MerapiPanel\Box\Module\Entity\Proxy;
 
     ini_set("error_log", __DIR__ . "/php-error.log");
-
 
     $config = [
         "START_TIME" => microtime(true), // start time
@@ -18,6 +18,10 @@ namespace MerapiPanel {
     $config = array_merge($config, $loaded_config);
     if (isset($config['$schema'])) {
         unset($config['$schema']); // remove $schema
+    }
+
+    if (isset($config['timezone'])) {
+        date_default_timezone_set($config['timezone']);
     }
     $config = array_combine(array_map(fn($x) => ("__MP_" . preg_replace("/[^A-Z]+/im", "_", strtoupper($x)) . "__"), array_keys($config)), $config); // convert all keys to uppercase
 
@@ -65,18 +69,44 @@ namespace MerapiPanel {
         protected function prepare()
         {
 
-            $service = $_ENV['__MP_SERVICE__'];
-            if (is_array($service)) {
-                foreach ($service as $module) {
-                    $module = Box::module($module)->Service;
-                    error_log("from service: " . $module->path);
+            $_ENV['__MP_ACCESS__'] = 'guest';
+
+            if (isset($_ENV['__MP_ADMIN__']['prefix'])) {
+                if (strpos($this->request->getPath(), $_ENV['__MP_ADMIN__']['prefix']) === 0) {
+                    $_ENV['__MP_ACCESS__'] = "admin";
                 }
-            } else if (is_string($service)) {
-                Box::module($service)->Service;
+            }
+
+
+            $main_services = [];
+            if (isset($_ENV['__MP_SERVICE__'])) {
+                $service = $_ENV['__MP_SERVICE__'];
+                if (is_array($service)) {
+                    foreach ($service as $module) {
+                        /**
+                         * @var Proxy $proxy
+                         */
+                        $proxy = Box::module($module)->Service;
+                        $main_services[] = $proxy;
+                    }
+                } else if (is_string($service)) {
+                    /**
+                     * @var Proxy $proxy
+                     */
+                    $proxy = Box::module($service)->Service;
+                    $main_services[] = $proxy;
+                }
             }
 
             // send signal for prepare to all modules in parent
             parent::initialize();
+
+            foreach ($main_services as $service) {
+                if ($proxy->method_exists("initialize")) {
+                    $service->initialize();
+                }
+            }
+
         }
 
 
@@ -86,15 +116,15 @@ namespace MerapiPanel {
         public function run(): void
         {
 
-            ob_start();
+            // ob_start();
             echo Router::dispatch(Request::getInstance());
-            $output = ob_get_contents();
-            ob_end_clean();
+            //$output = ob_get_contents();
+            //ob_end_clean();
 
             // send signal for shutdown to all modules in parent
             parent::shutdown();
 
-            echo $output;
+            //echo $output;
         }
     }
 }

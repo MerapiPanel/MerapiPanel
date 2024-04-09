@@ -8,9 +8,9 @@ use MerapiPanel\Views\View;
 class Service extends __Fragment {
 	protected Module $module;
 	function onCreate(Module $module) {
-		error_log("Editor::onCreate");
+		// error_log("Editor::onCreate");
 		$this->module = $module;
-		View::getInstance()->addExtension(new EditorExtension());
+		View::getInstance()->getTwig()->addExtension(new EditorExtension());
 	}
 
 	// add other funstion here

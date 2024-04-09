@@ -1,0 +1,62 @@
+{% extends "@setting/base.html.twig" %}
+{% import "@setting/base.html.twig" as base %}
+
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Auth Setting</li>
+{% endblock %}
+
+
+
+{% block page_title %}Auth Setting{% endblock %}
+
+
+{% set form_setting %}
+<div class="row py-3">
+    <div class="col-12 col-lg-6 mb-3">
+        <section class="mb-3 p-3 shadow-sm">
+            <header class="mb-3">
+                <h4 class="fs-2">Auth</h4>
+            </header>
+            <div class="mb-0">
+                <div class="mb-1">
+                    <label class="form-label w-100"><span>cookie name :</span>
+                        <input type="text" class="form-control" name="cookie_name" value="{{ setting.cookie_name }}">
+                    </label>
+                </div>
+                <div class="mb-1">
+                    <label class="form-label w-100"><span>session time :</span>
+                        <input type="text" class="form-control" name="session_time" value="{{ setting.session_time }}">
+                    </label>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="col-12 col-lg-6 mb-3">
+        <section class="mb-3 p-3 shadow-sm">
+            <header class="mb-3">
+                <h4 class="fs-2">Google OAuth</h4>
+            </header>
+            <div class="mb-1">
+                <label class="form-label w-100"><span>Client ID :</span>
+                    <input type="text" class="form-control" name="google_oauth_id" value="{{ setting.google_oauth_id }}">
+                </label>
+            </div>
+            <div class="mb-0">
+                <label class="form-label w-100"><span>Client Secret :</span>
+                    <input type="text" class="form-control" name="google_oauth_secret" value="{{ setting.google_oauth_secret }}">
+                </label>
+            </div>
+        </section>
+    </div>
+</div>
+{% endset %}
+
+
+
+
+{% block form %}
+{{ base.process(form_setting) }}
+{% endblock %}

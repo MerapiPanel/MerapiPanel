@@ -3,14 +3,20 @@
 namespace MerapiPanel\Module\User;
 
 use MerapiPanel\Box;
-use MerapiPanel\Core\Abstract\Module;
+use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Database\DB;
 use PDO;
 
-class Service extends Module
+class Service extends __Fragment
 {
 
     protected $box;
+    protected $module;
+
+    function onCreate(Box\Module\Entity\Module $module) {
+
+        $this->module = $module;
+    }
 
 
     public function setBox(Box $box)

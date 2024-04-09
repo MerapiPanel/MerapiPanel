@@ -2,8 +2,6 @@
 
 namespace MerapiPanel\Utility\Http;
 
-use MerapiPanel\Core\Abstract\MagicAccess;
-
 class Request
 {
 
@@ -193,7 +191,7 @@ class Request
 
 
 
-class RequestHeader extends MagicAccess
+class RequestHeader
 {
     private $stack_data = [];
     public function __construct()
@@ -236,7 +234,7 @@ class RequestHeader extends MagicAccess
 
 
 
-class RequestQuery extends MagicAccess
+class RequestQuery
 {
     private $stack_data = [];
     public function __construct()
@@ -271,7 +269,7 @@ class RequestQuery extends MagicAccess
 
 
 
-class RequestForm extends MagicAccess
+class RequestForm
 {
 
 

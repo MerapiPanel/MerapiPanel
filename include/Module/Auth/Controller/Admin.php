@@ -4,9 +4,7 @@ namespace MerapiPanel\Module\Auth\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
-use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Views\View;
-use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Router;
 
 class Admin extends __Fragment
@@ -24,7 +22,7 @@ class Admin extends __Fragment
 
 
         Router::POST("/settings/auth", "UpdateSetting", self::class);
-        $route = Router::GET("/settings/auth", "index", self::class);
+        $route = Router::GET("/settings/auth", "setting", self::class);
 
         Box::module("Panel")->addMenu([
             "name" => "Auth",
@@ -35,29 +33,14 @@ class Admin extends __Fragment
     }
 
 
-    function index($view)
+    function setting($view)
     {
 
-        return View::render("index.html.twig");
-    }
 
-    function UpdateSetting(Request $data)
-    {
+        $setting = $this->module->getSetting();
 
-        $settings = $this->module->getSetting();
-
-        $body = $data->getRequestBody();
-
-        if (isset($body['session_name'])) {
-            $settings['session_name'] = $body['session_name'];
-        }
-        if (isset($body['session_expired'])) {
-            $settings['session_expired'] = $body['session_expired'];
-        }
-
-        return [
-            "message" => "Settings updated successfully",
-            'code' => 200
-        ];
+        return View::render("setting.html.twig", [
+            "setting" => $setting
+        ]);
     }
 }

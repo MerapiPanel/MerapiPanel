@@ -3,7 +3,6 @@
 namespace MerapiPanel\Views;
 
 use Exception;
-use MerapiPanel\Views\Abstract\Extension;
 use MerapiPanel\Views\Loader;
 use MerapiPanel\Utility\Http\Request;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
@@ -14,14 +13,13 @@ use Twig\TemplateWrapper;
 
 class View
 {
-
     protected $twig;
     protected $loader;
     protected $variables = [];
     private $file;
     protected Intl $intl;
     protected $lang = false;
-    private TemplateWrapper $wrapper;
+    private TemplateWrapper $wrapper; 
 
 
     public function __construct(array|ArrayLoader $loader = [])
@@ -42,6 +40,7 @@ class View
         ]);
 
         $this->twig->enableDebug();
+
         $this->twig->AddExtension(new TranslationExtension($this->intl));
         $this->lang = $this->intl->getLocale();
 
@@ -65,11 +64,6 @@ class View
         $this->addGlobal("api", new ApiServices());
     }
 
-
-
-    function addExtension(Extension $extension) {
-        $this->twig->addExtension($extension);
-    }
 
 
 
@@ -214,7 +208,8 @@ class View
                 $module_name = strtolower($matches[1]);
                 $template = "@$module_name/$file";
 
-                if ($matches[2] !== "guest" && in_array(strtolower($matches[2]), array_keys($_ENV["__MP_ACCESS__"]))) {
+                // if is admin
+                if (strtolower($matches[2]) == 'admin') {
                     if (self::getInstance()->getLoader()->exists("@$module_name/$matches[2]/$file")) {
                         $template = "@$module_name/$matches[2]/$file";
                     }
@@ -223,7 +218,7 @@ class View
                 if (!self::getInstance()->getLoader()->exists($template))
                 // if template not found in current loader
                 {
-                   
+
                     if (self::getInstance()->getLoader()->exists($file)) {
                         $template = "$file";
                     } else {
@@ -238,21 +233,22 @@ class View
                     isset($module_path)
                     ? Path::join($module_path, "Views")
                     : Path::join(
-                            substr($file_path, 0, (strpos($file_path, $matches[1]) + strlen($matches[1]))),
-                            "Views"
-                        )
+                        substr($file_path, 0, (strpos($file_path, $matches[1]) + strlen($matches[1]))),
+                        "Views"
+                    )
                 );
 
                 self::getInstance()->intl->onViewFileLoaded(
                     is_file($template)
                     ? $template
                     : Path::join(
-                            substr($file_path, 0, (strpos($file_path, $matches[1]) + strlen($matches[1]))),
-                            "Views",
-                            (strtolower($matches[2]) !== "guest" ? $matches[2] : ""),
-                            $file
-                        )
+                        substr($file_path, 0, (strpos($file_path, $matches[1]) + strlen($matches[1]))),
+                        "Views",
+                        (strtolower($matches[2]) !== "guest" ? $matches[2] : ""),
+                        $file
+                    )
                 );
+
                 return self::getInstance()->load($template)->render($data);
             }
 

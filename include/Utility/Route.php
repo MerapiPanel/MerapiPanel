@@ -3,22 +3,22 @@
 namespace MerapiPanel\Utility;
 
 use Closure;
-use MerapiPanel\Utility\Middleware\Component;
 
-class Route extends Component
+class Route
 {
 
 
-    const POST   = 'POST';
-    const GET    = 'GET';
-    const PUT    = 'PUT';
+    const POST = 'POST';
+    const GET = 'GET';
+    const PUT = 'PUT';
     const DELETE = 'DELETE';
 
-    protected string $method;
-    protected string $path;
-    protected string|Closure $controller;
+    protected readonly string $method;
+    protected readonly string $path;
+    protected readonly string|Closure $controller;
+    protected array $middlewares = [];
 
-    
+
 
     /**
      * Constructor for the class.
@@ -26,16 +26,17 @@ class Route extends Component
      * @param string $method The HTTP method to be used.
      * @param string $path The path for the request.
      * @param string|Closure $controller The controller to be used.
+     * @param string|Closure $middleware The middleware to be used.
      */
-    public function __construct($method, $path, $controller)
+    public function __construct($method, $path, $controller, $middleware = null)
     {
 
-        parent::__construct();
-
-        $this->method          = $method;
-        $this->path            = $path;
-        $this->controller      = $controller;
-
+        $this->method = $method;
+        $this->path = $path;
+        $this->controller = $controller;
+        if ($middleware) {
+            $this->middlewares = [$middleware];
+        }
     }
 
 
@@ -53,7 +54,7 @@ class Route extends Component
 
 
 
-    
+
     /**
      * Get the path.
      *
@@ -63,12 +64,12 @@ class Route extends Component
     {
 
         return $this->path;
-        
+
     }
 
 
 
-    
+
     /**
      * Retrieves the controller.
      *
@@ -79,6 +80,25 @@ class Route extends Component
 
         return $this->controller;
 
+    }
+
+
+    public function addMiddleware(string|Closure $middleware)
+    {
+
+        $this->middlewares[] = $middleware;
+    }
+
+
+    /**
+     * Get the middleware for the route.
+     *
+     * @return null|string|Closure
+     */
+    public function getMiddlewares(): array
+    {
+
+        return $this->middlewares;
     }
 
     public function __toString()

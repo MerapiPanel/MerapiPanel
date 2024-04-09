@@ -5,16 +5,13 @@ namespace MerapiPanel\Box\Module\Entity {
     use Closure;
     use MerapiPanel\Box\Module\AbstractLoader;
     use MerapiPanel\Box\Container;
+    use MerapiPanel\Database\DB;
+    use PDO;
     use ReflectionObject;
     use ReflectionProperty;
 
-    /**
-     * Description: Module Entity.
-     * @author      ilham b <durianbohong@gmail.com>
-     * @copyright   Copyright (c) 2022 MerapiPanel
-     * @license     https://github.com/MerapiPanel/MerapiPanel/blob/main/LICENSE
-     * @lastUpdate  2024-02-10
-     */
+    
+
     class Module
     {
 
@@ -58,7 +55,7 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
-        public function __get($name): Proxy|Fragment|bool
+        public function __get($name): Proxy|Fragment|null|bool
         {
 
             if (empty($this->fragments[$name])) {
@@ -94,10 +91,74 @@ namespace MerapiPanel\Box\Module\Entity {
 
             return "Module: {$this->namespace}";
         }
+
+
+        public function getSetting()
+        {
+
+            return new Setting($this);
+        }
     }
 
 
-    
+
+
+
+
+    class Setting
+    {
+        protected $stack = [];
+        protected readonly string $moduleName;
+
+
+
+        public function __construct(Module $module)
+        {
+
+            $this->moduleName = strtolower(basename($module->path));
+            $result = DB::table("settings")->select(["name", "value"])->where("name")->like($this->moduleName . ".%")->execute()->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($result as $row) {
+                $name = str_replace($this->moduleName . ".", "", $row['name']);
+                $this->stack[$name] = $row['value'];
+            }
+        }
+
+
+        public function __call($method, $args)
+        {
+
+            if (!isset($this->stack[$method])) {
+                return null;
+            }
+            
+            return $this->stack[$method];
+        }
+
+
+
+
+        public function __get($name)
+        {
+            if (!isset($this->stack[$name])) {
+                return null;
+            }
+            DB::table("settings")->update(["last_access" => date("Y-m-d H:i:s")])->where("name")->equals($this->moduleName . "." . $name)->execute();
+
+            return $this->stack[$name];
+        }
+
+
+
+
+        public function __set($name, $value)
+        {
+            $this->stack[$name] = $value;
+            $query = "REPLACE INTO settings (name, value) VALUES (:name, :value)";
+            DB::instance()->prepare($query)->execute(['name' => $this->moduleName . '.' . $name, 'value' => $value]);
+        }
+    }
+
 
     class Props
     {
@@ -138,21 +199,25 @@ namespace MerapiPanel\Box\Module\Entity {
 
             if (isset($this->listeners['get'][$name])) {
                 foreach ($this->listeners['get'][$name] as $callback) {
-                    $output = $callback($output, $this);
+                    $callback($output);
                 }
             }
             return $output;
         }
 
+
+
         function __set($name, $value)
         {
-            $this->stack[$name] = $value;
+            $value = &$value;
 
             if (isset($this->listeners['set'][$name])) {
                 foreach ($this->listeners['set'][$name] as $callback) {
                     $callback($value);
                 }
             }
+
+            $this->stack[$name] = $value;
         }
 
 
@@ -163,5 +228,3 @@ namespace MerapiPanel\Box\Module\Entity {
     }
 
 }
-
-
