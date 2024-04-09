@@ -20,7 +20,7 @@
 
 {% block content %}
 <div class="container d-flex flex-column flex-grow-1">
-    <form class="d-flex flex-column pb-3 flex-grow-1" id="form-setting" method="post" enctype="multipart/form-data"
+    <form class="d-flex flex-column pb-3 flex-grow-1 needs-validation" id="form-setting" method="post" enctype="multipart/form-data"
         action="{{ '/setting/endpoint/save' | access_path | url }}">
 
         <div class="flex-grow-1">

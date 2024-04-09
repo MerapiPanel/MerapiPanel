@@ -8,6 +8,9 @@ window.$ = $;
 const Box = {
     "form.needs-validation": (el) => {
 
+        console.log(el);
+
+        
         function validateInput(input) {
             const $input = $(input);
             const pattern = $input.attr("pattern");
@@ -46,6 +49,21 @@ const Box = {
                     $input.addClass("is-valid");
                     $input.removeClass("is-invalid");
                 }
+            } else if($input.attr("required")) {
+
+                if ($input.val() === "") {
+                    // is invalid
+                    $input.addClass("is-invalid");
+                    $input.removeClass("is-valid");
+                } else {
+                    // is valid
+                    $input.addClass("is-valid");
+                    $input.removeClass("is-invalid");
+                }
+            } else {
+
+                $input.addClass("is-valid");
+                $input.removeClass("is-invalid");
             }
 
             return $input.hasClass("is-valid");
@@ -81,12 +99,18 @@ const Box = {
 
             this.checkValidity = function () {
                 const data = validateForm(this);
+
+                console.log(data, this);
                 if (!data.valid && data.el) {
                     $(data.el).trigger("focus");
                 }
                 return data.valid;
             }
+
             $(this).on("submit", function (e) {
+
+                console.log(this.checkValidity());
+
                 e.preventDefault();
                 if (!this.checkValidity()) {
                     e.preventDefault();
@@ -119,16 +143,24 @@ $(() => {
     });
 });
 
+
+
 function liveReload() {
 
     const keys = Object.keys(Box);
     for (let i in keys) {
-        let el = $(keys[i]);
-        let callback = Box[keys[i]];
-        if (el.data("init") !== true) {
-            callback(el);
-            el.data("init", true);
-        }
+        $(keys[i]).each(function () {
+            let el = $(this);
+            if (el.data("init") !== true) {
+                Box[keys[i]](el);
+                el.data("init", true);
+            }
+        })
+        // let callback = Box[keys[i]];
+        // if (el.data("init") !== true) {
+        //     callback(el);
+        //     el.data("init", true);
+        // }
     }
 
     setTimeout(() => window.requestAnimationFrame(liveReload), 1000);

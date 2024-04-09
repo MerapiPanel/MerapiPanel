@@ -2,6 +2,7 @@
 
 namespace MerapiPanel\Module\Setting;
 
+// CustomSettingTokenParser.php
 
 use DOMDocument;
 use MerapiPanel\Utility\AES;

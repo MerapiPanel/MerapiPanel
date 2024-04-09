@@ -21,15 +21,27 @@
                 <h4 class="fs-2">Auth</h4>
             </header>
             <div class="mb-0">
-                <div class="mb-1">
+                <div class="mb-3 ">
                     <label class="form-label w-100"><span>cookie name :</span>
-                        <input type="text" class="form-control" name="cookie_name" value="{{ setting.cookie_name }}">
+                        <input 
+                        type="text" 
+                        class="form-control" 
+                        name="cookie_name" 
+                        pattern="^[a-z0-9_-]{4,}$"
+                        value="{{ setting.cookie_name }}">
                     </label>
+                    <div class="alert alert-warning py-1" role="alert">
+                        <div class="alert-heading fs-5">
+                            <i class="fas fa-info-circle"></i> Info
+                        </div>
+                        <small class="alert-text">Cookie name must be <b>unique</b>. By changing this name you and other users will logout on current sessions</small>
+                    </div>
                 </div>
-                <div class="mb-1">
+                <div class="mb-3">
                     <label class="form-label w-100"><span>session time :</span>
                         <input type="text" class="form-control" name="session_time" value="{{ setting.session_time }}">
                     </label>
+                    <small class="ms-1">How long the session will expired in seconds</small>
                 </div>
             </div>
         </section>
@@ -38,6 +50,7 @@
         <section class="mb-3 p-3 shadow-sm">
             <header class="mb-3">
                 <h4 class="fs-2">Google OAuth</h4>
+                <small>Login with google API, leave it blank to turn it off</small>
             </header>
             <div class="mb-1">
                 <label class="form-label w-100"><span>Client ID :</span>
