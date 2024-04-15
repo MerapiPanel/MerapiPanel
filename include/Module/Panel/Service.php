@@ -12,7 +12,8 @@ class Service extends __Fragment
     protected $module;
 
 
-    function onCreate(Box\Module\Entity\Module $module) {
+    function onCreate(Box\Module\Entity\Module $module)
+    {
         $this->module = $module;
     }
 
@@ -46,14 +47,14 @@ class Service extends __Fragment
 
         foreach ($items as $key => $item) {
 
-            $parent = isset ($item['parent']) && !empty ($item['parent']) ? strtolower($item['parent']) : null;
+            $parent = isset($item['parent']) && !empty($item['parent']) ? strtolower($item['parent']) : null;
             // Check if the current item has a "parent" key that matches the provided $parentId.
             if ($parent === $parentId) {
                 // If it does, recursively call the function to find its children.
                 $childItems = $this->buildMenuHierarchy($items, strtolower($item['name']));
 
                 // If the current item has children, add them as the "children" attribute.
-                if (!empty ($childItems)) {
+                if (!empty($childItems)) {
                     $item['childs'] = $childItems;
                 }
 
@@ -82,29 +83,31 @@ class Service extends __Fragment
 
         // error_log("addMenu: " . print_r($menu, true));
 
-        
-        if (empty ($menu['name'])) {
+
+        if (empty($menu['name'])) {
             throw new \Exception("The name of the menu is required");
         }
-        if (empty ($menu['link'])) {
+        if (empty($menu['link'])) {
             throw new \Exception("The link of the menu is required");
         }
 
         $menu['order'] = $menu['order'] ?? count($this->ListMenu) + 1;
 
-        if (!empty ($menu['icon'])) {
+        if (!empty($menu['icon'])) {
             $icon = $menu['icon'];
-            if (strpos($icon, 'fa') === 0) {
-                $menu['icon'] = "<i class='$icon'></i>";
-            } elseif (strpos(trim($icon), '<svg') !== false) {
-                $icon = str_replace('<svg', '<svg width="15" height="16" class="inline-block align-middle"', $icon);
+   
+            if (str_contains($icon, "<svg")) {
+                $menu['icon'] = $this->reBuildSvgIcon($icon);
+            } else if (preg_match('/\bclass=["\'][^"\']*?\bfa-\w+\b[^"\']*?["\']/', $icon, $matches)) {
                 $menu['icon'] = $icon;
+            } else if (str_contains($icon, 'fa-')) {
+                $menu['icon'] = "<i class='$icon'></i>";
             }
         }
 
         $childrens = [];
 
-        if (!empty ($menu['childs'])) {
+        if (!empty($menu['childs'])) {
             $childItems = $menu['childs'];
             assert(is_array($childItems));
 
@@ -113,7 +116,7 @@ class Service extends __Fragment
                 return $item;
             }, $childItems));
         }
-        if (!empty ($menu['children'])) {
+        if (!empty($menu['children'])) {
             $childItems = $menu['children'];
             assert(is_array($childItems));
 
@@ -154,20 +157,19 @@ class Service extends __Fragment
     }
 
 
-    // public function getBase()
-    // {
-    //     return $this->box->getConfig()->get('admin');
-    // }
 
+    private function reBuildSvgIcon($xml)
+    {
+        $_xml = null;
 
-    // public function getAuthedUsers()
-    // {
+        preg_match('/viewBox="([^"]+)"/i', $xml, $matches);
 
-    //     $mod_user = $this->box->module_user();
-    //     $user = $mod_user->getUserByEmail("admin@user.com");
-
-    //     return $user;
-    // }
+        if (isset($matches[1])) {
+            $viewBox = $matches[1];
+            $_xml = preg_replace('/\<svg[^>]+\>/', "<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='currentColor' viewBox='$viewBox'>", $xml);
+        }
+        return $_xml;
+    }
 
 
     private function isCurrent($link)

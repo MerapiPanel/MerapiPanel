@@ -8,8 +8,8 @@
   "author": "il4mb",
   "license": "ISC",
   "dependencies": {
-    "grapesjs": "^0.21.10"
+    "grapesjs": "^0.21.10",
+    "grapesjs-blocks-bootstrap5": "^0.2.31"
   },
-  "devDependencies": {},
   "description": ""
 }

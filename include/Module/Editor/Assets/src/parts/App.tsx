@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 import { Payload } from "../main";
 import { App as EditorApp, Navbar, EditorBody, EditorCanvas, Sidebar } from "@il4mb/merapipanel/editor";
-import { Panel, Btn, LayerManager, BlockManager, StyleManager, TraitsManager } from "@il4mb/merapipanel/editor/partial";
+import { Panel, Btn, LayerManager, BlockManager, StyleManager, TraitsManager, SelectorManager } from "@il4mb/merapipanel/editor/partial";
 import { Editor } from "grapesjs";
-import { CodeEditor } from "@il4mb/merapipanel/editor/plugins";
+import { CodeEditor, Bootstrap5 } from "@il4mb/merapipanel/editor/plugins";
 
 
 export const App = ({ payload }: { payload: Payload }) => {
@@ -28,12 +28,34 @@ export const App = ({ payload }: { payload: Payload }) => {
     return (
         <EditorApp
             deviceManager={{ devices: devices }}
-            plugins={[CodeEditor]}
+            plugins={[CodeEditor, Bootstrap5, (editor) => {
+
+                let isExecuted = false;
+                editor.on('component:add', (addedComponent) => {
+                    if (isExecuted) return;
+                    isExecuted = true;
+                    setTimeout(() => {
+                        // editor.Panels.getButton("sidebar-panel", "traits-btn")?.set("active", true);
+                        // editor.select(addedComponent);
+                        // isExecuted = false;
+                    }, 400);
+                });
+            }]}
+            canvas={{
+                styles: [
+                    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+                ],
+                scripts: [
+                    "https://code.jquery.com/jquery-3.6.0.min.js",
+                    "https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js",
+                    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                ]
+            }}
             pluginsOpts={{
                 [CodeEditor as any]: {
-                    allowScripts: true
-                } as any
-            } as any}>
+                    allowScripts: false
+                } as any,
+            }}>
             <Navbar>
                 <Panel id="sidebar-panel">
                     <Btn
@@ -187,11 +209,12 @@ export const App = ({ payload }: { payload: Payload }) => {
 
             <EditorBody>
                 <Sidebar>
-                    <StyleManager className="" />
+                    <StyleManager className="" >
+                        <SelectorManager/>
+                    </StyleManager>
                     <BlockManager className="hide" />
                     <TraitsManager className="hide" />
                     <LayerManager className="hide" />
-
                 </Sidebar>
 
                 <EditorCanvas />

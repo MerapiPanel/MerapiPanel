@@ -26,7 +26,7 @@
 	<div id="editor"></div>
 	{% endblock %}
 	{% block scripts %}
-	<script src="{{ '@editor/dist/main.js' | assets }}"></script>
+	<script src="{{ '@editor/dist/main.js' | assets }}?v={{ time() }}"></script>
 	{% endblock %}
 	
 </body>

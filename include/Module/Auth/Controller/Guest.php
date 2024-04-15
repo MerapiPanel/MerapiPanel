@@ -38,7 +38,7 @@ class Guest extends __Fragment
 
         $referer = $req->http("referer");
         try {
-        
+
             if (!$referer) {
                 $referer = $_ENV['__MP_' . strtoupper($_ENV["__MP_ACCESS__"]) . '__']['prefix'] . "/";
             }
@@ -58,7 +58,7 @@ class Guest extends __Fragment
             if ($payload) {
 
                 if (!$payload['email_verified']) {
-                    return View::render("response.html.twig",[
+                    return View::render("response.html.twig", [
                         "status" => "error",
                         "message" => "Your email is not verified",
                         "redirect" => $referer
@@ -133,19 +133,27 @@ class Guest extends __Fragment
             return View::render("response.html.twig", [
                 "status" => "danger",
                 "message" => $e->getMessage(),
-                "redirect" =>  $referer ?? "/"
+                "redirect" => $referer ?? "/"
             ]);
         }
     }
 
 
 
-    public function Login($req)
+    public function Login($req, $res)
     {
 
-        setcookie("__MP_GUEST__", "true", time() + 3600, "/");
+
         $email = $req->email();
         $password = $req->password();
+
+        if (!$email || !$password) {
+            return [
+                "code" => 200,
+                "message" => "Please provide email and password.",
+            ];
+        }
+
 
         if ($user = DB::table("users")->select("*")->where("email")->equals($email)->execute()->fetch(PDO::FETCH_ASSOC)) {
 

@@ -542,7 +542,7 @@ class Router
         $response = new Response();
         $response->setHeader('Content-Type', 'application/json');
 
-        $content = ["code" => 304, "message" => "No change", "data" => null];
+        $content = ["code" => 200, "message" => null, "data" => null];
 
         if (is_array($result)) {
 

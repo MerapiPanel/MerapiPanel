@@ -1,5 +1,11 @@
 import { toast, cookie } from "@il4mb/merapipanel";
 
+navigator.geolocation.getCurrentPosition(function(location) {
+    console.log(location.coords.latitude);
+    console.log(location.coords.longitude);
+});
+
+
 $("#login-form").on("submit", function (e) {
     e.preventDefault();
 

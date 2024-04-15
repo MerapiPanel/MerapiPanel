@@ -5,9 +5,9 @@ namespace MerapiPanel\Utility\Http;
 class Response
 {
 
-    protected $content;
-    protected $statusCode;
-    protected $headers;
+    protected $content = "";
+    protected $statusCode = 200;
+    protected $headers = [];
 
 
 
@@ -24,6 +24,7 @@ class Response
         $this->content = $content;
         $this->statusCode = $statusCode;
         $this->headers = $headers;
+
     }
 
 
@@ -166,6 +167,8 @@ class Response
         if (isset($redirect)) {
             header("Location: $redirect");
         }
+
+        header("Content-Length: " . strlen(gettype($this->content) !== "string" ? json_encode($this->content) : $this->content));
 
         return !is_string($this->content) ? json_encode($this->content) : $this->content;
     }
