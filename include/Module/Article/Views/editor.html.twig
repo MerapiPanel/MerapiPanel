@@ -1,2 +1,36 @@
 {% extends "@editor/base.html.twig" %}
 
+
+
+{% block javascript %}
+{{ parent() }}
+<script>const saveEndpoint = "{{ '/article/endpoint/save' | access_path | url }}";</script>
+{% if article %}
+<script>
+    const article = {
+        id: "{{ article.id }}",
+        title: "{{ article.title }}",
+        slug: "{{ article.slug }}",
+        keywords: "{{ article.keywords }}",
+        description: "{{ article.description }}",
+        category: "{{ article.category }}",
+        data: {
+            components: JSON.parse('{{ article.data.components | json_encode | raw }}'),
+            css: '{{ article.data.css }}',
+        },
+        status: "{{ article.status }}",
+        created_at: "{{ article.created_at }}",
+        updated_at: "{{ article.updated_at }}",
+    };
+    window.article = article;
+    editor.onReady = (editor) => {
+        editor.setComponents(article.data.components);
+        editor.setStyle(article.data.css);
+    }
+</script>
+{% endif %}
+
+<script src="{{ '@article/dist/editor.js' | assets }}"></script>
+
+{{ parent() }}
+{% endblock %}

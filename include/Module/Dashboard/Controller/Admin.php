@@ -61,17 +61,6 @@ class Admin extends __Fragment
     }
 
 
-    function widgetFetch(Request $req)
-    {
-
-        $widgets = Box::module("Dashboard")->Widget->getDefindedWidgets();
-        return [
-            "code" => 200,
-            "message" => "success",
-            "data" => $widgets
-        ];
-    }
-
 
     public function widgetSave(Request $req)
     {

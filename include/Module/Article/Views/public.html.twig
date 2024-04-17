@@ -1,23 +1,20 @@
-{% extends "@site/base.html.twig" %}
+{% extends "base.html.twig" %}
 
-{% block stylesheet %}
-<link rel="stylesheet" href="{{ 'dist/index.css' | assets }}">
-{% endblock %}
 
-{% block body %}
-
-<main class="container mx-auto max-w-[1400px] px-3">
-
-    {% block content %}
-    <section>
-        <header class="mb-3">
-            <h1 class="text-3xl">{{ article.title }}</h1>
-        </header>
-        <article>
-            {{ article.content.html | raw }}
-        </article>
-    </section>
-    {% endblock %}
-
-</main>
+{% block content %}
+<section>
+    <header class="mb-3 border-bottom w-100 p-3 mx-auto" style="max-width: 1460px;">
+        <h1 class="text-3xl">{{ article.title }}</h1>
+        <p>
+            Author: {{ article.author }} <br>
+            Date: {{ article.date | date('d.m.Y') }}
+        </p>
+        <p>
+            {{ article.description | truncate(100, '...') }}
+        </p>
+    </header>
+    <article>
+        {{ components | raw }}
+    </article>
+</section>
 {% endblock %}

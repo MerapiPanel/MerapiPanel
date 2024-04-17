@@ -9,72 +9,41 @@ use PDO;
 
 class Service extends __Fragment
 {
-
-    protected $box;
+    
     protected $module;
 
-    function onCreate(Box\Module\Entity\Module $module) {
+
+    function onCreate(Box\Module\Entity\Module $module)
+    {
 
         $this->module = $module;
     }
 
 
-    public function setBox(Box $box)
+
+
+    public function fetch($columns = ["id", "name", "email", "role", "post_date", "update_date"], $where = ["id" => 1])
     {
 
-        $this->box = $box;
-        $this->tryCreateDefaultAdmin();
-    }
+        $SQL = "SELECT " . implode(",", array_map(function ($item) {
+            return "`" . $item . "`";
+        }, $columns)) . " FROM `users` WHERE " . implode(" AND ", array_map(function ($item) {
+            return "`" . $item . "` = ?";
+        }, array_keys($where)));
 
-
-
-    private function tryCreateDefaultAdmin()
-    {
-        $username = 'admin';
-        $email = 'admin@merapi.panel';
-        $password = 'admin123';
-
-        $query = DB::table("users")->select("*")->where("username")->equal($username)->or()->where("email")->equal($email)->execute();
-        if ($query instanceof \PDOStatement) {
-            if (!$query->fetch(PDO::FETCH_ASSOC)) {
-                DB::table("users")->insert([
-                    "username" => $username,
-                    "password" => password_hash($password, PASSWORD_DEFAULT),
-                    "email" => $email,
-                ])->execute();
-            }
-        }
+        $stmt = DB::instance()->prepare($SQL);
+        $stmt->execute(array_values($where));
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 
 
 
-
-    public function getUserByUserName($username)
+    public function fetchAll($columns = ["id", "name", "email", "role", "post_date", "update_date"])
     {
-        return DB::table("users")->select("*")->where("username")->equal($username)->execute()->fetch(PDO::FETCH_ASSOC);
+
+        return DB::table("users")->select($columns)->execute()->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
-    public function getUserById($id)
-    {
-        return DB::table("users")->select("*")->where("id")->equal($id)->execute()->fetch(PDO::FETCH_ASSOC);
-    }
-
-
-
-    public function getUserByEmail($email)
-    {
-        return DB::table("users")->select("*")->where("email")->equal($email)->execute()->fetch(PDO::FETCH_ASSOC);
-    }
-
-
-
-
-
-    public function getAllUser()
-    {
-
-        return DB::table("users")->select(["username", "email", "created_at", "updated_at"])->execute()->fetchAll(PDO::FETCH_ASSOC);
-    }
 }

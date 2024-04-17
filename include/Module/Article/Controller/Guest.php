@@ -3,49 +3,34 @@
 namespace MerapiPanel\Module\Article\Controller;
 
 use MerapiPanel\Box;
-use MerapiPanel\Box\Module\__Fragment;
-use MerapiPanel\Core\Mod\Mod_Controller;
-use MerapiPanel\Core\Views\View;
-use MerapiPanel\Utility\Http\Request;
+use MerapiPanel\Box\Module\__Controller;
 use MerapiPanel\Utility\Router;
+use MerapiPanel\Views\View;
+use MerapiPanel\Utility\Http\Request;
 
-class Guest extends __Fragment
+class Guest extends __Controller
 {
-
-    function onCreate(Box\Module\Entity\Module $module)
-    {
-    }
 
     public function register()
     {
-        // $options = Box::module("article")->getOptions();
-        // $link_format = $options["links_style_format"][$options["link_format"]];
-
-        // $router->get($link_format, "index");
+        Router::GET("/article/{slug}", "index", self::class);
     }
 
     public function index(Request $request)
     {
-        $id = $request->id();
+
         $slug = $request->slug();
-        $category = $request->category();
+        $article = $this->getModule()->fetch(["id", "title", "slug", "keywords", "users.name as author", "category", "description", "data", "status", "post_date", "update_date"], ["slug" => $slug]);
 
-        $articles = Box::module("article")->service()->fetchById($id);
-        if (!isset($articles[0])) {
-            return throw new \Exception("Article not found", 404);
+        if (!$article) {
+            throw new \Exception("Article not found with slug: $slug", 404);
         }
+
+        $components = Box::module("Editor")->Blocks->render($article['data']['components']);
+
         return View::render("public.html.twig", [
-            "article" => $articles[0],
+            "article" => $article,
+            "components" => $components
         ]);
-    }
-
-    public function showarticle(Request $req)
-    {
-
-        $date = $req->date();
-        $id = $req->id();
-        $title = $req->title();
-
-        return View::render("index.html.twig");
     }
 }

@@ -7,18 +7,18 @@ class EditorExtension extends Extension
 {
 
     /**
-     * @param array $option
+     * @param array $config
      * @option needs_environment true
      */
-    function fn_editor_option(\Twig\Environment $env, $options = [])
+    function fn_editor_config(\Twig\Environment $env, $config = [])
     {
 
-        $options_json = json_encode($options);
+        $config_json = json_encode($config);
 
         $content = <<<HTML
         <script type="text/javascript">
-            window.editor = {};
-            window.editor.options = $options_json;
+            const editor = $config_json;
+            window.editor = editor;
         </script>
         HTML;
 

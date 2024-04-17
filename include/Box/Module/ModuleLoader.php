@@ -54,7 +54,7 @@ namespace MerapiPanel\Box\Module {
                             try {
                                 $controller->$accessName->register();
                             } catch (Throwable $e) {
-                                //  error_log("Unable to register controller: $module, " . $e->getMessage());
+                                 error_log("Unable to register controller: $module, " . $e->getMessage());
                             }
                         }
                     }

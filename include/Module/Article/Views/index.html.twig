@@ -24,11 +24,6 @@
 </a>
 {% endblock %}
 
-
-{% set articles = admin.article_fetchAll %}
-{% set categories = admin.article_category.fetchAll %}
-
-
 {% block breadcrumb_item %}
 <li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
 <li class="breadcrumb-item">Article</li>
@@ -38,7 +33,41 @@
 {% block content %}
 
 <div class="container-article gap-3">
-    <div class="article-wrapper" id="article-wrapper" onload="renderArticles()"></div>
+    <div class="d-flex flex-wrap gap-3 flex-grow-1 w-100 p-3 " id="article-wrapper" onload="render(this)">
+
+        <div class="card border-0 shadow-sm" aria-hidden="true" style='width: 100%; max-width: 30rem;'>
+            <div class="card-body">
+                <h5 class="card-title placeholder-glow">
+                    <span class="placeholder col-6"></span>
+                </h5>
+                <p class="card-text placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-6"></span>
+                    <span class="placeholder col-8"></span>
+                </p>
+                <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-6"></a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm" aria-hidden="true" style='width: 100%; max-width: 30rem;'>
+            <div class="card-body">
+                <h5 class="card-title placeholder-glow">
+                    <span class="placeholder col-6"></span>
+                </h5>
+                <p class="card-text placeholder-glow">
+                    <span class="placeholder col-7"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-4"></span>
+                    <span class="placeholder col-6"></span>
+                    <span class="placeholder col-8"></span>
+                </p>
+                <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-6"></a>
+            </div>
+        </div>
+
+    </div>
 
     <div class="category-wrapper">
         <div class="navbar-expand-lg p-0 border-bottom">
@@ -64,7 +93,7 @@
         </div>
     </div>
 </div>
-<div class="inline-flex  max-w-[175px]"></div>
+<div class="inline-flex max-w-[175px]"></div>
 
 <div class="modal hide">
     <div class="modal-dialog">
@@ -140,8 +169,15 @@
 
 {{ parent() }}
 
-<script src="{{ '@template/assets/dist/index.js' | assets }}"></script>
+<script>
+    window.articles = JSON.parse('{{ articles|json_encode|raw }}');
+    window.updateEndpoint = "{{ '/article/endpoint/update' | access_path }}";
+    window.deleteEndpoint = "{{ '/article/endpoint/delete' | access_path }}";
+    window.editURL = "{{ '/article/edit' | access_path }}";
+</script>
 
+<script src="{{ '@article/dist/index.js' | assets }}"></script>
+{#
 <script>
 
     var modal_delete = merapi.Modal.create("Confirmation", "Are you sure you want to delete this article ?");
@@ -403,5 +439,5 @@
         }, 200)
     }
 
-</script>
+</script> #}
 {% endblock %}

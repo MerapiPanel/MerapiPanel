@@ -1,34 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html.twig" %}
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>{% block title %}Editor{% endblock %}</title>
-	{% block styles %}
-	<link rel="stylesheet" href="{{ '/dist/main.css' | assets }}">
-	<link rel="stylesheet" href="{{ '@editor/dist/main.css' | assets }}?v={{ time() }}">
-	{% endblock %}
+{% block stylesheet %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ '@editor/dist/main.css' | assets }}">
+{% endblock %}
 
-	{% block option %}
-	{{ editor_option({
+{% block head_javascript %}
+{{ parent() }}
+{% block config %}
+{{ editor_config({
+	config: {
 		width: "100vw",
 		height: "100vh",
 		container: "#editor",
-		'menubar': false,
-	}) }}
-	{% endblock %}
-</head>
+		canvas: {
+			styles: [
+                    "/vendor/bootstrap/css/bootstrap.min.css" | assets
+                ],
+			scripts: [
+				"/vendor/bootstrap/js/bootstrap.bundle.min.js" | assets
+			]
+		}
+	},
+	fetchBlockURL: "/editor/api/load" | access_path
+}) }}
+{% endblock %}
+{% endblock %}
 
-<body>
 
-	{% block content %}
-	<div id="editor"></div>
-	{% endblock %}
-	{% block scripts %}
-	<script src="{{ '@editor/dist/main.js' | assets }}?v={{ time() }}"></script>
-	{% endblock %}
-	
-</body>
 
-</html>
+
+{% block content %}
+<div id="editor"></div>
+{% endblock %}
+
+
+
+{% block javascript %}
+{{ parent() }}
+<script src="{{ '@editor/dist/main.js' | assets }}?v={{ time() }}"></script>
+{% endblock %}

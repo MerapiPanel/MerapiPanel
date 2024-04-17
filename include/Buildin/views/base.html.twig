@@ -15,11 +15,12 @@
 
 	{% block stylesheet %}
 	<link rel="stylesheet" href="{{ '/dist/main.css' | assets }}">
+	<link rel="stylesheet" href="{{ '/vendor/fontawesome/css/all.min.css' | assets }}">
 	{% endblock %}
 
 
 	{% block head_javascript %}
-	<script src="{{ '/dist/main.js' | assets }}"></script>
+
 	{% endblock %}
 
 	{% endblock %}
@@ -41,7 +42,10 @@
 	</main>
 
 
-	{% block javascript %}{% endblock %}
+	{% block javascript %}
+	<script src="{{ '/vendor/bootstrap/js/bootstrap.bundle.min.js' | assets }}"></script>
+	<script src="{{ '/dist/main.js' | assets }}"></script>
+	{% endblock %}
 	{% endblock %}
 </body>
 

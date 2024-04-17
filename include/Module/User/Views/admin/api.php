@@ -1,11 +1,20 @@
 <?php
 namespace MerapiPanel\Module\User\Views\Admin;
 
-class Api
+use MerapiPanel\Box\Module\__Fragment;
+
+class Api extends __Fragment
 {
+
+    protected $module;
+    function onCreate(\MerapiPanel\Box\Module\Entity\Module $module)
+    {
+        $this->module = $module;
+    }
+
 
     public function fetchAll()
     {
-        return $this->getBox()->Module_User()->fetchAll();
+        return $this->module->fetchAll();
     }
 }

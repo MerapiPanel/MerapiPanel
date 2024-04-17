@@ -270,7 +270,7 @@ class RequestForm
     public function __construct()
     {
 
-        if (strtolower($_SERVER['REQUEST_METHOD']) == "post") {
+        if (strtoupper($_SERVER['REQUEST_METHOD']) == "POST") {
             $this->dataFromPost();
         } else
             $this->dataFromPut();

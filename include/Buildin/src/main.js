@@ -1,16 +1,8 @@
 import "../scss/app.scss";
-import "../vendor/fontawesome/css/all.min.css";
-import $ from "jquery";
-import { toast } from "@il4mb/merapipanel";
-
-window.$ = $;
 
 const Box = {
     "form.needs-validation": (el) => {
 
-        console.log(el);
-
-        
         function validateInput(input) {
             const $input = $(input);
             const pattern = $input.attr("pattern");
@@ -18,14 +10,20 @@ const Box = {
             if (pattern) {
                 const regex = new RegExp(pattern);
 
-                if (!regex.test($input.val())) {
-                    // is invalid
+                if (!$input[0].checkValidity()) {
+                    // is valid
                     $input.addClass("is-invalid");
                     $input.removeClass("is-valid");
                 } else {
-                    // is valid
-                    $input.addClass("is-valid");
-                    $input.removeClass("is-invalid");
+                    if (!regex.test($input.val())) {
+                        // is invalid
+                        $input.addClass("is-invalid");
+                        $input.removeClass("is-valid");
+                    } else {
+                        // is valid
+                        $input.addClass("is-valid");
+                        $input.removeClass("is-invalid");
+                    }
                 }
 
             } else if ($input.attr("minlength") || $input.attr("maxlength")) {
@@ -49,7 +47,7 @@ const Box = {
                     $input.addClass("is-valid");
                     $input.removeClass("is-invalid");
                 }
-            } else if($input.attr("required")) {
+            } else if ($input.attr("required")) {
 
                 if ($input.val() === "") {
                     // is invalid
@@ -99,8 +97,6 @@ const Box = {
 
             this.checkValidity = function () {
                 const data = validateForm(this);
-
-                console.log(data, this);
                 if (!data.valid && data.el) {
                     $(data.el).trigger("focus");
                 }
@@ -108,9 +104,6 @@ const Box = {
             }
 
             $(this).on("submit", function (e) {
-
-                console.log(this.checkValidity());
-
                 e.preventDefault();
                 if (!this.checkValidity()) {
                     e.preventDefault();
@@ -118,6 +111,17 @@ const Box = {
                 }
             })
         });
+    },
+    "[onload]": (el) => {
+        el.each(function () {
+
+            const onload = $(this).attr("onload");
+            function evalInContext() {
+                eval(onload);
+            }
+            evalInContext.call(this);
+
+        })
     }
 }
 
@@ -145,6 +149,7 @@ $(() => {
 
 
 
+
 function liveReload() {
 
     const keys = Object.keys(Box);
@@ -156,11 +161,6 @@ function liveReload() {
                 el.data("init", true);
             }
         })
-        // let callback = Box[keys[i]];
-        // if (el.data("init") !== true) {
-        //     callback(el);
-        //     el.data("init", true);
-        // }
     }
 
     setTimeout(() => window.requestAnimationFrame(liveReload), 1000);

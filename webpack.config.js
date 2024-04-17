@@ -33,11 +33,11 @@ const entry = () => {
 }
 
 module.exports = {
-    mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
+    mode: 'production',
     entry: entry(),
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, "./include/buildin/dist"),
+        path: path.resolve(__dirname, "./include/buildin/dist")
     },
 
     plugins: [
@@ -91,5 +91,5 @@ module.exports = {
         ignored: "/node_modules/*", // Exclude node_modules directory from watching
         aggregateTimeout: 300, // Delay before rebuilding (in milliseconds)
         poll: 1000, // Check for changes every second
-    },
+    }
 };

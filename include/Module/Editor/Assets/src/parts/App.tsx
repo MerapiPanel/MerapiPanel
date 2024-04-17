@@ -1,12 +1,110 @@
 import React, { createContext, useContext, useState } from "react";
 import { Payload } from "../main";
-import { App as EditorApp, Navbar, EditorBody, EditorCanvas, Sidebar } from "@il4mb/merapipanel/editor";
+import { App as EditorApp, Navbar, EditorBody, EditorCanvas, Sidebar, LoadingScreen, LoadingAction } from "@il4mb/merapipanel/editor";
 import { Panel, Btn, LayerManager, BlockManager, StyleManager, TraitsManager, SelectorManager } from "@il4mb/merapipanel/editor/partial";
-import { Editor } from "grapesjs";
+import { AddComponentTypeOptions, BlockProperties, Editor } from "grapesjs";
 import { CodeEditor, Bootstrap5 } from "@il4mb/merapipanel/editor/plugins";
+import $ from "jquery";
+import { http, toast } from "@il4mb/merapipanel";
+
+
+interface BlockDefine {
+    extend: string
+    name: string
+    catergory: string
+    label: string
+    media: string
+    index: string
+    defaults: [string, string]
+}
+
+const createBlockConfig = (blockDefine: BlockDefine): BlockProperties => {
+
+    return {
+        label: blockDefine.label || blockDefine.name,
+        media: blockDefine.media || '<i class="fa-regular fa-face-smile fa-3x"></i>',
+        category: blockDefine.catergory || "Basic",
+        content: {
+            type: blockDefine.name
+        }
+    }
+}
+
+
+const ___InitRegisterBlocks = async (editor: Editor, blocks: any[], setLoadingWidth: React.Dispatch<React.SetStateAction<number>>) => {
+
+    const { Components, BlockManager } = editor;
+    const blockSize = blocks.length;
+    let loaded = 0;
+
+//    console.clear();
+
+    for (const i in blocks) {
+
+        const blockDefine: BlockDefine = blocks[i];
+
+        (window as any).BlockRegister = (modelCallback: any) => {
+
+            const regType: AddComponentTypeOptions = {
+                extend: blockDefine.extend || "",
+                model: {
+                    defaults: {
+                        components: {
+                            tagName: "div",
+                            components: blockDefine.name
+                        },
+                        ...blockDefine.defaults
+                    },
+                    ...modelCallback,
+                    updated(prop, val, prev) {
+
+                        if (prop === "components") {
+                            this.view?.render();
+                        }
+                    }
+                },
+                view: {
+                    render() {
+                        const components = this.model.components();
+
+                        if (!components || components.length <= 0) {
+                            this.el.innerHTML = "";
+                            this.el.appendChild($(`<div class='text-center py-3' style="opacity: 0.5; font-size: 0.7em">
+                                <div>Drag components here</div>
+                                <i>${this.model.get('type')}</i>
+                            </div>`)[0]);
+                        } else {
+                            this.renderChildren();
+                        }
+
+
+                        return this;
+                    }
+                }
+            };
+
+            Components.addType(blockDefine.name, regType);
+            BlockManager.add(blockDefine.name, createBlockConfig(blockDefine));
+        }
+        await import(/* webpackIgnore: true */ blockDefine.index);
+
+        loaded++;
+        let persentage = (loaded / blockSize) * 40;
+        setLoadingWidth(__current => __current + persentage);
+    }
+
+    editor.load();
+    setTimeout(() => setLoadingWidth(100), 1000);
+
+}
+
 
 
 export const App = ({ payload }: { payload: Payload }) => {
+
+    const [loadingWidth, setLoadingWidth] = useState(10);
+    const [loadinfError, setLoadingError] = useState(false);
+    const [loadingActionShow, setLoadingActionShow] = useState(false);
 
     const devices = [
         {
@@ -23,39 +121,69 @@ export const App = ({ payload }: { payload: Payload }) => {
             width: "320px",
             widthMedia: "480px",
         },
-    ]
+    ];
+
+
+    const onReadyHandler = (editor: Editor) => {
+
+        setLoadingWidth(35);
+        try {
+
+            setTimeout(() => {
+                if (typeof payload.onReady === "function") {
+                    payload.onReady(editor);
+                }
+            }, 50)
+
+            if (payload.fetchBlockURL) {
+                fetch(payload.fetchBlockURL).then(res => res.json()).then(res => ___InitRegisterBlocks(editor, res.data, setLoadingWidth))
+            } else {
+                throw new Error('fetchBlockURL is not define');
+            }
+
+        } catch (error) {
+            console.error(error);
+            setLoadingError(true);
+        }
+    }
+
+    const handleSave = (editor: Editor) => {
+        setLoadingActionShow(true);
+
+
+        const data = {
+            components: JSON.parse(JSON.stringify(editor.getComponents())),
+            css: editor.getCss(),
+        }
+
+        const binder: any = {
+            callback: payload.callback
+        }
+
+        new Promise((resolve, reject) => {
+            binder.reject = reject;
+            binder.resolve = resolve;
+            binder.editor = editor;
+            binder.data = data;
+            binder.callback(data);
+
+        }).catch((error: any) => {
+
+            toast(typeof error === "string" ? error : (error.message || error.statusText || "Error"), 5, 'text-danger');
+
+
+        }).finally(() => {
+            setLoadingActionShow(false);
+        })
+    }
+
 
     return (
         <EditorApp
             deviceManager={{ devices: devices }}
-            plugins={[CodeEditor, Bootstrap5, (editor) => {
-
-                let isExecuted = false;
-                editor.on('component:add', (addedComponent) => {
-                    if (isExecuted) return;
-                    isExecuted = true;
-                    setTimeout(() => {
-                        // editor.Panels.getButton("sidebar-panel", "traits-btn")?.set("active", true);
-                        // editor.select(addedComponent);
-                        // isExecuted = false;
-                    }, 400);
-                });
-            }]}
-            canvas={{
-                styles: [
-                    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-                ],
-                scripts: [
-                    "https://code.jquery.com/jquery-3.6.0.min.js",
-                    "https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js",
-                    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                ]
-            }}
-            pluginsOpts={{
-                [CodeEditor as any]: {
-                    allowScripts: false
-                } as any,
-            }}>
+            plugins={payload.config.plugins || [CodeEditor, Bootstrap5, (editor) => editor.onReady(onReadyHandler)]}
+            canvas={(payload.config.canvas || {}) as any}
+            pluginsOpts={payload.config.pluginsOptions || {}}>
             <Navbar>
                 <Panel id="sidebar-panel">
                     <Btn
@@ -185,7 +313,8 @@ export const App = ({ payload }: { payload: Payload }) => {
                         </svg>
                     </Btn>
                     <Btn id="save-btn"
-                        command={{ run: () => { }, stop: () => { } }}>
+                        togglable={false}
+                        command={{ run: handleSave }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M11 2H9v3h2z" />
                             <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z" />
@@ -210,7 +339,7 @@ export const App = ({ payload }: { payload: Payload }) => {
             <EditorBody>
                 <Sidebar>
                     <StyleManager className="" >
-                        <SelectorManager/>
+                        <SelectorManager />
                     </StyleManager>
                     <BlockManager className="hide" />
                     <TraitsManager className="hide" />
@@ -219,6 +348,9 @@ export const App = ({ payload }: { payload: Payload }) => {
 
                 <EditorCanvas />
             </EditorBody>
+
+            <LoadingScreen width={loadingWidth} error={loadinfError} />
+            <LoadingAction show={loadingActionShow} autohide={100} />
         </EditorApp>
     )
 }

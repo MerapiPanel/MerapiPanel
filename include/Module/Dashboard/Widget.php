@@ -36,32 +36,7 @@ class Widget extends __Fragment
         return $classNames;
     }
 
-
-
-    public function getDefindedWidgets()
-    {
-        $classNames = $this->scanProvideWidgets();
-        $widgets = [];
-        foreach ($classNames as $className) {
-
-            $moduleName = Module::getModuleName($className);
-            $reflector = new \ReflectionClass($className);
-            $methods = $reflector->getMethods(\ReflectionMethod::IS_FINAL);
-            foreach ($methods as $method) {
-
-                $doc = self::extractDoc($method->getDocComment());
-                $widgets[] = array_merge($doc, [
-                    "name" => strtolower($moduleName . ":" . $method->getName()),
-                    "category" => $moduleName,
-                ]);
-            }
-        }
-
-        return $widgets;
-    }
-
-
-
+    
 
     public function renderWidget($name)
     {

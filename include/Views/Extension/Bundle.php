@@ -71,4 +71,15 @@ class Bundle extends Extension
 
         return $blockContent;
     }
+
+
+    public function fl_truncate($text, $length, $ellipsis = '...')
+    {
+        if (mb_strlen($text) <= $length) {
+            return $text;
+        }
+
+        // Truncate the text to the specified length and append ellipsis
+        return rtrim(mb_substr($text, 0, $length)) . $ellipsis;
+    }
 }

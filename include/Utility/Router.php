@@ -51,13 +51,13 @@ class Router
 
         $file = $caller["file"];
         if (is_string($method)) {
-            if(PHP_OS == "WINNT"){
+            if (PHP_OS == "WINNT") {
                 preg_match("/\\\\Module\\\\(.*)\\\\.*\\\\(.*)\.php$/", $file, $matches);
             } else {
                 preg_match("/\/Module\/(.*)\/.*\/(.*)\.php$/", $file, $matches);
             }
 
-            if(isset($matches[1]) && isset($matches[2])) {
+            if (isset($matches[1]) && isset($matches[2])) {
                 $className = "\\MerapiPanel\\Module\\{$matches[1]}\\Controller\\{$matches[2]}";
                 if (class_exists($className)) {
                     return $className . "@" . $method;
@@ -68,6 +68,24 @@ class Router
         return null;
     }
 
+    private static function resolvePath($path, $caller)
+    {
+
+        $file = $caller["file"];
+        $middleware = null;
+
+        if (isset($_ENV['__MP_ACCESS__']) && strtolower(basename($file, ".php")) === strtolower($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
+
+            $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
+            $path = $adminPrefix . "/" . trim($path, "/");
+            if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
+                $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
+            }
+
+        }
+
+        return [$path, $middleware];
+    }
 
 
 
@@ -97,13 +115,7 @@ class Router
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                }
-            }
+            [$path, $middleware] = self::resolvePath($path, $caller);
         }
 
         $route = new Route(Route::GET, $path, $callback, $middleware);
@@ -140,13 +152,7 @@ class Router
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                }
-            }
+            [$path, $middleware] = self::resolvePath($path, $caller);
         }
 
 
@@ -184,13 +190,7 @@ class Router
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                }
-            }
+            [$path, $middleware] = self::resolvePath($path, $caller);
         }
 
         $route = new Route(Route::PUT, $path, $callback, $middleware);
@@ -226,13 +226,7 @@ class Router
             }
 
 
-            if (isset($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-                $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-                $path = $adminPrefix . "/" . trim($path, "/");
-                if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                    $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
-                }
-            }
+            [$path, $middleware] = self::resolvePath($path, $caller);
         }
 
 
@@ -303,6 +297,8 @@ class Router
             // This is for descending order; reverse the operands for ascending order
             return ($lengthA < $lengthB) ? 1 : -1;
         });
+
+        error_log(print_r($stack, true));
 
 
 
@@ -413,7 +409,7 @@ class Router
     }
 
 
-    
+
 
     /**
      * Handles the request and returns the response.
