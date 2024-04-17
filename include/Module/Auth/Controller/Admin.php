@@ -22,7 +22,6 @@ class Admin extends __Fragment
     public function register()
     {
 
-
         Router::POST("/settings/auth", "UpdateSetting", self::class);
         $route = Router::GET("/settings/auth", "setting", self::class);
         $logout = Router::GET("/auth/logout", "logout", self::class);
@@ -42,6 +41,7 @@ class Admin extends __Fragment
         ]);
     }
 
+
     function logout(Request $req, Response $res)
     {
         $referer = $req->http("referer");
@@ -55,6 +55,7 @@ class Admin extends __Fragment
         return $res;
     }
 
+    
     function setting($view)
     {
 

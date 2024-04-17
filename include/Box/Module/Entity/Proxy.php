@@ -4,6 +4,7 @@ namespace MerapiPanel\Box\Module\Entity {
     use Closure;
     use MerapiPanel\Box\Module\__Fragment;
     use ReflectionClass;
+    use ReflectionParameter;
 
     class Proxy extends Fragment
     {
@@ -21,8 +22,8 @@ namespace MerapiPanel\Box\Module\Entity {
             unset($this->childrens);
 
             $this->className = $this->resolveClassName();
-            $reflector       = new ReflectionClass($this->className);
-            $this->instance  = $reflector->newInstanceWithoutConstructor();
+            $reflector = new ReflectionClass($this->className);
+            $this->instance = $reflector->newInstanceWithoutConstructor();
 
             if (!($this->instance instanceof __Fragment)) {
                 throw new \Exception("The class " . $this->className . " should extend " . __Fragment::class);
@@ -30,9 +31,7 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
             if (method_exists($this->instance, "onCreate")) {
-                //ob_start();
                 $this->instance->onCreate($this->getModule());
-                //ob_end_clean();
             }
         }
 
@@ -85,10 +84,23 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
-        public function method_exists($method) {
+
+        public function method_params($method)
+        {
+
+            $reflectionMethod = new \ReflectionMethod($this->className, $method);
+            return $reflectionMethod->getParameters();
+        }
+
+
+
+        public function method_exists($method)
+        {
 
             return method_exists($this->instance, $method);
         }
+
+        
 
         public function __toString()
         {

@@ -162,6 +162,10 @@ namespace MerapiPanel\Box\Module\Entity {
         public function __toString() {
             return json_encode($this->stack);
         }
+
+        public function __toArray() {
+            return $this->stack;
+        }
     }
 
 

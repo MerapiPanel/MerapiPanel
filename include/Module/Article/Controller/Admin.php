@@ -16,15 +16,22 @@ class Admin extends __Controller
     function register()
     {
 
+        $setting = $this->module->getSetting();
+        if (empty($setting->path_edit) || empty($setting->path_create)) {
+            $setting->path_edit = "/article/edit/{id}";
+            $setting->path_create = "/article/create";
+        }
+
+
         Router::POST("/article/endpoint/save", "endpointSave", self::class);
         Router::DELETE("/article/endpoint/delete", "endpointDelete", self::class);
         Router::POST("/article/endpoint/update", "endpointUpdate", self::class);
 
         $index = Router::GET("/article", "index", self::class);
-        
-        Router::GET("/article/create", "create", self::class);
 
-        $new = Router::GET("/article/edit/{id}", "edit", self::class);
+        Router::GET($setting->path_create, "create", self::class);
+        Router::GET($setting->path_edit, "edit", self::class);
+
         $options = Router::GET("/article/options", "options", self::class);
         $category = Router::GET("/article/category", "category");
 
@@ -70,7 +77,15 @@ class Admin extends __Controller
     function create()
     {
 
-        return View::render("editor.html.twig");
+        $setting = $this->module->getSetting();
+
+        return View::render("editor.html.twig", [
+            "settings" => [
+                "prefix" => $_ENV['__MP_' . strtoupper($_ENV["__MP_ACCESS__"]) . '__']['prefix'],
+                "path_edit" => $setting->path_edit,
+                "path_create" => $setting->path_create
+            ]
+        ]);
     }
 
 
@@ -79,10 +94,11 @@ class Admin extends __Controller
 
         $id = $request->id();
         $article = Box::module("Article")->fetchOne(["id", "title", "slug", "keywords", "category", "description", "data", "status", "post_date", "update_date"], $id);
-        
-        if(!$article) {
+
+        if (!$article) {
             throw new \Exception("Article not found with id: $id", 404);
         }
+        $setting = $this->module->getSetting();
 
         return View::render("editor.html.twig", [
             "article" => [
@@ -99,6 +115,11 @@ class Admin extends __Controller
                 "status" => $article['status'],
                 "post_date" => $article['post_date'],
                 "update_date" => $article['update_date']
+            ],
+            "settings" => [
+                "prefix" => $_ENV['__MP_' . strtoupper($_ENV["__MP_ACCESS__"]) . '__']['prefix'],
+                "path_edit" => $setting->path_edit,
+                "path_create" => $setting->path_create
             ]
         ]);
     }
@@ -110,7 +131,7 @@ class Admin extends __Controller
     function endpointSave(Request $req)
     {
 
-        if(!empty($req->id())) {
+        if (!empty($req->id())) {
             return $this->endpointUpdate($req);
         }
         $title = $req->title();
@@ -120,7 +141,7 @@ class Admin extends __Controller
         $description = $req->description();
         $data = $req->data();
         $id = Util::uniq(12);
-        $status = 1;
+        $status = $req->status() ? 1 : 0;
         $author = null;
         $post_date = date("Y-m-d H:i:s");
         $update_date = date("Y-m-d H:i:s");
@@ -147,7 +168,7 @@ class Admin extends __Controller
         }
         $author = $user['id'];
 
-        
+
 
 
         $SQL = "INSERT INTO articles (id, title, slug, keywords, category, description, data, status, author, post_date, update_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

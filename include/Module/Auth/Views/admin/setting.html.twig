@@ -1,6 +1,4 @@
 {% extends "@setting/base.html.twig" %}
-{% import "@setting/base.html.twig" as base %}
-
 
 
 {% block breadcrumb_item %}
@@ -71,5 +69,5 @@
 
 
 {% block form %}
-{{ base.process(form_setting) }}
+{{ _self.process(form_setting) }}
 {% endblock %}

@@ -1,4 +1,5 @@
-import { http, toast } from "@il4mb/merapipanel";
+import * as toast from "@il4mb/merapipanel/toast";
+import * as http from "@il4mb/merapipanel/http";
 
 const form = $(`<form class="needs-validation">`)
     .append(
@@ -44,14 +45,14 @@ const form = $(`<form class="needs-validation">`)
             .append(
                 $(`<label class='d-block'>`)
                     .append("Enter category:")
-                    .append(`<input class="form-control" type="text" name="category" placeholder="Enter category" value="${window.article?.category}">`)
+                    .append(`<input class="form-control" type="text" name="category" placeholder="Enter category" value="${window.article?.category || ''}">`)
             )
     )
     .append(
         $(`<div class='mb-3'>`)
             .append(
                 $(`<label class='d-block form-check'>`)
-                    .append(`<input class='form-check-input' type="checkbox" name="status" ${article.status ? 'checked' : ''}>`)
+                    .append(`<input class='form-check-input' type="checkbox" name="status" ${window.article?.status ? 'checked' : ''}>`)
                     .append(`<span class='form-check-label'>Publish</span>`)
             )
     )
@@ -65,6 +66,8 @@ const form = $(`<form class="needs-validation">`)
 $(form).find('[name="title"]').on('input', function () {
     $(form).find('[name="slug"]').val($(this).val().split(/\s+/).filter((w) => w.length > 0).join('-').toLowerCase());
 });
+
+
 
 editor.callback = function (data) {
 
@@ -108,7 +111,7 @@ editor.callback = function (data) {
         const description = form.find('[name="description"]').val();
         const status = form.find('[name="status"]').is(':checked') ? 1 : 0;
 
-        http.post(saveEndpoint, Object.assign((window.article?.id ? {id: window.article?.id} : {}), {
+        http.post(saveEndpoint, Object.assign((window.article?.id ? { id: window.article?.id } : {}), {
             title,
             slug,
             keywords,
@@ -116,9 +119,23 @@ editor.callback = function (data) {
             description,
             data: JSON.stringify(this.data),
             status,
-        })).then((data) => {
-            toast(data.message ?? "Saved", 5, 'text-success');
-            this.resolve(data);
+        })).then((response) => {
+
+            if (window.article) {
+                window.article.id = response.data.id;
+            } else {
+                window.article = response.data;
+            }
+
+            toast(response.message ?? "Saved", 5, 'text-success');
+            if (window.history.replaceState && window.article?.settings?.prefix && window.article?.settings?.path_edit) {
+                const target = window.article.settings.prefix + window.article.settings.path_edit.replace("{id}", response.data.id);
+
+                window.history.replaceState(null, null, target);
+            }
+
+            this.resolve(response);
+
         }).catch((err) => this.reject(err))
     });
 }

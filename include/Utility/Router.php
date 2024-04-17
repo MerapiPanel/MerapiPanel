@@ -297,8 +297,6 @@ class Router
             return ($lengthA < $lengthB) ? 1 : -1;
         });
 
-        error_log(print_r($stack, true));
-
 
 
         /**

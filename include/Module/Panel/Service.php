@@ -29,7 +29,7 @@ class Service extends __Fragment
         $unique = [];
         foreach ($listMenu as $menu) {
 
-            if ($this->isCurrent($menu['link'])) {
+            if (isset($menu['link']) && $this->isCurrent($menu['link'])) {
                 $menu['active'] = true;
             }
             $unique[strtolower($menu['name'])] = $menu;
@@ -81,14 +81,9 @@ class Service extends __Fragment
         ]
     ) {
 
-        // error_log("addMenu: " . print_r($menu, true));
-
 
         if (empty($menu['name'])) {
             throw new \Exception("The name of the menu is required");
-        }
-        if (empty($menu['link'])) {
-            throw new \Exception("The link of the menu is required");
         }
 
         $menu['order'] = $menu['order'] ?? count($this->ListMenu) + 1;
@@ -128,6 +123,16 @@ class Service extends __Fragment
         foreach ($childrens as $child) {
             $this->addMenu($child);
         }
+
+        // if(isset($menu['parent'])) {
+        //     $parent_key = array_search($menu['parent'], array_column($this->ListMenu, 'name'));
+        //     if($parent_key !== false) {
+        //         $this->ListMenu[$parent_key]['childs'][] = $menu;
+        //     } else {
+        //         $this->ListMenu[] = $menu;
+        //     }
+        //     return;
+        // }
 
         $this->ListMenu[] = $menu;
     }

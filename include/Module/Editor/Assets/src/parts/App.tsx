@@ -5,7 +5,8 @@ import { Panel, Btn, LayerManager, BlockManager, StyleManager, TraitsManager, Se
 import { AddComponentTypeOptions, BlockProperties, Editor } from "grapesjs";
 import { CodeEditor, Bootstrap5 } from "@il4mb/merapipanel/editor/plugins";
 import $ from "jquery";
-import { http, toast } from "@il4mb/merapipanel";
+import * as http from "@il4mb/merapipanel/http";
+import { toast } from "@il4mb/merapipanel/toast";
 
 
 interface BlockDefine {
@@ -37,7 +38,7 @@ const ___InitRegisterBlocks = async (editor: Editor, blocks: any[], setLoadingWi
     const blockSize = blocks.length;
     let loaded = 0;
 
-//    console.clear();
+    //    console.clear();
 
     for (const i in blocks) {
 
@@ -169,8 +170,7 @@ export const App = ({ payload }: { payload: Payload }) => {
 
         }).catch((error: any) => {
 
-            toast(typeof error === "string" ? error : (error.message || error.statusText || "Error"), 5, 'text-danger');
-
+            toast((typeof error === "string" ? error : (error.message || error.statusText || "Error")), 5, 'text-danger');
 
         }).finally(() => {
             setLoadingActionShow(false);
@@ -183,6 +183,7 @@ export const App = ({ payload }: { payload: Payload }) => {
             deviceManager={{ devices: devices }}
             plugins={payload.config.plugins || [CodeEditor, Bootstrap5, (editor) => editor.onReady(onReadyHandler)]}
             canvas={(payload.config.canvas || {}) as any}
+            storageManager={{ autosave: false }}
             pluginsOpts={payload.config.pluginsOptions || {}}>
             <Navbar>
                 <Panel id="sidebar-panel">

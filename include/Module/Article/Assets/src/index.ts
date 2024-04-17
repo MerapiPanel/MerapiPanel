@@ -1,4 +1,7 @@
-import { Modal, ModalTypeInterface, dialog, http, toast } from "@il4mb/merapipanel";
+import { Modal, ModalTypeInterface } from "@il4mb/merapipanel/modal";
+import * as http from "@il4mb/merapipanel/http";
+import * as dialog from "@il4mb/merapipanel/dialog";
+import { toast } from "@il4mb/merapipanel/toast";
 
 const articles: any[] = ((window as any).articles || []);
 const updateEndpoint = (window as any).updateEndpoint;
@@ -167,7 +170,7 @@ function QuickEdit(article, container) {
         http.post(updateEndpoint, articles[key]).then((res, text, xhr) => {
             if (xhr.status === 200) {
                 toast("Article updated", 5, 'text-success');
-                modal.hide();
+                // modal.hide();
             } else {
                 toast("Failed to update article", 5, 'text-danger');
             }

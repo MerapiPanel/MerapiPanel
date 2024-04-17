@@ -91,7 +91,9 @@ body {
     }
 
     &:has(.sidebar) {
-        margin-left: 220px;
+        & .panel-main {
+            margin-left: 220px;
+        }
     }
 
     & .sidebar-toggle {
@@ -124,7 +126,9 @@ body {
 
     @media screen and (max-width: 1024px) {
         &:has(.sidebar) {
-            margin-left: 0px;
+            & .panel-main {
+                margin-left: 0px;
+            }
             & .sidebar-toggle {
                 display: block !important;
                 margin: 0.15rem;

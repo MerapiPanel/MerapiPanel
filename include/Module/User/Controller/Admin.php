@@ -18,21 +18,35 @@ class Admin extends __Fragment
         $this->module = $module;
     }
 
-
-
     public function register()
     {
 
         $index = Router::GET("/users", "index", self::class);
+        $avatar_setting = Router::GET("/settings/users/avatar", "avatar", self::class);
 
-        $panel = Box::module("Panel");
-        $site = Box::module("Site");
+        Box::module("Panel")->addMenu([
+            "parent" => "settings",
+            "name" => "Users Settings",
+            "children" => [
+                [
+                    "name" => "Avatar",
+                    "link" => $avatar_setting
+                ]
+            ]
+        ]);
 
-        $panel->addMenu([
+        Box::module("Panel")->addMenu([
             "name" => "Users",
             "link" => $index,
             'icon' => 'fa-solid fa-user'
         ]);
+    }
+
+
+    function avatar($req) {
+
+
+        return View::render("setting_avatar.html.twig");
     }
 
     public function index($req)

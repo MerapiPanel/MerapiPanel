@@ -1,55 +1,29 @@
+{% macro render_menu(menu) %}
+
+    {% for item in menu %}
+    <li class="nav-item{{ item.active ? ' active' : '' }}">
+        <a {% if item.link %}href="{{ item.link }}"{% endif %}>
+            {{ item.icon | raw }} {{item.name}}
+        </a>
+        {% if item.childs %}
+        <ul class="nav-menu">
+            {{ _self.render_menu(item.childs) }}
+        </ul>
+        {% endif %}
+        
+    </li>
+    {% endfor %}
+{% endmacro %}
+
 <nav class="sidebar" id="sidebar">
     <div class="sidebar-container">
-
         <button class="sidebar-close" onclick="closeNav()"></button>
-
         <div class="sidebar-header">
             <img width="110" height="65" src="{{ '@panel/assets/logo.svg?v=1' | assets }}" alt="">
         </div>
-
+        
         <ul class="nav-menu">
-
-            {% for item in api.Panel.listmenu %}
-
-            <li class="nav-item{{ item.active ? ' active' : '' }}">
-
-                <a href="{{ item.link }}">
-                    {{ item.icon | raw }} {{item.name}}
-                </a>
-
-                {% if item.childs %}
-                <ul class="nav-menu">
-
-                    {% for child in item.childs %}
-                    <li class="nav-item{{ child.active ? ' active' : '' }}">
-                        <a href="{{ child.link }}">
-                            {{ child.icon| raw }} {{child.name}}
-                        </a>
-
-                        {% if child.childs %}
-                        <ul class="nav-menu">
-
-                            {% for child in child.childs %}
-                            <li class="nav-item{{ child.active ? ' active' : '' }}">
-                                <a href="{{ child.link }}">
-                                    {{ child.icon | raw }} {{child.name}}
-                                </a>
-                            </li>
-                            {% endfor %}
-
-                        </ul>
-                        {% endif %}
-
-
-                    </li>
-                    {% endfor %}
-
-                </ul>
-                {% endif %}
-
-            </li>
-            {% endfor %}
-
+            {{ _self.render_menu(api.Panel.listmenu) }}
         </ul>
     </div>
 </nav>

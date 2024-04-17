@@ -1,5 +1,9 @@
 import "../scss/app.scss";
 
+
+window.__ = {};
+
+
 const Box = {
     "form.needs-validation": (el) => {
 
@@ -76,7 +80,10 @@ const Box = {
             }
 
             for (let i = 0; i < $form.find("input, textarea, select").length; i++) {
-                const form_el = $($form.find("input, textarea, select")[i])
+                const form_el = $($form.find("input, textarea, select")[i]);
+                if(form_el.prop("disabled")||form_el.prop("readonly")){
+                    continue;
+                }
                 data.el = form_el[0];
                 if (!validateInput(form_el[0])) {
                     data.valid = false;
@@ -90,6 +97,10 @@ const Box = {
 
 
         el.find("input, textarea, select").on("input", function () {
+           
+            if($(this).prop("disabled")||$(this).prop("readonly")){
+                return;
+            }
             validateInput(this);
         });
 
@@ -146,9 +157,6 @@ $(() => {
         }
     });
 });
-
-
-
 
 function liveReload() {
 

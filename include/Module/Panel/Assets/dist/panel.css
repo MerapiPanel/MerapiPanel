@@ -118,7 +118,7 @@ body .sidebar .nav-menu .nav-item .nav-menu:has(.nav-item.active) {
   border-color: #006eff;
   color: #394d70;
 }
-body:has(.sidebar) {
+body:has(.sidebar) .panel-main {
   margin-left: 220px;
 }
 body .sidebar-toggle {
@@ -147,7 +147,7 @@ body .sidebar-toggle::before {
   transform: scaleX(-1);
 }
 @media screen and (max-width: 1024px) {
-  body:has(.sidebar) {
+  body:has(.sidebar) .panel-main {
     margin-left: 0px;
   }
   body:has(.sidebar) .sidebar-toggle {

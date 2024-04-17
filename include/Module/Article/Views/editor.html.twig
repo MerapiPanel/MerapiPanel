@@ -5,6 +5,7 @@
 {% block javascript %}
 {{ parent() }}
 <script>const saveEndpoint = "{{ '/article/endpoint/save' | access_path | url }}";</script>
+
 {% if article %}
 <script>
     const article = {
@@ -22,6 +23,7 @@
         created_at: "{{ article.created_at }}",
         updated_at: "{{ article.updated_at }}",
     };
+
     window.article = article;
     editor.onReady = (editor) => {
         editor.setComponents(article.data.components);
@@ -29,6 +31,20 @@
     }
 </script>
 {% endif %}
+
+{% if settings %}
+<script>
+    const settings = JSON.parse('{{ settings | json_encode | raw }}');
+    if (window.article) {
+        window.article.settings = settings;
+    } else {
+        window.article = {
+            settings
+        };
+    }
+</script>
+{% endif %}
+
 
 <script src="{{ '@article/dist/editor.js' | assets }}"></script>
 

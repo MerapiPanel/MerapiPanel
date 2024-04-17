@@ -17,10 +17,10 @@
 <div class="p-3">
     <h2 class="mb-3">Total {{ users | length }}</h2>
 
-    <ol class="list-group" style="max-width: 800px;" onload="__.render(this)">
+    <ol class="list-group" style="max-width: 800px;" onload="__.render.bind(this)()">
 
         {% for x in 1..6 %}
-        <li class="list-group-item d-flex align-items-start position-relative">
+        <li class="list-group-item d-flex align-items-start position-relative placeholder-glow">
             <img class="w-full h-full object-cover rounded-2 placeholder" width="45" height="45" alt="">
             <div class="ms-2 w-100">
                 <span class="placeholder col-6"></span>
@@ -29,36 +29,28 @@
         </li>
         {% endfor %}
 
-{# 
+        {#
         {% for user in users %}
-        <li class="list-group-item d-flex align-items-start position-relative">
-            <img class="w-full h-full object-cover rounded-2" width="45" height="45"
-                src="{{ api.User.getAvatar(user.email, 45) }}" alt="User: {{ user.name }}">
-            <div class="ms-2 w-100">
-                <div class="fw-bold">{{ user.name }}{% if user.email == api.Auth.LogedinUser.email %} <small><i>( You
-                            )</i></small> {% endif %}
-                </div>
-                {{ user.email }} - <i>{{ user.role }}</i>
-            </div>
-            <div class="dropdown position-absolute top-0 end-0">
-                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
-                    aria-expanded="false">Actions</button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item text-primary" href="#">Edit</a></li>
-                    <li><a class="dropdown-item  text-warning" href="#">Suspend</a></li>
-                    <li><a class="dropdown-item bg-danger bg-opacity-10 text-danger" href="#">Delete</a></li>
-                </ul>
-            </div>
-        </li>
+        
         {% endfor %} #}
     </ol>
 </div>
 {% endblock %}
 
-
-
-
 {% block javascript %}
 {{ parent() }}
+
+<script>
+    __.settings = {
+        'urls': {
+            'fetch': "{{ '/api/User/fetchAll' | access_path }}",
+            'update': "{{ '/api/User/update' | access_path }}",
+            'delete': "{{ '/api/User/delete' | access_path }}"
+        },
+        'session': JSON.parse('{{ api.Auth.LogedinUser | json_encode | raw }}')
+    }
+</script>
+
+
 <script src="{{ '@user/dist/index.js' | assets }}"></script>
 {% endblock %}

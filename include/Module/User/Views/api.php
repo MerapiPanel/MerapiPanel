@@ -8,7 +8,6 @@ class Api extends __Fragment{
         
     }
 
-
     function getAvatar($email, $size = 100) {
 
         return "https://gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=mp?s=" . $size;

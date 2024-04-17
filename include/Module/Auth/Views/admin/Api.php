@@ -13,7 +13,7 @@ namespace MerapiPanel\Module\Auth\Views\Admin {
         function LogedinUser()
         {
 
-            $user = $this->module->getLogedinUser();
+            $user = $this->module->getLogedinUser([]);
             return $user;
         }
     }
