@@ -94,7 +94,7 @@ const ___InitRegisterBlocks = async (editor: Editor, blocks: any[], setLoadingWi
         setLoadingWidth(__current => __current + persentage);
     }
 
-    editor.load();
+    editor.refresh();
     setTimeout(() => setLoadingWidth(100), 1000);
 
 }

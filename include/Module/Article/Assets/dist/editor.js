@@ -11126,7 +11126,7 @@ editor.callback = function (data) {
   var modal = editor.Modal;
   var isComplete = false;
   if (!saveEndpoint) {
-    _il4mb_merapipanel_toast__WEBPACK_IMPORTED_MODULE_0__("Please set save endpoint", 5, "text-danger");
+    (0,_il4mb_merapipanel_toast__WEBPACK_IMPORTED_MODULE_0__.toast)("Please set save endpoint", 5, "text-danger");
     return;
   }
   modal.open({
@@ -11146,7 +11146,7 @@ editor.callback = function (data) {
     e.preventDefault();
     console.clear();
     if (!form[0].checkValidity()) {
-      _il4mb_merapipanel_toast__WEBPACK_IMPORTED_MODULE_0__("Please enter valid data", 5, "text-danger");
+      (0,_il4mb_merapipanel_toast__WEBPACK_IMPORTED_MODULE_0__.toast)("Please enter valid data", 5, "text-danger");
       return;
     }
     isComplete = true;
@@ -11174,7 +11174,7 @@ editor.callback = function (data) {
       } else {
         window.article = response.data;
       }
-      _il4mb_merapipanel_toast__WEBPACK_IMPORTED_MODULE_0__((_response$message = response.message) !== null && _response$message !== void 0 ? _response$message : "Saved", 5, 'text-success');
+      (0,_il4mb_merapipanel_toast__WEBPACK_IMPORTED_MODULE_0__.toast)((_response$message = response.message) !== null && _response$message !== void 0 ? _response$message : "Saved", 5, 'text-success');
       if (window.history.replaceState && (_window$article10 = window.article) !== null && _window$article10 !== void 0 && (_window$article10 = _window$article10.settings) !== null && _window$article10 !== void 0 && _window$article10.prefix && (_window$article11 = window.article) !== null && _window$article11 !== void 0 && (_window$article11 = _window$article11.settings) !== null && _window$article11 !== void 0 && _window$article11.path_edit) {
         var target = window.article.settings.prefix + window.article.settings.path_edit.replace("{id}", response.data.id);
         window.history.replaceState(null, null, target);

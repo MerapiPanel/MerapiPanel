@@ -1,4 +1,4 @@
-import * as toast from "@il4mb/merapipanel/toast";
+import {toast} from "@il4mb/merapipanel/toast";
 import * as http from "@il4mb/merapipanel/http";
 
 const form = $(`<form class="needs-validation">`)

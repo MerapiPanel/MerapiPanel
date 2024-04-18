@@ -48,7 +48,7 @@ namespace MerapiPanel\Module\Editor {
             ];
 
             $rendered = [];
-            foreach ($components as $component) {
+            foreach ($components as $key => $component) {
 
                 $type = $component['type'] ?? null;
 
@@ -90,11 +90,13 @@ namespace MerapiPanel\Module\Editor {
                     $blockName = $type;
                 }
 
+
                 $fragment = Path::join(Box::module($module)->path, "Blocks", $blockName, "render.php");
                 if (!file_exists($fragment)) {
                     $rendered[] = "<div class='text-center border border-warning bg-dark bg-opacity-10 py-3'>Block $module:$blockName</div>";
                 }
-                $rendered[] = blockContext($component, $fragment);
+                $rendered[] = blockContext($component, $fragment, $key);
+
 
             }
             return implode("", $rendered);
@@ -115,13 +117,33 @@ namespace {
         return Box::module("Editor")->Blocks->render($components);
     }
 
-    function blockContext($component, $fragment)
+    function blockContext($component, $__fragment, $__index = 0)
     {
 
         extract($component);
+        if (!isset($attributes)) {
+            $attributes = [];
+        } else {
+            $attributes = array_map(function ($item) {
+                if (is_object($item)) {
+                    $item = implode(";", json_decode(json_encode($item), true));
+                } else if (is_array($item)) {
+                    $item = implode(";", $item);
+                }
+                return $item;
+            }, $attributes);
+        }
+        if (!isset($classes)) {
+            $classes = [];
+        }
+        $className = null;
+        if (count($classes)) {
+            $className = implode(" ", $classes);
+        }
+
 
         ob_start();
-        include $fragment;
+        include $__fragment;
         return ob_get_clean();
     }
 }
