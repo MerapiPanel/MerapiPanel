@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\User\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
+use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Views\View;
 use MerapiPanel\Utility\Router;
 
@@ -20,6 +21,8 @@ class Admin extends __Fragment
 
     public function register()
     {
+
+        Router::GET("/users/add", "addUser", self::class);
 
         $index = Router::GET("/users", "index", self::class);
         $avatar_setting = Router::GET("/settings/users/avatar", "avatar", self::class);
@@ -42,6 +45,11 @@ class Admin extends __Fragment
         ]);
     }
 
+
+    function addUser(Request $req) {
+
+        return View::render("add_user.twig");
+    }
 
     function avatar($req) {
 

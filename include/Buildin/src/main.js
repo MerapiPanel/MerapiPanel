@@ -1,4 +1,5 @@
 import "../scss/app.scss";
+import * as http from "@il4mb/merapipanel/http";
 
 
 window.__ = {};
@@ -81,7 +82,7 @@ const Box = {
 
             for (let i = 0; i < $form.find("input, textarea, select").length; i++) {
                 const form_el = $($form.find("input, textarea, select")[i]);
-                if(form_el.prop("disabled")||form_el.prop("readonly")){
+                if (form_el.prop("disabled") || form_el.prop("readonly")) {
                     continue;
                 }
                 data.el = form_el[0];
@@ -94,11 +95,9 @@ const Box = {
             return data;
         }
 
-
-
         el.find("input, textarea, select").on("input", function () {
-           
-            if($(this).prop("disabled")||$(this).prop("readonly")){
+
+            if ($(this).prop("disabled") || $(this).prop("readonly")) {
                 return;
             }
             validateInput(this);
@@ -123,6 +122,8 @@ const Box = {
             })
         });
     },
+
+
     "[onload]": (el) => {
         el.each(function () {
 
@@ -133,30 +134,57 @@ const Box = {
             evalInContext.call(this);
 
         })
+    },
+
+
+    "form[xhr-action]": (el) => {
+
+        el.each(function () {
+
+            const $this = $(this);
+            const action = $this.attr("xhr-action");
+            const method = $this.attr("method");
+
+            $this.on("submit", function (e) {
+
+                e.preventDefault();
+                $this.trigger("xhr-submit");
+                http[method](action, new FormData($this[0]))
+                    .then((response, text, xhr) => {
+                        console.log(response, text, xhr);
+                        window.$(this).trigger("xhr-success", [response, text, xhr]);
+                    }).catch((e) => {
+                        console.log(e);
+                        window.$(this).trigger("xhr-error", [e]);
+                    })
+            });
+        })
+    },
+    "img[src]": (el) => {
+
+        const placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -5 25 25'%3E%3Cpath d='M7 2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0m4.225 4.053a.5.5 0 0 0-.577.093l-3.71 4.71-2.66-2.772a.5.5 0 0 0-.63.062L.002 13v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4.5z'/%3E%3C/svg%3E";
+
+        el.each(function () {
+
+            const $this = $(this);
+            const src = $this.attr("src") ?? "";
+
+            if ($this[0].naturalWidth == 0 && $this[0].naturalHeight == 0) {
+
+                $this.prop("src", placeholder);
+                const image = new Image();
+
+                image.onload = () => {
+                    $this.prop("src", src);
+                }
+                image.src = src;
+                
+            }
+        });
     }
 }
 
-$(() => {
-
-
-    liveReload();
-
-
-    $("img").each(function () {
-
-        let $this = $(this);
-        if ($this[0].naturalWidth == 0 && $this[0].naturalHeight == 0) {
-            $this.attr("error", true);
-            let image = new Image();
-            image.onload = () => {
-                $this.removeAttr("error");
-            }
-            image.src = $this.attr("src");
-        } else {
-            $this.css("opacity", 1);
-        }
-    });
-});
+$(() => liveReload());
 
 function liveReload() {
 
@@ -164,12 +192,19 @@ function liveReload() {
     for (let i in keys) {
         $(keys[i]).each(function () {
             let el = $(this);
-            if (el.data("init") !== true) {
-                Box[keys[i]](el);
-                el.data("init", true);
+
+            let inits = el.data("init") ?? {};
+
+            if (inits[keys[i]]) {
+                return;
             }
-        })
+            inits[keys[i]] = true;
+            el.data("init", inits);
+
+            Box[keys[i]](el);
+
+        });
     }
 
-    setTimeout(() => window.requestAnimationFrame(liveReload), 1000);
+    setTimeout(() => window.requestAnimationFrame(liveReload), 100);
 }

@@ -26,7 +26,7 @@ function createComponent(user) {
         .append(
             $(`<div class="ms-2 w-100">`)
                 .append(`<div class="fw-bold">${user.name} ${user.email == session.email ? '<small><i>( You )</i></small>' : ''}</div>`)
-                .append(`<div class='d-flex'>${user.email} - <i>${user.role}</i><span class="badge badge-sm bg-${['danger', 'warning', 'primary'][user.status]} ms-2">${['Inactive', 'Suspended', 'Active'][user.status]}</span></div></div>`)
+                .append(`<div class='d-flex flex-wrap align-items-end align-content-end'>${user.email} - <i>${user.role}</i><span class="badge badge-sm bg-${['danger', 'warning', 'primary'][user.status]} ms-2">${['Inactive', 'Suspended', 'Active'][user.status]}</span></div></div>`)
         )
         .append(
             $(`<div class="dropdown position-absolute top-0 end-0">`)
@@ -60,6 +60,7 @@ function editUser(user) {
 
     const content = $(`<form class="needs-validation">`)
         .append(`<input type="hidden" name="id" value="${user.id}" readonly>`)
+        // name
         .append(
             $(`<div class="mb-3">`)
                 .append(`<label for="name" class="form-label">Name</label>`)
@@ -67,6 +68,7 @@ function editUser(user) {
                 .append(`<div class="valid-feedback">Looks good!</div>`)
                 .append(`<div class="invalid-feedback">Please enter a valid name.</div>`)
         )
+        // email
         .append(
             $(`<div class="mb-3">`)
                 .append(`<label for="email" class="form-label">Email</label>`)
@@ -74,6 +76,7 @@ function editUser(user) {
                 .append(`<div class="valid-feedback">Looks good!</div>`)
                 .append(`<div class="invalid-feedback">Please enter a valid email address.</div>`)
         )
+        // role
         .append(
             user.role && $(`<div class="mb-3">`)
                 .append(`<label for="role" class="form-label">Role</label>`)
@@ -84,6 +87,7 @@ function editUser(user) {
                         )
                 )
         )
+        // status
         .append(
             user.status !== undefined && $(`<div class="mb-3">`)
                 .append(`<label for="status" class="form-label">Status</label>`)
@@ -94,6 +98,7 @@ function editUser(user) {
                         )
                 )
         )
+        // password
         .append(
             $('<div class="mb-3">')
                 .append(

@@ -43,10 +43,10 @@ class Service extends __Fragment
         }
 
         if (!empty($password)) {
-            if(strlen($password) < 6){
+            if (strlen($password) < 6) {
                 throw new \Exception("Password must be at least 6 characters long");
             }
-            if(!empty($confirmPassword) && $password != $confirmPassword){
+            if (!empty($confirmPassword) && $password != $confirmPassword) {
                 throw new \Exception("Passwords don't match");
             }
             $user['password'] = password_hash($password, PASSWORD_BCRYPT);
@@ -66,6 +66,71 @@ class Service extends __Fragment
 
         return $user;
 
+    }
+
+
+    function add($name, $email, $password, $confirmPassword, $role, $status, $sendConfirmation)
+    {
+        error_log(print_r(['name' => $name, 'email' => $email, 'password' => $password, 'confirmPassword' => $confirmPassword, 'role' => $role, 'status' => $status, 'sendConfirmation' => $sendConfirmation], 1));
+
+
+        if (empty($name)) {
+            throw new \Exception('Missing required parameter: name');
+        }
+
+        if (empty($email)) {
+            throw new \Exception('Missing required parameter: email');
+        }
+        if (empty($role)) {
+            throw new \Exception('Missing required parameter: role');
+        }
+        if (!in_array($status, [0, 1, 2])) {
+            throw new \Exception('Missing required parameter: status');
+        }
+
+        if (empty($password)) {
+            throw new \Exception('Missing required parameter: password');
+        }
+
+        if (strlen($password ?? "") < 6) {
+            throw new \Exception('Passwords must be at least 6 characters long');
+        }
+        if ($password != $confirmPassword) {
+            throw new \Exception("Passwords don't match");
+        }
+
+
+        if (DB::table("users")->select("id")->where("email")->equals($email)->execute()->rowCount() > 0) {
+            throw new \Exception("Email already exists");
+        }
+
+
+
+        if (
+            DB::table("users")->insert([
+                "name" => $name,
+                "email" => $email,
+                "password" => password_hash($password, PASSWORD_BCRYPT),
+                "role" => $role,
+                "status" => $status
+            ])->execute() && DB::instance()->lastInsertId() > 0
+        ) {
+
+            if ($sendConfirmation) {
+                $this->module->sendConfirmation($email);
+            }
+            return [
+                "id" => DB::instance()->lastInsertId(),
+                "name" => $name,
+                "email" => $email,
+                "password" => password_hash($password, PASSWORD_BCRYPT),
+                "role" => $role,
+                "status" => $status
+            ];
+        }
+
+
+        throw new \Exception("Failed to add user");
     }
 
 
@@ -109,5 +174,11 @@ class Service extends __Fragment
         return $users;
     }
 
+
+    function sendConfirmation($email)
+    {
+
+        error_log("Sending confirmation email to $email");
+    }
 
 }
