@@ -39,14 +39,7 @@ class Admin extends __Controller
         Box::module("Panel")->addMenu([
             "name" => "Article",
             "icon" => "fa-solid fa-newspaper",
-            "link" => $index,
-            "childs" => [
-                [
-                    "name" => "Categories",
-                    "icon" => "fa-solid fa-bars-staggered",
-                    "link" => $category
-                ]
-            ]
+            "link" => $index
         ]);
 
         Box::module("Panel")->addMenu([
