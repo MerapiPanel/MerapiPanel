@@ -11,4 +11,11 @@ class Api extends __Fragment
 	{
 		$this->module = $module;
 	}
+
+
+	function render($components = [], $replacer = [])
+	{
+
+		return $this->module->Blocks->render($components, $replacer);
+	}
 }

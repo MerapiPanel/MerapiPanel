@@ -90,14 +90,6 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.del = exports.patch = exports.put = exports.post = exports.get = exports.CreateXmlHttpRequest = void 0;
 var jquery_1 = __importDefault(__webpack_require__(/*! jquery */ "../modules/merapipanel/node_modules/jquery/dist/jquery.js"));
-// $(document).on("ajaxSend", function (e) {
-//     $('#http-progress').remove();
-//     $(document.body).append(proggressbars);
-// }).on("ajaxComplete", function (e) {
-//     $('#http-progress').remove();
-// }).on("ajaxError", function (e) {
-//     $('#http-progress').remove();
-// });
 var createProgressbar = function createProgressbar(id) {
   var proggressbars = (0, jquery_1["default"])("<div class=\"progress rounded-0 bg-opacity-75\" role=\"progressbar\" id='".concat(id, "'>")).append("<div class='http-progress-download progress-bar bg-primary progress-bar-striped rounded-0 bg-opacity-75 position-absolute h-100' style=\"width: 0%;z-index: 2;\"></div>").append("<div class='http-progress-upload progress-bar bg-secondary progress-bar-striped rounded-0 bg-opacity-75 position-absolute h-100' style=\"width: 0%; z-index: 1;\"></div>");
   proggressbars.css({
@@ -162,14 +154,25 @@ var get = function get(url, data) {
       }
     }
   }
-  return jquery_1["default"].ajax({
-    xhr: exports.CreateXmlHttpRequest,
-    url: ObjectURL.toString(),
-    method: 'GET',
-    processData: false,
-    contentType: false,
-    cache: false,
-    headers: headers
+  return new Promise(function (resolve, reject) {
+    jquery_1["default"].ajax({
+      xhr: exports.CreateXmlHttpRequest,
+      url: ObjectURL.toString(),
+      method: 'GET',
+      processData: false,
+      contentType: false,
+      cache: false,
+      headers: headers,
+      success: function success(data) {
+        resolve(data);
+      },
+      error: function error(data) {
+        reject(data.responseJSON || {
+          code: data.status || 500,
+          message: data.statusText || 'Internal Server Error'
+        });
+      }
+    });
   });
 };
 exports.get = get;
@@ -183,14 +186,25 @@ var post = function post(url, data) {
       form.append(key, data[key]);
     });
   }
-  return jquery_1["default"].ajax({
-    xhr: exports.CreateXmlHttpRequest,
-    url: url,
-    method: 'POST',
-    data: form,
-    processData: false,
-    contentType: false,
-    headers: headers
+  return new Promise(function (resolve, reject) {
+    jquery_1["default"].ajax({
+      xhr: exports.CreateXmlHttpRequest,
+      url: url,
+      method: 'POST',
+      data: form,
+      processData: false,
+      contentType: false,
+      headers: headers,
+      success: function success(data) {
+        resolve(data);
+      },
+      error: function error(data) {
+        reject(data.responseJSON || {
+          code: data.status || 500,
+          message: data.statusText || 'Internal Server Error'
+        });
+      }
+    });
   });
 };
 exports.post = post;
@@ -204,17 +218,28 @@ var put = function put(url, data) {
       form.append(key, data[key]);
     });
   }
-  return jquery_1["default"].ajax({
-    xhr: exports.CreateXmlHttpRequest,
-    url: url,
-    method: 'PUT',
-    data: form,
-    processData: false,
-    contentType: false,
-    headers: Object.assign(headers, {
-      'X-HTTP-Method-Override': 'PUT'
-    }),
-    cache: false
+  return new Promise(function (resolve, reject) {
+    jquery_1["default"].ajax({
+      xhr: exports.CreateXmlHttpRequest,
+      url: url,
+      method: 'PUT',
+      data: form,
+      processData: false,
+      contentType: false,
+      headers: Object.assign(headers, {
+        'X-HTTP-Method-Override': 'PUT'
+      }),
+      cache: false,
+      success: function success(data) {
+        resolve(data);
+      },
+      error: function error(data) {
+        reject(data.responseJSON || {
+          code: data.status || 500,
+          message: data.statusText || 'Internal Server Error'
+        });
+      }
+    });
   });
 };
 exports.put = put;
@@ -228,16 +253,18 @@ var patch = function patch(url, data) {
       form.append(key, data[key]);
     });
   }
-  return jquery_1["default"].ajax({
-    xhr: exports.CreateXmlHttpRequest,
-    url: url,
-    method: 'PATCH',
-    data: form,
-    processData: false,
-    contentType: false,
-    headers: Object.assign(headers, {
-      'X-HTTP-Method-Override': 'PATCH'
-    })
+  return new Promise(function (resolve, reject) {
+    jquery_1["default"].ajax({
+      xhr: exports.CreateXmlHttpRequest,
+      url: url,
+      method: 'PATCH',
+      data: form,
+      processData: false,
+      contentType: false,
+      headers: Object.assign(headers, {
+        'X-HTTP-Method-Override': 'PATCH'
+      })
+    });
   });
 };
 exports.patch = patch;
@@ -251,16 +278,18 @@ var del = function del(url, data) {
       form.append(key, data[key]);
     });
   }
-  return jquery_1["default"].ajax({
-    xhr: exports.CreateXmlHttpRequest,
-    url: url,
-    method: 'DELETE',
-    data: form,
-    processData: false,
-    contentType: false,
-    headers: Object.assign(headers, {
-      'X-HTTP-Method-Override': 'DELETE'
-    })
+  return new Promise(function (resolve, reject) {
+    jquery_1["default"].ajax({
+      xhr: exports.CreateXmlHttpRequest,
+      url: url,
+      method: 'DELETE',
+      data: form,
+      processData: false,
+      contentType: false,
+      headers: Object.assign(headers, {
+        'X-HTTP-Method-Override': 'DELETE'
+      })
+    });
   });
 };
 exports.del = del;

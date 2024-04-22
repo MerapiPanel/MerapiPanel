@@ -41,6 +41,7 @@ namespace MerapiPanel\Views {
 
         public function __call($name, $arguments)
         {
+
             $default_api = $this->module->Views->Api;
             if ($default_api && (method_exists($default_api, $name) || (method_exists($default_api, "method_exists") && $default_api->method_exists($name)))) {
                 return $default_api->$name(...$arguments);

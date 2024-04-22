@@ -15,6 +15,10 @@ namespace MerapiPanel {
 
     $loaded_config = json_decode(file_get_contents(__DIR__ . "/config/env.json"), true); // load config
 
+    if (isset($loaded_config['timezone'])) {
+        date_default_timezone_set($loaded_config['timezone']);
+    }
+
     $config = array_merge($config, $loaded_config);
     if (isset($config['$schema'])) {
         unset($config['$schema']); // remove $schema

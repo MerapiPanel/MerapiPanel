@@ -86,6 +86,7 @@ class Catcher
             "trace" => self::transformTracerFromArray($e->getTrace()),
             'snippet' => self::getCodeSnippet($e->getFile(), $e->getLine()),
         ]);
+        exit();
     }
 
 

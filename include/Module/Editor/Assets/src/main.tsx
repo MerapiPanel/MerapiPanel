@@ -1,7 +1,7 @@
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./parts/App";
-import { CanvasConfig, Editor } from "grapesjs";
+import { AssetManagerConfig, CanvasConfig, Editor } from "grapesjs";
 import "@il4mb/merapipanel/scss/editor";
 
 
@@ -11,8 +11,9 @@ export type Payload = {
         height: string
         container: string
         plugins: string[],
-        pluginsOptions: { [key: string]: any },
-        canvas: CanvasConfig
+        pluginsOpts: { [key: string]: any },
+        canvas: CanvasConfig,
+        assetManager?: AssetManagerConfig
     }
     fetchBlockURL: string
     callback: (data: any) => void

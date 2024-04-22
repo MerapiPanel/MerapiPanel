@@ -2,6 +2,32 @@
 
 
 
+{% block config %}
+{{ editor_config({
+	config: {
+		width: "100vw",
+		height: "100vh",
+		container: "#editor",
+		canvas: {
+			styles: [
+                    "/vendor/bootstrap/css/bootstrap.min.css" | assets
+                ],
+			scripts: [
+				"/vendor/bootstrap/js/bootstrap.bundle.min.js" | assets
+			]
+		},
+        pluginsOpts: {
+            CodeEditor: {
+                editable: true
+            }
+        }
+	},
+	fetchBlockURL: "/editor/api/load" | access_path
+}) }}
+{% endblock %}
+
+
+
 {% block javascript %}
 {{ parent() }}
 <script>const saveEndpoint = "{{ '/article/endpoint/save' | access_path | url }}";</script>
@@ -44,6 +70,11 @@
     }
 </script>
 {% endif %}
+
+
+
+
+
 
 
 <script src="{{ '@article/dist/editor.js' | assets }}"></script>

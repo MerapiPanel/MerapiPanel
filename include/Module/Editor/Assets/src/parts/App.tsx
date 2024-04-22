@@ -5,8 +5,8 @@ import { Panel, Btn, LayerManager, BlockManager, StyleManager, TraitsManager, Se
 import { AddComponentTypeOptions, BlockProperties, Editor } from "grapesjs";
 import { CodeEditor, Bootstrap5 } from "@il4mb/merapipanel/editor/plugins";
 import $ from "jquery";
-import * as http from "@il4mb/merapipanel/http";
 import { toast } from "@il4mb/merapipanel/toast";
+import { fileManager } from "./FileManager";
 
 
 interface BlockDefine {
@@ -127,6 +127,8 @@ export const App = ({ payload }: { payload: Payload }) => {
 
     const onReadyHandler = (editor: Editor) => {
 
+        editor.on("asset:custom", fileManager);
+
         setLoadingWidth(35);
         try {
 
@@ -146,16 +148,64 @@ export const App = ({ payload }: { payload: Payload }) => {
             console.error(error);
             setLoadingError(true);
         }
+
+        editor.on("component:selected", (component) => {
+
+
+            if (component.get("stylable") === false) {
+
+                $("div.editor-layout.style-manager").addClass("d-none");
+            } else {
+                $("div.editor-layout.style-manager").removeClass("d-none");
+            }
+        })
     }
 
+
     const handleSave = (editor: Editor) => {
+
         setLoadingActionShow(true);
 
-
-        const data = {
-            components: JSON.parse(JSON.stringify(editor.getComponents())),
-            css: editor.getCss(),
+        type Component = {
+            tagName?: string
+            type: string
+            components: Component[]
+            attributes?: Object
+            classes?: string[]
         }
+        type DataType = {
+            components: Component[] | Component
+            css: string
+        }
+
+        const data: DataType = {
+            components: removeUnuseAttr(JSON.parse(JSON.stringify(editor.getComponents())) || {} as Component),
+            css: editor.getCss()?.toString() || "",
+        }
+
+        function removeUnuseAttr(components: Component | Component[]) {
+            const attrs = ["draggable", "editable", "droppable", "removable", "copyable", "moveable"];
+
+            if (Array.isArray(components)) {
+                components.map((component: Component) => {
+                    removeUnuseAttr(component);
+                })
+            } else if (typeof components === "object") {
+
+                components = Object.fromEntries(Object.entries(components).filter(([key]) => ["tagName", "type", "components", "attributes", "classes"].includes(key))) as Component;
+                if (components.attributes) {
+                    components.attributes = Object.fromEntries(Object.entries(components.attributes).filter(([key]) => !attrs.includes(key)))
+                }
+                if (components.components) {
+                    components.components.map((component: Component) => {
+                        removeUnuseAttr(component);
+                    })
+                }
+            }
+
+            return components;
+        }
+
 
         const binder: any = {
             callback: payload.callback
@@ -168,15 +218,17 @@ export const App = ({ payload }: { payload: Payload }) => {
             binder.data = data;
             binder.callback(data);
 
-        }).catch((error: any) => {
-
-            toast((typeof error === "string" ? error : (error.message || error.statusText || "Error")), 5, 'text-danger');
-
-        }).finally(() => {
-            setLoadingActionShow(false);
+        }).then((message) => {
+            toast((typeof message === "string" ? message : "Success"), 5, 'text-success');
         })
-    }
+            .catch((error: any) => {
 
+                toast((typeof error === "string" ? error : (error.message || error.statusText || "Error")), 5, 'text-danger');
+
+            }).finally(() => {
+                setLoadingActionShow(false);
+            })
+    }
 
     return (
         <EditorApp
@@ -184,7 +236,8 @@ export const App = ({ payload }: { payload: Payload }) => {
             plugins={payload.config.plugins || [CodeEditor, Bootstrap5, (editor) => editor.onReady(onReadyHandler)]}
             canvas={(payload.config.canvas || {}) as any}
             storageManager={{ autosave: false }}
-            pluginsOpts={payload.config.pluginsOptions || {}}>
+            pluginsOpts={payload.config.pluginsOpts || {}}
+            assetManager={payload.config.assetManager}>
             <Navbar>
                 <Panel id="sidebar-panel">
                     <Btn
@@ -198,7 +251,7 @@ export const App = ({ payload }: { payload: Payload }) => {
                             stop: () => {
                                 document.querySelector(".editor-sidebar .layer-manager")?.classList.add("hide");
                             }
-                        }}>
+                        }} active>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5" />
                         </svg>
@@ -214,7 +267,7 @@ export const App = ({ payload }: { payload: Payload }) => {
                             stop: () => {
                                 document.querySelector(".editor-sidebar .style-manager")?.classList.add("hide");
                             }
-                        }} active>
+                        }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.1 6.1 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.1 8.1 0 0 1-3.078.132 4 4 0 0 1-.562-.135 1.4 1.4 0 0 1-.466-.247.7.7 0 0 1-.204-.288.62.62 0 0 1 .004-.443c.095-.245.316-.38.461-.452.394-.197.625-.453.867-.826.095-.144.184-.297.287-.472l.117-.198c.151-.255.326-.54.546-.848.528-.739 1.201-.925 1.746-.896q.19.012.348.048c.062-.172.142-.38.238-.608.261-.619.658-1.419 1.187-2.069 2.176-2.67 6.18-6.206 9.117-8.104a.5.5 0 0 1 .596.04" />
                         </svg>
@@ -339,12 +392,12 @@ export const App = ({ payload }: { payload: Payload }) => {
 
             <EditorBody>
                 <Sidebar>
-                    <StyleManager className="" >
+                    <StyleManager className="hide" >
                         <SelectorManager />
                     </StyleManager>
                     <BlockManager className="hide" />
                     <TraitsManager className="hide" />
-                    <LayerManager className="hide" />
+                    <LayerManager className="" />
                 </Sidebar>
 
                 <EditorCanvas />

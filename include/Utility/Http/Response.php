@@ -143,14 +143,14 @@ class Response
     {
 
         if (headers_sent()) {
-            header_remove();
+            @header_remove();
         }
 
         if (gettype($this->content) !== "string") {
             $this->setHeader("Content-Type", "application/json");
         }
 
-        header("X-Powered-By: MerapiPanel 1.0.0; PHP " . PHP_VERSION);
+        @header("X-Powered-By: MerapiPanel 1.0.0; PHP " . PHP_VERSION);
 
         self::http_response_code($this->statusCode);
 
@@ -160,15 +160,15 @@ class Response
         }
 
         foreach ($this->headers as $name => $value) {
-            header("$name: $value");
+            @header("$name: $value");
         }
 
 
         if (isset($redirect)) {
-            header("Location: $redirect");
+            @header("Location: $redirect");
         }
 
-        header("Content-Length: " . strlen(gettype($this->content) !== "string" ? json_encode($this->content) : $this->content));
+        @header("Content-Length: " . strlen(gettype($this->content) !== "string" ? json_encode($this->content) : $this->content));
 
         return !is_string($this->content) ? json_encode($this->content) : $this->content;
     }
@@ -294,7 +294,6 @@ class Response
                     break;
                 default:
                     exit('Unknown http status code "' . htmlentities($code) . '"');
-                    break;
             }
 
             $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
@@ -302,7 +301,7 @@ class Response
             header($protocol . ' ' . $code . ' ' . $text);
         } else {
 
-            http_response_code($code);
+            @http_response_code($code);
         }
 
 

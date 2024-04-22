@@ -7,6 +7,8 @@ namespace MerapiPanel\Module\Editor {
 
     class Blocks extends __Fragment
     {
+
+        protected $replace = [];
         protected $module;
         function onCreate(\MerapiPanel\Box\Module\Entity\Module $module)
         {
@@ -41,8 +43,46 @@ namespace MerapiPanel\Module\Editor {
         }
 
 
-        function render($components = [])
+        private function renderResolve($component = [])
         {
+
+            if (gettype($component) === "string")
+                return $component;
+
+
+            if (isset($component['tagName'])) {
+                $className = isset($component['classes']) ? implode(" ", $component['classes']) : null;
+                $attribute = isset($component['attributes']) ? implode(" ", array_map(function ($attr) use ($component) {
+                    if (isset ($component['attributes'][$attr])) {
+                        return "{$attr}=\"{$component['attributes'][$attr]}\"";
+                    }
+                    return $attr;
+                }, array_keys($component['attributes']))) : null;
+
+                if (isset($component['content'])) {
+                    return "<{$component['tagName']}" . ($className ? " class='$className'" : '') . " {$attribute}>{$component['content']}</{$component['tagName']}>";
+                } else if (isset($component['components'])) {
+                    return "<{$component['tagName']} " . ($className ? " class='$className'" : '') . " {$attribute}>{$this->render($component['components'])}</{$component['tagName']}>";
+                } else {
+                    return "<{$component['tagName']} " . ($className ? " class='$className'" : '') . " {$attribute}/>";
+                }
+
+
+            } else if (isset($component['components'])) {
+                $component['type'] = "editor-group";
+                return $this->render([$component]);
+            }
+        }
+
+
+        function render($components = [], $replacer = [])
+        {
+            if (gettype($components) === "string")
+                return $components;
+
+            if (!empty($replacer)) {
+                $this->replace = $replacer;
+            }
             $resolve_namespace = [
                 "bs" => "Editor",
             ];
@@ -54,15 +94,12 @@ namespace MerapiPanel\Module\Editor {
 
 
                 if (!$type) {
-                    if (isset($component['tagName'])) {
-                        if (isset($component['content'])) {
-                            $rendered[] = "<{$component['tagName']}>{$component['content']}</{$component['tagName']}>";
-                        } else {
-                            $rendered[] = "<{$component['tagName']}/>";
-                        }
-                    } else {
-                        $rendered[] = "";
-                    }
+                    $rendered[] = $this->renderResolve($component);
+                    continue;
+                }
+
+                if (isset($this->replace[$type])) {
+                    $rendered[] = is_array($this->replace[$type]) ? $this->renderResolve($this->replace[$type]) : $this->replace[$type];
                     continue;
                 }
 
@@ -70,8 +107,6 @@ namespace MerapiPanel\Module\Editor {
                     $rendered[] = $component['content'];
                     continue;
                 }
-
-
 
 
                 if (count(explode('-', $type)) > 1) {
@@ -141,6 +176,9 @@ namespace {
             $className = implode(" ", $classes);
         }
 
+        if (!isset($components)) {
+            $components = [];
+        }
 
         ob_start();
         include $__fragment;

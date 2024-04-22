@@ -1,0 +1,60 @@
+{% extends "@panel/base.html.twig" %}
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Product</li>
+{% endblock %}
+
+
+
+{% block subheader_menu %}
+
+<a href="{{ '/product/new' | access_path }}" class="menu-item">
+    <i class="fa fa-plus"></i> new product
+</a>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="d-flex flex-wrap gap-3 p-3" id="product-wrapper" onload="__.render.call(this)">
+    {% for x in 1..6 %}
+    <div class="card" aria-hidden="true" style="width: 100%; max-width: 18rem;opacity: 0.5;">
+        <img src="..." class="card-img-top" alt="..." style="height: 150px;">
+        <div class="card-body">
+            <h5 class="card-title placeholder-glow">
+                <span class="placeholder col-6"></span>
+            </h5>
+            <p class="card-text placeholder-glow">
+                <span class="placeholder col-7"></span>
+                <span class="placeholder col-4"></span>
+                <span class="placeholder col-4"></span>
+                <span class="placeholder col-6"></span>
+                <span class="placeholder col-8"></span>
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+{{ parent() }}
+
+
+<script>
+    __.endpoints = {
+        fetch: "{{ '/api/product/fetchAll' | access_path }}",
+        view: "{{ '/product/view/{id}' | access_path }}",
+        edit: "{{ '/product/edit/{id}' | access_path }}",
+        update: "{{ '/api/product/update' | access_path }}",
+        delete: "{{ '/api/product/delete' | access_path }}"
+    }
+</script>
+
+<script src="{{ '@product/dist/index.js' | assets }}"></script>
+{% endblock %}

@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\FileManager;
 
 use MerapiPanel\Box\Module\__Fragment;
 use Symfony\Component\Filesystem\Path;
+use Throwable;
 
 
 class Service extends __Fragment
@@ -18,14 +19,10 @@ class Service extends __Fragment
         $this->module->props->root = Path::join($_ENV['__MP_CWD__'], 'content');
     }
 
-    function hallo()
-    {
-        error_log("from service: " . $this->module->props->root);
-    }
 
     public function getRoot()
     {
-        $root = $_SERVER['DOCUMENT_ROOT'] . "/public";
+        $root = $_ENV['__MP_CWD__'] . "/content";
         if (!file_exists($root))
             mkdir($root);
         $root .= "/upload";
@@ -90,20 +87,49 @@ class Service extends __Fragment
 
 
 
-    public function upload($file)
+
+
+
+    public function upload()
     {
 
-        $root = $this->getRoot() . "/" . date('Y-m-w');
-        if (!file_exists($root))
-            mkdir($root);
+        try {
+            $files = $_FILES['files'];
 
-        $temp = $file['tmp_name'];
-        $name = $file['name'];
-        $path = $root . "/" . $name;
+            $root = $this->getRoot() . "/" . date('Y-m-w');
+            if (!file_exists($root)) {
+                mkdir($root);
+            }
 
-        if (move_uploaded_file($temp, $path)) {
+            $uploaded = [];
 
-            return $this->absoluteToRelativePath($path);
+            for ($i = 0; $i < count($files['name']); $i++) {
+                $temp = $files['tmp_name'][$i];
+                $name = $files['name'][$i];
+                $path = $root . "/" . $name;
+
+                if (move_uploaded_file($temp, $path)) {
+
+                    $uploaded[] = [
+                        "status" => "success",
+                        "src" => $this->absoluteToRelativePath($path),
+                        "type" => in_array(pathinfo($path, PATHINFO_EXTENSION), ["img", "png", "jpg", "jpeg", "svg", "gif", "webp", "ico", "bmp"]) ? "image" : (in_array(pathinfo($path, PATHINFO_EXTENSION), ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm", "m4v", "3gp", "mpeg", "mpg"]) ? "video" : "file"),
+                    ];
+                } else {
+                    $uploaded[] = [
+                        "status" => "failed",
+                    ];
+                }
+            }
+
+            if (count($uploaded) <= 0) {
+                throw new \Exception("Upload failed", 401);
+            }
+
+            return $uploaded;
+
+        } catch (Throwable $e) {
+            throw $e;
         }
     }
 

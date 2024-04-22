@@ -1,6 +1,13 @@
 {% extends "@panel/base.html.twig" %}
 {% block header_title %}Users{% endblock %}
 
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Users</li>
+{% endblock %}
+
+
 {% block subheader_menu %}
 
 <a href="{{ '/users/add' | access_path }}" class="menu-item">
@@ -8,6 +15,10 @@
 </a>
 
 {% endblock %}
+
+
+
+
 
 {% set users = api.User.fetchAll %}
 

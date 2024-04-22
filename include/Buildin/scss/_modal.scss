@@ -62,3 +62,8 @@
         }
     }
 }
+
+body:has(.modal.showing),
+body:has(.modal.show) {
+    overflow: hidden;
+}

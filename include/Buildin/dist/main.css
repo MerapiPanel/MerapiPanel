@@ -11927,3 +11927,8 @@ textarea.form-control-lg {
 .modal .modal-backdrop.show {
   opacity: 0.5;
 }
+
+body:has(.modal.showing),
+body:has(.modal.show) {
+  overflow: hidden;
+}
