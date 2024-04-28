@@ -10,11 +10,11 @@
 {% endblock %}
 
 
-{% macro process(content) %}
+{% macro process(content, moduleName = null) %}
 {# Manipulate or display the captured block content here #}
 {{ content | raw }}
 <div class="d-none">
-    <input type="hidden" name="setting_token" value="{{ api.setting.token(content) }}">
+    <input type="hidden" name="setting_token" value="{{ api.setting.token(content, moduleName) }}">
 </div>
 {% endmacro %}
 

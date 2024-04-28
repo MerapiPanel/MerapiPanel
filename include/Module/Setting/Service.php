@@ -42,6 +42,7 @@ class Service extends __Fragment
         if(!empty($module_configs)){
             $panel->addMenu([
                 "name" => "Configuration",
+                "icon" => '<i class="fa-solid fa-sliders"></i>',
                 "parent" => "Settings",
             ]);
         }

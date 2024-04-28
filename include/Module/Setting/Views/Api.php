@@ -18,7 +18,7 @@ class Api extends __Fragment
 
 
 
-    function token(string $form)
+    function token(string $form, $moduleName = null)
     {
 
         $form = preg_replace("/\n/im", "", $form);
@@ -33,15 +33,22 @@ class Api extends __Fragment
         if (!$route) {
             return "";
         }
-        $contoller = $route->getController();
-        if (gettype($contoller) !== "string") {
-            return "";
+        if (empty($moduleName)) {
+            $contoller = $route->getController();
+            if (gettype($contoller) !== "string") {
+                return "";
+            }
+
+            preg_match("/Module\\\(\w+)\\\/i", $contoller, $matches);
+            if (isset($matches[1])) {
+                $moduleName = $matches[1];
+            } else {
+                return "";
+            }
         }
 
-        preg_match("/Module\\\(\w+)\\\/i", $contoller, $matches);
-        if (isset($matches[1])) {
-            return AES::encrypt(serialize(["module" => $matches[1], "input" => $inputNames]));
-        }
+        return AES::encrypt(serialize(["module" => $moduleName, "input" => $inputNames]));
+
     }
 
 

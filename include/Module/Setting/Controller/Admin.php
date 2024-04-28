@@ -27,9 +27,8 @@ class Admin extends __Fragment
 
         Router::POST("/settings/general", "updateSetting", self::class);
         Router::POST("/setting/endpoint/save", "saveEndpoint", self::class);
-
-        $setting = Router::GET("/settings", "index", self::class);
-        $setting = Router::GET("/settings/config/{module_name}/", "config_module", self::class);
+        Router::GET("/settings/config/{module_name}/", "config_module", self::class);
+        
         $general = Router::GET("/settings/general", "index", self::class);
         $route = Router::GET("/settings/route", "route", self::class);
 
@@ -37,7 +36,6 @@ class Admin extends __Fragment
             'order' => 100,
             'name' => "Settings",
             'icon' => 'fa-solid fa-gear',
-            'link' => $setting->getPath(),
             "children" => [
                 [
                     'order' => 0,
@@ -109,29 +107,29 @@ class Admin extends __Fragment
 
 
 
-    function updateSetting($request)
-    {
+    // function updateSetting($request)
+    // {
 
-        $setting = $this->module->__getSettings();
-        $_BODY = $request->getRequestBody();
+    //     $setting = $this->module->__getSettings();
+    //     $_BODY = $request->getRequestBody();
 
-        if (!isset($_BODY['website_name']) || empty($_BODY['website_name'])) {
-            return [
-                "code" => 400,
-                "message" => "Website name is required",
-            ];
-        }
+    //     if (!isset($_BODY['website_name']) || empty($_BODY['website_name'])) {
+    //         return [
+    //             "code" => 400,
+    //             "message" => "Website name is required",
+    //         ];
+    //     }
 
-        $setting['website_name'] = $_BODY['website_name'];
-        $setting['website_email'] = $_BODY['website_email'] ?? "";
-        $setting['website_timezone'] = $_BODY['website_timezone'] ?? "";
-        $setting['website_date_format'] = $_BODY['website_date_format'] ?? "";
+    //     $setting['website_name'] = $_BODY['website_name'];
+    //     $setting['website_email'] = $_BODY['website_email'] ?? "";
+    //     $setting['website_timezone'] = $_BODY['website_timezone'] ?? "";
+    //     $setting['website_date_format'] = $_BODY['website_date_format'] ?? "";
 
-        return [
-            "code" => 200,
-            "message" => "Settings updated successfully",
-        ];
-    }
+    //     return [
+    //         "code" => 200,
+    //         "message" => "Settings updated successfully",
+    //     ];
+    // }
 
 
 
@@ -169,7 +167,8 @@ class Admin extends __Fragment
         $module = Box::module(ucfirst($module_name));
 
         return View::render('config.html.twig', [
-            "configs" => $module->getConfig()->getStack()
+            "configs" => $module->getConfig()->getStack(),
+            "module_name" => $module_name
         ]);
     }
 
