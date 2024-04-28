@@ -3,6 +3,7 @@
 namespace MerapiPanel\Module\FileManager;
 
 use MerapiPanel\Box\Module\__Fragment;
+use MerapiPanel\Utility\Http\Request;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 
@@ -90,48 +91,10 @@ class Service extends __Fragment
 
 
 
-    public function upload()
-    {
 
-        try {
-            $files = $_FILES['files'];
+    
 
-            $root = $this->getRoot() . "/" . date('Y-m-w');
-            if (!file_exists($root)) {
-                mkdir($root);
-            }
-
-            $uploaded = [];
-
-            for ($i = 0; $i < count($files['name']); $i++) {
-                $temp = $files['tmp_name'][$i];
-                $name = $files['name'][$i];
-                $path = $root . "/" . $name;
-
-                if (move_uploaded_file($temp, $path)) {
-
-                    $uploaded[] = [
-                        "status" => "success",
-                        "src" => $this->absoluteToRelativePath($path),
-                        "type" => in_array(pathinfo($path, PATHINFO_EXTENSION), ["img", "png", "jpg", "jpeg", "svg", "gif", "webp", "ico", "bmp"]) ? "image" : (in_array(pathinfo($path, PATHINFO_EXTENSION), ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm", "m4v", "3gp", "mpeg", "mpg"]) ? "video" : "file"),
-                    ];
-                } else {
-                    $uploaded[] = [
-                        "status" => "failed",
-                    ];
-                }
-            }
-
-            if (count($uploaded) <= 0) {
-                throw new \Exception("Upload failed", 401);
-            }
-
-            return $uploaded;
-
-        } catch (Throwable $e) {
-            throw $e;
-        }
-    }
+    
 
 
     function absoluteToRelativePath($absolute_path)
@@ -145,134 +108,6 @@ class Service extends __Fragment
 
 
 
-
-
-    function getIconName($file)
-    {
-
-
-        $ext = pathinfo($file, PATHINFO_EXTENSION);
-
-        switch ($ext) {
-            case 'png':
-            case 'jpg':
-            case 'jpeg':
-                return [
-                    "src" => "/public/filemanager/image_viewer/" . str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload/", '', $file),
-                    "scale" => "cover"
-                ];
-
-            default:
-                return [
-                    "src" => "/public/filemanager/image_viewer/" . str_replace($_SERVER['DOCUMENT_ROOT'] . "/public/upload/", '', $file) . "?icon=1",
-                    "scale" => "scale-down"
-                ];
-        }
-    }
-
-
-
-    public function getIcon($file)
-    {
-
-        $ext = pathinfo($file, PATHINFO_EXTENSION);
-
-        if (empty($ext)) {
-            if ($this->isDirectoryNotEmpty($file)) {
-                return __DIR__ . "/assets/icon/folder-file.png";
-            } else {
-                return __DIR__ . "/assets/icon/folder-empty.png";
-            }
-        }
-
-        switch ($ext) {
-            case 'png':
-            case 'jpg':
-            case 'jpeg':
-                $file = "image";
-                break;
-            case 'mp4':
-            case 'avi':
-            case 'mov':
-            case 'wmv':
-            case 'flv':
-            case 'mkv':
-            case 'webm':
-            case 'm4v':
-            case '3gp':
-            case 'mpeg':
-            case 'mpg':
-                $file = "video";
-                break;
-
-            case 'mp3':
-            case 'wav':
-            case 'ogg':
-            case 'aac':
-            case 'wma':
-            case 'flac':
-            case 'amr':
-                $file = "audio";
-                break;
-
-            case 'gif':
-                $file = "image";
-                break;
-
-            case 'pdf':
-                $file = "pdf";
-                break;
-            case 'doc':
-            case 'docx':
-                $file = "docs";
-                break;
-            case 'xls':
-            case 'xlsx':
-                $file = "sheet";
-                break;
-
-            case 'csv':
-                $file = "sheet";
-                break;
-
-            case 'ppt':
-            case 'pptx':
-                $file = "powerpoint";
-                break;
-
-            case 'txt':
-                $file = "alt";
-                break;
-
-            case 'zip':
-            case 'rar':
-                $file = 'zip';
-                break;
-            case 'php':
-            case 'html':
-            case 'js':
-            case 'css':
-            case 'py':
-            case 'json':
-            case 'sql':
-            case 'xml':
-            case 'yaml':
-            case 'yml':
-            case 'ini':
-            case 'sh':
-            case 'bat':
-            case 'ps1':
-            case 'md':
-            case 'vue':
-                $file = 'coding';
-                break;
-
-            default:
-                $file = 'unknown';
-        }
-
-        return __DIR__ . "/assets/icon/$file.png";
-    }
 
 
     function isDirectoryNotEmpty($dir)

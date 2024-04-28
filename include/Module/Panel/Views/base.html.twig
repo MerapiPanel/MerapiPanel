@@ -31,6 +31,7 @@
 
             {% block header_title_outer %}
             <h1 class="panel-title">{% block header_title %}MerapiPanel{% endblock %}</h1>
+            <small class="text-muted float-end ms-auto">Loadtime: {{ (microtime(true) - __env__.__MP_START_TIME__ ) | round(3, 'floor') }} s</small>
             {% endblock %}
 
         </header>
@@ -113,6 +114,10 @@
 
         </div>
         {% endblock %}
+
+        <div>
+            {% block footer %}{% endblock %}
+        </div>
 
     </main>
     {% endblock %}

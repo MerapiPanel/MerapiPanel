@@ -6,6 +6,7 @@ import { toast } from "@il4mb/merapipanel/toast";
 const articles: any[] = ((window as any).articles || []);
 const updateEndpoint = (window as any).updateEndpoint;
 const deleteEndpoint = (window as any).deleteEndpoint;
+const viewEndpoint = (window as any).viewEndpoint;
 const editURL = (window as any).editURL;
 
 (window as any).render = (container) => {
@@ -39,8 +40,10 @@ function createCard(article, container): JQuery<HTMLElement> {
                 .append(
                     $(`<button class='btn btn-sm btn-primary px-5 mb-2'>View</button>`)
                     .on('click', () => {
-                        if (article.url) {
-                            window.open(article.url);
+                        if (viewEndpoint) {
+                            window.open(`${viewEndpoint}/${article.id}`, '_blank');
+                        } else {
+                            toast("No view endpoint found", 5, 'text-danger');
                         }
                     })
                 )
@@ -86,7 +89,7 @@ function createCard(article, container): JQuery<HTMLElement> {
 }
 
 
-function QuickEdit(article, container) {
+function QuickEdit(article: any, container: any) {
 
     let modal: ModalTypeInterface | null = null;
 
@@ -167,21 +170,21 @@ function QuickEdit(article, container) {
             toast("No update endpoint found", 5, 'text-danger');
         }
 
-        http.post(updateEndpoint, articles[key]).then((res, text, xhr) => {
-            if (xhr.status === 200) {
+        http.post(updateEndpoint, articles[key]).then((res) => {
+            if (res.code === 200) {
                 toast("Article updated", 5, 'text-success');
                 // modal.hide();
             } else {
-                toast("Failed to update article", 5, 'text-danger');
+                toast( res.message || "Failed to update article", 5, 'text-danger');
             }
         }).catch(err => {
-            toast("Failed to update article", 5, 'text-danger');
+            toast( err.message || "Failed to update article", 5, 'text-danger');
         })
     }
 
 }
 
-function ConfirmDelete(article, container) {
+function ConfirmDelete(article : any, container : any) {
     dialog.danger("Are you sure?",
         $(`<div>`)
             .append(
@@ -200,17 +203,23 @@ function ConfirmDelete(article, container) {
                 return;
             }
 
-            http.del(deleteEndpoint, { id: article.id }).then((res, text, xhr) => {
-                if (res.code === 200) {
+            http.del(deleteEndpoint, { id: article.id }).then((res) => {
+        
+                if (res.code == 200) {
                     toast("Article deleted", 5, 'text-success');
                     let key = articles.indexOf(article);
+                    const l = articles.length;
                     articles.splice(key, 1);
-                    render(container);
+                    if(articles.length < l) {
+                        render(container);
+                    } else {
+                        window.location.reload();
+                    }
                 } else {
-                    toast("Failed to delete article", 5, 'text-danger');
+                    toast(res.message || "Failed to delete article", 5, 'text-danger');
                 }
             }).catch(err => {
-                toast("Failed to delete article", 5, 'text-danger');
+                toast(err.message || "Failed to delete article", 5, 'text-danger');
             })
         })
         .catch(() => {

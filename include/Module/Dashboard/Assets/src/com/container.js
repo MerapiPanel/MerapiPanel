@@ -1,4 +1,4 @@
-import { dialog } from "@il4mb/merapipanel";
+import * as dialog from "@il4mb/merapipanel/dialog";
 import React, { useEffect, useRef, useState, createContext, useContext } from "react";
 
 const ContainerContext = createContext({});
@@ -22,7 +22,8 @@ export const Container = ({ children }) => {
             const handleClick = () => {
                 console.log(isEdit, isChanged)
                 if (isEdit && isChanged) {
-                    dialog.confirm('<h4><i class="fa-solid fa-triangle-exclamation"></i> Unsaved changes</h4>', 'You have unsaved changes.<br>Are you sure you want to discard them?').then((result) => {
+                    dialog.confirm('<h4><i class="fa-solid fa-triangle-exclamation"></i> Unsaved changes</h4>', 'You have unsaved changes.<br>Are you sure you want to discard them?')
+                    .then((result) => {
                         if (result) {
                             setEdit(prevIsEdit => !prevIsEdit); // Toggle isEdit
                         }

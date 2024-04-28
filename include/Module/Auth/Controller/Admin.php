@@ -49,8 +49,8 @@ class Admin extends __Fragment
             $referer = $_ENV['__MP_' . strtoupper($_ENV["__MP_ACCESS__"]) . '__']['prefix'] . "/";
         }
 
-        $setting = $this->module->getSetting();
-        setcookie($setting->cookie_name, "", time() - 3600, "/");
+        $config = $this->module->getConfig();
+        setcookie($config->get('cookie_name'), "", time() - 3600, "/");
         $res->setHeader("Location", $referer);
         return $res;
     }
@@ -59,11 +59,9 @@ class Admin extends __Fragment
     function setting($view)
     {
 
-
-        $setting = $this->module->getSetting();
-
+        $config = $this->module->getConfig();
         return View::render("setting.html.twig", [
-            "setting" => $setting
+            "setting" => $config->__toArray()
         ]);
     }
 }

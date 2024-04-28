@@ -33,14 +33,9 @@ class View
         }
 
         $this->intl = new Intl();
-        $this->twig = new Twig($this->loader, [
-            "callback" => function ($name) {
-                // error_log($name);
-            }
-        ]);
+        $this->twig = new Twig($this->loader, []);
 
         $this->twig->enableDebug();
-
         $this->twig->AddExtension(new TranslationExtension($this->intl));
         $this->lang = $this->intl->getLocale();
 
@@ -62,6 +57,7 @@ class View
         $this->addGlobal("request", Request::getInstance());
         $this->addGlobal("lang", $this->lang);
         $this->addGlobal("api", new ApiServices());
+        $this->addGlobal('__env__', $_ENV);
     }
 
 

@@ -181,4 +181,11 @@ class Service extends __Fragment
         error_log("Sending confirmation email to $email");
     }
 
+
+
+    function delete($id)
+    {
+        DB::table("users")->delete()->where("id")->equals($id)->execute();
+    }
+
 }

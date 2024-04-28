@@ -64,6 +64,25 @@ class CustomSettingNode extends Node
             }
         }
 
+        // Find all textarea elements and extract the 'name' attribute
+        $textareas = $dom->getElementsByTagName('textarea');
+        foreach ($textareas as $textarea) {
+            $inputName = $textarea->getAttribute('name');
+            if (!empty($inputName)) {
+                $inputNames[] = $inputName;
+            }
+        }
+
+        // Find all select elements and extract the 'name' attribute
+        $selects = $dom->getElementsByTagName('select');
+        foreach ($selects as $select) {
+            $inputName = $select->getAttribute('name');
+            if (!empty($inputName)) {
+                $inputNames[] = $inputName;
+            }
+        }
+        
+
         // Output the extracted input names
         $compiler->subcompile($this->getNode('body'))->write("echo \"<input type='hidden' name='setting_toke' value='" . AES::encrypt(serialize($inputNames)) . "'>\";");
     }

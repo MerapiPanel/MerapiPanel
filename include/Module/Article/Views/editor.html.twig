@@ -20,7 +20,14 @@
             CodeEditor: {
                 editable: true
             }
-        }
+        },
+        assetManager: {
+			custom: true,
+			assets: [],
+			upload: "/api/FileManager/upload" | access_path,
+			uploadName: "files",
+			fetch: "/api/FileManager/fetchFile?start=0&limit=10" | access_path
+		}
 	},
 	fetchBlockURL: "/editor/api/load" | access_path
 }) }}

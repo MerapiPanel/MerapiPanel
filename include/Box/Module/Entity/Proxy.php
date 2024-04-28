@@ -58,7 +58,12 @@ namespace MerapiPanel\Box\Module\Entity {
 
             if (isset($this->listener[$method])) {
                 foreach ($this->listener[$method] as $callback) {
-                    $result = $callback($result, $this);
+                    $callback($result, $this);
+                }
+            }
+            if (isset($this->listener["*"])) {
+                foreach ($this->listener["*"] as $callback) {
+                    $callback($method, $result, $this);
                 }
             }
             return $result;
@@ -100,7 +105,7 @@ namespace MerapiPanel\Box\Module\Entity {
             return method_exists($this->instance, $method);
         }
 
-        
+
 
         public function __toString()
         {

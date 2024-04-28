@@ -113,7 +113,7 @@ class Request
     /**
      * http method use for return header value
      */
-    public function http($name): string|false
+    public function http($name): mixed
     {
         $name = $this->camelCaseToKebabCase($name);
         if (!isset ($this->header->$name))
@@ -127,7 +127,7 @@ class Request
     /**
      * Magic method use for return from value
      */
-    function __call($name, $arguments): string|false
+    function __call($name, $arguments): mixed
     {
 
         $name = $this->camelCaseToKebabCase($name);
@@ -146,7 +146,7 @@ class Request
      * Magic method use fro return get query value
      * if not set will forward to __get
      */
-    public function __get($name): string|false
+    public function __get($name): mixed
     {
 
         // error_log("From Request Traying Get : " . $name);

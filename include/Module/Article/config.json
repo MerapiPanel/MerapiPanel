@@ -1,0 +1,13 @@
+[
+    {
+        "name": "path_edit",
+        "default": "/article/edit/{id}",
+        "readonly": true,
+        "help": "Path to edit article"
+    },
+    {
+        "name": "path_create",
+        "default": "/article/create",
+        "readonly": true
+    }
+]

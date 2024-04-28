@@ -27,11 +27,23 @@ namespace MerapiPanel\Module\Api\Controller {
 
                 ob_start();
                 $module = Box::module($moduleName);
+                if($module->Api) {
+                    $module = $module->Api;
+                }
                 $params = $module->method_params($methodName);
                 if (!empty($params)) {
                     foreach ($params as $key => $value) {
                         $paramName = $value->name;
-                        $params[$key] = $request->$paramName();
+                        if (!$value->isOptional()) {
+                            $params[$key] = $request->$paramName();
+                        } else {
+                            if ($request->$paramName()) {
+                                $params[$key] = $request->$paramName();
+                            } else {
+                                $params[$key] = $value->getDefaultValue();
+                            }
+                        }
+
                     }
                     $output = $module->$methodName(...array_values($params));
                 } else {

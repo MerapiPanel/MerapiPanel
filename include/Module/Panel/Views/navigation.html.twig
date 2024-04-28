@@ -1,18 +1,23 @@
 {% macro render_menu(menu) %}
 
-    {% for item in menu %}
-    <li class="nav-item{{ item.active ? ' active' : '' }}">
-        <a {% if item.link %}href="{{ item.link }}"{% endif %}>
-            {{ item.icon | raw }} {{item.name}}
-        </a>
-        {% if item.childs %}
-        <ul class="nav-menu">
-            {{ _self.render_menu(item.childs) }}
-        </ul>
+{% for item in menu %}
+<li class="nav-item{{ item.active ? ' active' : '' }}">
+    <a {% if item.link %}href="{{ item.link }}" {% endif %}>
+        {% if api.Panel.isFile(item.icon) %}
+        <img width="14" height="14" class="object-fit-cover" src="{{ api.Panel.getAbsolutePath(item.icon) }}" alt="Icon">
+        {% else %}
+        {{ item.icon | raw }}
         {% endif %}
-        
-    </li>
-    {% endfor %}
+        {{item.name}}
+    </a>
+    {% if item.childs %}
+    <ul class="nav-menu">
+        {{ _self.render_menu(item.childs) }}
+    </ul>
+    {% endif %}
+
+</li>
+{% endfor %}
 {% endmacro %}
 
 <nav class="sidebar" id="sidebar">
@@ -21,7 +26,7 @@
         <div class="sidebar-header">
             <img width="110" height="65" src="{{ '@panel/assets/logo.svg?v=1' | assets }}" alt="">
         </div>
-        
+
         <ul class="nav-menu">
             {{ _self.render_menu(api.Panel.listmenu) }}
         </ul>

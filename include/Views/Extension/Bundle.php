@@ -36,6 +36,12 @@ class Bundle extends Extension
         return time();
     }
 
+    
+    public function fn_microtime($as_float = true)
+    {
+        return microtime($as_float);
+    }
+
 
 
 

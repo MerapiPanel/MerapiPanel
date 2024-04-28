@@ -10,22 +10,43 @@ use PDO;
 class Service extends __Fragment
 {
 
+
     protected $module;
+
+
 
     public function onCreate(Box\Module\Entity\Module $module)
     {
         $this->module = $module;
     }
 
-    function fetchAll($columns = ["id", "title", "slug", "data", "post_date", "update_date"])
+
+
+    function fetchAll($columns = ["id", "title", "slug", "data", "post_date", "update_date"], $opts = [])
     {
+
+        $opts = array_merge([
+            "limit" => 10,
+            "offset" => 0,
+            "order" => "post_date DESC",
+            "status" => 1
+        ], $opts ?? []);
+
 
         $SQL = "SELECT " . implode(",", array_map(function ($item) {
             if (strpos($item, "users.") === 0) {
                 return str_replace("users.", "B.", $item);
             }
             return "A.{$item}";
-        }, $columns)) . " FROM articles A LEFT JOIN users B ON A.author = B.id ORDER BY `post_date` DESC";
+        }, $columns))
+            . " FROM articles A LEFT JOIN users B ON A.author = B.id "
+            . ($opts['status'] != null && in_array($opts['status'], [0, 1]) ? "WHERE A.status = {$opts['status']}" : "")
+            . " ORDER BY "
+            . $opts['order']
+            . " LIMIT "
+            . $opts['limit']
+            . " OFFSET "
+            . $opts['offset'] . " ";
 
         $articles = DB::instance()->query($SQL)->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($articles)) {
@@ -81,7 +102,7 @@ class Service extends __Fragment
         $stmt->execute(array_values($where));
         $article = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if($article) {
+        if ($article) {
             if (isset($article['data'])) {
                 $article['data'] = json_decode($article['data'], true);
             }

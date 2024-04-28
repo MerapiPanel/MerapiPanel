@@ -5,6 +5,7 @@ namespace MerapiPanel\Module\Setting\Controller;
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Core\Proxy;
+use MerapiPanel\Database\DB;
 use MerapiPanel\Utility\AES;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Views\View;
@@ -28,6 +29,7 @@ class Admin extends __Fragment
         Router::POST("/setting/endpoint/save", "saveEndpoint", self::class);
 
         $setting = Router::GET("/settings", "index", self::class);
+        $setting = Router::GET("/settings/config/{module_name}/", "config_module", self::class);
         $general = Router::GET("/settings/general", "index", self::class);
         $route = Router::GET("/settings/route", "route", self::class);
 
@@ -66,6 +68,7 @@ class Admin extends __Fragment
         }
         $data = AES::decrypt($token);
         $entry = unserialize($data);
+
         if (!isset($entry['module']) || !$entry['input']) {
             return [
                 "code" => 401,
@@ -77,10 +80,11 @@ class Admin extends __Fragment
         $input = $entry['input'];
 
         try {
-            $module = Box::module($module_name);
-            $setting = $module->getSetting();
+
+            $module = Box::module(ucfirst($module_name));
+            $config = $module->getConfig();
             foreach ($input as $name) {
-                $setting->$name = $req->$name();
+                $config->set($name, $req->$name());
             }
 
             return [
@@ -91,7 +95,7 @@ class Admin extends __Fragment
 
             return [
                 "code" => 500,
-                "message" => "Internal Server Error"
+                "message" => $e->getMessage()
             ];
         }
     }
@@ -101,21 +105,6 @@ class Admin extends __Fragment
     {
 
         return View::render('index.html.twig');
-    }
-
-
-
-
-    function event($request)
-    {
-        $events = Proxy::fromObject(Box::get($this)->event())->getProperty('listeners');
-
-        return View::render('event.html.twig', [
-            "events" => array_map(fn($key) => [
-                "instance" => $key,
-                "listeners" => array_map(fn($listener) => (is_array($listener) ? $listener[0] . "@" . $listener[1] : $listener), $events[$key])
-            ], array_keys($events))
-        ]);
     }
 
 
@@ -148,7 +137,7 @@ class Admin extends __Fragment
 
     function route($request)
     {
-        $statck = Proxy::fromObject(Router::getInstance())->getProperty('routeStack');
+        $statck = Router::getInstance()->getRouteStack();
 
         return View::render('route.html.twig', [
             "route_stack" => array_map(
@@ -167,6 +156,20 @@ class Admin extends __Fragment
                 ],
                 array_keys($statck)
             )
+        ]);
+    }
+
+
+
+
+    function config_module(Request $request)
+    {
+
+        $module_name = $request->module_name();
+        $module = Box::module(ucfirst($module_name));
+
+        return View::render('config.html.twig', [
+            "configs" => $module->getConfig()->getStack()
         ]);
     }
 

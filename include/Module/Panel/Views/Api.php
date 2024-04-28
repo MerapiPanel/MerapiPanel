@@ -23,4 +23,17 @@ class Api extends __Fragment
     {
         return $this->module->getMenu();
     }
+
+
+    function isFile($path)
+    {
+        return is_file($path);
+    }
+
+
+
+    function getAbsolutePath($path)
+    {
+        return str_replace(str_replace('\\', '/', $_ENV['__MP_CWD__']), "", $path);
+    }
 }

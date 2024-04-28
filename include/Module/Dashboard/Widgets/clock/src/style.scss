@@ -31,7 +31,7 @@
     height: 65px;
     background: #333;
     top: 79px;
-    transform-origin: 50% 72px;
+    transform-origin: 50% 60px;
     left: 50%;
     margin-left: -2px;
     border-top-left-radius: 50%;
@@ -49,7 +49,7 @@
     margin-left: -2px;
     border-top-left-radius: 50%;
     border-top-right-radius: 50%;
-    transform-origin: 50% 105px;
+    transform-origin: 50% 93px;
 }
 
 .second-hand {
@@ -63,7 +63,7 @@
     margin-left: -1px;
     border-top-left-radius: 50%;
     border-top-right-radius: 50%;
-    transform-origin: 50% 125px;
+    transform-origin: 50% 113px;
 }
 
 span {
@@ -76,23 +76,23 @@ span {
     z-index: 4;
 }
 
-.h12 {
+._h12 {
     top: 30px;
     left: 50%;
     margin-left: -9px;
 }
-.h3 {
-    top: 140px;
+._h3 {
+    top: 123px;
     right: 30px;
 }
-.h6 {
+._h6 {
     bottom: 30px;
     left: 50%;
     margin-left: -5px;
 }
-.h9 {
+._h9 {
     left: 32px;
-    top: 140px;
+    top: 123px;
 }
 
 .diallines {
@@ -103,7 +103,7 @@ span {
     background: #666;
     left: 50%;
     margin-left: -1px;
-    transform-origin: 50% 150px;
+    transform-origin: 50% 136.5px;
 }
 .diallines:nth-of-type(5n) {
     position: absolute;
@@ -113,7 +113,7 @@ span {
     background: #666;
     left: 50%;
     margin-left: -1px;
-    transform-origin: 50% 150px;
+    transform-origin: 50% 136.5px;
 }
 
 .info {

@@ -6,10 +6,10 @@
 
 {% block stylesheet %}
 {{parent()}}
-<link rel="stylesheet" href="{{ '@FileManager/dist/filemanager.css' | assets }}">
+
 {% endblock %}
 
-{% set directory = request.directory %}
+{% set directory = request.d %}
 
 
 
@@ -37,10 +37,19 @@
 {% endif %}
 {% endblock %}
 
+{% block subheader %}
+{{parent()}}
+{% endblock %}
+
 
 {% block subheader_menu %}
-<li class="menu-item btn" onclick="createFolder('{{ directory }}')"><i class="fa-solid fa-folder-plus"></i> new folder</li>
-<li class="menu-item btn" onclick="uploadFile()"><i class="fa-solid fa-file-arrow-up"></i> upload file</li>
+<li class="menu-item btn" onclick="__.createFolder('{{ directory }}')">
+    <i class="fa-solid fa-folder-plus"></i> new folder
+</li>
+<li class="menu-item btn">
+    <a href="{{ '/filemanager/upload' | access_path }}?d={{ directory }}"><i class="fa-solid fa-file-arrow-up"></i>
+        upload file</a>
+</li>
 {% endblock %}
 
 
@@ -51,44 +60,32 @@
 
 {% if FM.state_is_file %}
 
-<div class="ratio ratio-16x9">
-    <object data="{{ FM.state_path }}" type="image/jpeg"></object>
-</div>
+{% include "@filemanager/partials/open.html.twig" %}
 
 {% else %}
 
-<ul class="list-group list-group-flush">
+{% include "@filemanager/partials/list.html.twig" %}
 
-    {% for item in FM.fetch %}
+{% endif %}
 
-    <li class="list-group-item" style="max-width: 800px;">
-        <a href="?d={{parent}}/{{ item | trim }}">
-            <div class="d-flex align-items-center">
-                {% if FM.is_file(item) %}
-                <i class="fa-regular fa-file"></i>
-                {% else %}
-                <i class="fa-regular fa-folder-closed"></i>
-                {% endif %}
-                <span class="ms-2">{{ item }}</span>
-            </div>
-        </a>
-    </li>
+{% endblock %}
 
-    {% else %}
+{% block javascript %}
 
-
-    <li class="list-group-item">
-        <div class="d-flex align-items-center justify-content-center flex-column fs-4 w-100" style="min-height: 400px;">
-            <i class="fa-regular fa-folder-open fa-2x"></i>
-
-            <span class="mt-2">Directory is empty</span>
-        </div>
-    </li>
-
-
-    {% endfor %}
-</ul>
-
+{{parent()}}
+{% if FM.state_is_file is empty %}
+<script>
+    window.__.endpoints = {
+        rename: "{{ '/api/filemanager/rename' | access_path }}",
+        delete: "{{ '/api/filemanager/delete' | access_path }}",
+        copy: "{{ '/api/filemanager/copy' | access_path }}",
+        move: "{{ '/api/filemanager/move' | access_path }}",
+        upload: "{{ '/api/filemanager/upload' | access_path }}",
+        fetchFolder: "{{ '/api/filemanager/fetchFolder' | access_path }}",
+        newFolder: "{{ '/api/filemanager/newFolder' | access_path }}"
+    }
+</script>
+<script src="{{ '@filemanager/dist/listfile.js' | assets }}"></script>
 {% endif %}
 
 {% endblock %}

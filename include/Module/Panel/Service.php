@@ -35,7 +35,7 @@ class Service extends __Fragment
             $unique[strtolower($menu['name'])] = $menu;
         }
 
-        $grouped = $this->buildMenuHierarchy(array_values($unique));
+        $grouped = $this->buildMenuHierarchy(array_values($listMenu));
         return $grouped;
     }
 
@@ -90,7 +90,7 @@ class Service extends __Fragment
 
         if (!empty($menu['icon'])) {
             $icon = $menu['icon'];
-   
+
             if (str_contains($icon, "<svg")) {
                 $menu['icon'] = $this->reBuildSvgIcon($icon);
             } else if (preg_match('/\bclass=["\'][^"\']*?\bfa-\w+\b[^"\']*?["\']/', $icon, $matches)) {
@@ -185,4 +185,5 @@ class Service extends __Fragment
 
         return strtolower(preg_replace('/[^a-z]+/i', '', $link)) == strtolower(preg_replace('/[^a-z]+/i', '', $path));
     }
+
 }

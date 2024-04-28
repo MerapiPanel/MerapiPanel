@@ -13,7 +13,7 @@ namespace MerapiPanel {
         "APP" => __DIR__,
     ];
 
-    $loaded_config = json_decode(file_get_contents(__DIR__ . "/config/env.json"), true); // load config
+    $loaded_config = include __DIR__ . "/config/env.php"; // load config
 
     if (isset($loaded_config['timezone'])) {
         date_default_timezone_set($loaded_config['timezone']);
@@ -120,15 +120,9 @@ namespace MerapiPanel {
         public function run(): void
         {
 
-            // ob_start();
             echo Router::dispatch(Request::getInstance());
-            //$output = ob_get_contents();
-            //ob_end_clean();
-
             // send signal for shutdown to all modules in parent
             parent::shutdown();
-
-            //echo $output;
         }
     }
 }

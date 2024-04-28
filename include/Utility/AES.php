@@ -4,55 +4,26 @@ namespace MerapiPanel\Utility;
 
 class AES
 {
-    private static function getKey(): string|false
+
+    static function encrypt(string $data): mixed
     {
-        return $_ENV['__MP_AES_KEY__'] ?? false;
+
+        // Load public key from file
+        $publicKey = openssl_pkey_get_public(file_get_contents($_ENV['__MP_PUBLIC_KEY__']));
+        // Encrypt data with public key
+        openssl_public_encrypt($data, $encrypted, $publicKey);
+        return base64_encode($encrypted);
+
     }
 
-    static function encrypt(string $data): string|false
+    static function decrypt(string $data): mixed
     {
-        $key = self::getKey();
-        if (!$key) {
-            return false;
-        }
-
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-        $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
-        return base64_encode($encrypted . '::' . $iv);
-    }
-
-    static function decrypt(string $data): string|false
-    {
-        // Store current error reporting level
-        // $originalErrorReporting = error_reporting();
-
-        // error_reporting(0);
-
-        $key = self::getKey();
-        if (!$key) {
-            // Restore original error reporting level before returning
-            // error_reporting($originalErrorReporting);
-            return false;
-        }
-        try {
-
-            [$encryptedData, $iv] = @explode('::', base64_decode($data), 2);
-            if (!$encryptedData || !$iv) {
-                // Restore original error reporting level before returning
-                //  error_reporting($originalErrorReporting);
-                return false;
-            }
-            $decryptedData = @openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
-
-            // Restore original error reporting level before returning
-            // error_reporting($originalErrorReporting);
-
-            return $decryptedData;
-        } catch (\Throwable $e) {
-            // Restore original error reporting level before returning
-            // error_reporting($originalErrorReporting);
-            return false;
-        }
+        
+        // Load private key from file
+        $privateKey = openssl_pkey_get_private(file_get_contents($_ENV['__MP_PRIVATE_KEY__']));
+        // Decrypted data
+        openssl_private_decrypt(base64_decode($data), $decrypted, $privateKey);
+        return $decrypted;
     }
 
 }

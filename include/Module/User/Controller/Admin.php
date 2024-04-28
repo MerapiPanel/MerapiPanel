@@ -25,18 +25,6 @@ class Admin extends __Fragment
         Router::GET("/users/add", "addUser", self::class);
 
         $index = Router::GET("/users", "index", self::class);
-        $avatar_setting = Router::GET("/settings/users/avatar", "avatar", self::class);
-
-        Box::module("Panel")->addMenu([
-            "parent" => "settings",
-            "name" => "Users Settings",
-            "children" => [
-                [
-                    "name" => "Avatar",
-                    "link" => $avatar_setting
-                ]
-            ]
-        ]);
 
         Box::module("Panel")->addMenu([
             "name" => "Users",

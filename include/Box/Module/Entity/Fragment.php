@@ -90,9 +90,15 @@ namespace MerapiPanel\Box\Module\Entity {
             $result = &$fragment;
             if (isset($this->listener[$name])) {
                 foreach ($this->listener[$name] as $callback) {
-                    $result = $callback($result, $this);
+                    $callback($result, $this);
                 }
             }
+            if (isset($this->listener["*"])) {
+                foreach ($this->listener["*"] as $callback) {
+                    $callback($name, $result, $this);
+                }
+            }
+
             return $result;
         }
 

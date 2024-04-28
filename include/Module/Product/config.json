@@ -1,0 +1,83 @@
+[
+    {
+        "name": "currency",
+        "default": "USD",
+        "type": "select",
+        "label": "Currency",
+        "description": "Currency",
+        "options": [
+            {
+                "value": "USD",
+                "label": "USD"
+            },
+            {
+                "value": "EUR",
+                "label": "EUR"
+            },
+            {
+                "value": "IDR",
+                "label": "IDR"
+            },
+            {
+                "value": "MYR",
+                "label": "MYR"
+            },
+            {
+                "value": "RUB",
+                "label": "RUB"
+            },
+            {
+                "value": "JPY",
+                "label": "JPY"
+            },
+            {
+                "value": "BRL",
+                "label": "BRL"
+            },
+            {
+                "value": "CNY",
+                "label": "CNY"
+            },
+            {
+                "value": "INR",
+                "label": "INR"
+            },
+            {
+                "value": "KRW",
+                "label": "KRW"
+            },
+            {
+                "value": "TRY",
+                "label": "TRY"
+            },
+            {
+                "value": "TWD",
+                "label": "TWD"
+            }
+        ]
+    },
+    {
+        "name": "currency_symbol",
+        "default": "$",
+        "type": "text",
+        "label": "Currency symbol",
+        "description": "Currency symbol"
+    },
+    {
+        "name": "currency_symbol_position",
+        "default": "before",
+        "type": "color",
+        "label": "Currency symbol position",
+        "description": "Currency symbol position",
+        "options": [
+            {
+                "value": "before",
+                "label": "Before"
+            },
+            {
+                "value": "after",
+                "label": "After"
+            }
+        ]
+    }
+]

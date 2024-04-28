@@ -31,12 +31,12 @@ namespace MerapiPanel {
 
         protected function __construct()
         {
-            // if (file_exists(__DIR__ . "/__.dat")) {
-            //     $serialize = file_get_contents(__DIR__ . "/__.dat");
-            //     $this->module_container = unserialize($serialize);
-            //     self::$instance = $this;
-            //     return;
-            // }
+            if (file_exists(__DIR__ . "/__.dat")) {
+                $serialize = file_get_contents(__DIR__ . "/__.dat");
+                $this->module_container = unserialize($serialize);
+                self::$instance = $this;
+                return;
+            }
 
             $this->module_container = new Container(new ModuleLoader(__DIR__ . "/Module"));
             self::$instance = $this;
@@ -65,14 +65,16 @@ namespace MerapiPanel {
 
         public static function shutdown()
         {
-            // $serialize = serialize(self::$instance->module_container);
-            // if (file_exists(__DIR__ . "/__.dat")) {
-            //     if (filemtime(__DIR__ . "/__.dat") < time() - 3600) {
-            //         file_put_contents(__DIR__ . "/__.dat", $serialize);
-            //     }
-            // } else {
-            //     file_put_contents(__DIR__ . "/__.dat", $serialize);
-            // }
+            
+            if (file_exists(__DIR__ . "/__.dat")) {
+                if (filemtime(__DIR__ . "/__.dat") < time() - 3600) {
+                    $serialize = serialize(self::$instance->module_container);
+                    file_put_contents(__DIR__ . "/__.dat", $serialize);
+                }
+            } else {
+                $serialize = serialize(self::$instance->module_container);
+                file_put_contents(__DIR__ . "/__.dat", $serialize);
+            }
         }
     }
 }

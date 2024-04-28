@@ -14,4 +14,5 @@ namespace MerapiPanel\Box\Module {
         abstract function loadFragment(string $name, Module|Fragment $parent): Fragment|null;
         abstract function initialize(Container $container): void;
     }
+
 }

@@ -245,6 +245,10 @@ class Router
         ];
     }
 
+    public function getRouteStack() {
+        return $this->routeStack;
+    }
+
     /**
      * Adds a route to the route stack.
      *

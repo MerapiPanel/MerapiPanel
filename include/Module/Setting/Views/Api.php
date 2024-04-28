@@ -21,8 +21,10 @@ class Api extends __Fragment
     function token(string $form)
     {
 
+        $form = preg_replace("/\n/im", "", $form);
+
         $inputNames = [];
-        preg_match_all("/<[input|textarea].*?name=\"(.*?)\".*?>/i", $form, $matches);
+        preg_match_all("/<[input|textarea|select].*?name=\"(.*?)\".*?>/i", $form, $matches);
         if (isset($matches[1])) {
             $inputNames = $matches[1];
         }

@@ -1,136 +1,36 @@
-{% extends "@panel/base.html.twig" %}
-{% block header_title %}Article Options{% endblock %}
+{% extends "@setting/base.html.twig" %}
 
 
-{% block head_javascript %}
-<script src="{{ '@template/assets/dist/index.bundle.js' | assets }}"></script>
-{% endblock %}
 
-
-{% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{{ '/' |admin_url}}">Home</a></li>
-<li class="breadcrumb-item"><a href="{{ '/article' |admin_url}}">Article</a></li>
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item"><a href="{{ '/article' | access_path }}">Article</a></li>
 <li class="breadcrumb-item">Options</li>
 {% endblock %}
 
 
-{% block subheader %}{% endblock %}
-
-{% set all_template = admin.template_all_template %}
-{% set options = admin.article_options %}
-
-{% block content %}
-<form class="gap-4 flex flex-wrap w-full max-w-[1280px]" method="xhr::post"
-    action="{{ '/article/endpoint/options_save' | admin_url }}">
-
-    <div class="w-full max-w-[700px]">
-        <section class="bg-white mb-3 p-4 rounded-md shadow-sm">
-            <header>
-                <h2 class="text-xl">Article Template</h2>
-            </header>
-            <article>
-                <label class="ps-3 w-full opacity-50 text-sm" for="website_timezone">Select template for content</label>
-                <select style="display: none;" class="form-select {% if options.template is null %}invalid{% endif %}" name="website_timezone"
-                    id="website_timezone">
-
-                    {% for template in all_template %}
-                    <option value="{{ template.id }}"><i class="fa fa-check"></i> {{ template.name }}</option>
-                    {% endfor %}
-                </select>
+{% block header_title %}Article Options{% endblock %}
 
 
-                <div class="form-select">
-                    <div class="option-item" value="" disabled>-- please chose the template --</div>
-                    {% for template in all_template %}
-                    <div class="option-item" value="{{ template.id }}">
-                        <div class="bg-black w-[25px] h-25px aspect-square me-3 rounded-sm"></div>{{ template.name }}
-                    </div>
-                    {% endfor %}
-
-                  
-                </div>
-
-            </article>
-
-            {% if options.template is null %}
-            <div class="alert alert-danger mt-5">
-                <h4 class="alert-title"><i class="fa fa-exclamation-triangle"></i> No template found</h4>
-                <p class="alert-text">Please create a template for article to use this feature, and then go back to this
-                    page</p>
-            </div>
-            {% endif %}
-
-        </section>
-
-
-        <section class="bg-white mb-3 p-4 rounded-md shadow-sm">
-            <header>
-                <h2 class="text-xl">Links Style Format</h2>
-            </header>
-            <article>
-                <label class="ps-3 w-full opacity-50 text-sm" for="website_email">Select link format</label>
-
-                {% for key, link in options.links_style_format %}
-                <div class="mb-3">
-                    <label class="ms-3 cursor-pointer flex items-center gap-4">
-                        <input class="form-input" type="radio" name="link_format" value="{{ key }}" {% if
-                            options.link_format==key %}checked{% endif %}>
-                        <div>
-                            {{ link }}
-                            <small class="block italic text-gray-400">example : {{ link | replace({"{id}":"123",
-                                "{slug}": "our-article", "{category}": "default", "{date}": "01-02-2020" }) }}</small>
-                        </div>
-                    </label>
-                </div>
-                {% endfor %}
-            </article>
+{% set form_setting %}
+<div class="row py-3">
+    <div class="col-12 col-lg-6 mb-3">
+        <section class="mb-3 p-3 shadow-sm">
+            <label for="link_style" class="form-label">Link Style :</label>
+            <select class="form-select" name="link_style" id="link_style">
+                <option value="/article/:id">/article/:id</option>
+                <option value="/article/:id/:slug">/article/:id/:slug</option>
+                <option value="/article/:id/:slug/:title">/article/:id/:slug/:title</option>
+                <option value="/article/:id/:date/:title">/article/:id/:date/:title</option>
+            </select>
+            <small class="text-yellow-600 opacity-50">Select link style for article</small>
         </section>
     </div>
-
-    <div class="bg-white shadow-sm rounded-md p-3 w-full max-w-[480px]">
-
-        <header>
-            <h3 class="text-xl">Article Property</h3>
-        </header>
-
-        <div class="mb-3 p-3">
-            <label class="block">
-                <input type="checkbox" class="form-input switch" name="thubnails_enable" value="1" {% if
-                    options.thubnails_enable %}checked{% endif %}>
-                <span class="ms-2 text-lg">Thumbnails Enable</span>
-            </label>
-            <small class="italic">article will have a picture of a thumbnail</small>
-        </div>
-
-    </div>
-
-
-    <div class="flex mt-5 w-full">
-        <button type="submit" class="ms-auto bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
-            save
-        </button>
-    </div>
-</form>
-{% endblock %}
+</div>
+{% endset %}
 
 
 
-{% block javascript %}
-{{ parent() }}
-<script>
-
-
-    console.log($("select"));
-
-
-    $(() => {
-        $("form").on("xhr::success", function (e, data) {
-            merapi.toast(data.result.message, 5, 'text-success');
-        });
-        $("form").on("xhr::error", function (e, data) {
-            merapi.toast(data.message, 5, 'text-danger');
-        });
-    })
-
-</script>
+{% block form %}
+{{ _self.process(form_setting) }}
 {% endblock %}

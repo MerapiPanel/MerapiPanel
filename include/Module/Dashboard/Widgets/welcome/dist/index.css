@@ -1,1 +1,9 @@
-html,body{height:100vh;display:flex;justify-content:center;align-items:center}
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./include/Module/dashboard/Widgets/welcome/src/style.scss ***!
+  \********************************************************************************************************************************************************************************************/
+html, body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

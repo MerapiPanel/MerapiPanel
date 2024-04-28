@@ -27,6 +27,24 @@ __.render = function () {
         .then(function (response) {
             setTimeout(() => {
                 $(__.el).html("").append((response.data as any[]).map(createCard));
+                if (!response.data || !(response.data as any[]).length) {
+                    $(__.el)
+                    .html("")
+                    .css({
+                        position: 'relative',
+                        flex: '1'
+                    })
+                    .append(
+                        $("<div>No data found</div>")
+                        .css({
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            textAlign: "center",
+                        })
+                    )
+                }
 
             }, 1000);
         })
@@ -74,7 +92,7 @@ function createCard(product: Product): JQuery<HTMLElement> {
         .append(
             $("<div class='card-body'>")
                 .append($(`<h5 class='card-title'>${product.title}</h5>`))
-                .append($(`<p class='card-text'>${(product.description||"").length > 100 ? (product.description||"").slice(0, 75) + "..." : product.description}</p>`))
+                .append($(`<p class='card-text'>${(product.description || "").length > 100 ? (product.description || "").slice(0, 75) + "..." : product.description}</p>`))
                 .append($(`<div><span class='fw-semibold'>Rp ${product.price}</span> | <i class='fw-light'>${product.category}</i></div>`))
         )
         .append(

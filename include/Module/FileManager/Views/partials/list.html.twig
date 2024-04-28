@@ -1,0 +1,44 @@
+<ul class="list-group list-group-flush flex-grow-1">
+
+    {% for item in FM.fetch %}
+
+    <li class="list-group-item d-flex" style="max-width: 800px;">
+        <input type="checkbox" class="form-check-input" name="selectedFiles" value="{{ item | trim }}">
+        <a class="ms-3" href="?d={{parent}}/{{ item | trim }}">
+            <div class="d-flex align-items-center">
+                {% if FM.is_file(item) %}
+                <i class="fa-regular fa-file"></i>
+                {% else %}
+                <i class="fa-regular fa-folder-closed"></i>
+                {% endif %}
+                <span class="ms-2">{{ item }}</span>
+            </div>
+        </a>
+    </li>
+
+    {% else %}
+
+
+    <li class="list-group-item">
+        <div class="d-flex align-items-center justify-content-center flex-column fs-4 w-100" style="min-height: 400px;">
+            <i class="fa-regular fa-folder-open fa-2x"></i>
+
+            <span class="mt-2">Directory is empty</span>
+        </div>
+    </li>
+
+
+    {% endfor %}
+</ul>
+
+
+<div class="d-flex align-items-center d-none" style="max-width: 400px;" id="list-action" onload="">
+    <span id="total-selected" class="text-muted text-nowrap fw-semibold px-3 py-2">0 files</span>
+    <select class="form-select" name="action">
+        <option value="">-- Action --</option>
+        <option value="rename">rename</option>
+        <option value="copy">copy</option>
+        <option value="move">move</option>
+        <option value="delete">delete</option>
+    </select>
+</div>

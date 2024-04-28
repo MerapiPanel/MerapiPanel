@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useContainer } from "./container";
 import { WidgetAdd } from "./widget-add";
-import { http, toast } from "@il4mb/merapipanel";
+import * as http from "@il4mb/merapipanel/http";
+import { toast } from "@il4mb/merapipanel/toast";
 import { Widget } from "./widget";
 
 

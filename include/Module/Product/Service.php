@@ -5,6 +5,7 @@ use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Box\Module\Entity\Module;
 use MerapiPanel\Database\DB;
+use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Util;
 use PDO;
 use Throwable;
@@ -34,6 +35,9 @@ class Service extends __Fragment
 		}
 		return $product;
 	}
+
+
+
 	function fetchAll($columns = ["id", "title", "price", "category", "description", "data", "status", "post_date", "update_date", "users.id as author_id", "users.name as author_name"])
 	{
 
@@ -49,6 +53,7 @@ class Service extends __Fragment
 			foreach ($products as $key => $product) {
 				if (isset($product['data']) && gettype($product['data']) == 'string') {
 					$data = json_decode($product['data'], true);
+
 					$images_wrapper = Box::module("Editor")->findComponent($data['components'], "product-images");
 
 					$product['data'] = [
@@ -56,7 +61,6 @@ class Service extends __Fragment
 						"css" => $data["css"],
 					];
 
-					// error_log(print_r($images_wrapper, true));
 					$products[$key]['images'] = [];
 
 					foreach ($images_wrapper['components'] as $component) {
@@ -164,11 +168,19 @@ class Service extends __Fragment
 
 		try {
 
-			$cpWrapper = Box::module("Editor")->findComponent($data['components'], 'product-wrapper');
-			$title = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-title')['components'][0]['content'] ?? '';
-			$price = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-price')['components'][0]['content'] ?? '';
-			$category = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-category')['components'][0]['content'] ?? '';
-			$description = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-description')['components'][0]['content'] ?? '';
+			if ($data) {
+				$cpWrapper = Box::module("Editor")->findComponent($data['components'], 'product-wrapper');
+				$title = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-title')['components'][0]['content'] ?? '';
+				$price = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-price')['components'][0]['content'] ?? '';
+				$category = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-category')['components'][0]['content'] ?? '';
+				$description = Box::module("Editor")->findComponent($cpWrapper['components'], 'product-description')['components'][0]['content'] ?? '';
+			} else {
+				$request = Request::getInstance();
+				$title = $request->title();
+				$price = $request->price();
+				$category = $request->category();
+				$description = $request->description();
+			}
 
 			$user = Box::module("Auth")->getLogedinUser();
 
@@ -193,22 +205,27 @@ class Service extends __Fragment
 				throw new \Exception('Missing required parameter: description, minimum 30 characters');
 			}
 
-			$SQL = "UPDATE products SET `title` = :title, `price` = :price, `category` = :category, `description` = :description, `data` = :data, `author` = :author WHERE `id` = :id";
+			$SQL = "UPDATE products SET `title` = :title, `price` = :price, `category` = :category, `description` = :description, " . ($data ? "`data` = :data, " : "") . " `author` = :author WHERE `id` = :id";
 			$stmt = DB::instance()->prepare($SQL);
 			return $stmt->execute([
-				'title' => $title,
-				'price' => $price,
-				'category' => $category,
-				'description' => $description,
-				'data' => gettype($data) === "string" ? $data : json_encode($data),
-				'author' => $user['id'],
-				'id' => $id
+				...[
+					"id" => $id,
+					"title" => $title,
+					"price" => $price,
+					"category" => $category,
+					"description" => $description,
+					"author" => $user['id']
+				],
+				...($data ? ["data" => gettype($data) === "string" ? $data : json_encode($data)] : [])
 			]);
 
 		} catch (Throwable $e) {
 			throw $e;
 		}
 	}
+
+
+
 
 
 	function delete($id)

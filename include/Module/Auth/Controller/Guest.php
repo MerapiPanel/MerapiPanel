@@ -5,6 +5,7 @@ namespace MerapiPanel\Module\Auth\Controller;
 use Google_Client;
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
+use MerapiPanel\Utility\AES;
 use MerapiPanel\Views\View;
 use MerapiPanel\Database\DB;
 use MerapiPanel\Utility\Http\Request;
@@ -45,12 +46,12 @@ class Guest extends __Fragment
 
             require_once __DIR__ . "/../vendor/autoload.php";
 
-            $setting = $this->module->getSetting();
+            $config = $this->module->getConfig();
             $credential = $req->credential();
             $g_csrf_token = $req->g_csrf_token();
 
             $client = new Google_Client([
-                "client_id" => $setting->google_oauth_id
+                "client_id" => $config->get('google_oauth_id')
             ]);
 
 
@@ -84,13 +85,13 @@ class Guest extends __Fragment
 
                         DB::table("session_token")->insert([
                             "token" => $token,
-                            "expires" => date("Y-m-d H:i:s", strtotime(" + " . $setting->session_time . " seconds")),
+                            "expires" => date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " seconds")),
                             "client_ip" => self::get_client_ip(),
                             "user_id" => $user["id"]
                         ])->execute();
                     }
 
-                    if (!setcookie($setting->cookie_name, $token, time() + intval($setting->session_time), "/")) {
+                    if (!setcookie($config->get("cookie_name"), AES::encrypt($token), time() + intval($config->get("session_time")), "/")) {
 
                         return View::render("response.html.twig", [
                             "status" => "danger",
@@ -157,7 +158,7 @@ class Guest extends __Fragment
 
         if ($user = DB::table("users")->select("*")->where("email")->equals($email)->execute()->fetch(PDO::FETCH_ASSOC)) {
 
-            $setting = $this->module->getSetting();
+            $config = $this->module->getConfig();
 
             if (password_verify($password, $user["password"])) {
 
@@ -173,13 +174,13 @@ class Guest extends __Fragment
                 } else {
                     DB::table("session_token")->insert([
                         "token" => $token,
-                        "expires" => date("Y-m-d H:i:s", strtotime(" + " . $setting->session_time . " seconds")),
+                        "expires" => date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " seconds")),
                         "client_ip" => self::get_client_ip(),
                         "user_id" => $user["id"]
                     ])->execute();
                 }
 
-                if (!setcookie($setting->cookie_name, $token, time() + intval($setting->session_time), "/")) {
+                if (!setcookie($config->get("cookie_name"), AES::encrypt($token), time() + intval($config->get("session_time")), "/")) {
 
                     return [
                         "code" => 400,
@@ -192,8 +193,8 @@ class Guest extends __Fragment
                     "code" => 200,
                     "message" => "success",
                     "data" => [
-                        "cookie-name" => $setting->cookie_name,
-                        "token" => $token,
+                        "cookie-name" => $config->get("cookie_name"),
+                        "token" => AES::encrypt($token),
                         "user" => $user
                     ]
                 ];

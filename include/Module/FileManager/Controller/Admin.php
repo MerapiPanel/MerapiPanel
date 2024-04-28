@@ -24,7 +24,8 @@ class Admin extends __Fragment
 
         Router::GET('/filemanager/fetch-endpoint', "fetchEndpoint", self::class);
         Router::GET("/filemanager/fetchJson", "fetchJson", self::class);
-        Router::POST("/filemanager/upload", "upload", self::class);
+        Router::GET("/filemanager/upload", "uploadFront", self::class);
+
         Router::POST("/filemanager/create_folder", "createFolder", self::class);
         Router::POST("/filemanager/delete_file", "deleteFile", self::class);
         Router::POST("/filemanager/rename_file", "renameFile", self::class);
@@ -43,10 +44,15 @@ class Admin extends __Fragment
     }
 
 
-    
+
+    public function uploadFront()
+    {
+        return View::render("upload.html.twig");
+    }
+
     public function index($req)
     {
-        
+
         return View::render("index.html.twig");
     }
 
@@ -66,113 +72,113 @@ class Admin extends __Fragment
         ];
     }
 
-    public function upload(Request $request)
-    {
+    // public function upload(Request $request)
+    // {
 
-        if (!isset($_FILES['files'])) {
-            return [
-                'code' => 400,
-                'message' => 'Error invalid parameter',
-            ];
-        }
+    //     if (!isset($_FILES['files'])) {
+    //         return [
+    //             'code' => 400,
+    //             'message' => 'Error invalid parameter',
+    //         ];
+    //     }
 
-        $files = $_FILES['files'];
+    //     $files = $_FILES['files'];
 
-        $error_stack = [];
-        $success_stack = [];
-        for ($x = 0; $x < count($files['name']); $x++) {
+    //     $error_stack = [];
+    //     $success_stack = [];
+    //     for ($x = 0; $x < count($files['name']); $x++) {
 
-            $file = [];
-            $file['name'] = $files['name'][$x];
-            $file['tmp_name'] = $files['tmp_name'][$x];
-
-
-            $upload = $this->module->upload($file);
-
-            if ($upload) {
-
-                $folder = str_replace("/" . basename($upload), "", $upload);
-                $ext = pathinfo($upload, PATHINFO_EXTENSION);
-                switch ($ext) {
-                    case 'jpg':
-                    case 'jpeg':
-                    case 'png':
-                    case 'gif':
-                    case 'bmp':
-                    case 'ico':
-                    case 'webp':
-                    case 'svg':
-                    case 'tiff':
-                    case 'tif':
-                    case 'tga':
-                        $file['type'] = 'image';
-                        break;
-                    case 'mp3':
-                    case 'wav':
-                    case 'wma':
-                    case 'ogg':
-                    case 'flac':
-                    case 'm4a':
-                    case 'aac':
-                    case 'm4b':
-                    case 'm4p':
-                        $file['type'] = 'audio';
-                        break;
-                    case 'mp4':
-                    case 'mkv':
-                    case 'avi':
-                    case 'mov':
-                    case 'flv':
-                    case 'wmv':
-                    case 'm4v':
-                    case 'mpg':
-                    case 'mpeg':
-                    case 'ogv':
-                    case 'webm':
-                    case '3gp':
-                    case '3g2':
-                        $file['type'] = 'video';
-                        break;
-                    case 'pdf':
-                    case 'doc':
-                    case 'docx':
-                    case 'xls':
-                    case 'xlsx':
-                    case 'ppt':
-                    case 'pptx':
-                    case 'txt':
-                    case 'odt':
-                    case 'ods':
-                    case 'odp':
-                    case 'odg':
-                    case 'odf':
-                        $file['type'] = 'document';
-                        break;
-                    default:
-                        $file['type'] = 'application/octet-stream';
-                }
-                $success_stack[] = [
-                    'src' => $upload,
-                    'category' => basename($folder),
-                    'type' => $file['type'],
-                    'name' => $file['name'],
-                ];
-            } else {
-                $error_stack[] = [
-                    'file' => $file['name'],
-                    'time' => time()
-                ];
-            }
-        }
+    //         $file = [];
+    //         $file['name'] = $files['name'][$x];
+    //         $file['tmp_name'] = $files['tmp_name'][$x];
 
 
-        return [
-            'code' => 200,
-            'message' => 'success',
-            "data" => $success_stack,
-            "error" => $error_stack
-        ];
-    }
+    //         $upload = $this->module->upload($file);
+
+    //         if ($upload) {
+
+    //             $folder = str_replace("/" . basename($upload), "", $upload);
+    //             $ext = pathinfo($upload, PATHINFO_EXTENSION);
+    //             switch ($ext) {
+    //                 case 'jpg':
+    //                 case 'jpeg':
+    //                 case 'png':
+    //                 case 'gif':
+    //                 case 'bmp':
+    //                 case 'ico':
+    //                 case 'webp':
+    //                 case 'svg':
+    //                 case 'tiff':
+    //                 case 'tif':
+    //                 case 'tga':
+    //                     $file['type'] = 'image';
+    //                     break;
+    //                 case 'mp3':
+    //                 case 'wav':
+    //                 case 'wma':
+    //                 case 'ogg':
+    //                 case 'flac':
+    //                 case 'm4a':
+    //                 case 'aac':
+    //                 case 'm4b':
+    //                 case 'm4p':
+    //                     $file['type'] = 'audio';
+    //                     break;
+    //                 case 'mp4':
+    //                 case 'mkv':
+    //                 case 'avi':
+    //                 case 'mov':
+    //                 case 'flv':
+    //                 case 'wmv':
+    //                 case 'm4v':
+    //                 case 'mpg':
+    //                 case 'mpeg':
+    //                 case 'ogv':
+    //                 case 'webm':
+    //                 case '3gp':
+    //                 case '3g2':
+    //                     $file['type'] = 'video';
+    //                     break;
+    //                 case 'pdf':
+    //                 case 'doc':
+    //                 case 'docx':
+    //                 case 'xls':
+    //                 case 'xlsx':
+    //                 case 'ppt':
+    //                 case 'pptx':
+    //                 case 'txt':
+    //                 case 'odt':
+    //                 case 'ods':
+    //                 case 'odp':
+    //                 case 'odg':
+    //                 case 'odf':
+    //                     $file['type'] = 'document';
+    //                     break;
+    //                 default:
+    //                     $file['type'] = 'application/octet-stream';
+    //             }
+    //             $success_stack[] = [
+    //                 'src' => $upload,
+    //                 'category' => basename($folder),
+    //                 'type' => $file['type'],
+    //                 'name' => $file['name'],
+    //             ];
+    //         } else {
+    //             $error_stack[] = [
+    //                 'file' => $file['name'],
+    //                 'time' => time()
+    //             ];
+    //         }
+    //     }
+
+
+    //     return [
+    //         'code' => 200,
+    //         'message' => 'success',
+    //         "data" => $success_stack,
+    //         "error" => $error_stack
+    //     ];
+    // }
 
 
 
