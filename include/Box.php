@@ -66,15 +66,15 @@ namespace MerapiPanel {
         public static function shutdown()
         {
             
-            if (file_exists(__DIR__ . "/__.dat")) {
-                if (filemtime(__DIR__ . "/__.dat") < time() - 3600) {
-                    $serialize = serialize(self::$instance->module_container);
-                    file_put_contents(__DIR__ . "/__.dat", $serialize);
-                }
-            } else {
-                $serialize = serialize(self::$instance->module_container);
-                file_put_contents(__DIR__ . "/__.dat", $serialize);
-            }
+            // if (file_exists(__DIR__ . "/__.dat")) {
+            //     if (filemtime(__DIR__ . "/__.dat") < time() - 3600) {
+            //         $serialize = serialize(self::$instance->module_container);
+            //         file_put_contents(__DIR__ . "/__.dat", $serialize);
+            //     }
+            // } else {
+            //     $serialize = serialize(self::$instance->module_container);
+            //     file_put_contents(__DIR__ . "/__.dat", $serialize);
+            // }
         }
     }
 }

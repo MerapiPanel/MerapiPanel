@@ -26,12 +26,26 @@ class Service extends __Fragment
 
 		$product = DB::table("products")->select($columns)->where("id")->equals($id)->execute()->fetch(PDO::FETCH_ASSOC);
 		if ($product) {
-			$data = $product['data'];
+			$data = $product['data'] ?? "";
 			$data = json_decode($data, true);
 			$product['data'] = [
-				"components" => $data["components"],
-				"css" => $data["css"],
+				"components" => $data["components"] ?? [],
+				"css" => $data["css"] ?? "",
 			];
+
+			if (isset($data['components'])) {
+
+				$images_wrapper = Box::module("Editor")->findComponent($data['components'], "product-images");
+				$product['images'] = [];
+
+				if (isset($images_wrapper['components']) && is_array($images_wrapper['components'])) {
+					foreach ($images_wrapper['components'] as $component) {
+						if ($component['type'] === "product-image" && isset($component['components'][0]['attributes']['src'])) {
+							$product['images'][] = $component['components'][0]['attributes']['src'];
+						}
+					}
+				}
+			}
 		}
 		return $product;
 	}
@@ -40,6 +54,7 @@ class Service extends __Fragment
 
 	function fetchAll($columns = ["id", "title", "price", "category", "description", "data", "status", "post_date", "update_date", "users.id as author_id", "users.name as author_name"])
 	{
+
 
 		$SQL = "SELECT " . implode(",", array_map(function ($item) {
 			if (strpos($item, "users.") === 0) {

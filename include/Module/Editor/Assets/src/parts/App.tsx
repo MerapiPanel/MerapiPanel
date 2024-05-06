@@ -38,8 +38,6 @@ const ___InitRegisterBlocks = async (editor: Editor, blocks: any[], setLoadingWi
     const blockSize = blocks.length;
     let loaded = 0;
 
-    //    console.clear();
-
     for (const i in blocks) {
 
         const blockDefine: BlockDefine = blocks[i];
@@ -62,18 +60,15 @@ const ___InitRegisterBlocks = async (editor: Editor, blocks: any[], setLoadingWi
                         if (prop === "components") {
                             this.view?.render();
                         }
+                        if(modelCallback.updated) modelCallback.updated.call(this, prop, val, prev);
                     }
                 },
                 view: {
                     render() {
                         const components = this.model.components();
-
                         if (!components || components.length <= 0) {
                             this.el.innerHTML = "";
-                            this.el.appendChild($(`<div class='text-center py-3' style="opacity: 0.5; font-size: 0.7em">
-                                <div>Drag components here</div>
-                                <i>${this.model.get('type')}</i>
-                            </div>`)[0]);
+                            this.el.appendChild($(`<div class='text-center py-3' style="opacity: 0.5;">${this.model.get('type')}</div>`)[0]);
                         } else {
                             this.renderChildren();
                         }
@@ -128,21 +123,46 @@ export const App = ({ payload }: { payload: Payload }) => {
     const onReadyHandler = (editor: Editor) => {
 
         editor.on("asset:custom", fileManager);
-
         setLoadingWidth(35);
         try {
 
-            setTimeout(() => {
-                if (typeof payload.onReady === "function") {
-                    payload.onReady(editor);
-                }
-            }, 50)
-
             if (payload.fetchBlockURL) {
-                fetch(payload.fetchBlockURL).then(res => res.json()).then(res => ___InitRegisterBlocks(editor, res.data, setLoadingWidth))
+                fetch(payload.fetchBlockURL)
+                    .then(res => res.json())
+                    .then(res => ___InitRegisterBlocks(editor, res.data, setLoadingWidth))
+                    .finally(() => {
+
+                        editor.Keymaps.add('ns:my-keymap', '⌘+s, ctrl+s', () => {
+                            handleSave(editor);
+                            return false;
+                        }, {
+                            // Prevent the default browser action
+                            prevent: true,
+                        });
+
+                        setTimeout(() => {
+                            if (typeof payload.onReady === "function") {
+                                payload.onReady(editor);
+                            }
+                        }, 50);
+                    })
             } else {
-                throw new Error('fetchBlockURL is not define');
+                console.error("fetchBlockURL is not defined");
+                editor.Keymaps.add('ns:my-keymap', '⌘+s, ctrl+s', () => {
+                    handleSave(editor);
+                    return false;
+                }, {
+                    // Prevent the default browser action
+                    prevent: true,
+                });
+
+                setTimeout(() => {
+                    if (typeof payload.onReady === "function") {
+                        payload.onReady(editor);
+                    }
+                }, 50);
             }
+
 
         } catch (error) {
             console.error(error);
@@ -150,10 +170,7 @@ export const App = ({ payload }: { payload: Payload }) => {
         }
 
         editor.on("component:selected", (component) => {
-
-
             if (component.get("stylable") === false) {
-
                 $("div.editor-layout.style-manager").addClass("d-none");
             } else {
                 $("div.editor-layout.style-manager").removeClass("d-none");
@@ -229,6 +246,7 @@ export const App = ({ payload }: { payload: Payload }) => {
                 setLoadingActionShow(false);
             })
     }
+
 
     return (
         <EditorApp
@@ -391,7 +409,17 @@ export const App = ({ payload }: { payload: Payload }) => {
             </Navbar>
 
             <EditorBody>
-                <Sidebar>
+                <Sidebar id="sidebar" resizable={{
+                    maxDim: 500,
+                    minDim: 250,
+                    tc: false, // Top handler
+                    cl: false, // Left handler
+                    cr: true, // Right handler
+                    bc: false, // Bottom handler
+                    // Being a flex child we need to change `flex-basis` property
+                    // instead of the `width` (default)
+                    keyWidth: 'flex-basis',
+                }}>
                     <StyleManager className="hide" >
                         <SelectorManager />
                     </StyleManager>

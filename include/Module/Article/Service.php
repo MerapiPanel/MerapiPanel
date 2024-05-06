@@ -54,7 +54,6 @@ class Service extends __Fragment
                 if (isset($value['data'])) {
                     $articles[$key]['data'] = json_decode($value['data'], true);
                 }
-                $articles[$key]['url'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/article/' . $value['slug'];
             }
         }
         return $articles;
@@ -77,7 +76,6 @@ class Service extends __Fragment
             if (isset($article['data'])) {
                 $article['data'] = json_decode($article['data'], true);
             }
-            $article['url'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/article/' . $article['slug'];
         }
 
         return $article;
@@ -88,16 +86,18 @@ class Service extends __Fragment
     {
         $SQL = "SELECT " . implode(",", array_map(function ($item) {
             if (strpos($item, "users.") === 0) {
-                return str_replace("users.", "B.", $item);
+                return str_replace("users.", "B.", $item) . " as " . preg_replace("/[^a-zA-Z0-9]+/im", "_", $item);
             }
             return "A.{$item}";
         }, $columns)) . " FROM articles A LEFT JOIN users B ON A.author = B.id WHERE ";
+        
         $SQL .= implode(" AND ", array_map(function ($item) {
             if (strpos($item, "users.") === 0) {
                 return str_replace("users.", "B.", $item);
             }
             return "A.{$item} = ?";
         }, array_keys($where)));
+
         $stmt = DB::instance()->prepare($SQL);
         $stmt->execute(array_values($where));
         $article = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -106,7 +106,6 @@ class Service extends __Fragment
             if (isset($article['data'])) {
                 $article['data'] = json_decode($article['data'], true);
             }
-            $article['url'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/article/' . $article['slug'];
         }
         return $article;
     }

@@ -1,0 +1,206 @@
+{
+    "title": "About Us",
+    "description": "About Us",
+    "route": "/about-us",
+    "components": [
+        {
+            "type": "bs-navbar",
+            "classes": [
+                "navbar",
+                "navbar-expand-lg",
+                "bg-body-tertiary"
+            ],
+            "attributes": {
+                "expand": "lg"
+            },
+            "components": [
+                {
+                    "type": "container",
+                    "classes": [
+                        "container-fluid"
+                    ],
+                    "attributes": {
+                        "size": "fluid"
+                    },
+                    "components": [
+                        {
+                            "type": "bs-navbar-brand",
+                            "classes": [
+                                "navbar-brand"
+                            ],
+                            "attributes": {},
+                            "components": [
+                                {
+                                    "type": "text",
+                                    "attributes": {
+                                        "id": "ipns"
+                                    },
+                                    "components": [
+                                        {
+                                            "type": "textnode",
+                                            "content": "Website"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "bs-navbar-toggler",
+                            "classes": [
+                                "navbar-toggler"
+                            ],
+                            "attributes": {
+                                "data-bs-toggle": "collapse"
+                            },
+                            "components": [
+                                {
+                                    "tagName": "span",
+                                    "type": "text",
+                                    "classes": [
+                                        "navbar-toggler-icon"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "bs-navbar-collapse",
+                            "classes": [
+                                "collapse",
+                                "navbar-collapse"
+                            ],
+                            "attributes": {
+                                "id": "18f3ac17907"
+                            },
+                            "components": [
+                                {
+                                    "type": "bs-navbar-nav",
+                                    "classes": [
+                                        "navbar-nav",
+                                        "me-auto",
+                                        "mb-2",
+                                        "mb-lg-0"
+                                    ],
+                                    "attributes": {},
+                                    "components": [
+                                        {
+                                            "type": "bs-nav-item",
+                                            "classes": [
+                                                "nav-item"
+                                            ],
+                                            "attributes": {},
+                                            "components": [
+                                                {
+                                                    "type": "bs-nav-link",
+                                                    "classes": [
+                                                        "nav-link"
+                                                    ],
+                                                    "attributes": {
+                                                        "href": "/",
+                                                        "target": "_self"
+                                                    },
+                                                    "components": [
+                                                        {
+                                                            "type": "textnode",
+                                                            "content": "Home"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "image",
+            "resizable": {
+                "ratioDefault": 1
+            },
+            "classes": [
+                "d-block",
+                "w-100"
+            ],
+            "attributes": {
+                "src": "/content/upload/2024-05-5/__hermetic_automatic_sliding_door_3549.jpg"
+            }
+        },
+        {
+            "type": "container",
+            "classes": [
+                "container"
+            ],
+            "attributes": {
+                "size": ""
+            },
+            "components": [
+                {
+                    "type": "article",
+                    "components": [
+                        {
+                            "type": "header",
+                            "components": [
+                                {
+                                    "tagName": "h2",
+                                    "type": "heading",
+                                    "attributes": {
+                                        "level": "2",
+                                        "id": "ip3v3"
+                                    },
+                                    "components": [
+                                        {
+                                            "type": "textnode",
+                                            "content": "About US"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "paragraph",
+                                    "attributes": {
+                                        "id": "i2s8g"
+                                    },
+                                    "components": [
+                                        {
+                                            "type": "textnode",
+                                            "content": "Tortor consequat id porta nibh venenatis cras sed. Mi ipsum faucibus vitae aliquet nec. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Non nisi est sit amet facilisis magna etiam tempor. Amet consectetur adipiscing elit duis tristique sollicitudin nibh sit. Volutpat odio facilisis mauris sit amet massa vitae tortor. Consequat mauris nunc congue nisi vitae suscipit tellus mauris a. Nulla pharetra diam sit amet nisl suscipit. Nibh ipsum consequat nisl vel pretium lectus quam. Id eu nisl nunc mi. Viverra tellus in hac habitasse platea dictumst. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Consectetur a erat nam at lectus urna duis. Lacus vel facilisis volutpat est velit egestas dui."
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "tagName": "h2",
+                    "type": "heading",
+                    "attributes": {
+                        "level": "2",
+                        "id": "i6qqj"
+                    },
+                    "components": [
+                        {
+                            "type": "textnode",
+                            "content": "Visi"
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "attributes": {
+                        "id": "isw9o"
+                    },
+                    "components": [
+                        {
+                            "type": "textnode",
+                            "content": "Tortor consequat id porta nibh venenatis cras sed. Mi ipsum faucibus vitae aliquet nec. Dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Non nisi est sit amet facilisis magna etiam tempor. Amet consectetur adipiscing elit duis tristique sollicitudin nibh sit. Volutpat odio facilisis mauris sit amet massa vitae tortor. Consequat mauris nunc congue nisi vitae suscipit tellus mauris a. Nulla pharetra diam sit amet nisl suscipit. Nibh ipsum consequat nisl vel pretium lectus quam. Id eu nisl nunc mi. Viverra tellus in hac habitasse platea dictumst. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Consectetur a erat nam at lectus urna duis. Lacus vel facilisis volutpat est velit egestas dui."
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "styles": "file:./about-us.css"
+}

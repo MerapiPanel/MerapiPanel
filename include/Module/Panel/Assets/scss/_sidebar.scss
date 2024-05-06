@@ -23,6 +23,10 @@ body {
         & .sidebar-container {
             background-color: white;
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            max-height: 100vh;
         }
         & .sidebar-close {
             display: none;
@@ -48,6 +52,11 @@ body {
         & .nav-menu {
             list-style: none;
             padding: 5px 0;
+            flex: 1;
+            overflow-y: auto;
+            &::-webkit-scrollbar {
+                width: 3px;
+            }
 
             & .nav-item {
                 text-decoration: none;

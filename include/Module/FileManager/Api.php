@@ -169,8 +169,14 @@ class Api extends __Fragment
                 $root = Path::join($_ENV['__MP_CWD__'], "content", $request->parent());
             } else {
 
+                $root = $_ENV['__MP_CWD__'] . "/content";
+                if (!file_exists($root))
+                    mkdir($root);
+                $root .= "/upload";
+                if (!file_exists($root))
+                    mkdir($root);
 
-                $root = $this->module->getRoot() . "/" . date('Y-m-w');
+                $root .= "/" . date('Y-m-w');
                 if (!file_exists($root)) {
                     mkdir($root);
                 }

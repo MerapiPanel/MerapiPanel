@@ -11,4 +11,41 @@ class Api extends __Fragment
 	{
 		$this->module = $module;
 	}
+
+	function count()
+	{
+		return $this->module->count();
+	}
+
+	function fetchAll()
+	{
+		return $this->module->fetchAll();
+	}
+
+	function template()
+	{
+		return new Template($this->module);
+	}
+}
+
+
+
+class Template
+{
+
+	protected $module;
+	function __construct(Module $module)
+	{
+		$this->module = $module;
+	}
+
+	function count()
+	{
+		return $this->module->Template->count();
+	}
+
+	function fetchAll()
+	{
+		return $this->module->Template->fetchAll();
+	}
 }

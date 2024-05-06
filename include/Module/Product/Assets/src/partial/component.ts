@@ -267,6 +267,7 @@ export const Register = (editor: Editor) => {
             }
         }
     });
+    
     editor.Components.addType('product-category', {
         extend: "product-input",
         model: {

@@ -131,10 +131,10 @@ namespace MerapiPanel\Box\Module\Entity {
 
                 try {
 
-                    $data = json_decode(file_get_contents($path),  true);
+                    $data = json_decode(file_get_contents($path), true);
 
                     foreach ($data as $value) {
-                        if(!is_array($value) || !isset($value['name']) || !isset($value['default'])) {
+                        if (!is_array($value) || !isset($value['name']) || !isset($value['default'])) {
                             continue;
                         }
                         $name = preg_replace("/[^a-zA-Z]+/", "_", strtolower($value['name']));
@@ -157,7 +157,7 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
-        public function count()
+        public function count(): int
         {
             return count($this->stack);
         }

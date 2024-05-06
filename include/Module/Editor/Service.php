@@ -17,7 +17,7 @@ class Service extends __Fragment
 
 	// add other funstion here
 
-	public function findComponent($components = [], $type, $deep = 5)
+	public function findComponent($components, $type, $deep = 5)
 	{
 
 		foreach ($components as $component) {

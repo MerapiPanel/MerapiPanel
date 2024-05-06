@@ -1,0 +1,99 @@
+{% extends "@panel/base.html.twig" %}
+
+
+
+{% block header_title %}Contact Template{% endblock %}
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item"><a href="{{ '/contact' | access_path }}">Contact</a></li>
+<li class="breadcrumb-item active" aria-current="page">Template</li>
+{% endblock %}
+
+
+{% block subheader_search %}{% endblock %}
+
+
+{% block subheader_menu %}
+<a class="menu-item" href="{{ '/contact/template/add' | access_path }}">Add Template</a>
+{% endblock %}
+
+
+{% set total = api.Contact.template.count %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-12 col-lg-7">
+		<ul class="list-group list-group-flush px-2 py-1" id="template-list">
+			{% for i in 1..total %}
+			<li class="list-group-item placeholder-glow">
+				<span class="placeholder bg-primary bg-opacity-75 col-4"></span>
+				<div class="placeholder bg-secondary bg-opacity-75 col-8"></div>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+{{ parent() }}
+<script>
+	__.template = {
+		fetchURL: "{{ '/api/Contact/Template/fetchAll' | access_path }}",
+		render: function () {
+			console.log(this);
+		}
+	}
+
+
+</script>
+<script src="{{ '@contact/dist/template.js' | assets }}?v={{ time() }}"></script>
+
+<script>
+	__.template.el = $('#template-list');
+	__.template.render();
+
+	const template = __.template;
+	template.on('edit', function (e, item) {
+		if (!item.id) {
+			__.toast('Invalid template', 5, 'text-danger');
+			return;
+		}
+		window.location.href = "{{ '/contact/template/edit' | access_path }}/" + item.id
+		e.preventDefault();
+		e.stopImmediatePropagation();
+	});
+
+	template.on('delete', function (e, item) {
+		if (!item.id) {
+			__.toast('Invalid template', 5, 'text-danger');
+			return;
+		}
+		return new Promise(function (resolve, reject) {
+			__.dialog.confirm('Are you sure?', `Are you sure you want to delete <b>${item.name}</b>?`)
+				.then(function () {
+					__.http.post("{{ '/api/Contact/Template/delete' | access_path }}", { id: item.id })
+						.then(function (response) {
+							resolve();
+						})
+						.catch(function (error) {
+							reject();
+						});
+				})
+				.catch(function () {
+					reject();
+				});
+		});
+	});
+
+
+	$('#filter-contact').on('change', function () {
+		__.template.filter = $(this).val();
+		__.template.render();
+	})
+</script>
+{% endblock %}

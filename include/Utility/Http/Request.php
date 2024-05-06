@@ -31,10 +31,10 @@ class Request
     }
 
 
-    public static function getInstance() : Request
+    public static function getInstance(): Request
     {
 
-        if (!isset (self::$instance)) {
+        if (!isset(self::$instance)) {
             self::$instance = new Request();
         }
         return self::$instance;
@@ -116,7 +116,7 @@ class Request
     public function http($name): mixed
     {
         $name = $this->camelCaseToKebabCase($name);
-        if (!isset ($this->header->$name))
+        if (!isset($this->header->$name))
             return false;
         return $this->header->$name;
     }
@@ -131,8 +131,8 @@ class Request
     {
 
         $name = $this->camelCaseToKebabCase($name);
-        if (!isset ($this->form->$name)) {
-            if (empty ($arguments))
+        if (!isset($this->form->$name)) {
+            if (empty($arguments))
                 return $this->__get($name);
             return false;
         }
@@ -151,7 +151,7 @@ class Request
 
         // error_log("From Request Traying Get : " . $name);
         $name = $this->camelCaseToKebabCase($name);
-        if (!isset ($this->query->$name))
+        if (!isset($this->query->$name))
             return false;
         return $this->query->$name;
     }
@@ -175,14 +175,28 @@ class Request
     }
 
 
-    
+    static function getClientIP()
+    {
+        switch (true) {
+            case (!empty($_SERVER['HTTP_X_REAL_IP'])):
+                return $_SERVER['HTTP_X_REAL_IP'];
+            case (!empty($_SERVER['HTTP_CLIENT_IP'])):
+                return $_SERVER['HTTP_CLIENT_IP'];
+            case (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])):
+                return $_SERVER['HTTP_X_FORWARDED_FOR'];
+            default:
+                return $_SERVER['REMOTE_ADDR'];
+        }
+    }
+
+
 }
 
 
 
 
 
-class RequestHeader 
+class RequestHeader
 {
     private $stack_data = [];
     public function __construct()
@@ -213,7 +227,7 @@ class RequestHeader
 
     public function __isset($key)
     {
-        return isset ($this->stack_data[$key]);
+        return isset($this->stack_data[$key]);
     }
 
     public function __unset($key)
@@ -225,7 +239,7 @@ class RequestHeader
 
 
 
-class RequestQuery 
+class RequestQuery
 {
     private $stack_data = [];
     public function __construct()
@@ -247,7 +261,7 @@ class RequestQuery
 
     public function __isset($key)
     {
-        return isset ($this->stack_data[$key]);
+        return isset($this->stack_data[$key]);
     }
 
     public function __unset($key)
@@ -260,7 +274,7 @@ class RequestQuery
 
 
 
-class RequestForm 
+class RequestForm
 {
 
 
@@ -304,7 +318,7 @@ class RequestForm
 
             // Loop data blocks
             foreach ($a_blocks as $id => $block) {
-                if (empty ($block)) {
+                if (empty($block)) {
                     continue;
                 }
 
@@ -316,7 +330,7 @@ class RequestForm
                     // Match "name" and optional value in between newline sequences
                     preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
                 }
-                if (!empty ($matches[1])) {
+                if (!empty($matches[1])) {
                     $this->stack_data[$matches[1]] = $matches[2];
                 }
             }
@@ -331,9 +345,9 @@ class RequestForm
      */
     private static function getBoundary()
     {
-        if (!empty ($_SERVER['CONTENT_TYPE'])) {
+        if (!empty($_SERVER['CONTENT_TYPE'])) {
             preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
-            if (isset ($matches[1])) {
+            if (isset($matches[1])) {
                 return $matches[1];
             }
         }
@@ -355,7 +369,7 @@ class RequestForm
 
     public function __isset($key)
     {
-        return isset ($this->stack_data[$key]);
+        return isset($this->stack_data[$key]);
     }
 
     public function __unset($key)

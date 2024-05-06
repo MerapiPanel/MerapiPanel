@@ -129,6 +129,7 @@ namespace MerapiPanel\Module\Editor {
                 $fragment = Path::join(Box::module($module)->path, "Blocks", $blockName, "render.php");
                 if (!file_exists($fragment)) {
                     $rendered[] = "<div class='text-center border border-warning bg-dark bg-opacity-10 py-3'>Block $module:$blockName</div>";
+                    continue;
                 }
                 $rendered[] = blockContext($component, $fragment, $key);
 

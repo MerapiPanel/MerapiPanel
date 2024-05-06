@@ -1,0 +1,119 @@
+{% extends "@panel/base.html.twig" %}
+
+
+
+{% block header_title %}Contact{% endblock %}
+
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Contact</li>
+{% endblock %}
+
+
+{% block subheader_search %}
+<select class="form-select border-0" name="filter" id="filter-contact" style="box-shadow: none;">
+	<option value="">-- Filter --</option>
+	<option value="phone">Phone</option>
+	<option value="email">Email</option>
+	<option value="whatsapp">Whatsapp</option>
+</select>
+{% endblock %}
+
+
+{% block subheader_menu %}
+<button class="menu-item" onclick="__.contact.add()">Add Contact</button>
+{% endblock %}
+
+
+
+
+{% set total = api.Contact.count %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-12 col-lg-7">
+		<ul class="list-group list-group-flush px-2 py-1" id="contact-list" onload="__.contact.render.call(this)">
+			{% for i in 1..total %}
+			<li class="list-group-item placeholder-glow">
+				<span class="placeholder bg-primary bg-opacity-75 col-4"></span>
+				<div class="placeholder bg-secondary bg-opacity-75 col-8"></div>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+{{ parent() }}
+<script>
+	__.contact = {
+		filter: '',
+		fetchURL: "{{ '/api/Contact/fetchAll' | access_path | url }}"
+	}
+
+	$("#filter-contact").on("change", function () {
+		__.contact.filter = $(this).val();
+		__.contact.render();
+	});
+</script>
+<script src="{{ '@contact/dist/index.js' | assets }}?v={{ time() }}"></script>
+
+<script>
+	$(() => {
+
+
+		__.contact.on("add", function (e, data) {
+			return new Promise((res, rej) => {
+				__.http.post("{{ '/api/Contact/add' | access_path | url }}", data).then(function (response) {
+					if (response.code == 200) {
+						__.toast("Contact added", 5, 'text-success');
+						__.contact.filter = response.data.type || '';
+						$("#filter-contact").val(response.data.type || '');
+						res(response.data);
+					} else throw new Error(response.message, response.code);
+				}).catch(rej);
+			});
+		});
+
+
+		__.contact.on("update", function (e, data) {
+			return new Promise((res, rej) => {
+				__.http.post("{{ '/api/Contact/update' | access_path | url }}", data).then(function (response) {
+					if (response.code == 200) {
+						__.toast("Contact updated", 5, 'text-success');
+						res(response.data);
+					} else throw new Error(response.message, response.code);
+				}).catch(rej);
+			});
+		});
+
+
+		__.contact.on("delete", function (e, data) {
+			return new Promise((res, rej) => {
+				__.http.post("{{ '/api/Contact/delete' | access_path | url }}", data).then(function (response) {
+					if (response.code == 200) {
+						__.toast("Contact deleted", 5, 'text-success');
+						res(response.data);
+					} else throw new Error(response.message, response.code);
+				}).catch(rej);
+			});
+		});
+
+		__.contact.on("default", function (e, data) {
+			return new Promise((res, rej) => {
+				if (!data || !data.id) return rej(new Error("Invalid data", 400));
+				__.http.post("{{ '/api/Contact/setDefault' | access_path | url }}", {id: data.id}).then(function (response) {
+					if (response.code == 200) {
+						__.toast("Contact " + data.name + " set as default", 5, 'text-success');
+						res(response.data);
+					} else throw new Error(response.message, response.code);
+				}).catch(rej);
+			});
+		});
+	})
+</script>
+{% endblock %}

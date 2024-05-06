@@ -11932,3 +11932,37 @@ body:has(.modal.showing),
 body:has(.modal.show) {
   overflow: hidden;
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-sm {
+  scrollbar-width: thin;
+}
+.scrollbar-sm::-webkit-scrollbar {
+  width: 5px !important;
+}
+.scrollbar-sm::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 5px !important;
+  border: 0 !important;
+}
+.scrollbar-sm::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 5px !important;
+  border: 0 !important;
+}
+.scrollbar-sm::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0 !important;
+}
+
+@supports (scrollbar-width: thin) {
+  .scrollbar-sm {
+    scrollbar-width: 5px;
+  }
+}

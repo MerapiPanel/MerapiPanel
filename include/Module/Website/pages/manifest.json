@@ -1,0 +1,14 @@
+[
+    {
+        "title": "Home",
+        "route": "/",
+        "components": "file:./index.json",
+        "styles": "file:./index.css"
+    },
+    {
+        "title": "About Us",
+        "route": "/about-us",
+        "components": "file:./about-us.json",
+        "styles": "file:./about-us.css"
+    }
+]

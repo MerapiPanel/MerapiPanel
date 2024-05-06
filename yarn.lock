@@ -1441,7 +1441,7 @@
 
 "@il4mb/merapipanel@file:../modules/merapipanel":
   "resolved" "file:../modules/merapipanel"
-  "version" "1.0.6"
+  "version" "1.0.13"
   dependencies:
     "@reduxjs/toolkit" "^2.2.2"
     "@types/jest" "^29.5.12"
@@ -1452,6 +1452,7 @@
     "css-loader" "^6.10.0"
     "grapesjs" "^0.21.9"
     "grapesjs-blocks-basic" "^1.0.2"
+    "jquery" "^3.7.1"
     "lodash-webpack-plugin" "^0.11.6"
     "mini-css-extract-plugin" "^2.8.1"
     "postcss-loader" "^8.1.1"

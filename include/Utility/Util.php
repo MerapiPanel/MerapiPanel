@@ -47,7 +47,7 @@ class Util
         } elseif (function_exists("openssl_random_pseudo_bytes")) {
             $bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
         } else {
-            throw new \Exception("no cryptographically secure random function available");
+            throw new Exception("no cryptographically secure random function available");
         }
         return substr(bin2hex($bytes), 0, $lenght);
     }
@@ -58,7 +58,7 @@ class Util
     {
         $fileContent = file_get_contents($filePath);
         if ($fileContent === false) {
-            throw new \Exception("Unable to read the file: $filePath");
+            throw new Exception("Unable to read the file: $filePath");
         }
 
         // Regular expression for matching the namespace line
@@ -176,7 +176,7 @@ class Util
 
 
 
-    public static function siteURL()
+    public static function siteURL($path = null)
     {
         // Check if the current request is using HTTPS
         $is_https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
@@ -189,6 +189,10 @@ class Util
 
         // Combine protocol and host to get the site URL
         $site_url = $protocol . $host;
+
+        if ($path) {
+            $site_url .= $path;
+        }
 
         return $site_url;
     }

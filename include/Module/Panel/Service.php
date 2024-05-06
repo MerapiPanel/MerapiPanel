@@ -26,13 +26,11 @@ class Service extends __Fragment
             return $a["order"] - $b["order"];
         });
 
-        $unique = [];
-        foreach ($listMenu as $menu) {
+        foreach ($listMenu as $key => $menu) {
 
             if (isset($menu['link']) && $this->isCurrent($menu['link'])) {
-                $menu['active'] = true;
+                $listMenu[$key]['active'] = true;
             }
-            $unique[strtolower($menu['name'])] = $menu;
         }
 
         $grouped = $this->buildMenuHierarchy(array_values($listMenu));
@@ -124,17 +122,12 @@ class Service extends __Fragment
             $this->addMenu($child);
         }
 
-        // if(isset($menu['parent'])) {
-        //     $parent_key = array_search($menu['parent'], array_column($this->ListMenu, 'name'));
-        //     if($parent_key !== false) {
-        //         $this->ListMenu[$parent_key]['childs'][] = $menu;
-        //     } else {
-        //         $this->ListMenu[] = $menu;
-        //     }
-        //     return;
-        // }
-
-        $this->ListMenu[] = $menu;
+        $exist = array_search($menu['name'], array_column($this->ListMenu, 'name'));
+        if ($exist !== false && strtolower($this->ListMenu[$exist]['parent'] ?? '') === strtolower($menu['parent'] ?? '')) {
+            $this->ListMenu[$exist] = array_merge($this->ListMenu[$exist], $menu);
+        } else {
+            $this->ListMenu[] = $menu;
+        }
     }
 
 

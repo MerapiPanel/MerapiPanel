@@ -27,7 +27,7 @@ namespace MerapiPanel\Module\Api\Controller {
 
                 ob_start();
                 $module = Box::module($moduleName);
-                if($module->Api) {
+                if ($module->Api) {
                     $module = $module->Api;
                 }
                 $params = $module->method_params($methodName);
@@ -73,7 +73,60 @@ namespace MerapiPanel\Module\Api\Controller {
                 ];
             }
 
+
         }
+
+
+        function apiCallService(Request $request)
+        {
+
+            $moduleName = $request->module_name();
+            $methodName = $request->method_name();
+            $serviceName = $request->service_name();
+
+            try {
+
+                ob_start();
+                $module = Box::module($moduleName)->$serviceName;
+                if (!$module) {
+                    throw new \Exception("Service {$serviceName} not found");
+                }
+                $params = $module->method_params($methodName);
+                if (!empty($params)) {
+                    foreach ($params as $key => $value) {
+                        $paramName = $value->name;
+                        $params[$key] = $request->$paramName;
+                    }
+                    $output = $module->$methodName(...array_values($params));
+                } else {
+                    $output = $module->$methodName();
+                }
+
+                if (gettype($output) === "object" && method_exists($output, "__toArray")) {
+                    $output = $output->__toArray();
+                } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
+                    $output = $output->__toJSON();
+                } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
+                    $output = $output->__toString();
+                }
+                ob_clean();
+
+
+                return [
+                    "code" => 200,
+                    "message" => "Success",
+                    "data" => $output
+                ];
+
+            } catch (\Exception $e) {
+                return [
+                    "code" => 500,
+                    "message" => $e->getMessage()
+                ];
+            }
+
+        }
+
 
         function post_apiCallService(Request $request)
         {
@@ -85,6 +138,9 @@ namespace MerapiPanel\Module\Api\Controller {
 
                 ob_start();
                 $module = Box::module($moduleName)->$serviceName;
+                if (!$module) {
+                    throw new \Exception("Service {$serviceName} not found");
+                }
                 $params = $module->method_params($methodName);
                 if (!empty($params)) {
                     foreach ($params as $key => $value) {

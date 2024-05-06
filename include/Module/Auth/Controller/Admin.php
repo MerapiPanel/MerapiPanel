@@ -23,15 +23,7 @@ class Admin extends __Fragment
     {
 
         Router::POST("/settings/auth", "UpdateSetting", self::class);
-        $route = Router::GET("/settings/auth", "setting", self::class);
         $logout = Router::GET("/auth/logout", "logout", self::class);
-
-        Box::module("Panel")->addMenu([
-            "name" => "Auth",
-            "parent" => "settings",
-            "icon" => "fa fa-lock",
-            "link" => $route->getPath()
-        ]);
 
         Box::module("Panel")->addMenu([
             "name" => "Logout",
