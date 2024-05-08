@@ -1,10 +1,14 @@
 <?php
 
 $link = "/contact/link/redirect/";
-if ($attributes['use_template']) {
-    $link .= $attributes['template'];
+if (isset($attributes['use_template']) || isset($attributes['contact'])) {
+    if ($attributes['use_template']) {
+        $link .= $attributes['template'];
+    } else {
+        $link .= $attributes['contact'];
+    }
 } else {
-    $link .= $attributes['contact'];
+    $link = "#";
 }
 
 ?>

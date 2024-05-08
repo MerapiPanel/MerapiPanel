@@ -77,6 +77,7 @@ namespace MerapiPanel\Module\Editor {
 
         function render($components = [], $replacer = [])
         {
+
             if (gettype($components) === "string")
                 return $components;
 
@@ -135,7 +136,8 @@ namespace MerapiPanel\Module\Editor {
 
 
             }
-            return implode("", $rendered);
+            $output = implode("", $rendered);
+            return $output;
         }
     }
 }

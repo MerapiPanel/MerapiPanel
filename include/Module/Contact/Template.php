@@ -65,16 +65,23 @@ namespace MerapiPanel\Module\Contact {
 
         function delete($id)
         {
+            if (!$this->module->getRoles()->isAllowed(4)) {
+                throw new \Exception("Permission denied");
+            }
             $SQL = "DELETE FROM contacts_template WHERE id = :id";
             $stmt = DB::instance()->prepare($SQL);
             $stmt->execute([':id' => $id]);
         }
 
 
-        
+
 
         function add($name, $contact, $message, $subject)
         {
+
+            if (!$this->module->getRoles()->isAllowed(4)) {
+                throw new \Exception("Permission denied");
+            }
 
             $contact = $this->module->fetch($contact);
             if (!$contact) {
@@ -120,6 +127,10 @@ namespace MerapiPanel\Module\Contact {
 
         function update($id, $name, $contact, $message, $subject)
         {
+            if (!$this->module->getRoles()->isAllowed(4)) {
+                throw new \Exception("Permission denied");
+            }
+            
             $contact = $this->module->fetch($contact);
             if (!$contact) {
                 throw new \Exception("Invalid contact");

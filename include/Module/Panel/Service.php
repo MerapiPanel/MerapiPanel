@@ -5,9 +5,12 @@ namespace MerapiPanel\Module\Panel;
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Utility\Http\Request;
+use MerapiPanel\Views\View;
 
 class Service extends __Fragment
 {
+
+    public $allowed = true;
     protected $ListMenu = [];
     protected $module;
 
@@ -15,6 +18,7 @@ class Service extends __Fragment
     function onCreate(Box\Module\Entity\Module $module)
     {
         $this->module = $module;
+        View::getInstance()->getTwig()->addExtension(new ViewExtension());
     }
 
 
@@ -179,4 +183,9 @@ class Service extends __Fragment
         return strtolower(preg_replace('/[^a-z]+/i', '', $link)) == strtolower(preg_replace('/[^a-z]+/i', '', $path));
     }
 
+
+    public function setAllowed($allow = true)
+    {
+        $this->allowed = $allow;
+    }
 }

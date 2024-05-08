@@ -1,0 +1,72 @@
+{
+    "roles": [
+        {
+            "id": 0,
+            "name": "View Contact",
+            "default": true
+        },
+        {
+            "id": 1,
+            "name": "Create Contact",
+            "default": false
+        },
+        {
+            "id": 2,
+            "name": "Update Contact",
+            "default": false
+        },
+        {
+            "id": 3,
+            "name": "Delete Contact",
+            "default": false
+        },
+        {
+            "id": 4,
+            "name": "Modify Template",
+            "description": "Allow to edit, add, update and delete the contact template",
+            "default": false
+        }
+    ],
+    "defaults": {
+        "admin": {
+            "value": {
+                "0": true,
+                "1": true,
+                "2": true,
+                "3": true,
+                "4": true
+            },
+            "enable": false
+        },
+        "editor": {
+            "value": {
+                "0": true,
+                "1": true,
+                "2": true,
+                "3": true,
+                "4": true
+            },
+            "enable": true
+        },
+        "contributor": {
+            "value": {
+                "0": true,
+                "1": true,
+                "2": true,
+                "3": true,
+                "4": true
+            },
+            "enable": true
+        },
+        "manager": {
+            "value": {
+                "0": true,
+                "1": true,
+                "2": true,
+                "3": true,
+                "4": true
+            },
+            "enable": true
+        }
+    }
+}

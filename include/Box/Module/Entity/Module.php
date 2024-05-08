@@ -3,6 +3,7 @@
 namespace MerapiPanel\Box\Module\Entity {
 
     use Closure;
+    use MerapiPanel\Box;
     use MerapiPanel\Box\Module\AbstractLoader;
     use MerapiPanel\Box\Container;
     use MerapiPanel\Database\DB;
@@ -109,6 +110,12 @@ namespace MerapiPanel\Box\Module\Entity {
             }
 
             return $this->config;
+        }
+
+
+        public function getRoles(): Roles
+        {
+            return new Roles($this);
         }
 
     }
@@ -262,5 +269,138 @@ namespace MerapiPanel\Box\Module\Entity {
         }
     }
 
+
+    class Roles
+    {
+
+        public array $roles = [];
+        public array $defaults = [];
+        protected Module $module;
+
+
+        function __construct(Module $module)
+        {
+            $this->module = $module;
+            try {
+                $path = Path::join($module->path, "roles.json");
+                if (file_exists($path)) {
+                    $data = json_decode(file_get_contents($path), true);
+                    if (isset($data["roles"])) {
+                        $this->roles = $data["roles"];
+                    }
+                    if (isset($data["defaults"])) {
+                        $this->defaults = $data["defaults"];
+                    }
+                }
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+            }
+        }
+
+
+        function getDefaults()
+        {
+            return $this->defaults;
+        }
+
+
+
+        function isAllowed(mixed $id): bool
+        {
+
+            if (!empty($this->roles)) {
+                $find = array_search($id, array_column($this->roles, "id"));
+                if ($find !== false) {
+                    $role = $this->roles[$find];
+                    $user = $this->getLogedInUser();
+
+                    if ($user) {
+                        return $this->isAllowedForUser($role, $user);
+                    }
+                    return $role["default"] == true;
+                }
+            }
+
+            return true;
+        }
+
+
+
+        function isAllowedForUser($role, $user): bool
+        {
+
+            try {
+
+                $user_id = $user['id'];
+                $user_role = $user['role'];
+                $rule_name = strtolower(basename($this->module->path)) . "." . $role['id'];
+
+                $SQL = "SELECT * FROM users_roles WHERE user_id = :user_id AND name = :name";
+                $stmt = DB::instance()->prepare($SQL);
+                $stmt->execute(['user_id' => $user_id, 'name' => $rule_name]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($result) {
+                    return $result['value'] == 1;
+                }
+
+                $SQL = "SELECT * FROM roles WHERE role = :role AND name = :name";
+                $stmt = DB::instance()->prepare($SQL);
+                $stmt->execute(['name' => $rule_name, 'role' => $user_role]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($result) {
+                    return $result['value'] == 1;
+                }
+
+                if (isset($this->defaults[$user_role]['value'][$role['id']])) {
+                    return $this->defaults[$user_role]['value'][$role['id']] == 1 || $this->defaults[$user_role]['value'][$role['id']] == true;
+                }
+                if (isset($role['default']) && in_array($role['default'], [0, false])) {
+                    return $role['default'];
+                }
+
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+            }
+
+
+            return true;
+        }
+
+
+
+        private function getLogedInUser()
+        {
+            $user = false;
+            try {
+                $user = Box::module("Auth")->getLogedinUser();
+            } catch (\Throwable $e) {
+                // ignore
+                error_log($e->getMessage());
+            }
+            return $user;
+        }
+
+
+
+        public function __toArray()
+        {
+            $data = [
+                "rules" => $this->rules,
+                "defaults" => $this->defaults
+            ];
+            return $data;
+        }
+
+        public function __toString()
+        {
+            $data = [
+                "rules" => $this->rules,
+                "defaults" => $this->defaults
+            ];
+            return json_encode($data);
+        }
+    }
 
 }

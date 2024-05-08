@@ -1,4 +1,3 @@
-import { toast } from "@il4mb/merapipanel";
 
 $("#form-setting").on('submit', function (e) {
 
@@ -14,17 +13,19 @@ $("#form-setting").on('submit', function (e) {
         data: $(this).serialize(),
         success: function (data) {
             setTimeout(() => {
-                toast(data.message, 5, 'text-success');
+                __.toast(data.message || "Something went wrong", 5, 'text-success');
                 submitBtn.html(submitBtnText);
                 submitBtn.prop('disabled', false);
-            }, 1000)
+            }, 600)
         },
         error: function (data) {
+            data = JSON.parse(data.responseText);
+
             setTimeout(() => {
-                toast(data.message || data.statusText, 5, 'text-danger');
+                __.toast(data.message || "Something went wrong", 5, 'text-danger');
                 submitBtn.html(submitBtnText);
                 submitBtn.prop('disabled', false);
-            }, 1000)
+            }, 600)
         }
     });
 })

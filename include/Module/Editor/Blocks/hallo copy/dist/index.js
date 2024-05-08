@@ -35,7 +35,7 @@
 /************************************************************************/
 var __webpack_exports__ = {};
 /*!**************************************************************!*\
-  !*** ./include/Module/editor/Blocks/hallo copy/src/index.ts ***!
+  !*** ./include/Module/Editor/Blocks/hallo copy/src/index.ts ***!
   \**************************************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {

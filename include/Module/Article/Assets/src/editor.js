@@ -1,10 +1,16 @@
-import {toast} from "@il4mb/merapipanel/toast";
-import * as http from "@il4mb/merapipanel/http";
+// import { __MP } from "../../../../Buildin/src/main";
+
+const __ = window.__;
+const Article = __.Article;
+
+if (!Article.data) {
+    Article.data = {};
+}
 
 const form = $(`<form class="needs-validation">`)
     .append(
-        window.article?.id && (
-            $(`<div class="mb-3 py-2">ID : ${window.article.id}</div>`)
+        Article.data?.id && (
+            $(`<div class="mb-3 py-2">ID : ${Article.data.id}</div>`)
         )
     )
     .append(
@@ -12,7 +18,7 @@ const form = $(`<form class="needs-validation">`)
             .append(
                 $(`<label class="d-block">`)
                     .append("Enter title:")
-                    .append(`<input class="form-control" type="text" name="title" placeholder="Enter title" pattern="[a-zA-Z\\s]{5,}" invalid-message="Please enter title" value="${window.article?.title || ""}">`)
+                    .append(`<input class="form-control" type="text" name="title" placeholder="Enter title" pattern="[a-zA-Z\\s]{5,}" invalid-message="Please enter title" value="${Article.data?.title || ""}">`)
             )
             .append(`<div class="invalid-feedback">Please enter title with at least 5 characters a-z</div>`)
     )
@@ -21,7 +27,7 @@ const form = $(`<form class="needs-validation">`)
             .append(
                 $(`<label class='d-block'>`)
                     .append("Enter slug:")
-                    .append(`<input class="form-control" type="text" name="slug" placeholder="Enter slug" value="${window.article?.slug || ""}">`)
+                    .append(`<input class="form-control" type="text" name="slug" placeholder="Enter slug" value="${Article.data?.slug || ""}">`)
             )
     )
     .append(
@@ -29,7 +35,7 @@ const form = $(`<form class="needs-validation">`)
             .append(
                 $(`<label class="d-block">`)
                     .append("Enter keywords:")
-                    .append(`<input class="form-control" type="text" name="keywords" placeholder="Enter keywords" value="${window.article?.keywords || ""}">`)
+                    .append(`<input class="form-control" type="text" name="keywords" placeholder="Enter keywords" value="${Article.data?.keywords || ""}">`)
             )
     )
     .append(
@@ -37,7 +43,7 @@ const form = $(`<form class="needs-validation">`)
             .append(
                 $(`<label class='d-block'>`)
                     .append("Enter description:")
-                    .append(`<textarea class="form-control" name="description" placeholder="Enter description">${window.article?.description || ""}</textarea>`)
+                    .append(`<textarea class="form-control" name="description" placeholder="Enter description">${Article.data?.description || ""}</textarea>`)
             )
     )
     .append(
@@ -45,14 +51,14 @@ const form = $(`<form class="needs-validation">`)
             .append(
                 $(`<label class='d-block'>`)
                     .append("Enter category:")
-                    .append(`<input class="form-control" type="text" name="category" placeholder="Enter category" value="${window.article?.category || ''}">`)
+                    .append(`<input class="form-control" type="text" name="category" placeholder="Enter category" value="${Article.data?.category || ''}">`)
             )
     )
     .append(
         $(`<div class='mb-3'>`)
             .append(
                 $(`<label class='d-block form-check'>`)
-                    .append(`<input class='form-check-input' type="checkbox" name="status" ${window.article?.status ? 'checked' : ''}>`)
+                    .append(`<input class='form-check-input' type="checkbox" name="status" ${Article.data?.status ? 'checked' : ''}>`)
                     .append(`<span class='form-check-label'>Publish</span>`)
             )
     )
@@ -75,8 +81,8 @@ editor.callback = function (data) {
     const modal = editor.Modal;
     let isComplete = false;
 
-    if (!saveEndpoint) {
-        toast("Please set save endpoint", 5, "text-danger");
+    if (!Article.endpoints.save) {
+        __.toast("Please set save endpoint", 5, "text-danger");
         return;
     }
 
@@ -97,7 +103,7 @@ editor.callback = function (data) {
         e.preventDefault();
         console.clear();
         if (!form[0].checkValidity()) {
-            toast("Please enter valid data", 5, "text-danger");
+            __.toast("Please enter valid data", 5, "text-danger");
             return;
         }
 
@@ -111,7 +117,7 @@ editor.callback = function (data) {
         const description = form.find('[name="description"]').val();
         const status = form.find('[name="status"]').is(':checked') ? 1 : 0;
 
-        http.post(saveEndpoint, Object.assign((window.article?.id ? { id: window.article?.id } : {}), {
+        __.http.post(Article.endpoints.save, Object.assign((Article.data.id ? { id: Article.data.id } : {}), {
             title,
             slug,
             keywords,
@@ -121,16 +127,9 @@ editor.callback = function (data) {
             status,
         })).then((response) => {
 
-            if (window.article) {
-                window.article.id = response.data.id;
-            } else {
-                window.article = response.data;
-            }
-
-            toast(response.message ?? "Saved", 5, 'text-success');
-            if (window.history.replaceState && window.article?.settings?.prefix && window.article?.settings?.path_edit) {
-                const target = window.article.settings.prefix + window.article.settings.path_edit.replace("{id}", response.data.id);
-
+            Article.data.id = response.data.id;
+            if (window.history.replaceState && Article.endpoints.editURL) {
+                const target = Article.endpoints.editURL.replace("{id}", response.data.id);
                 window.history.replaceState(null, null, target);
             }
 

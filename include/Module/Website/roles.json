@@ -1,0 +1,15 @@
+{
+    "roles": [
+        {
+            "id": 0,
+            "name": "Customize Website",
+            "description": "Allow to customize website",
+            "default": true
+        }
+    ],
+    "defaults": {
+        "admin": {
+            "enable": false
+        }   
+    }
+}

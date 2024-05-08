@@ -12,17 +12,19 @@ use Symfony\Component\Filesystem\Path;
 class Admin extends __Fragment
 {
 
+    protected $module;
+
     public function onCreate(Box\Module\Entity\Module $module)
     {
-
+        $this->module = $module;
     }
     public function register()
     {
 
-        Router::GET("/widget/edit", "widgetEdit", self::class);
+        // Router::GET("/widget/edit", "widgetEdit", self::class);
         Router::GET("/widget/load/{name}", "widgetLoadComponent", self::class);
-        Router::GET("/widget/load", "widgetLoad", self::class);
-        Router::POST("/widget/save", "widgetSave", self::class);
+        // Router::GET("/widget/load", "widgetLoad", self::class);
+        // Router::POST("/widget/save", "widgetSave", self::class);
 
         $route = Router::GET("/", "index", self::class);
 
@@ -41,70 +43,12 @@ class Admin extends __Fragment
     }
 
 
-
-    function widgetEdit(Request $req)
+    function widgetLoadComponent(Request $request)
     {
-
-        $widgets = [];
-        foreach (glob(Path::join($_ENV['__MP_APP__'], "Module", "**", "Widgets", "index.php")) as $file) {
-            /**
-             * @var array $data
-             */
-            $data = require $file;
-            $widgets = array_merge($widgets, $data);
+        $name = $request->name();
+        if (empty($name)) {
+            return false;
         }
-        return [
-            "code" => 200,
-            "message" => "success",
-            "data" => $widgets
-        ];
-    }
-
-
-
-    public function widgetSave(Request $req)
-    {
-        if (!$req->data()) {
-            return [
-                "code" => 400,
-                "message" => "fail",
-                "data" => []
-            ];
-        }
-
-        $data = $req->data();
-        $file = __DIR__ . "/../widget.json";
-        file_put_contents($file, is_string($data) ? $data : json_encode($data));
-
-        return [
-            "code" => 200,
-            "message" => "success",
-            "data" => is_string($data) ? json_decode($data, true) : $data
-        ];
-    }
-
-
-    function widgetLoadComponent(Request $req)
-    {
-
-        return Box::module("Dashboard")->Widget->renderWidget($req->name());
-    }
-
-
-    public function widgetLoad(Request $req)
-    {
-
-        $file = __DIR__ . "/../widget.json";
-        if (!file_exists($file)) {
-            file_put_contents($file, json_encode([]));
-        }
-
-        $wgetData = json_decode(file_get_contents($file), true);
-
-        return [
-            "code" => 200,
-            "message" => "success",
-            "data" => $wgetData
-        ];
+        return Box::module("Dashboard")->Widget->renderWidget($name);
     }
 }

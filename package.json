@@ -53,6 +53,7 @@
     "grapesjs-plugin-forms": "^2.0.6",
     "grapesjs-script-editor": "^1.0.3",
     "grapesjs-tailwind": "^1.0.10",
+    "huge-uploader": "^1.0.6",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21",
     "pretty": "^2.0.0",

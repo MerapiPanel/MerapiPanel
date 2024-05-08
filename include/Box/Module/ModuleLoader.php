@@ -41,12 +41,12 @@ namespace MerapiPanel\Box\Module {
             }
 
             foreach (glob(Path::join($this->directory, "*"), GLOB_ONLYDIR) as $dirname) {
-                $module = basename($dirname);
+                $moduleName = basename($dirname);
 
                 /**
                  * @var Fragment $controller
                  */
-                if ($controller = $container->$module->Controller) {
+                if ($controller = $container->$moduleName->Controller) {
 
                     foreach ($access as $accessName) {
                         $accessName = ucfirst($accessName);
@@ -54,7 +54,7 @@ namespace MerapiPanel\Box\Module {
                             try {
                                 $controller->$accessName->register();
                             } catch (Throwable $e) {
-                                error_log("Unable to register controller: $module, " . $e->getMessage());
+                                error_log("Unable to register controller: $moduleName, " . $e->getMessage());
                             }
                         }
                     }

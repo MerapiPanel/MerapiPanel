@@ -113,8 +113,11 @@ class Request
     /**
      * http method use for return header value
      */
-    public function http($name): mixed
+    public function http($name = null): mixed
     {
+        if($name == null) {
+            return $this->header->__get(null);
+        }
         $name = $this->camelCaseToKebabCase($name);
         if (!isset($this->header->$name))
             return false;
@@ -222,6 +225,9 @@ class RequestHeader
     }
     public function __get($key)
     {
+        if ($key == null) {
+            return $this->stack_data;
+        }
         return $this->stack_data[$key];
     }
 

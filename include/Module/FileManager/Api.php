@@ -43,6 +43,21 @@ class Api extends __Fragment
         return $total;
     }
 
+
+    function fetch($folder = "/", $extensions = [])
+    {
+
+        $folder = ltrim($folder, '/');
+        if (strpos($folder, "/content") === 0) {
+            $folder = substr($folder, 7);
+        }
+        if (strpos($folder, "content/") === 0) {
+            $folder = substr($folder, 7);
+        }
+        $root = Path::join($_ENV['__MP_CWD__'], "content", $folder);
+        return $this->scanFiles($root, $extensions);
+    }
+
     public function fetchFolder()
     {
 
@@ -106,6 +121,87 @@ class Api extends __Fragment
         ];
     }
 
+
+    private function scanFiles($directory, $extensions = ["jpg", "png", "gif", "webp", "ico", "bmp", "mp4", "avi", "mov", "wmv", "flv", "mkv", "webm", "m4v", "3gp", "mpeg", "mpg"])
+    {
+
+        $pattern = $directory . "/*" . ($extensions ? (count($extensions) > 0 ? ".{" . implode(",", $extensions) . "}" : "") : "");
+        $stack = [];
+
+        if ($extensions) {
+            foreach (glob($pattern, GLOB_BRACE) as $file) {
+                $file = [
+                    "name" => basename($file),
+                    "path" => $this->absoluteToRelativePath($file),
+                    "time" => filemtime($file),
+                    "type" => self::getFileType($file),
+                ];
+                $stack[] = $file;
+            }
+
+            foreach (glob($directory . "/*", GLOB_ONLYDIR) as $file) {
+                $pattern = $file . "/*" . ($extensions && count($extensions) > 0 ? ".{" . implode(",", $extensions) . "}" : "");
+                $files_count = count(glob($pattern, GLOB_BRACE));
+                $folder_count = count(glob($file . "/*", GLOB_ONLYDIR));
+                $file = [
+                    "name" => basename($file),
+                    "path" => $this->absoluteToRelativePath($file),
+                    "time" => filemtime($file),
+                    "type" => "folder",
+                    "children_count" => $files_count + $folder_count,
+                ];
+                $stack[] = $file;
+            }
+        } else {
+
+            foreach (glob($directory . "/*") as $file) {
+                $file = [
+                    "name" => basename($file),
+                    "path" => $this->absoluteToRelativePath($file),
+                    "time" => filemtime($file),
+                    "type" => self::getFileType($file),
+                    "children_count" => count(glob($file . "/*")),
+                ];
+                $stack[] = $file;
+            }
+
+        }
+
+
+
+
+
+        return $stack;
+    }
+
+
+
+
+    private static function getFileType($file)
+    {
+        if (is_dir($file)) {
+            return "folder";
+        }
+        $type_list = [
+            "image" => ["jpg", "jpeg", "png", "gif", "webp", "ico", "bmp", "svg", "webp"],
+            "video" => ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm", "m4v", "3gp", "mpeg", "mpg"],
+        ];
+        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION) ?? "");
+        for ($i = 0; $i < count($type_list); $i++) {
+            if (in_array($extension, $type_list[array_keys($type_list)[$i]])) {
+                return array_keys($type_list)[$i];
+            }
+        }
+        return "file";
+    }
+
+
+
+
+
+
+
+
     private function fetchNested($directory, &$stack, $extensions)
     {
         if ($dh = opendir($directory)) {
@@ -157,6 +253,10 @@ class Api extends __Fragment
 
     public function upload()
     {
+
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            throw new \Exception('Permission denied');
+        }
 
         try {
 
@@ -216,6 +316,145 @@ class Api extends __Fragment
     }
 
 
+
+    function uploadInfo($id)
+    {
+        // remove old file in uploads filetime > 1 week
+        foreach (glob(__DIR__ . "/uploads/*") as $file) {
+            if (filemtime($file) < time() - 3600 * 24 * 7) {
+                unlink($file);
+            }
+        }
+        if (empty($id)) {
+            return [];
+        }
+        try {
+            $file = Path::join(__DIR__, "uploads", $id);
+            if (file_exists($file)) {
+                return json_decode(file_get_contents($file));
+            }
+        } catch (Throwable $e) {
+            // throw $e;
+        }
+        return [];
+    }
+
+
+
+
+    function uploadChunk()
+    {
+
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            throw new \Exception('Permission denied');
+        }
+
+        if (!isset($_FILES['file'])) {
+            throw new \Exception("Invalid file");
+        }
+
+        $file = $_FILES['file'];
+        $uploader_file_name = Request::getInstance()->http("uploader-file-name");
+        $uploader_file_id = Request::getInstance()->http("uploader-file-id");
+        $uploader_chunk_number = Request::getInstance()->http("uploader-chunk-number");
+        $uploader_chunks_total = Request::getInstance()->http("uploader-chunks-total");
+        $uploader_file_folder = Request::getInstance()->http("uploader-file-folder");
+        $uploader_file_size = Request::getInstance()->http("uploader-file-size") ?? 0;
+
+
+        if (!isset($uploader_file_id) || !isset($uploader_chunk_number) || !isset($uploader_chunks_total)) {
+            throw new \Exception("Invalid request");
+        }
+
+        if (empty($uploader_file_folder) || $uploader_file_folder == "null" || $uploader_file_folder == "undefined") {
+            $uploader_file_folder = '/upload/' . date('Y-m-d');
+        } else if (strpos($uploader_file_folder, "/content") === 0) {
+            $uploader_file_folder = substr($uploader_file_folder, 8);
+        } else if (strpos($uploader_file_folder, "content") === 0) {
+            $uploader_file_folder = substr($uploader_file_folder, 7);
+        }
+        // Create upload directory if it doesn't exist
+        $root = $_ENV['__MP_CWD__'] . "/content/" . ltrim($uploader_file_folder, '/');
+
+        if (!file_exists($root)) {
+            mkdir($root, 0777, true); // Ensure recursive directory creation
+        }
+
+
+        $information = [
+            "id" => $uploader_file_id,
+            "file_name" => $uploader_file_name,
+            "file_id" => $uploader_file_id,
+            "file_folder" => $this->absoluteToRelativePath($root),
+            "file_size" => $uploader_file_size,
+            "file_type" => self::getFileType(Path::join($root, $uploader_file_name)),
+            "chunk_number" => $uploader_chunk_number,
+            "chunks_total" => $uploader_chunks_total,
+            "status" => "uploading",
+        ];
+
+        // Move uploaded chunk to the appropriate directory
+        $path = Path::join(__DIR__, "uploads", "temp", $uploader_file_id);
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true); // Ensure recursive directory creation
+        }
+        $path = Path::join($path, $uploader_chunk_number);
+
+        if (move_uploaded_file($file['tmp_name'], $path)) {
+
+            // Check if all chunks are uploaded
+            if ($uploader_chunk_number == $uploader_chunks_total - 1) {
+                // Combine chunks into a single file
+                $combinedFilePath = Path::join($root, $uploader_file_name);
+                $combinedFile = fopen($combinedFilePath, 'ab'); // Open file in append mode
+
+                for ($i = 0; $i <= $uploader_chunks_total - 1; $i++) {
+                    $chunkFilePath = Path::join(__DIR__, "uploads", "temp", $uploader_file_id, $i);
+                    $chunkFile = fopen($chunkFilePath, 'rb'); // Open chunk file in read mode
+
+                    if ($chunkFile) {
+                        // Read chunk content and write it to the combined file
+                        while ($data = fread($chunkFile, 8192)) {
+                            fwrite($combinedFile, $data);
+                        }
+                    }
+
+                    if ($chunkFile) {
+                        // Close chunk file
+                        fclose($chunkFile);
+                        // Delete chunk file after merging
+                        unlink($chunkFilePath);
+                    }
+                }
+
+                function rrmdir($dir)
+                {
+                    foreach (scandir($dir) as $file) {
+                        if ('.' === $file || '..' === $file)
+                            continue;
+                        if (is_dir($dir . '/' . $file))
+                            rrmdir($dir . '/' . $file);
+                        else
+                            unlink($dir . '/' . $file);
+                    }
+                    return rmdir($dir);
+                }
+
+                $information["status"] = "success";
+                // Close combined file
+                fclose($combinedFile);
+                rrmdir(Path::join(__DIR__, "uploads", "temp", $uploader_file_id));
+            }
+
+            file_put_contents(Path::join(__DIR__, "uploads", $uploader_file_id), json_encode($information));
+            return true;
+
+        } else {
+
+            file_put_contents(Path::join(__DIR__, "uploads", $uploader_file_id), json_encode($information));
+            throw new \Exception("Failed to move uploaded file");
+        }
+    }
 
 
 
@@ -308,23 +547,29 @@ class Api extends __Fragment
     }
 
 
-    function rename($old_name, $new_name, $parent = null)
+    function rename($path, $name)
     {
 
-        if (empty($old_name) || empty($new_name)) {
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+
+        if (empty($path) || empty($name)) {
             throw new \Exception("Invalid parameters");
         }
-        $source = Path::join($_ENV['__MP_CWD__'], 'content', (!empty($parent) ? $parent : ""), $old_name);
-        $target = Path::join($_ENV['__MP_CWD__'], 'content', (!empty($parent) ? $parent : ""), $new_name);
-
-        if (is_file($source)) {
-            // check extension
-            preg_match("/\.(.*)$/", $new_name, $matches);
-            if (empty($matches[1])) {
-                $old_extension = pathinfo($old_name, PATHINFO_EXTENSION);
-                $target .= "." . $old_extension;
-            }
+        $path = ltrim($path, '/');
+        if (strpos($path, "/content") === 0) {
+            $path = substr($path, 7);
         }
+        if (strpos($path, "content/") === 0) {
+            $path = substr($path, 7);
+        }
+        if (empty($path) || $path == "/" || $path == "content/") {
+            throw new \Exception("Cant rename root folder");
+        }
+        $source = Path::join($_ENV['__MP_CWD__'], 'content', $path);
+        $dirname = dirname($source);
+        $target = Path::join($dirname, $name);
 
         if (rename($source, $target)) {
             return true;
@@ -333,61 +578,77 @@ class Api extends __Fragment
     }
 
 
-    function delete($files = [], $parent = null)
+    function delete($path)
     {
-        if (is_string($files)) {
-            $files = [$files];
+
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
         }
-        $status = [];
-        foreach ($files as $file) {
-            $source = Path::join($_ENV['__MP_CWD__'], 'content', (!empty($parent) ? $parent : ""), $file);
-            if (is_file($source)) {
-                if (unlink($source)) {
-                    $status[$file] = true;
-                }
+
+        if (empty($path)) {
+            throw new \Exception("Invalid parameters");
+        }
+
+        function rrmdir($dir)
+        {
+            foreach (scandir($dir) as $file) {
+                if ('.' === $file || '..' === $file)
+                    continue;
+                if (is_dir($dir . '/' . $file))
+                    rrmdir($dir . '/' . $file);
+                else
+                    unlink($dir . '/' . $file);
             }
-            if (is_dir($source)) {
-
-                function rrmdir($dir)
-                {
-                    foreach (scandir($dir) as $file) {
-                        if ('.' === $file || '..' === $file)
-                            continue;
-                        if (is_dir($dir . '/' . $file))
-                            rrmdir($dir . '/' . $file);
-                        else
-                            unlink($dir . '/' . $file);
-                    }
-                    return rmdir($dir);
-                }
-
-                if (rrmdir($source)) {
-                    $status[$file] = true;
-                }
-
-            }
+            return rmdir($dir);
         }
 
-        if (count($status) > 0) {
-            return $status;
+        $path = ltrim($path, '/');
+        if (strpos($path, "/content") === 0) {
+            $path = substr($path, 7);
         }
-
+        if (strpos($path, "content/") === 0) {
+            $path = substr($path, 7);
+        }
+        if (empty($path) || $path == "/" || $path == "content/") {
+            throw new \Exception("Cant delete root folder");
+        }
+        $source = Path::join($_ENV['__MP_CWD__'], 'content', $path);
+        if (is_file($source)) {
+            unlink($source);
+            return true;
+        }
+        if (is_dir($source)) {
+            rrmdir($source);
+            return true;
+        }
 
         throw new \Exception("Failed to delete file");
     }
 
 
-    function newFolder($name, $parent = null)
+    function newFolder($path, $name)
     {
 
-        $source = Path::join($_ENV['__MP_CWD__'], 'content', (!empty($parent) ? $parent : ""), $name);
-        if (is_dir($source)) {
-            throw new \Exception("Folder already exists");
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
         }
 
-        if (mkdir($source)) {
+        if (empty($path) || empty($name)) {
+            throw new \Exception("Invalid parameters");
+        }
+        $path = ltrim($path, '/');
+        if (strpos($path, "/content") === 0) {
+            $path = substr($path, 7);
+        }
+        if (strpos($path, "content/") === 0) {
+            $path = substr($path, 7);
+        }
+        $folder = Path::join($_ENV['__MP_CWD__'], 'content', $path, $name);
+
+        if (mkdir($folder, 0777)) {
             return true;
         }
+
 
         throw new \Exception("Failed to create folder");
     }

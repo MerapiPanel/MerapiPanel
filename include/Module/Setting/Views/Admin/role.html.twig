@@ -1,0 +1,178 @@
+{% extends "@panel/base.html.twig" %}
+
+{% block header_title %}Role Manager{% endblock %}
+
+{% block stylesheet %}
+{{ parent() }}
+<style>
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 52px;
+        height: 26px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    input:disabled+.slider {
+        background-color: #e6e6e6;
+        opacity: 0.6;
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    .collapse-helper {
+        padding: 5px 10px;
+    }
+
+    .collapse-helper:hover {
+        cursor: pointer;
+        background: #2196F3;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+
+{% block subheader_outer %}{% endblock %}
+
+
+{% block content %}
+<section class="p-3">
+    <ul class="list-group list-group-flush">
+        {% for x, item in rolestack %}
+        <li class="list-group-item role-item" id="role-{{ item.name }}">
+            <h4 class="mb-2 fs-5 mb-2 collapse-helper"><i class="fa-solid fa-user-tag"></i> {{ item.name | ucfirst }} <i
+                    class="fa-solid fa-angle-up"></i></h4>
+            <div class="collapse ps-3" id="collapse-{{ item.name }}">
+                {% for itemstack in item.roles %}
+                <h5 class="fs-6"><i class="fa-regular fa-square-full"></i> {{ (itemstack.name ?? itemstack.module) |
+                    ucfirst }}</h5>
+                <ul class="list-group list-group-flush border-start ms-1 mb-4">
+                    {% for role in itemstack.roles %}
+                    <li class="list-group-item d-flex align-items-end">
+                        <div>
+                            {{ role.name ?? 'No Name' }}
+                            <small class="text-muted d-block">{{ role.description ?? 'No Description' }}</small>
+                        </div>
+                        <div class="ms-auto position-relative">
+                            <!-- Rounded switch -->
+                            <label class="switch">
+                                <input data-role="{{ item.name }}" data-name="{{ itemstack.module }}.{{ role.id }}"
+                                    type="checkbox" {% if role.enable==0 or role.enable==false %}disabled{% endif %} {%
+                                    if role.value %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </li>
+                    {% endfor %}
+
+                </ul>
+                {% endfor %}
+            </div>
+        </li>
+        {% else %}
+        <div>No Role Found</div>
+        {% endfor %}
+    </ul>
+</section>
+
+{% endblock %}
+
+
+{% block javascript %}
+{{ parent() }}
+<script>
+    $('.role-item').each(function (i) {
+        const elcoll = $(this).find('.collapse');
+        elcoll[0].addEventListener('show.bs.collapse', function () {
+            $(this).parent().find('.fa-angle-up').removeClass('fa-angle-up').addClass('fa-angle-down');
+        });
+        elcoll[0].addEventListener('hide.bs.collapse', function () {
+            $(this).parent().find('.fa-angle-down').removeClass('fa-angle-down').addClass('fa-angle-up');
+        });
+        const collapse = new bootstrap.Collapse(elcoll[0], {
+            toggle: i === 0
+        });
+        $(this).find('.collapse-helper').on('click', function () {
+            collapse.toggle();
+        });
+    });
+
+    $('input[type="checkbox"]').on('change', function () {
+        const role = $(this).data('role');
+        const name = $(this).data('name');
+        const val = $(this).is(':checked') ? 1 : 0;
+
+        if (!role || !name) return;
+
+        __.http.post("{{ '/api/Setting/updateRole' | access_path }}", {
+            role: role,
+            name: name,
+            value: val
+        })
+            .then(function (res) {
+                if (res.status) {
+                    __.toast.success(res.message);
+                } else {
+                    __.toast(res.message || 'Failed to update role', 1, 'text-primary');
+                }
+            })
+            .catch(function (err) {
+                __.toast(err.message || 'Failed to update role', 5, 'text-danger');
+            });
+    });
+</script>
+{% endblock %}

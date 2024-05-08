@@ -3,7 +3,6 @@
 namespace MerapiPanel\Module\Panel\Views;
 
 use MerapiPanel\Box\Module\__Fragment;
-use MerapiPanel\Core\Abstract\Module;
 
 class Api extends __Fragment
 {
@@ -35,5 +34,20 @@ class Api extends __Fragment
     function getAbsolutePath($path)
     {
         return str_replace(str_replace('\\', '/', $_ENV['__MP_CWD__']), "", $path);
+    }
+
+
+    function getScripts() {
+        return $this->module->Scripts->getScripts();
+    }
+
+
+
+
+
+
+    function allowed(){
+
+        return $this->module->Service->allowed;
     }
 }

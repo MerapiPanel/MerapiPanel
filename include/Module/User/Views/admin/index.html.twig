@@ -28,7 +28,7 @@
 <div class="p-3">
     <h2 class="mb-3">Total {{ users | length }}</h2>
 
-    <ol class="list-group list-group-flush gap-2" style="max-width: 800px;" onload="__.render.bind(this)()">
+    <ol class="list-group list-group-flush gap-2" style="max-width: 800px;" onload="__.MUser.render.bind(this)()">
 
         {% for x in 1..6 %}
         <li class="list-group-item d-flex align-items-start position-relative placeholder-glow">
@@ -39,29 +39,11 @@
             </div>
         </li>
         {% endfor %}
-
-        {#
-        {% for user in users %}
-        
-        {% endfor %} #}
     </ol>
 </div>
 {% endblock %}
 
 {% block javascript %}
 {{ parent() }}
-
-<script>
-    __.settings = {
-        'urls': {
-            'fetch': "{{ '/api/User/fetchAll' | access_path }}",
-            'update': "{{ '/api/User/update' | access_path }}",
-            'delete': "{{ '/api/User/delete' | access_path }}"
-        },
-        'session': JSON.parse('{{ api.Auth.LogedinUser | json_encode | raw }}')
-    }
-</script>
-
-
 <script src="{{ '@user/dist/index.js' | assets }}"></script>
 {% endblock %}

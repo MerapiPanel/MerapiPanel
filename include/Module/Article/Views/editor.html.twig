@@ -1,43 +1,8 @@
 {% extends "@editor/base.html.twig" %}
 
 
-
-{% block config %}
-{{ editor_config({
-	config: {
-		width: "100vw",
-		height: "100vh",
-		container: "#editor",
-		canvas: {
-			styles: [
-                    "/vendor/bootstrap/css/bootstrap.min.css" | assets
-                ],
-			scripts: [
-				"/vendor/bootstrap/js/bootstrap.bundle.min.js" | assets
-			]
-		},
-        pluginsOpts: {
-            CodeEditor: {
-                editable: true
-            }
-        },
-        assetManager: {
-			custom: true,
-			assets: [],
-			upload: "/api/FileManager/upload" | access_path,
-			uploadName: "files",
-			fetch: "/api/FileManager/fetchFile?start=0&limit=10" | access_path
-		}
-	},
-	fetchBlockURL: "/editor/api/load" | access_path
-}) }}
-{% endblock %}
-
-
-
 {% block javascript %}
 {{ parent() }}
-<script>const saveEndpoint = "{{ '/article/endpoint/save' | access_path | url }}";</script>
 
 {% if article %}
 <script>
@@ -57,34 +22,12 @@
         updated_at: "{{ article.updated_at }}",
     };
 
-    window.article = article;
+    __.Article.data = article;
     editor.onReady = (editor) => {
         editor.setComponents(article.data.components);
         editor.setStyle(article.data.css);
     }
 </script>
 {% endif %}
-
-{% if settings %}
-<script>
-    const settings = JSON.parse('{{ settings | json_encode | raw }}');
-    if (window.article) {
-        window.article.settings = settings;
-    } else {
-        window.article = {
-            settings
-        };
-    }
-</script>
-{% endif %}
-
-
-
-
-
-
-
 <script src="{{ '@article/dist/editor.js' | assets }}"></script>
-
-{{ parent() }}
 {% endblock %}

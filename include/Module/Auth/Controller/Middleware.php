@@ -18,21 +18,23 @@ class Middleware extends __Middleware
     {
 
         $config = $this->module->getConfig();
-        $cookieName  = $config->get('cookie_name');
-        $s_token     = $_COOKIE[$cookieName] ?? null;
+        $cookieName = $config->get('cookie_name');
+        $s_token = $_COOKIE[$cookieName] ?? null;
 
         if ($s_token && $token = AES::decrypt($s_token)) {
             $query = DB::table("session_token")->select("*")->where("token")->equals($token)->execute();
-            
+
             if ($query->rowCount() > 0) {
 
-                Box::module()->__on("*", function ($a, &$b) {
-                   
-                });
+                // Box::module()->__on("*", function ($a, &$b) { });
 
                 $session = $query->fetch(PDO::FETCH_ASSOC);
                 if (strtotime($session["expires"]) > time()) {
-                    return $next($request);
+                    $user_id = $session["user_id"];
+                    $user = Box::module("User")->fetch(["status"], ['id' => $user_id]);
+                    if ($user && $user["status"] == "2") {
+                        return $next($request);
+                    }
                 }
             }
         }

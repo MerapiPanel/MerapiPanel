@@ -20,7 +20,7 @@
 
 
 	{% block head_javascript %}
-
+	<script src="{{ '/dist/main.js' | assets }}"></script>
 	{% endblock %}
 
 	{% endblock %}
@@ -44,7 +44,6 @@
 
 	{% block javascript %}
 	<script src="{{ '/vendor/bootstrap/js/bootstrap.bundle.min.js' | assets }}"></script>
-	<script src="{{ '/dist/main.js' | assets }}"></script>
 	{% endblock %}
 	{% endblock %}
 </body>

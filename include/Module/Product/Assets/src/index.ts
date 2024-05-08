@@ -1,55 +1,60 @@
-import * as http from "@il4mb/merapipanel/http";
-import { toast } from "@il4mb/merapipanel/toast";
-import { Modal } from "@il4mb/merapipanel/modal";
-import * as dialog from "@il4mb/merapipanel/dialog";
-
+import { __MP } from "../../../../Buildin/src/main"
 import { Component } from "grapesjs";
 
-const __: {
+const __: __MP = (window as any).__;
+
+type MProductType = {
     endpoints: {
+        fetchAll: string
         fetch: string
         view: string
         update: string
         delete: string
         edit: string
-    },
+    }
     render: Function
     el: HTMLElement
-} = (window as any).__;
+    [key: string]: any
+}
 
-__.render = function () {
+const MProduct: MProductType = __.MProduct;
+
+console.log(MProduct)
+
+
+MProduct.render = function () {
 
     if (this instanceof HTMLElement) {
-        __.el = this;
+        MProduct.el = this;
     }
 
-    http.get(__.endpoints.fetch, {})
+    __.http.get(MProduct.endpoints.fetchAll, {})
         .then(function (response) {
             setTimeout(() => {
-                $(__.el).html("").append((response.data as any[]).map(createCard));
+                $(MProduct.el).html("").append((response.data as any[]).map(createCard));
                 if (!response.data || !(response.data as any[]).length) {
-                    $(__.el)
-                    .html("")
-                    .css({
-                        position: 'relative',
-                        flex: '1'
-                    })
-                    .append(
-                        $("<div>No data found</div>")
+                    $(MProduct.el)
+                        .html("")
                         .css({
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            textAlign: "center",
+                            position: 'relative',
+                            flex: '1'
                         })
-                    )
+                        .append(
+                            $("<div>No data found</div>")
+                                .css({
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    textAlign: "center",
+                                })
+                        )
                 }
 
-            }, 1000);
+            }, 400);
         })
         .catch(error => {
-            toast(error instanceof String ? error : (error.message || "Error on rendering data"), 5, 'text-danger');
+            __.toast(error instanceof String ? error : (error.message || "Error on rendering data"), 5, 'text-danger');
         });
 }
 
@@ -76,6 +81,7 @@ type Product = {
 
 function createCard(product: Product): JQuery<HTMLElement> {
 
+    const config = { currency: "USD", currency_symbol: "$", ...(MProduct.config || {}) };
     const content = $("<div class='card position-relative w-100' style='max-width: 18rem;'>")
         .append(
             product.images
@@ -93,7 +99,7 @@ function createCard(product: Product): JQuery<HTMLElement> {
             $("<div class='card-body'>")
                 .append($(`<h5 class='card-title'>${product.title}</h5>`))
                 .append($(`<p class='card-text'>${(product.description || "").length > 100 ? (product.description || "").slice(0, 75) + "..." : product.description}</p>`))
-                .append($(`<div><span class='fw-semibold'>Rp ${product.price}</span> | <i class='fw-light'>${product.category}</i></div>`))
+                .append($(`<div><span class='fw-semibold'>${config.currency_symbol} ${product.price}</span> | <i class='fw-light'>${product.category}</i></div>`))
         )
         .append(
             $(`<div class='dropdown position-absolute end-0 top-0' style='z-index: 1;' role='dropdown'>`)
@@ -137,7 +143,8 @@ function actionQuickEdit(product: Product): void {
                     $(`<input type='text' class='form-control' name='price' placeholder='Enter price' inputmode='numeric' pattern='[0-9.]*' maxlength='24' value='${product.price}'>`)
                         .on('input', function () {
                             $(this).val(($(this).val() as any || "").replace(/[^0-9]/g, '').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.'));
-                        })
+                        }),
+
                 )
                 .append($("<div class='invalid-feedback'>Please enter number only.</div>"))
                 .append($("<div class='valid-feedback'>Looks good!</div>")),
@@ -148,7 +155,13 @@ function actionQuickEdit(product: Product): void {
                 .append(`<div class='valid-feedback'>Looks good!</div>`),
             $("<div class='form-group'>")
                 .append($("<label class='form-label'>Description</label>"))
-                .append(`<textarea class='form-control' name='description' placeholder='Enter description' rows='3' minlength='30' maxlength='255' required>${product.description}</textarea>`)
+                .append(
+                    $(`<textarea class='form-control' name='description' placeholder='Enter description' rows='3' minlength='30' maxlength='255' required>${product.description}</textarea>`)
+                        .on('input', function () {
+                            $(this).parent(".form-group").find(".length").text(($(this).val() as any).length + "/255");
+                        })
+                )
+                .append(`<small class='length'>${product.description.length}/255</small>`)
                 .append(`<div class='valid-feedback'>Looks good!</div>`),
             $(`<div class='form-group'>`)
                 .append($("<label class='form-label'>Status</label>"))
@@ -161,14 +174,14 @@ function actionQuickEdit(product: Product): void {
                 )
         )
 
-    const modal = $("#modal-quick-edit").length ? Modal.from($("#modal-quick-edit")) : Modal.create("Quick Edit", null);
+    const modal = $("#modal-quick-edit").length ? __.modal.from($("#modal-quick-edit")) : __.modal.create("Quick Edit", null);
 
     modal.content = content;
     modal.show();
 
     modal.action.positive = function () {
         if ((content[0] as HTMLFormElement).checkValidity()) {
-            http.post(__.endpoints.update, {
+            __.http.post(MProduct.endpoints.update, {
                 id: product.id,
                 title: content.find("input[name='title']").val(),
                 price: content.find("input[name='price']").val(),
@@ -177,14 +190,14 @@ function actionQuickEdit(product: Product): void {
                 status: content.find("select[name='status']").val()
             }).then((res) => {
                 if (res.code === 200) {
-                    toast("Product updated", 5, "text-success");
-                    __.render();
+                    __.toast("Product updated", 5, "text-success");
+                    MProduct.render();
                 } else throw new Error(res.message);
             }).catch((err) => {
-                toast(err.message || "Failed to update product", 5, "text-danger");
+                __.toast(err.message || "Failed to update product", 5, "text-danger");
             })
         } else {
-            toast("Please check your form", 5, "text-danger");
+            __.toast("Please check your form", 5, "text-danger");
         }
     }
 }
@@ -192,7 +205,7 @@ function actionQuickEdit(product: Product): void {
 
 function actionEdit(product: Product): void {
 
-    window.location.href = __.endpoints.edit.replace("{id}", product.id);
+    window.location.href = MProduct.endpoints.edit.replace("{id}", product.id);
 
 }
 
@@ -237,18 +250,18 @@ function actionDelete(product: Product): void {
         )
 
 
-    dialog.danger("Are you sure?", content)
+    __.dialog.danger("Are you sure?", content)
         .then(function () {
-            http.post(__.endpoints.delete, { id: product.id }).then((res) => {
+            __.http.post(MProduct.endpoints.delete, { id: product.id }).then((res) => {
                 if (res.code === 200) {
-                    toast("Success delete product", 5, "text-success");
-                    __.render();
+                    __.toast("Success delete product", 5, "text-success");
+                    MProduct.render();
                 } else throw new Error(res.message);
             }).catch(() => {
-                toast("Failed to delete product", 5, "text-danger");
+                __.toast("Failed to delete product", 5, "text-danger");
             })
         }).catch(() => {
-            toast("Action cancelled", 5, "text-info");
+            __.toast("Action cancelled", 5, "text-info");
         })
 }
 

@@ -123,7 +123,7 @@ class Guest extends __Controller
 			}
 		} catch (\Exception $e) {
 			// Do nothing
-			error_log($e->getMessage());
+			// error_log($e->getMessage());
 		}
 		return $response;
 	}

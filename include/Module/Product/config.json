@@ -62,22 +62,5 @@
         "type": "text",
         "label": "Currency symbol",
         "description": "Currency symbol"
-    },
-    {
-        "name": "currency_symbol_position",
-        "default": "before",
-        "type": "color",
-        "label": "Currency symbol position",
-        "description": "Currency symbol position",
-        "options": [
-            {
-                "value": "before",
-                "label": "Before"
-            },
-            {
-                "value": "after",
-                "label": "After"
-            }
-        ]
     }
 ]

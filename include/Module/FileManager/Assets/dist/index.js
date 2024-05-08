@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 var __webpack_exports__ = {};
 /*!********************************************************!*\
-  !*** ./include/Module/filemanager/Assets/src/index.js ***!
+  !*** ./include/Module/FileManager/Assets/src/index.js ***!
   \********************************************************/
 
 /******/ })()

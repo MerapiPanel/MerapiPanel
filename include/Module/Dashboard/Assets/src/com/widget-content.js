@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useContainer } from "./container";
 import { WidgetAdd } from "./widget-add";
-import * as http from "@il4mb/merapipanel/http";
-import { toast } from "@il4mb/merapipanel/toast";
 import { Widget } from "./widget";
 
 
@@ -19,13 +17,13 @@ const SaveButton = () => {
         }
         if (Array.isArray(contents)) {
             const contentJson = JSON.stringify(contents.map((item) => item.props));
-            http.post(endpoint_save, { data: contentJson })
+            __.http.post(endpoint_save, { data: contentJson })
                 .then((data) => {
                     setChanged(false);
-                    toast("Widget Saved", 5, 'success');
+                    __.toast("Widget Saved", 5, 'text-success');
                 })
                 .catch((error) => {
-                    console.error(error);
+                    __.toast(error.message || "Something went wrong", 5, 'text-danger');
                 });
         }
     }
@@ -40,28 +38,25 @@ const SaveButton = () => {
 
 export const WidgetContent = ({ children }) => {
 
-    const { endpoint_save, endpoint_load } = window.widgetPayload;
+    const { endpoint_save, endpoint_load, endpoint_fetch } = window.widgetPayload;
     const { isEdit, contents, setContents, addContent } = useContainer();
     const ref = useRef(null);
 
     useEffect(() => {
-        http.get(endpoint_load).then((response) => {
-            if (response.data) {
-                if (Array.isArray(response.data)) {
-                    const tempContents = [];
-                    response.data.forEach((item) => {
-                        tempContents.push(<Widget
-                            id={item.id}
-                            name={item.name}
-                            title={item.title}
-                            description={item.description || ''}
-                            option={item.option || { width: 200, height: 100 }}
-                            icon={item.icon || ''} />);
-                    });
-                    setContents(tempContents);
-                }
-            }
-        })
+        __.http.get(endpoint_fetch)
+            .then((response) => {
+                const tempContents = [];
+                (response.data || []).forEach((item) => {
+                    tempContents.push(<Widget
+                        id={item.id}
+                        name={item.name}
+                        title={item.title}
+                        description={item.description || ''}
+                        option={item.option || { width: 200, height: 100 }}
+                        icon={item.icon || ''} />);
+                });
+                setContents(tempContents);
+            })
     }, [])
 
 

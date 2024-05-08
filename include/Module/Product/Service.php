@@ -95,6 +95,10 @@ class Service extends __Fragment
 	function add($data = [])
 	{
 
+		if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+
 		if (gettype($data) == 'string') {
 			$data = json_decode($data, true);
 		}
@@ -151,7 +155,7 @@ class Service extends __Fragment
 					"price" => $price,
 					"category" => $category,
 					"description" => $description,
-					"data" => gettype($data) === "string" ? $data : json_encode($data),
+					"data" => gettype($data) !== "string" ? $data : json_decode($data, true),
 					"author" => $user['id']
 				];
 			}
@@ -166,6 +170,9 @@ class Service extends __Fragment
 
 	function update($data, $id)
 	{
+		if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
 
 		if (empty($id)) {
 			throw new \Exception('Missing required parameter: id', 400);
@@ -238,13 +245,15 @@ class Service extends __Fragment
 			throw $e;
 		}
 	}
-
-
-
-
+	
 
 	function delete($id)
 	{
+		
+		if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+
 		if (empty($id)) {
 			throw new \Exception('Missing required parameter: id', 400);
 		}

@@ -1,13 +1,25 @@
-import { Modal, ModalTypeInterface } from "@il4mb/merapipanel/modal";
-import * as http from "@il4mb/merapipanel/http";
-import * as dialog from "@il4mb/merapipanel/dialog";
-import { toast } from "@il4mb/merapipanel/toast";
+import { ModalTypeInterface } from "@il4mb/merapipanel/modal";
+import { __MP } from "../../../../Buildin/src/main";
 
+const __: __MP = (window as any).__;
+const Article = __.Article;
+
+type EndpointsType = {
+    createURL: string
+    editURL: string
+    view: string
+    save: string
+    update: string
+    delete: string
+}
+
+Article.endpoints = {} as EndpointsType;
+const endpoints = Article.endpoints;
 const articles: any[] = ((window as any).articles || []);
-const updateEndpoint = (window as any).updateEndpoint;
-const deleteEndpoint = (window as any).deleteEndpoint;
-const viewEndpoint = (window as any).viewEndpoint;
-const editURL = (window as any).editURL;
+const updateEndpoint = endpoints.update;
+const deleteEndpoint = endpoints.delete;
+const viewEndpoint = endpoints.view;
+const editURL = endpoints.editURL;
 
 (window as any).render = (container) => {
     setTimeout(() => {
@@ -19,11 +31,11 @@ const editURL = (window as any).editURL;
     }, 600);
 }
 
-function render(container) {
+function render(container: any) {
     (window as any).render(container);
 }
 
-function createCard(article, container): JQuery<HTMLElement> {
+function createCard(article: any, container: any): JQuery<HTMLElement> {
 
     const card = $("<div class='card card-body border-0 shadow-sm d-flex flex-column position-relative' style='width: 100%; max-width: 30rem;'>")
         .append(
@@ -39,13 +51,13 @@ function createCard(article, container): JQuery<HTMLElement> {
             $("<div>")
                 .append(
                     $(`<button class='btn btn-sm btn-primary px-5 mb-2'>View</button>`)
-                    .on('click', () => {
-                        if (viewEndpoint) {
-                            window.open(`${viewEndpoint}/${article.id}`, '_blank');
-                        } else {
-                            toast("No view endpoint found", 5, 'text-danger');
-                        }
-                    })
+                        .on('click', () => {
+                            if (viewEndpoint) {
+                                window.open(viewEndpoint.replace('{id}', article.id), '_blank');
+                            } else {
+                                __.toast("No view endpoint found", 5, 'text-danger');
+                            }
+                        })
                 )
                 .append(
                     $(`<div class='d-flex gap-3 text-muted'>`)
@@ -65,11 +77,9 @@ function createCard(article, container): JQuery<HTMLElement> {
                             $(`<a class="dropdown-item" href="#">Edit</a>`)
                                 .on('click', () => {
                                     if (editURL) {
-                                        const splited = (editURL as string).split("/");
-                                        splited.push(article.id);
-                                        window.location.href = splited.join("/");
+                                        window.location.href = editURL.replace('{id}', article.id);
                                     } else {
-                                        toast("No edit URL found", 5, 'text-danger');
+                                        __.toast("No edit URL found", 5, 'text-danger');
                                     }
                                 })
                         )
@@ -94,9 +104,9 @@ function QuickEdit(article: any, container: any) {
     let modal: ModalTypeInterface | null = null;
 
     if ($('#quick-edit-modal').length > 0) {
-        modal = Modal.from($('#quick-edit-modal'));
+        modal = __.modal.from($('#quick-edit-modal'));
     } else {
-        modal = Modal.create("Edit Article", "");
+        modal = __.modal.create("Edit Article", "");
         modal.el.attr('id', 'quick-edit-modal');
     }
     modal.dismiss = null;
@@ -153,39 +163,41 @@ function QuickEdit(article: any, container: any) {
             form[0].reportValidity();
             return;
         }
-
-        let key = articles.indexOf(article);
-
-        articles[key] = {
+        let found_article = articles.find((a: any) => a.id === article.id);
+        found_article = {
             ...article,
             ...form.serializeArray().reduce((obj, item) => {
                 obj[item.name] = item.value;
+                if (item.name === 'status') obj[item.name] = item.value === 'on' ? 1 : 0;
                 return obj;
             }, { status: 0 })
         }
 
+        Object.keys(articles[articles.indexOf(article)]).forEach((key) => {
+            articles[articles.indexOf(article)][key] = found_article[key];
+        })
         render(container);
 
         if (!updateEndpoint) {
-            toast("No update endpoint found", 5, 'text-danger');
+            __.toast("No update endpoint found", 5, 'text-danger');
         }
 
-        http.post(updateEndpoint, articles[key]).then((res) => {
+        __.http.post(updateEndpoint, found_article).then((res) => {
             if (res.code === 200) {
-                toast("Article updated", 5, 'text-success');
+                __.toast("Article updated", 5, 'text-success');
                 // modal.hide();
             } else {
-                toast( res.message || "Failed to update article", 5, 'text-danger');
+                __.toast(res.message || "Failed to update article", 5, 'text-danger');
             }
         }).catch(err => {
-            toast( err.message || "Failed to update article", 5, 'text-danger');
+            __.toast(err.message || "Failed to update article", 5, 'text-danger');
         })
     }
 
 }
 
-function ConfirmDelete(article : any, container : any) {
-    dialog.danger("Are you sure?",
+function ConfirmDelete(article: any, container: any) {
+    __.dialog.danger("Are you sure?",
         $(`<div>`)
             .append(
                 $(`<div>Are you sure you want to delete this article?</div>`)
@@ -199,30 +211,30 @@ function ConfirmDelete(article : any, container : any) {
     )
         .then(() => {
             if (!deleteEndpoint) {
-                toast("No delete endpoint found", 5, 'text-danger');
+                __.toast("No delete endpoint found", 5, 'text-danger');
                 return;
             }
 
-            http.del(deleteEndpoint, { id: article.id }).then((res) => {
-        
+            __.http.post(deleteEndpoint, { id: article.id }).then((res) => {
+
                 if (res.code == 200) {
-                    toast("Article deleted", 5, 'text-success');
+                    __.toast("Article deleted", 5, 'text-success');
                     let key = articles.indexOf(article);
                     const l = articles.length;
                     articles.splice(key, 1);
-                    if(articles.length < l) {
+                    if (articles.length < l) {
                         render(container);
                     } else {
                         window.location.reload();
                     }
                 } else {
-                    toast(res.message || "Failed to delete article", 5, 'text-danger');
+                    __.toast(res.message || "Failed to delete article", 5, 'text-danger');
                 }
             }).catch(err => {
-                toast(err.message || "Failed to delete article", 5, 'text-danger');
+                __.toast(err.message || "Failed to delete article", 5, 'text-danger');
             })
         })
         .catch(() => {
-            toast("Action cancelled", 5, 'text-info');
+            __.toast("Action cancelled", 5, 'text-info');
         })
 }

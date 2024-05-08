@@ -76,6 +76,16 @@ export const Register = (editor: Editor) => {
                                         type: "product-title"
                                     },
                                     {
+                                        type: "product-currency",
+                                        tagName: "span",
+                                        editable: false,
+                                        droppable: false,
+                                        copyable: false,
+                                        move: false,
+                                        removable: false,
+                                        components: "Rp. "
+                                    },
+                                    {
                                         type: 'product-price'
                                     },
                                     {
@@ -189,8 +199,7 @@ export const Register = (editor: Editor) => {
                 attributes: {
                     class: "fw-semibold fs-2 d-block",
                     placeholder: "Enter product title..."
-                },
-                components: "Jagung jumbo"
+                }
             }
         },
         view: {
@@ -267,7 +276,7 @@ export const Register = (editor: Editor) => {
             }
         }
     });
-    
+
     editor.Components.addType('product-category', {
         extend: "product-input",
         model: {

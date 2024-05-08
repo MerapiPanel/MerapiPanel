@@ -1,0 +1,25 @@
+{
+    "roles": [
+        {
+            "id": 0,
+            "name": "View User",
+            "description": "View User",
+            "default": false
+        },
+        {
+            "id": 1,
+            "name": "Modify User",
+            "description": "Allow to edit, add, update and delete the user",
+            "default": false
+        }
+    ],
+    "defaults": {
+        "admin": {
+            "value": {
+                "0": true,
+                "1": true
+            },
+            "enable": false
+        }
+    }
+}

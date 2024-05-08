@@ -48,7 +48,7 @@ class Service extends __Fragment
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	
+
 
 	public function fetch($id)
 	{
@@ -62,6 +62,10 @@ class Service extends __Fragment
 
 	function add($type, $address, $name)
 	{
+
+		if (!$this->module->getRoles()->isAllowed(1)) {
+			throw new \Exception("Permission denied");
+		}
 
 		if (!in_array($type, ["phone", "email", "whatsapp"])) {
 			throw new \Exception("Invalid contact type");
@@ -97,6 +101,9 @@ class Service extends __Fragment
 
 	function update($id, $type, $address, $name)
 	{
+		if (!$this->module->getRoles()->isAllowed(2)) {
+			throw new \Exception("Permission denied");
+		}
 
 		if (!in_array($type, ["phone", "email", "whatsapp"])) {
 			throw new \Exception("Invalid contact type");
@@ -133,6 +140,10 @@ class Service extends __Fragment
 
 	function delete($id)
 	{
+		if (!$this->module->getRoles()->isAllowed(3)) {
+			throw new \Exception("Permission denied");
+		}
+
 		$SQL = "DELETE FROM contacts WHERE id = :id";
 		$stmt = DB::instance()->prepare($SQL);
 		return $stmt->execute(['id' => $id]);
@@ -153,6 +164,9 @@ class Service extends __Fragment
 
 	function setDefault($id)
 	{
+		if (!$this->module->getRoles()->isAllowed(2)) {
+			throw new \Exception("Permission denied");
+		}
 		$SQL = "UPDATE contacts SET is_default = 0";
 		$stmt = DB::instance()->prepare($SQL);
 		$stmt->execute();

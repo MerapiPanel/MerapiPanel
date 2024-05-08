@@ -62,6 +62,11 @@ class View
 
 
 
+    function getIntl(): Intl {
+        return $this->intl;
+    }
+
+
 
 
     function getLoader(): LoaderInterface

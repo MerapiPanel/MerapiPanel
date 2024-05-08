@@ -7,8 +7,17 @@ return [
     "public-key" => __DIR__ . "/public_key.pem",
     "timezone" => "Asia/Jakarta",
     "service" => [
+        "Panel",
         "Setting",
         "Editor"
+    ],
+    "roles" => [
+        "admin",
+        "editor",
+        "contributor",
+        "manager",
+        "moderator",
+        "user"
     ],
     "admin" => [
         "prefix" => "/panel/admin",

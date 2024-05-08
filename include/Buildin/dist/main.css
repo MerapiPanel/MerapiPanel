@@ -11909,6 +11909,7 @@ textarea.form-control-lg {
   border-radius: 0.25rem;
   background-color: #fff;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
 }
 .modal .modal-dialog .modal-title {
   font-size: 1.25em;

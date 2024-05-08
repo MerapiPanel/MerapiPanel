@@ -5,6 +5,8 @@ namespace MerapiPanel\Module\Article;
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Database\DB;
+use MerapiPanel\Utility\Util;
+use Monolog\Utils;
 use PDO;
 
 class Service extends __Fragment
@@ -90,7 +92,7 @@ class Service extends __Fragment
             }
             return "A.{$item}";
         }, $columns)) . " FROM articles A LEFT JOIN users B ON A.author = B.id WHERE ";
-        
+
         $SQL .= implode(" AND ", array_map(function ($item) {
             if (strpos($item, "users.") === 0) {
                 return str_replace("users.", "B.", $item);
@@ -108,5 +110,137 @@ class Service extends __Fragment
             }
         }
         return $article;
+    }
+
+
+
+
+    function insert($title, $slug, $keywords, $category, $description, $data, $status)
+    {
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+
+        $user = Box::module("Auth")->getLogedinUser();
+        if (!$user || !isset($user['id'])) {
+            throw new \Exception('User not found', 404);
+        }
+        $id = Util::uniq(12);
+
+        $SQL = "INSERT INTO articles (id, title, slug, keywords, category, description, data, author, status) VALUES (:id, :title, :slug, :keywords, :category, :description, :data, :author, :status)";
+        $stmt = DB::instance()->prepare($SQL);
+        if (
+            $stmt->execute([
+                "id" => $id,
+                "title" => $title,
+                "slug" => $slug,
+                "keywords" => $keywords,
+                "category" => $category,
+                "description" => $description,
+                "data" => !is_string($data) ? json_encode($data) : $data,
+                "author" => $user['id'],
+                "status" => $status
+            ])
+        ) {
+            return [
+                "id" => $id,
+                "title" => $title,
+                "slug" => $slug,
+                "keywords" => $keywords,
+                "category" => $category,
+                "description" => $description,
+                "data" => is_string($data) ? json_decode($data, true) : $data,
+                "author" => $user['id'],
+                "status" => $status
+            ];
+        }
+
+        throw new \Exception('Article not save', 404);
+    }
+
+
+    function save($id, $title, $slug, $keywords, $category, $description, $data, $status)
+    {
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+
+        if (empty($id)) {
+            return $this->insert($title, $slug, $keywords, $category, $description, $data, $status);
+        }
+
+        $article = DB::table("articles")->select("id")->where("id")->equals($id)->execute()->fetch();
+        if (!$article) {
+            throw new \Exception('Article not found', 404);
+        }
+
+        $payload = [
+            "id" => $id,
+            "title" => $title,
+            "slug" => $slug,
+            "keywords" => $keywords,
+            "category" => $category,
+            "description" => $description,
+            "data" => !is_string($data) ? json_encode($data) : $data,
+            "status" => $status
+        ];
+
+
+        $SQL = "UPDATE articles SET title = :title, slug = :slug, keywords = :keywords, category = :category, description = :description, data = :data, status = :status WHERE id = :id";
+        $stmt = DB::instance()->prepare($SQL);
+        if (
+            $stmt->execute($payload)
+        ) {
+            return [
+                "id" => $id,
+                "title" => $title,
+                "slug" => $slug,
+                "keywords" => $keywords,
+                "category" => $category,
+                "description" => $description,
+                "data" => is_string($data) ? json_decode($data, true) : $data,
+                "status" => $status
+            ];
+        }
+        throw new \Exception("Article not saved");
+    }
+
+
+
+
+    function update($id, $title, $slug, $keywords, $category, $description, $status)
+    {
+
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+
+        $SQL = "UPDATE articles SET title = ?, slug = ?, keywords = ?, category = ?, description = ?, status = ?, update_date = NOW() WHERE id = ?";
+        $stmt = DB::instance()->prepare($SQL);
+        if ($stmt->execute([$title, $slug, $keywords, $category, $description, $status, $id])) {
+            return [
+                "id" => $id,
+                "title" => $title,
+                "slug" => $slug,
+                "keywords" => $keywords,
+                "category" => $category,
+                "description" => $description,
+                "status" => $status
+            ];
+        }
+
+        throw new \Exception("Article not updated");
+    }
+
+    function delete($id)
+    {
+
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+        
+        $SQL = "DELETE FROM articles WHERE id = ?";
+        $stmt = DB::instance()->prepare($SQL);
+        return $stmt->execute([$id]);
     }
 }

@@ -12,6 +12,9 @@ class Admin extends __Controller
 
 	function register()
 	{
+		if(!$this->module->getRoles()->isAllowed(0)) {
+			return;
+		}
 
 		$index = Router::GET("/product", "index", self::class);
 		Router::GET("/product/new", "new", self::class);
@@ -25,6 +28,24 @@ class Admin extends __Controller
 			"link" => $index->__toString(),
 			"icon" => "fa-solid fa-box",
 		]);
+
+		$config = $this->module->getConfig()->__toString();
+		$script = <<<HTML
+		<script>
+			__.MProduct.endpoints = {
+				fetchAll: 	"{{ '/api/Product/fetchAll' | access_path }}",
+				fetch: 	 	"{{ '/api/Product/fetch' | access_path }}",
+				delete: 	"{{ '/api/Product/delete' | access_path }}",
+				add: 		"{{ '/api/Product/add' | access_path }}",
+				update: 	"{{ '/api/Product/update' | access_path }}",
+
+				view: "{{ '/product/view/{id}' | access_path }}",
+				edit: "{{ '/product/edit/{id}' | access_path }}",
+			}
+			__.MProduct.config = $config;
+		</script>
+		HTML;
+		Box::module("Panel")->Scripts->add("product-opts",$script);
 	}
 	function index()
 	{

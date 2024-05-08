@@ -8,8 +8,10 @@ use MerapiPanel\Core\Proxy;
 use MerapiPanel\Database\DB;
 use MerapiPanel\Utility\AES;
 use MerapiPanel\Utility\Http\Request;
+use MerapiPanel\Utility\Util;
 use MerapiPanel\Views\View;
 use MerapiPanel\Utility\Router;
+use Symfony\Component\Filesystem\Path;
 
 
 class Admin extends __Fragment
@@ -25,11 +27,15 @@ class Admin extends __Fragment
     public function register()
     {
 
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            return;
+        }
+
         Router::POST("/settings/general", "updateSetting", self::class);
         Router::POST("/setting/endpoint/save", "saveEndpoint", self::class);
         Router::GET("/settings/config/{module_name}/", "config_module", self::class);
-        
-        $general = Router::GET("/settings/general", "index", self::class);
+
+        // $general = Router::GET("/settings/general", "index", self::class);
         $route = Router::GET("/settings/route", "route", self::class);
 
         Box::module("Panel")->addMenu([
@@ -37,66 +43,28 @@ class Admin extends __Fragment
             'name' => "Settings",
             'icon' => 'fa-solid fa-gear',
             "children" => [
-                [
-                    'order' => 0,
-                    'name' => "General",
-                    'icon' => 'fa-solid fa-circle-info',
-                    'link' => $general->getPath()
-                ],
+                // [
+                //     'order' => 0,
+                //     'name' => "General",
+                //     'icon' => 'fa-solid fa-circle-info',
+                //     'link' => $general->getPath()
+                // ],
                 [
                     'order' => 0,
                     'name' => "Route",
                     'icon' => '<i class="fa-solid fa-route"></i>',
                     'link' => $route
+                ],
+                [
+                    'order' => 0,
+                    'name' => "Role",
+                    'icon' => 'fa-solid fa-user-tag',
+                    'link' => Router::GET("/settings/role", "role", self::class)
                 ]
             ]
         ]);
     }
 
-
-    function saveEndpoint(Request $req)
-    {
-        $token = $req->setting_token();
-
-        if (!$token || !AES::decrypt($token)) {
-            return [
-                "code" => 401,
-                "message" => "Unauthorized"
-            ];
-        }
-        $data = AES::decrypt($token);
-        $entry = unserialize($data);
-
-        if (!isset($entry['module']) || !$entry['input']) {
-            return [
-                "code" => 401,
-                "message" => "Unauthorized"
-            ];
-        }
-
-        $module_name = $entry['module'];
-        $input = $entry['input'];
-
-        try {
-
-            $module = Box::module(ucfirst($module_name));
-            $config = $module->getConfig();
-            foreach ($input as $name) {
-                $config->set($name, $req->$name());
-            }
-
-            return [
-                "code" => 200,
-                "message" => "Saved"
-            ];
-        } catch (\Exception $e) {
-
-            return [
-                "code" => 500,
-                "message" => $e->getMessage()
-            ];
-        }
-    }
 
 
     function index($view)
@@ -106,31 +74,86 @@ class Admin extends __Fragment
     }
 
 
+    function role()
+    {
 
-    // function updateSetting($request)
-    // {
+        $rolesData = $this->getRolesData();
+        return View::render('role.html.twig', [
+            "rolestack" => $rolesData
+        ]);
+    }
 
-    //     $setting = $this->module->__getSettings();
-    //     $_BODY = $request->getRequestBody();
 
-    //     if (!isset($_BODY['website_name']) || empty($_BODY['website_name'])) {
-    //         return [
-    //             "code" => 400,
-    //             "message" => "Website name is required",
-    //         ];
-    //     }
+    private function getRolesData()
+    {
 
-    //     $setting['website_name'] = $_BODY['website_name'];
-    //     $setting['website_email'] = $_BODY['website_email'] ?? "";
-    //     $setting['website_timezone'] = $_BODY['website_timezone'] ?? "";
-    //     $setting['website_date_format'] = $_BODY['website_date_format'] ?? "";
+        // get roles from database
+        $from_database = [];
+        try {
+            $SQL = "SELECT * FROM roles";
+            $from_database = DB::instance()->query($SQL)->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            // do nothing
+        }
 
-    //     return [
-    //         "code" => 200,
-    //         "message" => "Settings updated successfully",
-    //     ];
-    // }
 
+
+        // get roles from modules
+        $roles_stack = [];
+        $pattern = Path::join($_ENV["__MP_APP__"], "Module", "*", "roles.json");
+        foreach (glob($pattern) as $file) {
+            $moduleName = strtolower(basename(dirname($file)));
+            $data = json_decode(file_get_contents($file), true);
+            if ($data) {
+                $roles_stack[] = [
+                    ...$data,
+                    "module" => $moduleName,
+                ];
+            }
+        }
+
+
+        $rolesName = Util::getRoles();
+        $data = [];
+        foreach ($rolesName as $roleName) {
+
+            $data[] = [
+                "name" => $roleName,
+                "roles" => array_map(function ($item) use ($roleName, $from_database) {
+                    $moduleName = $item['module'];
+                    $defaults = $item['defaults'] ?? [];
+                    $roles = array_map(function ($role) use ($roleName, $defaults, $moduleName, $from_database) {
+
+                        $value = isset ($role['default']) && in_array($role['default'], [0, false]) ? $role['default'] : true;
+                        $find = array_values(array_filter($from_database, function ($item) use ($roleName, $moduleName, $role) {
+                            return $item['role'] === $roleName && $item['name'] === $moduleName . "." . $role['id'];
+                        }));
+                        if (!empty ($find)) {
+                            $value = $find[0]['value'];
+                        } else {
+                            if (isset ($defaults[$roleName]['value'][$role['id']])) {
+                                $value = $defaults[$roleName]['value'][$role['id']];
+                            }
+                        }
+                        return [
+                            ...$role,
+                            "value" => $value,
+                            "enable" => isset ($defaults[$roleName]['enable']) ? $defaults[$roleName]['enable'] : true
+                        ];
+                    }, $item['roles']);
+
+                    unset ($item['defaults'], $item['roles']);
+                    return [
+                        ...$item,
+                        "roles" => $roles
+                    ];
+                }, $roles_stack),
+            ];
+        }
+
+        return $data;
+
+    }
 
 
     function route($request)

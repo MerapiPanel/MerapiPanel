@@ -1,19 +1,16 @@
-import { Modal } from "@il4mb/merapipanel/modal";
-import * as http from "@il4mb/merapipanel/http";
-import * as dialog from "@il4mb/merapipanel/dialog";
-import { toast } from "@il4mb/merapipanel/toast";
+const __ = window.__;
+const MUser = __.MUser;
+const { endpoints, session } = MUser.opts;
 
 
-const { urls, session } = __.settings;
+MUser.render = function () {
 
-__.render = function () {
-
-    if (!__.container && this instanceof HTMLElement) {
-        __.container = this;
+    if (!MUser.container && this instanceof HTMLElement) {
+        MUser.container = this;
     }
 
-    http.get(urls.fetch).then(function (result) {
-        $(__.container).html("").append(result.data.map((user) => createComponent(user)));
+    __.http.get(endpoints.fetch).then(function (result) {
+        $(MUser.container).html("").append(result.data.map((user) => createComponent(user)));
     });
 }
 
@@ -55,7 +52,6 @@ function createComponent(user) {
 }
 
 
-
 function editUser(user) {
 
     const content = $(`<form class="needs-validation">`)
@@ -83,7 +79,7 @@ function editUser(user) {
                 .append(
                     $(`<select class="form-select" name="role" id="role" required>`)
                         .append(
-                            ['admin', 'editor', 'contributor', 'manager', 'moderator'].map((role) => `<option value="${role}" ${user.role == role ? 'selected' : ''}>${role}</option>`)
+                            (MUser.opts.roles|| []).map((role) => `<option value="${role}" ${user.role == role ? 'selected' : ''}>${role}</option>`)
                         )
                 )
         )
@@ -151,7 +147,7 @@ function editUser(user) {
 
 
 
-    const modal = $("#modal-edit-user").length > 0 ? Modal.from($("#modal-edit-user")) : Modal.create("Edit User", content);
+    const modal = $("#modal-edit-user").length > 0 ? __.modal.from($("#modal-edit-user")) : __.modal.create("Edit User", content);
     modal.el.attr("id", "modal-edit-user");
     modal.content = content;
     modal.show();
@@ -212,24 +208,23 @@ function editUser(user) {
             )
         }
 
-        dialog.confirm("Confirm Change ?", dialog_content).then(() => {
+        __.dialog.confirm("Confirm Change ?", dialog_content).then(() => {
 
-            http.post(urls.update, formData).then((result) => {
+            __.http.post(endpoints.update, formData).then((result) => {
                 if (result.code === 200) {
 
-                    toast('User updated successfully', 5, 'text-success');
-                    __.render();
-                    // modal.hide();
+                    __.toast('User updated successfully', 5, 'text-success');
+                    MUser.render();
 
                 } else {
                     throw new Error(result.message);
                 }
             }).catch((error) => {
-                toast(error.message || error.statusText || error, 5, 'text-danger');
+                __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
 
         }).catch(() => {
-            toast('Action Canceled', 5, 'text-warning');
+            __.toast('Action Canceled', 5, 'text-warning');
         })
     }
 
@@ -239,7 +234,7 @@ function editUser(user) {
 
 function deleteUser(user) {
 
-    dialog.danger("Are you sure?",
+    __.dialog.danger("Are you sure?",
         $(`<div>Delete <b>${user.name}</b>?</div>`)
             .append("<p>Are you sure you want to delete user details as shown below?</p>")
             .append(
@@ -263,26 +258,26 @@ function deleteUser(user) {
             .append(`<p class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> This action cannot be undone.</p>`)
     )
         .then(() => {
-            http.post(urls.delete, { id: user.id }).then((result) => {
+            __.http.post(endpoints.delete, { id: user.id }).then((result) => {
                 if (result.code === 200) {
-                    toast('User deleted successfully', 5, 'text-success');
-                    __.render();
+                    __.toast('User deleted successfully', 5, 'text-success');
+                    MUser.render();
                 } else {
                     throw new Error(result.message);
                 }
             }).catch((error) => {
-                toast(error.message || error.statusText || error, 5, 'text-danger');
+                __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
         })
         .catch(() => {
-            toast('Action Canceled', 5, 'text-warning');
+            __.toast('Action Canceled', 5, 'text-warning');
         })
 }
 
 
 function suspendUser(user) {
 
-    dialog.warning("Are you sure?",
+    __.dialog.warning("Are you sure?",
         $(`<div>Suspend <b>${user.name}</b>?</div>`)
             .append("<p>Are you sure you want to suspend user details as shown below?</p>")
             .append(
@@ -306,27 +301,27 @@ function suspendUser(user) {
     )
         .then(() => {
 
-            http.post(urls.update, { status: 1, id: user.id }).then((result) => {
+            __.http.post(endpoints.update, { status: 1, id: user.id }).then((result) => {
 
                 if (result.code === 200) {
-                    toast('User suspended successfully', 5, 'text-success');
-                    __.render();
+                    __.toast('User suspended successfully', 5, 'text-success');
+                    MUser.render();
                 } else {
                     throw new Error(result.message);
                 }
             }).catch((error) => {
-                toast(error.message || error.statusText || error, 5, 'text-danger');
+                __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
         })
         .catch(() => {
-            toast('Action Canceled', 5, 'text-warning');
+            __.toast('Action Canceled', 5, 'text-warning');
         })
 }
 
 
 function unsuspendUser(user) {
 
-    dialog.confirm("Are you sure?",
+    __.dialog.confirm("Are you sure?",
         $(`<div>Unsuspend <b>${user.name}</b>?</div>`)
             .append("<p>Are you sure you want to unsuspend user details as shown below?</p>")
             .append(
@@ -350,19 +345,19 @@ function unsuspendUser(user) {
     )
         .then(() => {
 
-            http.post(urls.update, { status: 2, id: user.id }).then((result) => {
+            __.http.post(endpoints.update, { status: 2, id: user.id }).then((result) => {
 
                 if (result.code === 200) {
-                    toast('User unsuspended successfully', 5, 'text-success');
-                    __.render();
+                    __.toast('User unsuspended successfully', 5, 'text-success');
+                    MUser.render();
                 } else {
                     throw new Error(result.message);
                 }
             }).catch((error) => {
-                toast(error.message || error.statusText || error, 5, 'text-danger');
+                __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
         })
         .catch(() => {
-            toast('Action Canceled', 5, 'text-warning');
+            __.toast('Action Canceled', 5, 'text-warning');
         })
 }

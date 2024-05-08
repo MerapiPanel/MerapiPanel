@@ -199,41 +199,27 @@ class Util
 
 
 
-    // public static function callAccessHandler($handler)
-    // {
-    //     if (function_exists($handler)) {
-    //         // call user defined handler
-    //         return $handler() === true;
-    //     } else if (str_contains($handler, "@")) {
-
-    //         // is it a class@method
-    //         [$className, $methodName] = explode("@", $handler);
-
-    //         if (str_contains($className, "module")) { // is a module
-    //             preg_match("/module[\\\|\\/](\w+)/i", $className, $matches);
-
-    //             if (isset($matches[1])) {
-    //                 try {
-    //                     $module = Box::module($matches[1]);
-    //                     return $module->$methodName() === true;
-    //                 } catch (Throwable $e) {
-    //                     // silent
-    //                     return false;
-    //                 }
-    //             }
-    //         } else if (class_exists($className)) {
-    //             // is a class method
-    //             if (method_exists($className, $methodName)) {
-    //                 return $className::$methodName() === true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
+    public static function accessPath($path)
+    {
+        if (isset($_ENV['__MP_ADMIN__'])) {
+            return rtrim($_ENV['__MP_ADMIN__']['prefix'] ?? "/", "/") . "/" . ltrim($path, "/");
+        } else {
+            return $path;
+        }
+    }
 
 
     public static function getAccessName()
     {
         return $_ENV["__MP_ACCESS_NAME__"] ?? "guest";
+    }
+
+
+    public static function getRoles()
+    {
+        if (isset($_ENV['__MP_ROLES__']) && is_array($_ENV['__MP_ROLES__'])) {
+            return array_map("strtolower", $_ENV['__MP_ROLES__']);
+        }
+        return [];
     }
 }

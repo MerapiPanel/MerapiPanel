@@ -156,7 +156,7 @@ class Guest extends __Fragment
         }
 
 
-        if ($user = DB::table("users")->select("*")->where("email")->equals($email)->execute()->fetch(PDO::FETCH_ASSOC)) {
+        if ($user = DB::table("users")->select("*")->where("email")->equals($email)->and()->where("status")->equals("2")->execute()->fetch(PDO::FETCH_ASSOC)) {
 
             $config = $this->module->getConfig();
 
@@ -166,6 +166,8 @@ class Guest extends __Fragment
                     ->select("*")
                     ->where("expires")
                     ->greaterThan(date("Y-m-d H:i:s"))
+                    ->and()
+                    ->where("user_id")->equals($user["id"])
                     ->execute();
 
                 $token = bin2hex(random_bytes(4));

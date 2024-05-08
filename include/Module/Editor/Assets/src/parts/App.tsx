@@ -60,7 +60,7 @@ const ___InitRegisterBlocks = async (editor: Editor, blocks: any[], setLoadingWi
                         if (prop === "components") {
                             this.view?.render();
                         }
-                        if(modelCallback.updated) modelCallback.updated.call(this, prop, val, prev);
+                        if (modelCallback.updated) modelCallback.updated.call(this, prop, val, prev);
                     }
                 },
                 view: {
@@ -176,6 +176,19 @@ export const App = ({ payload }: { payload: Payload }) => {
                 $("div.editor-layout.style-manager").removeClass("d-none");
             }
         })
+
+        // Remove duplicate elements in panels
+        $(".editor-panel").each(function () {
+            let seen = {}; // Object to keep track of seen elements
+            $(this).children().each(function () {
+                let text = $(this).text(); // Assuming the text content uniquely identifies the element
+                if (seen[text]) {
+                    $(this).remove(); // Remove the duplicate element
+                } else {
+                    seen[text] = true; // Mark this element as seen
+                }
+            });
+        });
     }
 
 

@@ -17,10 +17,11 @@
 {% endblock %}
 
 
+{% set productLen = api.product.fetchAll|length %}
 {% block content %}
 
-<div class="d-flex flex-wrap gap-3 p-3" id="product-wrapper" onload="__.render.call(this)">
-    {% for x in 1..6 %}
+<div class="d-flex flex-wrap gap-3 p-3" id="product-wrapper" onload="__.MProduct.render.call(this)">
+    {% for x in 1..productLen %}
     <div class="card" aria-hidden="true" style="width: 100%; max-width: 18rem;opacity: 0.5;">
         <img src="..." class="card-img-top" alt="..." style="height: 150px;">
         <div class="card-body">
@@ -44,17 +45,5 @@
 
 {% block javascript %}
 {{ parent() }}
-
-
-<script>
-    __.endpoints = {
-        fetch: "{{ '/api/product/fetchAll' | access_path }}",
-        view: "{{ '/product/view/{id}' | access_path }}",
-        edit: "{{ '/product/edit/{id}' | access_path }}",
-        update: "{{ '/api/product/update' | access_path }}",
-        delete: "{{ '/api/product/delete' | access_path }}"
-    }
-</script>
-
 <script src="{{ '@product/dist/index.js' | assets }}"></script>
 {% endblock %}

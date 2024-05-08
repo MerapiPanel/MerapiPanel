@@ -7,6 +7,7 @@ use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Core\Abstract\Module;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Views\View;
+use Symfony\Component\Filesystem\Path;
 
 class Widget extends __Fragment
 {
@@ -36,7 +37,7 @@ class Widget extends __Fragment
         return $classNames;
     }
 
-    
+
 
     public function renderWidget($name)
     {
@@ -130,5 +131,66 @@ class Widget extends __Fragment
             }
         }
         return $docs;
+    }
+
+
+
+
+
+
+
+
+    function widgetEdit()
+    {
+
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            throw new \Exception('Permission denied');
+        }
+
+        $widgets = [];
+        foreach (glob(Path::join($_ENV['__MP_APP__'], "Module", "**", "Widgets", "index.php")) as $file) {
+            /**
+             * @var array $data
+             */
+            $data = require $file;
+            $widgets = array_merge($widgets, $data);
+        }
+        return $widgets;
+    }
+
+
+
+
+    public function save($data)
+    {
+
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            throw new \Exception('Permission denied');
+        }
+
+        if (!$data || !is_array($data)) {
+            throw new \Exception('Invalid data');
+        }
+
+        $file = __DIR__ . "/../widget.json";
+        file_put_contents($file, is_string($data) ? $data : json_encode($data));
+
+        return is_string($data) ? json_decode($data, true) : $data;
+    }
+
+
+    public function fetch()
+    {
+
+        $file = __DIR__ . "/widget.json";
+        if (!file_exists($file)) {
+            file_put_contents($file, json_encode([]));
+        }
+
+        $wgetData = json_decode(file_get_contents($file), true);
+        if (!is_array($wgetData)) {
+            $wgetData = [];
+        }
+        return $wgetData;
     }
 }

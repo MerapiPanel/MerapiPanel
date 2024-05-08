@@ -24,6 +24,10 @@ class Service extends __Fragment
     function update($id, $name, $email, $password, $confirmPassword, $role, $status)
     {
 
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
+
         if (empty($id)) {
             throw new \Exception('Missing required parameter: id');
         }
@@ -71,8 +75,10 @@ class Service extends __Fragment
 
     function add($name, $email, $password, $confirmPassword, $role, $status, $sendConfirmation)
     {
-        error_log(print_r(['name' => $name, 'email' => $email, 'password' => $password, 'confirmPassword' => $confirmPassword, 'role' => $role, 'status' => $status, 'sendConfirmation' => $sendConfirmation], 1));
 
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
 
         if (empty($name)) {
             throw new \Exception('Missing required parameter: name');
@@ -185,6 +191,9 @@ class Service extends __Fragment
 
     function delete($id)
     {
+        if (!$this->module->getRoles()->isAllowed(1)) {
+            throw new \Exception('Permission denied');
+        }
         DB::table("users")->delete()->where("id")->equals($id)->execute();
     }
 

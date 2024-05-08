@@ -88,4 +88,17 @@ class Bundle extends Extension
         // Truncate the text to the specified length and append ellipsis
         return rtrim(mb_substr($text, 0, $length)) . $ellipsis;
     }
+
+
+
+    function fl_ucfirst($string)
+    {
+        return ucfirst($string);
+    }
+
+
+    function fn_error_log($message) {
+        
+        error_log(is_string($message) ? $message : json_encode($message));
+    }
 }

@@ -112,20 +112,27 @@ var CreateXmlHttpRequest = function CreateXmlHttpRequest() {
     if (evt.lengthComputable) {
       var complete = evt.loaded / evt.total * 100 | 0;
       (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-download').css('width', "".concat(complete, "%"));
-      if (complete == 100) {
-        (0, jquery_1["default"])("#xhr-".concat(id)).remove();
-      }
     }
-    (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').remove();
+    (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width', '100%');
   });
   xhr.upload.addEventListener("progress", function (evt) {
     if (evt.lengthComputable) {
       var complete = Math.ceil(evt.loaded / evt.total * 100);
       (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width', "".concat(complete, "%"));
-      if (complete == 100) {
-        (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').remove();
-      }
     }
+  });
+  xhr.addEventListener("load", function () {
+    if (parseInt((0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width')) < 100) {
+      (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width', '100%');
+    }
+    setTimeout(function () {
+      if (parseInt((0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-download').css('width')) < 100) {
+        (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-download').css('width', '100%');
+      }
+    }, 300);
+    setTimeout(function () {
+      (0, jquery_1["default"])("#xhr-".concat(id)).remove();
+    }, 800);
   });
   return xhr;
 };
@@ -11731,7 +11738,7 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 /*!***********************************************************!*\
-  !*** ./include/Module/filemanager/Assets/src/ListFile.ts ***!
+  !*** ./include/Module/FileManager/Assets/src/ListFile.ts ***!
   \***********************************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _il4mb_merapipanel_dialog__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @il4mb/merapipanel/dialog */ "../modules/merapipanel/dist/dialog.js");

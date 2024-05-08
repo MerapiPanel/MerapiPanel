@@ -23,15 +23,15 @@
 		},
 		assetManager: {
 			custom: true,
-			assets: [],
-			upload: "/api/FileManager/upload" | access_path,
-			uploadName: "files",
-			fetch: "/api/FileManager/fetchFile?start=0&limit=10" | access_path
-		}
+		},
 	},
 	fetchBlockURL: "/editor/api/load" | access_path
 }) }}
 {% endblock %}
+
+<!-- @Panel/Scripts -->
+{{ panel_render(api.Panel.getScripts()) }}
+<!--/ @Panel/Scripts -->
 {% endblock %}
 
 
@@ -45,5 +45,9 @@
 
 {% block javascript %}
 {{ parent() }}
+<script src="{{ '@FileManager/dist/FileManager.js' | assets }}"></script>
 <script src="{{ '@editor/dist/main.js' | assets }}?v={{ time() }}"></script>
+<script>
+	__.FileManager.config.enable_select_folder = false;
+</script>
 {% endblock %}

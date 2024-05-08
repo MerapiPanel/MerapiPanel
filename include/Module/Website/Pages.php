@@ -89,6 +89,9 @@ class Pages extends __Fragment
 
     function add($name, $title, $description, $route, $components = [], $styles = "")
     {
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            throw new \Exception("Access denied");
+        }
 
         $SQL = "INSERT INTO pages (name, title, description, route, components, styles) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = DB::instance()->prepare($SQL);
@@ -108,6 +111,9 @@ class Pages extends __Fragment
 
     function save($id, $name, $title, $route, $description, $components = [], $styles = "", $variables = "", $header = "")
     {
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            throw new \Exception("Access denied");
+        }
 
         if (empty($id)) {
             return $this->add($name, $title, $description, $route, $components, $styles);
@@ -153,6 +159,9 @@ class Pages extends __Fragment
 
     function delete($id)
     {
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            throw new \Exception("Access denied");
+        }
         $SQL = "DELETE FROM pages WHERE id = ?";
         $stmt = DB::instance()->prepare($SQL);
         if ($stmt->execute([$id])) {

@@ -5,6 +5,7 @@ namespace MerapiPanel\Module\FileManager\Controller;
 use Exception;
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
+use MerapiPanel\Utility\Util;
 use MerapiPanel\Views\View;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Router;
@@ -22,25 +23,21 @@ class Admin extends __Fragment
     public function register()
     {
 
-        Router::GET('/filemanager/fetch-endpoint', "fetchEndpoint", self::class);
-        Router::GET("/filemanager/fetchJson", "fetchJson", self::class);
-        Router::GET("/filemanager/upload", "uploadFront", self::class);
-
-        Router::POST("/filemanager/create_folder", "createFolder", self::class);
-        Router::POST("/filemanager/delete_file", "deleteFile", self::class);
-        Router::POST("/filemanager/rename_file", "renameFile", self::class);
-        Router::GET("/filemanager/upload_file", "uploadFile", self::class);
-        Router::POST("/filemanager/upload_file", "uploadFile", self::class);
-
-        $route = Router::GET("/filemanager", "index", self::class);
         $panel = Box::module("Panel");
+        $script = <<<HTML
+        <script>
+            __.FileManager.endpoints = {
+                fetch: "{{ '/api/FileManager/fetch' | access_path }}",
+                upload: "{{ '/api/FileManager/uploadChunk' | access_path }}",
+                uploadInfo: "{{ '/api/FileManager/uploadInfo' | access_path }}",
+                delete: "{{ '/api/FileManager/delete' | access_path }}",
+                rename: "{{ '/api/FileManager/rename' | access_path }}",
+                newFolder: "{{ '/api/FileManager/newFolder' | access_path }}",
+            }
+        </script>
+        HTML;
+        $panel->Scripts->add("filemanager-opts", $script);
 
-        $panel->addMenu([
-            'order' => 3,
-            'name' => "File Manager",
-            'icon' => 'fa-regular fa-folder',
-            'link' => $route
-        ]);
     }
 
 

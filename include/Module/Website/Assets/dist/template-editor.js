@@ -45,20 +45,27 @@ var CreateXmlHttpRequest = function CreateXmlHttpRequest() {
     if (evt.lengthComputable) {
       var complete = evt.loaded / evt.total * 100 | 0;
       (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-download').css('width', "".concat(complete, "%"));
-      if (complete == 100) {
-        (0, jquery_1["default"])("#xhr-".concat(id)).remove();
-      }
     }
-    (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').remove();
+    (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width', '100%');
   });
   xhr.upload.addEventListener("progress", function (evt) {
     if (evt.lengthComputable) {
       var complete = Math.ceil(evt.loaded / evt.total * 100);
       (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width', "".concat(complete, "%"));
-      if (complete == 100) {
-        (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').remove();
-      }
     }
+  });
+  xhr.addEventListener("load", function () {
+    if (parseInt((0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width')) < 100) {
+      (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-upload').css('width', '100%');
+    }
+    setTimeout(function () {
+      if (parseInt((0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-download').css('width')) < 100) {
+        (0, jquery_1["default"])("#xhr-".concat(id)).find('.http-progress-download').css('width', '100%');
+      }
+    }, 300);
+    setTimeout(function () {
+      (0, jquery_1["default"])("#xhr-".concat(id)).remove();
+    }, 800);
   });
   return xhr;
 };

@@ -10,11 +10,4 @@ class Service extends __Fragment
         $this->module = $module;
     }
 
-    function getLogedinUser()
-    {
-        return [
-            "name" => "Admin name",
-            "email" => "admin@merapi.panel",
-        ];
-    }
 }

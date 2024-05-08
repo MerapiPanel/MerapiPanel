@@ -12,6 +12,9 @@
 {% block head_javascript %}
 {{ parent() }}
 <script src="{{ '@panel/dist/panel.bundle.js' | assets }}"></script>
+<!-- @Panel:scripts -->
+{{ panel_render(api.Panel.getScripts) }}
+<!--/ @Panel:scripts -->
 {% endblock %}
 
 
@@ -31,7 +34,8 @@
 
             {% block header_title_outer %}
             <h1 class="panel-title">{% block header_title %}MerapiPanel{% endblock %}</h1>
-            <small class="text-muted float-end ms-auto">Loadtime: {{ (microtime(true) - __env__.__MP_START_TIME__ ) | round(3, 'floor') }} s</small>
+            <small class="text-muted float-end ms-auto">Loadtime: {{ (microtime(true) - __env__.__MP_START_TIME__ ) |
+                round(3, 'floor') }} s</small>
             {% endblock %}
 
         </header>
@@ -58,6 +62,7 @@
         <div class="panel-container">
 
 
+            {% if api.Panel.allowed %}
             {% block subheader_outer %}
             <div class="panel-subheader" id="panel-subheader">
                 {% block subheader %}
@@ -98,9 +103,13 @@
 
             </div>
             {% endblock %}
+            {% endif %}
 
             {% block content_outer %}
+            {% if api.Panel.allowed %}
             <div class="panel-content">
+
+
                 {% block content %}
                 <div class="flex-grow-1 align-content-center" id="panel-content">
                     <div class="text-center">
@@ -110,6 +119,14 @@
                 </div>
                 {% endblock %}
             </div>
+            {% else %}
+            <div class="flex-grow-1 align-content-center" id="panel-content">
+                <div class="text-center">
+                    <h2 class="fs-2 fw-bold">Not Allowed</h2>
+                    <p>you have no permission to access this page</p>
+                </div>
+            </div>
+            {% endif %}
             {% endblock %}
 
         </div>

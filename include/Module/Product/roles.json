@@ -1,0 +1,23 @@
+{
+    "roles": [
+        {
+            "id": 0,
+            "name": "View Product",
+            "default": true
+        },
+        {
+            "id": 1,
+            "name": "Modify Product",
+            "default": false
+        }
+    ],
+    "defaults": {
+        "admin": {
+            "value": {
+                "0": true,
+                "1": true
+            },
+            "enable": false
+        }
+    }
+}

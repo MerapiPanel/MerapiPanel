@@ -3,14 +3,11 @@
 namespace MerapiPanel\Module\FileManager;
 
 use MerapiPanel\Box\Module\__Fragment;
-use MerapiPanel\Utility\Http\Request;
 use Symfony\Component\Filesystem\Path;
-use Throwable;
 
 
 class Service extends __Fragment
 {
-
     protected string $root;
     protected $module;
 
@@ -85,17 +82,7 @@ class Service extends __Fragment
 
         return $stack;
     }
-
-
-
-
-
-
-
     
-
-    
-
 
     function absoluteToRelativePath($absolute_path)
     {
@@ -105,8 +92,6 @@ class Service extends __Fragment
 
         return str_replace($server_root, '', $absolute_path);
     }
-
-
 
 
 
@@ -127,4 +112,5 @@ class Service extends __Fragment
         }
         return false; // Directory is empty
     }
+
 }

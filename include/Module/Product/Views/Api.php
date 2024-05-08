@@ -11,4 +11,8 @@ class Api extends __Fragment
 	{
 		$this->module = $module;
 	}
+
+	function fetchAll() {
+		return $this->module->fetchAll();
+	}
 }

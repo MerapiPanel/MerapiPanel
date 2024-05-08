@@ -5,8 +5,9 @@
 {{ parent() }}
 <script>
     var widgetPayload = {
-        endpoint_edit: "{{ '/widget/edit' | access_path | url }}",
-        endpoint_save: "{{ '/widget/save' | access_path | url }}",
+        endpoint_edit: "{{ '/api/Dashboard/Widget/edit' | access_path | url }}",
+        endpoint_save: "{{ '/api/Dashboard/Widget/save' | access_path | url }}",
+        endpoint_fetch: "{{ '/api/Dashboard/Widget/fetch' | access_path | url }}",
         endpoint_load: "{{ '/widget/load' | access_path | url }}"
     }
 </script>

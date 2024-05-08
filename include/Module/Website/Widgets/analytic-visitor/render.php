@@ -1,13 +1,18 @@
 <?php
-// write logic here
-$data = [
-    "labels" => ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-    "data" => [65, 59, 80, 81, 56, 55, 40, 30, 20, 15, 10, 5],
+use MerapiPanel\Box;
+
+$raw_data_visitor = Box::module('Website')->Logs->readRange(date('Y-m-d', strtotime('-7 days')), date('Y-m-d'));
+$data_visitor =[
+    "labels" => array_map(fn($date) => date('M d', strtotime($date)), array_keys($raw_data_visitor)),
+    "values" => array_map(fn($data) => count($data), $raw_data_visitor)
 ];
+
 ?>
-<script>window._data = <?php echo json_encode($data) ?></script>
+<script>
+    const data_visitor = <?= json_encode($data_visitor) ?>;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div class="w-100 h-100 d-flex flex-column pb-5 text-start">
-    <h4 class="fs-2 fw-semibold">Website Analytics</h4>
-    <canvas class="widget-website-analytic-visitor flex-grow-1"
-        style="position: relative; height:40vh; width:80vw"></canvas>
+    <h4 class="fs-2 fw-semibold">Visitor Analytics</h4>
+    <canvas id="chart-diagram-visitor"></canvas>
 </div>

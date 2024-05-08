@@ -3,21 +3,124 @@ import * as http from "@il4mb/merapipanel/http";
 import { toast } from "@il4mb/merapipanel/toast";
 import { Modal } from "@il4mb/merapipanel/modal";
 import * as dialog from "@il4mb/merapipanel/dialog";
+import * as cookie from "@il4mb/merapipanel/cookie";
+
+
+interface Property {
+    on: Function;
+    off: Function;
+    fire: Function;
+    [key: string]: any;
+}
 
 export interface __MP {
     http: typeof http;
     toast: typeof toast;
     modal: typeof Modal;
     dialog: typeof dialog;
-    [key: string]: any;
+    cookie: typeof cookie;
+    [key: string]: Property | any;
 }
 
-(window as any).__ = {
+
+
+
+const __ = {
     "http": http,
     "toast": toast,
     "modal": Modal,
-    "dialog": dialog
+    "dialog": dialog,
+    "cookie": cookie
 } as __MP;
+
+
+function newProperty(_target: any) {
+
+    if (!_target) _target = {};
+
+    _target = {
+
+        events: [],
+        on: function (key: string, callback: Function) {
+            if (!_target.events[key]) _target.events[key] = [];
+            _target.events[key].push(callback);
+        },
+        off: function (key: string, callback: Function) {
+            if (!_target.events[key]) return;
+            _target.events[key].splice(_target.events[key].indexOf(callback), 1);
+        },
+        fire: function (key: string, ...data: any) {
+
+            if (!_target.events[key]) return new Promise<void>((res) => res());
+
+            return new Promise((res, rej) => {
+                const event = new Event(key);
+                const promises = _target.events[key].map(async callback => {
+                    try {
+                        if (typeof callback === 'function' && event.cancelBubble) return;
+                        return callback(event, ...(data ? data : undefined)); // Return the promise
+                    } catch (error) {
+                        rej(error);
+                    }
+                });
+
+                // Await all promises
+                Promise.all(promises).then(() => res(event)).catch(rej);
+            });
+        }
+    }
+    return new Proxy(_target, {
+        get: (target, property: string) => {
+            let data = target[property] || undefined;
+            _target.fire(`get:${property}`, data);
+            return data;
+        },
+        set: (target, property: string, value) => {
+            _target.fire(`set:${property}`, value)
+                .then(() => {
+                    if (value == "CreateProperty") {
+                        target[property] = newProperty({});
+                        _target.fire(`property:${property}`, target[property]);
+                        return true;
+                    }
+                    target[property] = value;
+                })
+                .catch(() => false);
+
+            return true;
+
+        }
+    })
+}
+
+
+(window as any).__ = new Proxy(__, {
+    get: (target, property: string) => {
+
+        if (!target[property]) {
+            target[property] = newProperty({});
+            return target[property];
+        }
+
+        if (typeof target[property] === "function") {
+            target[property].bind(target);
+        }
+        return target[property];
+    },
+    set: (target, property: string, value) => {
+
+        if (property && ["on", "off", "fire", "events", "get", "set", "http", "toast", "modal", "dialog"].includes(property.toLowerCase())) {
+            console.error(`Error: ${property} is a reserved property`);
+            return false;
+        }
+
+        if (!(property in target) && typeof value === "object") {
+            target[property] = { ...value, ...newProperty({}) };
+            return true;
+        }
+        return true;
+    }
+});
 
 
 const Box = {

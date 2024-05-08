@@ -37,10 +37,11 @@ class Guest extends __Fragment
                 $variables = $page['variables'] ?? "";
                 $content = $BlocksEditor->render($components);
                 self::cleanTwigFragmentFromHtml($content);
+                $lang = View::getInstance()->getIntl()->getLocale();
 
                 $html = <<<HTML
 <!DOCTYPE html>
-<html>
+<html lang="{$lang}">
     <head>
         {% block header %}
         {$header}
@@ -75,11 +76,15 @@ HTML;
                 }
                 $output = $template->render($_variables);
 
-                $client_ip = Request::getClientIP();
-                $client_ip = $client_ip == '::1' ? '127.0.0.1' : $client_ip;
-                $page_path = Request::getInstance()->getPath();
-                $page_title = $this->getTitleFromHtml($output);
-                $module->Logs->write($client_ip, $page_path, $page_title);
+                try {
+                    $client_ip = Request::getClientIP();
+                    $client_ip = $client_ip == '::1' ? '127.0.0.1' : $client_ip;
+                    $page_path = Request::getInstance()->getPath();
+                    $page_title = $this->getTitleFromHtml($output);
+                    $module->Logs->write($client_ip, $page_path, $page_title);
+                } catch (\Throwable $th) {
+                    // silent
+                }
 
                 return $output;
             });

@@ -53,7 +53,7 @@
                 <label for="role">role :</label>
                 <select name="role" id="role" class="form-control" required>
                     <option value="">-- select role --</option>
-                    {% for item in ['admin', 'editor', 'contributor', 'manager', 'moderator'] %}
+                    {% for item in api.User.getRoles %}
                     <option value="{{ item }}">{{ item }}</option>
                     {% endfor %}
                 </select>

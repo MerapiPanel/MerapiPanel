@@ -1443,16 +1443,25 @@
   "resolved" "file:../modules/merapipanel"
   "version" "1.0.13"
   dependencies:
+    "@ckeditor/ckeditor5-build-classic" "^41.2.1"
+    "@ckeditor/ckeditor5-react" "^6.2.0"
+    "@codemirror/lang-html" "^6.4.8"
+    "@codemirror/lang-json" "^6.0.1"
     "@reduxjs/toolkit" "^2.2.2"
     "@types/jest" "^29.5.12"
     "@types/node" "^20.11.30"
     "@types/react" "^18.2.67"
     "@types/react-dom" "^18.2.22"
-    "codemirror" "^5.65.16"
+    "bootstrap" "^5.3.3"
+    "cm6-theme-basic-dark" "^0.2.0"
+    "codemirror" "^6.0.1"
     "css-loader" "^6.10.0"
     "grapesjs" "^0.21.9"
     "grapesjs-blocks-basic" "^1.0.2"
+    "grapesjs-parser-postcss" "^1.0.3"
+    "grapesjs-plugin-ckeditor" "^1.0.1"
     "jquery" "^3.7.1"
+    "js-beautify" "^1.15.1"
     "lodash-webpack-plugin" "^0.11.6"
     "mini-css-extract-plugin" "^2.8.1"
     "postcss-loader" "^8.1.1"
@@ -3943,6 +3952,11 @@
   "resolved" "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz"
   "version" "1.8.1"
 
+"event-target-shim@^3.0.1":
+  "integrity" "sha512-HK5GhnEAkm7fLy249GtF7DIuYmjLm85Ft6ssj7DhVl8Tx/z9+v0W6aiIVUdT4AXWGYy5Fc+s6gqBI49Bf0LejQ=="
+  "resolved" "https://registry.npmjs.org/event-target-shim/-/event-target-shim-3.0.2.tgz"
+  "version" "3.0.2"
+
 "event-target-shim@^5.0.0":
   "integrity" "sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ=="
   "resolved" "https://registry.npmjs.org/event-target-shim/-/event-target-shim-5.0.1.tgz"
@@ -4722,6 +4736,13 @@
     "agent-base" "2"
     "debug" "2"
     "extend" "3"
+
+"huge-uploader@^1.0.6":
+  "integrity" "sha512-NxMkrpbvqaNLtXzGI64yopeY33o6zrl2uTYy/rBcqAyM7aO5K3f6P6BPCptuBdMllpyU7kJsEaG9QIzXCkXpIQ=="
+  "resolved" "https://registry.npmjs.org/huge-uploader/-/huge-uploader-1.0.6.tgz"
+  "version" "1.0.6"
+  dependencies:
+    "event-target-shim" "^3.0.1"
 
 "human-signals@^2.1.0":
   "integrity" "sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw=="

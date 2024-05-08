@@ -13,9 +13,9 @@
     var widgetPayload = {
         holder: "#widget-container",
         endpoints: {
-            fetch: "{{ '/widget/fetch' | url }}",
-            save: "{{ '/widget/save' | url }}",
-            load: "{{ '/widget/load' | url }}",
+            fetch: "{{ '/api/Dashboard/Widget/fetch' | access_path }}",
+            save: "{{ '/api/Dashboard/Widget/save' | access_path }}",
+            load: "{{ '/api/Dashboard/Widget/load' | access_path }}",
             script: {
                 widgetHelper: "{{ '@dashboard/assets/dist/widget-helper.js' | assets }}"
             }

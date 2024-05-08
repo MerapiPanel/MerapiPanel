@@ -4,14 +4,6 @@
 {% block javascript %}
 {{ parent() }}
 
-<script>
-    editor.endpoints = {
-        add: "{{ '/api/product/add' | access_path }}",
-        update: "{{ '/api/product/update' | access_path }}",
-        delete: "{{ '/api/product/delete' | access_path }}"
-    }
-</script>
-
 {% if product.id %}
 <script>
     const product = {
@@ -30,7 +22,7 @@
         author_id: '{{ product.author_id }}',
         author_name: '{{ product.author_name }}'
     }
-    window.__.product = product;
+    __.MProduct.data = product;
 
   
 </script>

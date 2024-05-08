@@ -1,68 +1,111 @@
+import { __MP } from "../../../../Buildin/src/main";
 import { Editor } from "grapesjs";
 import * as Component from "./partial/component";
 import { post } from '@il4mb/merapipanel/http';
 
-const editor = (window as any).editor;
-const __: {
-    product?: {
-        id: string
-        title: string
-        price: string
-        category: string
-        description: string
-        data: {
+const __: __MP = (window as any).__;
+type MProductType = {
+    data: {
+        id?: string
+        title?: string
+        price?: string
+        category?: string
+        description?: string
+        data?: {
             components: any
             css: string
         }
-        status: number
-        post_date: string
-        update_date: string
-        author_id: string
-        author_name: string
+        status?: number
+        post_date?: string
+        update_date?: string
+        [key: string]: any
     }
-} = (window as any).__;
+    endpoints: {
+        fetchAll: string
+        fetch: string
+        view: string
+        update: string
+        delete: string
+        edit: string
+        add: string
+    }
+    render: Function
+    el: HTMLElement
+    [key: string]: any
+}
+const MProduct: MProductType = __.MProduct;
+if (!MProduct.data) {
+    MProduct.data = {} as any;
+}
+const editor = (window as any).editor;
+
+// const __: {
+//     product?: {
+//         id: string
+//         title: string
+//         price: string
+//         category: string
+//         description: string
+//         data: {
+//             components: any
+//             css: string
+//         }
+//         status: number
+//         post_date: string
+//         update_date: string
+//         author_id: string
+//         author_name: string
+//     }
+// } = (window as any).__;
 
 
-
-const { endpoints }: { endpoints: { add: string, update: string } } = editor;
+const endpoints = MProduct.endpoints;
 
 editor.callback = function (data: any) {
 
 
 
-    post(__.product ? endpoints.update : endpoints.add, { data: JSON.stringify(data), ...{ id: __.product ? __.product.id : "" } }).then((res) => {
+    post(MProduct.data.id ? endpoints.update : endpoints.add, { data: JSON.stringify(data), ...{ id: MProduct.data ? MProduct.data.id : "" } })
+        .then((res) => {
 
-        if (res.code === 200) {
-            if (__.product) {
-                this.resolve("Product updated successfully");
+            if (res.code === 200) {
+                if (MProduct.data.id) {
+                    this.resolve("Product updated successfully");
+                } else {
+                    this.resolve("Product saved successfully");
+
+                    if (typeof res.data == "object") {
+                        Object.keys(res.data).forEach((key) => {
+                            MProduct.data[key] = res.data[key];
+                        });
+                        if (MProduct.data.id) {
+                            window.history.replaceState(null, "", endpoints.edit.replace("{id}", MProduct.data.id));
+                        }
+                    }
+                }
             } else {
-                this.resolve("Product saved successfully");
-                __.product = res.data as any;
-                window.history.replaceState("", "", window.location.href.replace("new", "edit") + "/" + (res.data as any).id);
+                if (MProduct.data) {
+                    this.reject(res.message || "Failed to update product");
+                } else {
+                    this.reject(res.message || "Failed to save product");
+                }
             }
-        } else {
-            if (__.product) {
-                this.reject(res.message || "Failed to update product");
+        }).catch((err) => {
+            if (MProduct.data) {
+                this.reject(err.message || "Failed to update product");
             } else {
-                this.reject(res.message || "Failed to save product");
+                this.reject(err.message || "Failed to save product");
             }
-        }
-    }).catch((err) => {
-        if (__.product) {
-            this.reject(err.message || "Failed to update product");
-        } else {
-            this.reject(err.message || "Failed to save product");
-        }
-    });
+        });
 };
 
 editor.onReady = (editor: Editor) => {
 
     Component.Register(editor);
 
-    if (__.product) {
-        editor.setComponents(__.product.data.components);
-        editor.addStyle(__.product.data.css);
+    if (MProduct.data.id && MProduct.data.data) {
+        editor.setComponents(MProduct.data.data?.components);
+        editor.addStyle(MProduct.data.data?.css);
     } else {
 
         editor.setComponents([

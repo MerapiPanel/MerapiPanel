@@ -1,0 +1,29 @@
+{
+    "roles": [
+        {
+            "id": 0,
+            "name": "View Setting",
+            "default": false
+        },
+        {
+            "id": 1,
+            "name": "Modify Configuration",
+            "default": false
+        },
+        {
+            "id": 2,
+            "name": "Modify Rules",
+            "default": false
+        }
+    ],
+    "defaults": {
+        "admin": {
+            "value":{
+                "0": true,
+                "1": true,
+                "2": true
+            },
+            "enable": false
+        }
+    }
+}
