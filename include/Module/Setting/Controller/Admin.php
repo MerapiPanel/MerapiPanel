@@ -201,9 +201,6 @@ class Admin extends __Fragment
         $module = Box::module(ucfirst($module_name));
         $configs = $module->getConfig()->getStack();
 
-
-        error_log(print_r($configs, true));
-
         return View::render('config.html.twig', [
             "configs" => $configs,
             "module_name" => $module_name

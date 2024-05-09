@@ -163,26 +163,20 @@ namespace MerapiPanel\Box\Module\Entity {
             }
 
             foreach ($items as $value) {
-                if (!is_array($value) || !isset($value['name']) || !isset($value['default'])) {
+                if (!is_array($value) || !isset($value['name']) || empty($value['name']) || !isset($value['default']) ) {
                     continue;
                 }
 
                 $name = ($prefix ? "{$prefix}." : "") . preg_replace("/[^a-zA-Z]+/", "_", strtolower($value['name']));
                 $default = $value['default'];
-
                 $data = [
                     "type" => $value['type'] ?? "text",
                     "value" => $default,
                     "default" => $default,
+                    ...$value,
                     "name" => $name
                 ];
 
-                if (isset($value['label'])) {
-                    $data['label'] = $value['label'];
-                }
-                if (isset($value['description'])) {
-                    $data['description'] = $value['description'];
-                }
 
                 if (isset($value['children'])) {
                     $childrenPrefix = $name;

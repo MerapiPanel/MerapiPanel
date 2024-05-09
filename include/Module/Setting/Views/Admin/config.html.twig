@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% macro text_item(item) %}
-<div class="py-3">
+<div class="py-3 config-item config-text">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.label ?? item.name }} :</span>
         <input type="text" class="form-control" name="{{ item.name }}"value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help or item.description %}<small class="form-text text-muted">{{ item.description ?? item.help }}</small>{% endif %}
@@ -17,7 +17,7 @@
 {% endmacro %}
 
 {% macro number_item(item) %}
-<div class="py-3">
+<div class="py-3 config-item config-number">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.label ?? item.name }} :</span>
         <input type="number" class="form-control" name="{{ item.name }}"value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help or item.description %}<small class="form-text text-muted">{{ item.description ?? item.help }}</small>{% endif %}
@@ -27,7 +27,7 @@
 
 
 {% macro select_item(item) %}
-<div class="py-3">
+<div class="py-3 config-item config-select">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         <select class="form-select" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}>
             {% for option in item.options %}
@@ -43,7 +43,7 @@
 
 
 {% macro textarea_item(item) %}
-<div>
+<div class="py-3 config-item config-textarea">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
@@ -54,14 +54,14 @@
 
 
 {% macro checkbox_item(item) %}
-<div class="py-3">
+<div class="py-3 config-item config-checkbox">
     <label class="form-check-label w-100">
         <input type="checkbox" class="form-check-input" name="{{ item.name }}" value="1" {% if item.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         <span class="fw-semibold ms-2">{{ item.label ?? item.name }} </span>
         {% if item.help or item.description %}<small class="form-text text-muted d-block">{{ item.help ?? item.description }}</small>{% endif %}
     </label>
     {% if item.children %}
-    <div class="collapse show ps-3 pt-2 ms-1 border-start" id="collapse-{{ item.name }}">
+    <div class="collapse show ps-3 pt-2 ms-1 border-start config-item-children" id="collapse-{{ item.name }}">
         {{ _self.render_item(item.children) }}
     </div>
     {% endif %}
@@ -71,7 +71,7 @@
 
 
 {% macro radio_item(item) %}
-<div>
+<div class="py-3 config-item config-radio">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         {% for option in item.options %}
         <div class="form-check">
@@ -87,7 +87,7 @@
 
 
 {% macro color_item(item) %}
-<div>
+<div class="py-3 config-item config-color">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         <input style="width: 50px; height: 50px; outline: none; border: none;" type="color" class="form-control p-0" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
@@ -98,7 +98,7 @@
 
 
 {% macro file_item(item) %}
-<div>
+<div class="py-3 config-item config-file">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
@@ -109,7 +109,7 @@
 
 
 {% macro image_item(item) %}
-<div>
+<div class="py-3 config-item config-image">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
@@ -120,7 +120,7 @@
 
 
 {% macro wysiwyg_item(item) %}
-<div>
+<div class="py-3 config-item config-wysiwyg">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
@@ -131,7 +131,7 @@
 
 
 {% macro datetime_item(item) %}
-<div>
+<div class="py-3 config-item config-datetime">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         <input type="datetime-local" class="form-control" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
@@ -184,4 +184,26 @@
         {{ _self.process(form_setting, module_name) }}
     </div>
 </div>
+{% endblock %}
+
+
+
+{% block javascript %}
+{{ parent() }}
+<script>
+
+    $('.config-checkbox').each(function() {
+
+        const $input = $(this).find('input[type="checkbox"]').first();
+        const $children = $(this).children('.config-item-children');
+        $input.on('change', function() {
+            if ($(this).is(':checked')) {
+                $children.fadeIn(300);
+            } else {
+                $children.fadeOut(300);
+            }
+        });
+
+    });
+</script>
 {% endblock %}
