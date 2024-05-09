@@ -13,19 +13,15 @@ class Admin extends __Fragment
 {
 
     protected $module;
-
     public function onCreate(Box\Module\Entity\Module $module)
     {
         $this->module = $module;
     }
+
+
     public function register()
     {
-
-        // Router::GET("/widget/edit", "widgetEdit", self::class);
         Router::GET("/widget/load/{name}", "widgetLoadComponent", self::class);
-        // Router::GET("/widget/load", "widgetLoad", self::class);
-        // Router::POST("/widget/save", "widgetSave", self::class);
-
         $route = Router::GET("/", "index", self::class);
 
         Box::module("Panel")->addMenu([

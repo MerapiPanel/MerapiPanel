@@ -31,7 +31,24 @@ class Admin extends __Controller
 					]
 				]
 			]);
+
+			$roles = json_encode([
+				"create" => $this->module->getRoles()->isAllowed(1),
+				"update" => $this->module->getRoles()->isAllowed(2),
+				"delete" => $this->module->getRoles()->isAllowed(3),
+				"modifyTemplate" => $this->module->getRoles()->isAllowed(4)
+			]);
+
+			$script = <<<HTML
+			<script>
+				__.Contact.config = {
+					roles: {$roles}
+				}
+			</script>
+			HTML;
+			Box::module("Panel")->Scripts->add("contact-opts", $script);
 		}
+
 	}
 
 

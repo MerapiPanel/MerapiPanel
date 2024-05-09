@@ -3,15 +3,83 @@ const MUser = __.MUser;
 const { endpoints, session } = MUser.opts;
 
 
+const payload = {
+    page: 1,
+    limit: 10,
+    search: ''
+};
+
+$("#panel-subheader-search").on("submit", function (e) {
+    e.preventDefault();
+    payload.page = 1;
+    payload.search = $(this).find("input").val();
+    MUser.render();
+});
+
+
+function createPagination(container, page, totalPages) {
+
+    $(container).html("");
+    // Define the number of pages to show before and after the current page
+    const range = 3;
+
+    // Determine start and end points for the pagination range
+    let start = Math.max(1, page - range);
+    let end = Math.min(totalPages, page + range);
+
+    // Adjust start and end points if necessary to ensure that range remains constant
+    if (end - start < 2 * range) {
+        if (start === 1) {
+            end = Math.min(totalPages, start + 2 * range);
+        } else if (end === totalPages) {
+            start = Math.max(1, end - 2 * range);
+        }
+    }
+
+    // Add left offset if not on the first page
+    if (page > 1) {
+        $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="1">&laquo;</a></li>');
+    }
+
+    // Add page links
+    for (let i = start; i <= end; i++) {
+        const liClass = i === page ? "page-item active" : "page-item";
+        $(container).append($('<li class="' + liClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>'));
+    }
+
+    // Add right offset if not on the last page
+    if (page < totalPages) {
+        $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="' + totalPages + '">&raquo;</a></li>');
+    }
+
+    // Add event listeners for page links
+    $(container).find("a.page-link").on("click", function (e) {
+        e.preventDefault();
+        payload.page = parseInt($(this).data("page"));
+        MArticle.render();
+    });
+}
+
+
 MUser.render = function () {
 
     if (!MUser.container && this instanceof HTMLElement) {
         MUser.container = this;
     }
 
-    __.http.get(endpoints.fetch).then(function (result) {
-        $(MUser.container).html("").append(result.data.map((user) => createComponent(user)));
-    });
+    __.http.get(endpoints.fetchAll, payload)
+        .then(function (result) {
+
+            const { users, totalPages, totalResults } = result.data;
+            $("#total-records").text(`Total Records: ${totalResults}`);
+            
+            createPagination($("#pagination"), payload.page, totalPages);
+
+            $(MUser.container).html("").append((users || []).map((user) => createComponent(user)));
+        })
+        .catch(function (err) {
+            __.toast(err.message || "Something went wrong", 5, "text-danger");
+        });
 }
 
 
@@ -79,7 +147,7 @@ function editUser(user) {
                 .append(
                     $(`<select class="form-select" name="role" id="role" required>`)
                         .append(
-                            (MUser.opts.roles|| []).map((role) => `<option value="${role}" ${user.role == role ? 'selected' : ''}>${role}</option>`)
+                            (MUser.opts.roles || []).map((role) => `<option value="${role}" ${user.role == role ? 'selected' : ''}>${role}</option>`)
                         )
                 )
         )

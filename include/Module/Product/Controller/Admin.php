@@ -12,7 +12,7 @@ class Admin extends __Controller
 
 	function register()
 	{
-		if(!$this->module->getRoles()->isAllowed(0)) {
+		if (!$this->module->getRoles()->isAllowed(0)) {
 			return;
 		}
 
@@ -29,6 +29,10 @@ class Admin extends __Controller
 			"icon" => "fa-solid fa-box",
 		]);
 
+		$roles = json_encode([
+			"modify" => $this->module->getRoles()->isAllowed(1),
+		]);
+
 		$config = $this->module->getConfig()->__toString();
 		$script = <<<HTML
 		<script>
@@ -42,10 +46,19 @@ class Admin extends __Controller
 				view: "{{ '/product/view/{id}' | access_path }}",
 				edit: "{{ '/product/edit/{id}' | access_path }}",
 			}
-			__.MProduct.config = $config;
+			__.MProduct.config = {
+				...$config,
+				roles: $roles,
+				...{
+					payload: {
+						limit: 10,
+						page: 1,
+					}
+				}
+			}
 		</script>
 		HTML;
-		Box::module("Panel")->Scripts->add("product-opts",$script);
+		Box::module("Panel")->Scripts->add("product-opts", $script);
 	}
 	function index()
 	{

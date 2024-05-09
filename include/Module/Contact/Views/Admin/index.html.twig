@@ -22,7 +22,9 @@
 
 
 {% block subheader_menu %}
-<button class="menu-item" onclick="__.contact.add()">Add Contact</button>
+{% if api.Contact.isAllowed(1) %}
+<button class="menu-item" onclick="__.Contact.add()">Add Contact</button>
+{% endif %}
 {% endblock %}
 
 
@@ -34,7 +36,7 @@
 
 <div class="row">
 	<div class="col-12 col-lg-7">
-		<ul class="list-group list-group-flush px-2 py-1" id="contact-list" onload="__.contact.render.call(this)">
+		<ul class="list-group list-group-flush px-2 py-1" id="contact-list" onload="__.Contact.render.call(this)">
 			{% for i in 1..total %}
 			<li class="list-group-item placeholder-glow">
 				<span class="placeholder bg-primary bg-opacity-75 col-4"></span>
@@ -50,15 +52,8 @@
 {% block javascript %}
 {{ parent() }}
 <script>
-	__.contact = {
-		filter: '',
-		fetchURL: "{{ '/api/Contact/fetchAll' | access_path | url }}"
-	}
-
-	$("#filter-contact").on("change", function () {
-		__.contact.filter = $(this).val();
-		__.contact.render();
-	});
+	__.Contact.filter = '';
+	__.Contact.fetchURL = "{{ '/api/Contact/fetchAll' | access_path | url }}";
 </script>
 <script src="{{ '@contact/dist/index.js' | assets }}?v={{ time() }}"></script>
 
@@ -66,12 +61,12 @@
 	$(() => {
 
 
-		__.contact.on("add", function (e, data) {
+		__.Contact.on("add", function (e, data) {
 			return new Promise((res, rej) => {
 				__.http.post("{{ '/api/Contact/add' | access_path | url }}", data).then(function (response) {
 					if (response.code == 200) {
 						__.toast("Contact added", 5, 'text-success');
-						__.contact.filter = response.data.type || '';
+						__.Contact.filter = response.data.type || '';
 						$("#filter-contact").val(response.data.type || '');
 						res(response.data);
 					} else throw new Error(response.message, response.code);
@@ -80,7 +75,7 @@
 		});
 
 
-		__.contact.on("update", function (e, data) {
+		__.Contact.on("update", function (e, data) {
 			return new Promise((res, rej) => {
 				__.http.post("{{ '/api/Contact/update' | access_path | url }}", data).then(function (response) {
 					if (response.code == 200) {
@@ -92,7 +87,7 @@
 		});
 
 
-		__.contact.on("delete", function (e, data) {
+		__.Contact.on("delete", function (e, data) {
 			return new Promise((res, rej) => {
 				__.http.post("{{ '/api/Contact/delete' | access_path | url }}", data).then(function (response) {
 					if (response.code == 200) {
@@ -103,7 +98,7 @@
 			});
 		});
 
-		__.contact.on("default", function (e, data) {
+		__.Contact.on("default", function (e, data) {
 			return new Promise((res, rej) => {
 				if (!data || !data.id) return rej(new Error("Invalid data", 400));
 				__.http.post("{{ '/api/Contact/setDefault' | access_path | url }}", {id: data.id}).then(function (response) {

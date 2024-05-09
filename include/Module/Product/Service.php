@@ -52,18 +52,54 @@ class Service extends __Fragment
 
 
 
-	function fetchAll($columns = ["id", "title", "price", "category", "description", "data", "status", "post_date", "update_date", "users.id as author_id", "users.name as author_name"])
-	{
+	function fetchAll(
+		$columns = ["id", "title", "price", "category", "description", "data", "status", "post_date", "update_date", "users.id as author_id", "users.name as author_name"],
+		$page = null,
+		$limit = null,
+		$search = null,
+	) {
+		// Validate $limit to prevent division by zero
+		if ($limit <= 0) {
+			// Fetch all results if $limit is zero or negative
+			$limit = null;
+		}
 
-
-		$SQL = "SELECT " . implode(",", array_map(function ($item) {
+		// Construct the main SQL query
+		$mainSQL = "SELECT " . implode(",", array_map(function ($item) {
 			if (strpos($item, "users.") === 0) {
 				return str_replace("users.", "B.", $item);
 			}
 			return "A.{$item}";
-		}, $columns)) . " FROM products A LEFT JOIN users B ON A.author = B.id ORDER BY A.`post_date` DESC";
+		}, $columns)) . " FROM products A LEFT JOIN users B ON A.author = B.id"
+			. ($search ? " WHERE A.title LIKE '%{$search}%' OR A.description LIKE '%{$search}%' OR B.name LIKE '%{$search}%' " : "")
+			. " ORDER BY A.id DESC";
 
+		// Construct the count SQL query
+		$countSQL = "SELECT COUNT(*) AS total FROM products A LEFT JOIN users B ON A.author = B.id"
+			. ($search ? " WHERE A.title LIKE '%{$search}%' OR A.description LIKE '%{$search}%' OR B.name LIKE '%{$search}%' " : "");
+
+		// Execute the count query to get total results
+		$totalCount = DB::instance()->query($countSQL)->fetchColumn();
+
+		if(!$totalCount) {
+            return [
+                'products' => [],
+                'totalPages' => 0,
+                'totalResults' => 0
+            ];
+        }
+
+		// Calculate total pages based on total results and limit per page
+		$totalPages = ($limit > 0) ? ceil($totalCount / $limit) : 0;
+
+		// Construct the main SQL query with pagination
+		$offset = ($page - 1) * $limit;
+		$SQL = $mainSQL . ($limit ? " LIMIT $offset, $limit" : "");
+
+		// Execute the main query to fetch products
 		$products = DB::instance()->query($SQL)->fetchAll(PDO::FETCH_ASSOC);
+
+		// Additional processing of products...
 		if ($products) {
 			foreach ($products as $key => $product) {
 				if (isset($product['data']) && gettype($product['data']) == 'string') {
@@ -86,8 +122,16 @@ class Service extends __Fragment
 				}
 			}
 		}
-		return $products;
+
+		// Return the products, total pages, and total results
+		return [
+			'products' => $products,
+			'totalPages' => $totalPages,
+			'totalResults' => $totalCount
+		];
 	}
+
+
 
 
 
@@ -96,8 +140,8 @@ class Service extends __Fragment
 	{
 
 		if (!$this->module->getRoles()->isAllowed(1)) {
-            throw new \Exception('Permission denied');
-        }
+			throw new \Exception('Permission denied');
+		}
 
 		if (gettype($data) == 'string') {
 			$data = json_decode($data, true);
@@ -171,8 +215,8 @@ class Service extends __Fragment
 	function update($data, $id)
 	{
 		if (!$this->module->getRoles()->isAllowed(1)) {
-            throw new \Exception('Permission denied');
-        }
+			throw new \Exception('Permission denied');
+		}
 
 		if (empty($id)) {
 			throw new \Exception('Missing required parameter: id', 400);
@@ -245,14 +289,14 @@ class Service extends __Fragment
 			throw $e;
 		}
 	}
-	
+
 
 	function delete($id)
 	{
-		
+
 		if (!$this->module->getRoles()->isAllowed(1)) {
-            throw new \Exception('Permission denied');
-        }
+			throw new \Exception('Permission denied');
+		}
 
 		if (empty($id)) {
 			throw new \Exception('Missing required parameter: id', 400);

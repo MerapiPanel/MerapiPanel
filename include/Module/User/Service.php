@@ -164,20 +164,59 @@ class Service extends __Fragment
 
 
 
-    public function fetchAll($columns = ["id", "name", "email", "role", "status", "post_date", "update_date"])
-    {
+    public function fetchAll(
+        $columns = ["id", "name", "email", "role", "status", "post_date", "update_date"],
+        $page = null,
+        $limit = null,
+        $search = null
+    ) {
 
-        $users = DB::table("users")->select($columns)->execute()->fetchAll(PDO::FETCH_ASSOC);
-        if ($users) {
-            $users = array_map(function ($item) {
-                if (isset ($item['email'])) {
-                    $item['avatar'] = "https://gravatar.com/avatar/" . md5(strtolower(trim($item['email']))) . "?d=mp?s=45";
-                }
-
-                return $item;
-            }, $users);
+        // Validate $limit to prevent division by zero
+        if ($limit <= 0) {
+            // Fetch all results if $limit is zero or negative
+            $limit = null;
         }
-        return $users;
+
+        // Construct the main SQL query
+        $mainSQL = "SELECT " . ($columns ? implode(",", $columns) : "*") . " FROM users"
+            . ($search ? " WHERE name LIKE '%{$search}%' OR email LIKE '%{$search}%' OR role LIKE '%{$search}%' " : "")
+            . " ORDER BY id DESC";
+
+        // Construct the count SQL query
+        $countSQL = "SELECT COUNT(*) AS total FROM users"
+            . ($search ? " WHERE name LIKE '%{$search}%' OR email LIKE '%{$search}%' OR role LIKE '%{$search}%' " : "");
+
+        // Execute the count query to get total results
+        $totalCount = DB::instance()->query($countSQL)->fetchColumn();
+        if(!$totalCount) {
+            return [
+                'users' => [],
+                'totalPages' => 0,
+                'totalResults' => 0
+            ];
+        }
+        // Calculate total pages based on total results and limit per page
+        $totalPages = ($limit > 0) ? ceil($totalCount / $limit) : 0;
+
+        // Construct the main SQL query with pagination
+        $offset = ($page - 1) * $limit;
+        $SQL = $mainSQL . ($limit ? " LIMIT $offset, $limit" : "");
+
+        // Execute the main query to fetch users
+        $users = DB::instance()->query($SQL)->fetchAll(PDO::FETCH_ASSOC);
+
+        if($users){
+            foreach($users as $key => $user){
+                $users[$key]['avatar'] = "https://gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?d=mp&s=45";
+            }
+        }
+
+        // Return the users, total pages, and total results
+        return [
+            'users' => $users,
+            'totalPages' => $totalPages,
+            'totalResults' => $totalCount
+        ];
     }
 
 

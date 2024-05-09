@@ -317,11 +317,12 @@ namespace MerapiPanel\Box\Module\Entity {
                     if ($user) {
                         return $this->isAllowedForUser($role, $user);
                     }
-                    return $role["default"] == true;
+                    //return $role["default"] == true;
+                    return false;
                 }
             }
 
-            return true;
+            return false;
         }
 
 

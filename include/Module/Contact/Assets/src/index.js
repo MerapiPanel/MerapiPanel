@@ -1,5 +1,5 @@
 const __ = window.__;
-const contact = __.contact;
+const contact = __.Contact;
 
 const modalContent = $(`<form class="needs-validation">`)
     .append(
@@ -61,42 +61,26 @@ const icons = {
     whatsapp: `<i class="fa-brands fa-whatsapp fa-xl me-2"></i>`
 }
 
-contact.events = [];
+if (!contact.config) contact.config = {};
+if (!contact.config.roles) contact.config.roles = {};
 
-
-contact.on = function (key, callback) {
-    if (!contact.events[key]) contact.events[key] = [];
-    contact.events[key].push(callback);
+const roles = {
+    ...{
+        create: false,
+        update: false,
+        delete: false
+    },
+    ...contact.config.roles
 }
 
-
-contact.off = function (key, callback) {
-    if (!contact.events[key]) return;
-    contact.events[key].splice(contact.events[key].indexOf(callback), 1);
+const payload = {
+    "contact-type": $("#filter-contact").val() || null,
 }
 
-
-contact.fire = function (key, data) {
-    if (!contact.events[key]) return;
-
-    return new Promise((res, rej) => {
-        const event = new Event(key);
-        const promises = contact.events[key].map(async callback => {
-            try {
-                if (typeof callback === 'function' && event.cancelBubble) return;
-                return callback(event, data); // Return the promise
-            } catch (error) {
-                rej(error);
-            }
-        });
-
-        // Await all promises
-        Promise.all(promises).then(() => res(event)).catch(rej);
-    });
-}
-
-
-
+$("#filter-contact").on("change", function () {
+    payload["contact-type"] = $(this).val();
+    contact.render();
+});
 
 contact.render = function () {
 
@@ -108,9 +92,7 @@ contact.render = function () {
         return;
     }
 
-    __.http.post(contact.fetchURL, {
-        'contact-type': contact.filter || null
-    }).then(function (response) {
+    __.http.post(contact.fetchURL, payload).then(function (response) {
 
         if (!response.data || response.data.length === 0) {
 
@@ -139,40 +121,39 @@ contact.render = function () {
         __.toast(error.message || "Something went wrong", 5, 'text-danger');
     });
 
-    function createComponent(item) {
-        return $(`<li class="list-group-item position-relative">`)
-            .append(
-                $(`<div class="d-flex justify-content-start align-items-center">`)
-                    .append(
-                        icons[item.type],
-                        $(`<div class="ms-3">`)
-                            .append(
-                                $(`<h5 class="mb-1" title="${item.is_default ? 'Default contact' : ''}">`).append(item.name)
-                                    .append(
-                                        item.is_default
-                                            ? $(`<i class="fa-solid fa-star ms-1 text-warning"></i>`)
-                                            : ''
-                                    ),
-                                $(`<p class="mb-0 text-muted">`).append(item.address).css({ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: "0.8rem" })
-                            )
-                    )
-            )
-            .append(
+}
+
+function createComponent(item) {
+    return $(`<li class="list-group-item position-relative">`)
+        .append(
+            $(`<div class="d-flex justify-content-start align-items-center">`)
+                .append(
+                    icons[item.type],
+                    $(`<div class="ms-3">`)
+                        .append(
+                            $(`<h5 class="mb-1" title="${item.is_default ? 'Default contact' : ''}">`).append(item.name)
+                                .append(
+                                    item.is_default
+                                        ? $(`<i class="fa-solid fa-star ms-1 text-warning"></i>`)
+                                        : ''
+                                ),
+                            $(`<p class="mb-0 text-muted">`).append(item.address).css({ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontSize: "0.8rem" })
+                        )
+                )
+        )
+        .append(
+            (roles.update || roles.delete) ?
                 $(`<div class="dropdown position-absolute top-0 end-0">`)
                     .append(
                         $(`<button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">`),
                         $(`<ul class="dropdown-menu dropdown-menu-end">`)
                             .append(
-                                $(`<li class="dropdown-item" type="button">`).append("Edit")
-                                    .on('click', () => contact.edit(item)),
-                                $(`<li class="dropdown-item text-danger" type="button">`).append("Delete")
-                                    .on('click', () => contact.delete(item)),
-                                $(`<li class="dropdown-item" type="button">`).append("Set as default")
-                                    .on('click', () => contact.default(item))
+                                roles.update ? $(`<li class="dropdown-item" type="button">`).append("Edit").on('click', () => contact.edit(item)) : "",
+                                roles.delete ? $(`<li class="dropdown-item text-danger" type="button">`).append("Delete").on('click', () => contact.delete(item)) : "",
+                                roles.update ? $(`<li class="dropdown-item" type="button">`).append("Set as default").on('click', () => contact.default(item)) : ""
                             )
-                    )
-            )
-    }
+                    ) : ""
+        )
 }
 
 

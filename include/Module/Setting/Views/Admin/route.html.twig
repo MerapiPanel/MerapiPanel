@@ -1,13 +1,14 @@
 {% extends "@panel/base.html.twig" %}
-
+{% block subheader_outer %}{% endblock %}
 {% block header_title %}<i class="fa-solid fa-route"></i> Route{% endblock %}
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item">Settings</li>
+<li class="breadcrumb-item active" aria-current="page">Route</li>
+{% endblock %}
 
 {% block content %}
 <section class="p-3">
-    <header class="mb-3">
-        <h1 class="mb-0">Route Stack</h1>
-        <p>Rekapan router dari sistem <i class="text-muted">Mungkin tidak lengkap</i></p>
-    </header>
     <article>
 
         {% for stack in route_stack %}

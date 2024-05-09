@@ -26,11 +26,18 @@ namespace MerapiPanel\Module\Contact {
 
 
 
-        function fetchAll()
+        function fetchAll($type = null)
         {
-            $SQL = "SELECT * FROM contacts_template ORDER BY post_date DESC";
-            $stmt = DB::instance()->prepare($SQL);
-            $stmt->execute();
+            if (in_array($type, ["email", "phone", "whatsapp"])) {
+                $SQL = "SELECT A.* FROM contacts_template A LEFT JOIN contacts B ON B.id = A.contact_id WHERE B.type = :type ORDER BY A.post_date DESC";
+                $stmt = DB::instance()->prepare($SQL);
+                $stmt->execute([':type' => $type]);
+            } else {
+                $SQL = "SELECT * FROM contacts_template ORDER BY post_date DESC";
+                $stmt = DB::instance()->prepare($SQL);
+                $stmt->execute();
+            }
+
             $templates = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             if ($templates) {
                 foreach ($templates as &$template) {
@@ -130,7 +137,7 @@ namespace MerapiPanel\Module\Contact {
             if (!$this->module->getRoles()->isAllowed(4)) {
                 throw new \Exception("Permission denied");
             }
-            
+
             $contact = $this->module->fetch($contact);
             if (!$contact) {
                 throw new \Exception("Invalid contact");

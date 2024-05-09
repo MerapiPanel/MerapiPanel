@@ -12,15 +12,99 @@ type MProductType = {
         delete: string
         edit: string
     }
+    config: {
+        payload: {
+            page: number
+            limit: number
+            search: string
+        }
+        [key: string]: any
+    }
     render: Function
     el: HTMLElement
     [key: string]: any
 }
-
 const MProduct: MProductType = __.MProduct;
 
-console.log(MProduct)
+if (!MProduct.config) {
+    MProduct.config = {
+        payload: {
+            page: 1,
+            limit: 10,
+            search: ""
+        },
+        roles: {
+            modify: true
+        }
+    }
+}
+if (!MProduct.config.roles) {
+    MProduct.config.roles = {}
+}
+if (!MProduct.config.payload) {
+    MProduct.config.payload = {
+        page: 1,
+        limit: 10,
+        search: ""
+    }
+}
+const roles = {
+    ...{
+        modify: true
+    },
+    ...MProduct.config.roles
+}
+const payload = MProduct.config.payload;
 
+$("#panel-subheader-search").on("submit", function (e) {
+    e.preventDefault();
+    payload.page = 1;
+    payload.search = $(this).find("input").val() as string;
+    MProduct.render();
+});
+
+function createPagination(container: HTMLElement | JQuery, page: number, totalPages: number) {
+    $(container).html("");
+
+    // Define the number of pages to show before and after the current page
+    const range = 3;
+
+    // Determine start and end points for the pagination range
+    let start = Math.max(1, page - range);
+    let end = Math.min(totalPages, page + range);
+
+    // Adjust start and end points if necessary to ensure that range remains constant
+    if (end - start < 2 * range) {
+        if (start === 1) {
+            end = Math.min(totalPages, start + 2 * range);
+        } else if (end === totalPages) {
+            start = Math.max(1, end - 2 * range);
+        }
+    }
+
+    // Add left offset if not on the first page
+    if (page > 1) {
+        $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="1">&laquo;</a></li>');
+    }
+
+    // Add page links
+    for (let i = start; i <= end; i++) {
+        const liClass = i === page ? "page-item active" : "page-item";
+        $(container).append($('<li class="' + liClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>'));
+    }
+
+    // Add right offset if not on the last page
+    if (page < totalPages) {
+        $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="' + totalPages + '">&raquo;</a></li>');
+    }
+
+    // Add event listeners for page links
+    $(container).find("a.page-link").on("click", function (e) {
+        e.preventDefault();
+        payload.page = parseInt($(this).data("page"));
+        MProduct.render();
+    });
+}
 
 MProduct.render = function () {
 
@@ -28,11 +112,20 @@ MProduct.render = function () {
         MProduct.el = this;
     }
 
-    __.http.get(MProduct.endpoints.fetchAll, {})
+    __.http.get(MProduct.endpoints.fetchAll, payload)
         .then(function (response) {
+            const { products, totalResults, totalPages } = response.data as any;
+            if (payload.page > totalPages) {
+                payload.page = totalPages;
+                return MProduct.render();
+            }
+            $("#total-records").text(`Total Records: ${totalResults}`);
+            createPagination($("#pagination"), payload.page, totalPages);
+
             setTimeout(() => {
-                $(MProduct.el).html("").append((response.data as any[]).map(createCard));
-                if (!response.data || !(response.data as any[]).length) {
+
+                $(MProduct.el).html("").append((products || []).map(createCard));
+                if ((products || []).length === 0) {
                     $(MProduct.el)
                         .html("")
                         .css({
@@ -82,7 +175,8 @@ type Product = {
 function createCard(product: Product): JQuery<HTMLElement> {
 
     const config = { currency: "USD", currency_symbol: "$", ...(MProduct.config || {}) };
-    const content = $("<div class='card position-relative w-100' style='max-width: 18rem;'>")
+    const content = $("<div class='card position-relative w-100' style='max-width: 12rem;'>")
+        .css("min-width", window.innerWidth < 576 ? "12rem" : "18rem")
         .append(
             product.images
                 ? $(`<div id='carousel-${product.id}' class="carousel slide carousel-fade" data-bs-ride="carousel" onload="this.init()">`)
@@ -102,23 +196,28 @@ function createCard(product: Product): JQuery<HTMLElement> {
                 .append($(`<div><span class='fw-semibold'>${config.currency_symbol} ${product.price}</span> | <i class='fw-light'>${product.category}</i></div>`))
         )
         .append(
-            $(`<div class='dropdown position-absolute end-0 top-0' style='z-index: 1;' role='dropdown'>`)
-                .append("<button class='btn dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Action</button>")
-                .append(
-                    $(`<div class='dropdown-menu dropdown-menu-end' aria-labelledby='dropdownMenuButton'>`)
-                        .append($(`<a class='dropdown-item' href='#'>View</a>`).on('click', () => actionView(product)))
-                        .append($(`<a class='dropdown-item' href='#'>Quick Edit</a>`).on('click', () => actionQuickEdit(product)))
-                        .append($(`<a class='dropdown-item' href='#'>Edit</a>`).on('click', () => actionEdit(product)))
-                        .append($(`<a class='dropdown-item' href='#'>Delete</a>`).on('click', () => actionDelete(product)))
-                )
+            (roles.modify == true) ?
+                $(`<div class='dropdown position-absolute end-0 top-0' style='z-index: 1;' role='dropdown'>`)
+                    .append("<button class='btn dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Action</button>")
+                    .append(
+                        $(`<div class='dropdown-menu dropdown-menu-end' aria-labelledby='dropdownMenuButton'>`)
+                            .append($(`<a class='dropdown-item' href='#'>View</a>`).on('click', () => actionView(product)))
+                            .append($(`<a class='dropdown-item' href='#'>Quick Edit</a>`).on('click', () => actionQuickEdit(product)))
+                            .append($(`<a class='dropdown-item' href='#'>Edit</a>`).on('click', () => actionEdit(product)))
+                            .append($(`<a class='dropdown-item' href='#'>Delete</a>`).on('click', () => actionDelete(product)))
+                    ) : ""
         );
 
 
-    (content.find('.carousel')[0] as any).init = function () {
-        if ((window as any).bootstrap) {
-            const carousel = new (window as any).bootstrap.Carousel(this);
-            $(this).on('destroyed', () => carousel.dispose())
+    try {
+        (content.find('.carousel')[0] as any).init = function () {
+            if ((window as any).bootstrap) {
+                const carousel = new (window as any).bootstrap.Carousel(this);
+                $(this).on('destroyed', () => carousel.dispose())
+            }
         }
+    } catch (error) {
+        console.log(error)
     }
 
     return content;

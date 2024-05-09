@@ -21,6 +21,11 @@
 
 
 
+{% block subheader_outer %}
+{% if api.Dashboard.isAllowed(0) %}
+{{ parent() }}
+{% endif %}
+{% endblock %}
 
 {% block subheader_search_outer %}{% endblock %}
 
@@ -40,5 +45,5 @@
 
 
 {% block content %}
-<div id="root"></div>
+<div class="pb-5" id="root"></div>
 {% endblock %}

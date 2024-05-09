@@ -23,44 +23,62 @@ class Service extends __Fragment
     }
 
 
+    function fetchAll(
+		$columns = ["id", "title", "slug", "data", "post_date", "update_date", "users.id as author_id", "users.name as author_name"],
+		$page = null,
+		$limit = null,
+		$search = null,
+	) {
+		// Validate $limit to prevent division by zero
+		if ($limit <= 0) {
+			// Fetch all results if $limit is zero or negative
+			$limit = null;
+		}
 
-    function fetchAll($columns = ["id", "title", "slug", "data", "post_date", "update_date"], $opts = [])
-    {
+		// Construct the main SQL query
+		$mainSQL = "SELECT " . implode(",", array_map(function ($item) {
+			if (strpos($item, "users.") === 0) {
+				return str_replace("users.", "B.", $item);
+			}
+			return "A.{$item}";
+		}, $columns)) . " FROM articles A LEFT JOIN users B ON A.author = B.id"
+			. ($search ? " WHERE A.title LIKE '%{$search}%' OR A.description LIKE '%{$search}%' OR B.name LIKE '%{$search}%' " : "")
+			. " ORDER BY A.id DESC";
 
-        $opts = array_merge([
-            "limit" => 10,
-            "offset" => 0,
-            "order" => "post_date DESC",
-            "status" => 1
-        ], $opts ?? []);
+		// Construct the count SQL query
+		$countSQL = "SELECT COUNT(*) AS total FROM articles A LEFT JOIN users B ON A.author = B.id"
+			. ($search ? " WHERE A.title LIKE '%{$search}%' OR A.description LIKE '%{$search}%' OR B.name LIKE '%{$search}%' " : "");
 
+		// Execute the count query to get total results
+		$totalCount = DB::instance()->query($countSQL)->fetchColumn();
 
-        $SQL = "SELECT " . implode(",", array_map(function ($item) {
-            if (strpos($item, "users.") === 0) {
-                return str_replace("users.", "B.", $item);
-            }
-            return "A.{$item}";
-        }, $columns))
-            . " FROM articles A LEFT JOIN users B ON A.author = B.id "
-            . ($opts['status'] != null && in_array($opts['status'], [0, 1]) ? "WHERE A.status = {$opts['status']}" : "")
-            . " ORDER BY "
-            . $opts['order']
-            . " LIMIT "
-            . $opts['limit']
-            . " OFFSET "
-            . $opts['offset'] . " ";
-
-        $articles = DB::instance()->query($SQL)->fetchAll(PDO::FETCH_ASSOC);
-        if (!empty($articles)) {
-            foreach ($articles as $key => $value) {
-                if (isset($value['data'])) {
-                    $articles[$key]['data'] = json_decode($value['data'], true);
-                }
-            }
+        if(!$totalCount) {
+            return [
+                'articles' => [],
+                'totalPages' => 0,
+                'totalResults' => 0
+            ];
         }
-        return $articles;
-    }
 
+		// Calculate total pages based on total results and limit per page
+		$totalPages = ($limit > 0) ? ceil($totalCount / $limit) : 0;
+
+		// Construct the main SQL query with pagination
+		$offset = ($page - 1) * $limit;
+		$SQL = $mainSQL . ($limit ? " LIMIT $offset, $limit" : "");
+
+		// Execute the main query to fetch articles
+		$articles = DB::instance()->query($SQL)->fetchAll(PDO::FETCH_ASSOC);
+
+		// Return the articles, total pages, and total results
+		return [
+			'articles' => $articles,
+			'totalPages' => $totalPages,
+			'totalResults' => $totalCount
+		];
+	}
+
+    
     function fetchOne($columns = ["id", "title", "data", "slug", "post_date", "update_date"], $id = null)
     {
 

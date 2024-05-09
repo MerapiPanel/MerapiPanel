@@ -7,7 +7,7 @@ class Api extends __Fragment {
         $this->module = $module;
     }
 
-    function getLogedinUser() {
-        return $this->module->getLogedinUser();
+    function isAllowed($id) {
+        return $this->module->getRoles()->isAllowed($id);
     }
 }

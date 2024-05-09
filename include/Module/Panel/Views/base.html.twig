@@ -66,10 +66,7 @@
             {% block subheader_outer %}
             <div class="panel-subheader" id="panel-subheader">
                 {% block subheader %}
-
-
                 {% block subheader_search_outer %}
-
                 <form class="panel-search" id="panel-subheader-search">
                     {% block subheader_search %}
 
@@ -147,6 +144,10 @@
                     $("#subheader-actions").removeClass("open");
                 }
             })
+        }
+
+        if($("#subheader-menu").children().length == 0) {
+            $("#subheader-actions").hide();
         }
     </script>
 

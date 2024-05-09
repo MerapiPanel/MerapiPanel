@@ -1,6 +1,10 @@
 {% extends "@panel/base.html.twig" %}
-
 {% block header_title %}Role Manager{% endblock %}
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item">Settings</li>
+<li class="breadcrumb-item active" aria-current="page">Role</li>
+{% endblock %}
 
 {% block stylesheet %}
 {{ parent() }}

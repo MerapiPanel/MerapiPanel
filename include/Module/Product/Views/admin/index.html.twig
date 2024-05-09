@@ -9,16 +9,18 @@
 
 
 {% block subheader_menu %}
-
+{% if api.Product.isAllowed(1) %}
 <a href="{{ '/product/new' | access_path }}" class="menu-item">
     <i class="fa fa-plus"></i> new product
 </a>
-
+{% endif %}
 {% endblock %}
 
 
-{% set productLen = api.product.fetchAll|length %}
+{% set productLen = (api.product.fetchAll|length)-1 %}
 {% block content %}
+
+<h2 class="ms-3 mt-3" id="total-records">Total Records: {{ productLen }}</h2>
 
 <div class="d-flex flex-wrap gap-3 p-3" id="product-wrapper" onload="__.MProduct.render.call(this)">
     {% for x in 1..productLen %}
@@ -39,6 +41,8 @@
     </div>
     {% endfor %}
 </div>
+
+<div id="pagination" class="pagination justify-content-center mb-5"></div>
 
 {% endblock %}
 

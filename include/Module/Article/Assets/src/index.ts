@@ -2,40 +2,134 @@ import { ModalTypeInterface } from "@il4mb/merapipanel/modal";
 import { __MP } from "../../../../Buildin/src/main";
 
 const __: __MP = (window as any).__;
-const Article = __.Article;
-
+const MArticle = __.Article;
 type EndpointsType = {
-    createURL: string
-    editURL: string
+    create: string
+    edit: string
+    fetchAll: string
     view: string
     save: string
     update: string
     delete: string
 }
 
-Article.endpoints = {} as EndpointsType;
-const endpoints = Article.endpoints;
-const articles: any[] = ((window as any).articles || []);
-const updateEndpoint = endpoints.update;
-const deleteEndpoint = endpoints.delete;
-const viewEndpoint = endpoints.view;
-const editURL = endpoints.editURL;
-
-(window as any).render = (container) => {
-    setTimeout(() => {
-        if (articles.length > 0) {
-            $(container).html("").append(articles.map((article) => createCard(article, container)) as JQuery<HTMLElement>[]);
-        } else {
-            $(container).html("").append($(`<div class='text-muted text-center w-100 py-5 my-5 fs-2'>No articles found</div>`));
+if (!MArticle.config) {
+    MArticle.config = {
+        payload: {
+            page: 1,
+            limit: 10,
+            search: ""
+        },
+        roles: {
+            modify: true
         }
-    }, 600);
+    }
+}
+if (!MArticle.config.roles) {
+    MArticle.config.roles = {}
+}
+if (!MArticle.config.payload) {
+    MArticle.config.payload = {
+        page: 1,
+        limit: 10,
+        search: ""
+    }
 }
 
-function render(container: any) {
-    (window as any).render(container);
+
+const roles = {
+    ...{
+        modify: true
+    },
+    ...MArticle.config.roles
+}
+const endpoints: EndpointsType = MArticle.endpoints;
+const payload = MArticle.config.payload;
+
+$("#panel-subheader-search").on("submit", function (e) {
+    e.preventDefault();
+    payload.page = 1;
+    payload.search = $(this).find("input").val() as string;
+    MArticle.render();
+});
+
+
+function createPagination(container: HTMLElement | JQuery, page: number, totalPages: number) {
+
+    $(container).html("");
+    // Define the number of pages to show before and after the current page
+    const range = 3;
+
+    // Determine start and end points for the pagination range
+    let start = Math.max(1, page - range);
+    let end = Math.min(totalPages, page + range);
+
+    // Adjust start and end points if necessary to ensure that range remains constant
+    if (end - start < 2 * range) {
+        if (start === 1) {
+            end = Math.min(totalPages, start + 2 * range);
+        } else if (end === totalPages) {
+            start = Math.max(1, end - 2 * range);
+        }
+    }
+
+    // Add left offset if not on the first page
+    if (page > 1) {
+        $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="1">&laquo;</a></li>');
+    }
+
+    // Add page links
+    for (let i = start; i <= end; i++) {
+        const liClass = i === page ? "page-item active" : "page-item";
+        $(container).append($('<li class="' + liClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>'));
+    }
+
+    // Add right offset if not on the last page
+    if (page < totalPages) {
+        $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="' + totalPages + '">&raquo;</a></li>');
+    }
+
+    // Add event listeners for page links
+    $(container).find("a.page-link").on("click", function (e) {
+        e.preventDefault();
+        payload.page = parseInt($(this).data("page"));
+        MArticle.render();
+    });
 }
 
-function createCard(article: any, container: any): JQuery<HTMLElement> {
+MArticle.render = function () {
+
+    if (this instanceof HTMLElement) {
+        MArticle.el = this;
+    }
+
+    if (!endpoints.fetchAll) {
+        throw new Error('Please provide an endpoint to fetch all articles');
+    }
+
+    __.http.get(endpoints.fetchAll, payload)
+        .then((res) => {
+            const { articles, totalPages, totalResults } = res.data as any;
+            if (payload.page > totalPages) {
+                payload.page = totalPages;
+                return MArticle.render();
+            }
+            $("#total-records").text(`Total Records: ${totalResults}`);
+            createPagination($("#pagination"), payload.page, totalPages);
+            setTimeout(() => {
+                if ((articles || []).length > 0) {
+                    $(MArticle.el).html("").append((articles || []).map((article: any) => createCard(article)) as JQuery<HTMLElement>[]);
+                } else {
+                    $(MArticle.el).html("").append($(`<div class='text-muted text-center w-100 py-5 my-5 fs-2'>No articles found</div>`));
+                }
+            }, 600);
+        })
+        .catch(err => {
+            __.toast(err.message || "Something went wrong", 5, 'text-danger');
+        })
+}
+
+function createCard(article: any): JQuery<HTMLElement> {
 
     const card = $("<div class='card card-body border-0 shadow-sm d-flex flex-column position-relative' style='width: 100%; max-width: 30rem;'>")
         .append(
@@ -52,8 +146,8 @@ function createCard(article: any, container: any): JQuery<HTMLElement> {
                 .append(
                     $(`<button class='btn btn-sm btn-primary px-5 mb-2'>View</button>`)
                         .on('click', () => {
-                            if (viewEndpoint) {
-                                window.open(viewEndpoint.replace('{id}', article.id), '_blank');
+                            if (endpoints.view) {
+                                window.open(endpoints.view.replace('{id}', article.id), '_blank');
                             } else {
                                 __.toast("No view endpoint found", 5, 'text-danger');
                             }
@@ -66,32 +160,33 @@ function createCard(article: any, container: any): JQuery<HTMLElement> {
                 )
         )
         .append(
-            $(`<div class='dropdown position-absolute top-0 end-0'>`)
-                .append(
-                    $(`<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">`)
-                        .append(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">`)
-                )
-                .append(
-                    $(`<div class="dropdown-menu dropdown-menu-end">`)
-                        .append(
-                            $(`<a class="dropdown-item" href="#">Edit</a>`)
-                                .on('click', () => {
-                                    if (editURL) {
-                                        window.location.href = editURL.replace('{id}', article.id);
-                                    } else {
-                                        __.toast("No edit URL found", 5, 'text-danger');
-                                    }
-                                })
-                        )
-                        .append(
-                            $(`<a class="dropdown-item" href="#">Quick Edit</a>`)
-                                .on('click', () => QuickEdit(article, container))
-                        )
-                        .append(
-                            $(`<a class="dropdown-item text-danger" href="#">Delete</a>`)
-                                .on('click', () => ConfirmDelete(article, container))
-                        )
-                )
+            (roles.modify == true) ?
+                $(`<div class='dropdown position-absolute top-0 end-0'>`)
+                    .append(
+                        $(`<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">`)
+                            .append(`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">`)
+                    )
+                    .append(
+                        $(`<div class="dropdown-menu dropdown-menu-end">`)
+                            .append(
+                                $(`<a class="dropdown-item" href="#">Edit</a>`)
+                                    .on('click', () => {
+                                        if (endpoints.edit) {
+                                            window.location.href = endpoints.edit.replace('{id}', article.id);
+                                        } else {
+                                            __.toast("No edit URL found", 5, 'text-danger');
+                                        }
+                                    })
+                            )
+                            .append(
+                                $(`<a class="dropdown-item" href="#">Quick Edit</a>`)
+                                    .on('click', () => QuickEdit(article))
+                            )
+                            .append(
+                                $(`<a class="dropdown-item text-danger" href="#">Delete</a>`)
+                                    .on('click', () => ConfirmDelete(article))
+                            )
+                    ) : ''
         )
 
 
@@ -99,7 +194,7 @@ function createCard(article: any, container: any): JQuery<HTMLElement> {
 }
 
 
-function QuickEdit(article: any, container: any) {
+function QuickEdit(article: any) {
 
     let modal: ModalTypeInterface | null = null;
 
@@ -163,8 +258,8 @@ function QuickEdit(article: any, container: any) {
             form[0].reportValidity();
             return;
         }
-        let found_article = articles.find((a: any) => a.id === article.id);
-        found_article = {
+        // let found_article = articles.find((a: any) => a.id === article.id);
+        let update_article = {
             ...article,
             ...form.serializeArray().reduce((obj, item) => {
                 obj[item.name] = item.value;
@@ -173,19 +268,19 @@ function QuickEdit(article: any, container: any) {
             }, { status: 0 })
         }
 
-        Object.keys(articles[articles.indexOf(article)]).forEach((key) => {
-            articles[articles.indexOf(article)][key] = found_article[key];
-        })
-        render(container);
+        // Object.keys(articles[articles.indexOf(article)]).forEach((key) => {
+        //     articles[articles.indexOf(article)][key] = found_article[key];
+        // })
+        // render(container);
 
-        if (!updateEndpoint) {
+        if (!endpoints.update) {
             __.toast("No update endpoint found", 5, 'text-danger');
         }
 
-        __.http.post(updateEndpoint, found_article).then((res) => {
+        __.http.post(endpoints.update, update_article).then((res) => {
             if (res.code === 200) {
                 __.toast("Article updated", 5, 'text-success');
-                // modal.hide();
+                MArticle.render();
             } else {
                 __.toast(res.message || "Failed to update article", 5, 'text-danger');
             }
@@ -196,7 +291,7 @@ function QuickEdit(article: any, container: any) {
 
 }
 
-function ConfirmDelete(article: any, container: any) {
+function ConfirmDelete(article: any) {
     __.dialog.danger("Are you sure?",
         $(`<div>`)
             .append(
@@ -210,23 +305,16 @@ function ConfirmDelete(article: any, container: any) {
             .append(`<p class='text-danger'>This action cannot be undone.</p>`)
     )
         .then(() => {
-            if (!deleteEndpoint) {
+            if (!endpoints.delete) {
                 __.toast("No delete endpoint found", 5, 'text-danger');
                 return;
             }
 
-            __.http.post(deleteEndpoint, { id: article.id }).then((res) => {
+            __.http.post(endpoints.delete, { id: article.id }).then((res) => {
 
                 if (res.code == 200) {
                     __.toast("Article deleted", 5, 'text-success');
-                    let key = articles.indexOf(article);
-                    const l = articles.length;
-                    articles.splice(key, 1);
-                    if (articles.length < l) {
-                        render(container);
-                    } else {
-                        window.location.reload();
-                    }
+                    MArticle.render();
                 } else {
                     __.toast(res.message || "Failed to delete article", 5, 'text-danger');
                 }

@@ -39,7 +39,8 @@ class Admin extends __Fragment
         <script>
         __.MUser.opts = {
             endpoints: {
-                fetch: "{{ '/api/User/fetchAll' | access_path }}",
+                fetch: "{{ '/api/User/fetch' | access_path }}",
+                fetchAll: "{{ '/api/User/fetchAll' | access_path }}",
                 update: "{{ '/api/User/update' | access_path }}",
                 delete: "{{ '/api/User/delete' | access_path }}"
             },

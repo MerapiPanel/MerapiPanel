@@ -1,5 +1,5 @@
 const __ = window.__;
-const template = __.template || {};
+const template = __.Contact.Template;
 
 const icons = {
     default: `<i class="fa-solid fa-user me-2"></i>`,
@@ -7,63 +7,31 @@ const icons = {
     email: `<i class="fa-solid fa-envelope me-2"></i>`,
     whatsapp: `<i class="fa-brands fa-whatsapp me-2"></i>`
 }
-
-
-
-
-
-template.events = [];
-
-
-template.on = function (key, callback) {
-    if (!template.events[key]) template.events[key] = [];
-    template.events[key].push(callback);
+const payload = {
+    type: $("#filter-contact").val() || null
 }
 
-
-template.off = function (key, callback) {
-    if (!template.events[key]) return;
-    template.events[key].splice(template.events[key].indexOf(callback), 1);
+const roles = {
+    modifyTemplate: false,
+    ...__.Contact.config.roles
 }
 
-
-template.fire = function (key, data) {
-    if (!template.events[key]) return;
-
-    return new Promise((res, rej) => {
-        const event = new Event(key);
-        const promises = template.events[key].map(async callback => {
-            try {
-                if (typeof callback === 'function' && event.cancelBubble) return;
-                return callback(event, data); // Return the promise
-            } catch (error) {
-                rej(error);
-            }
-        });
-
-        // Await all promises
-        Promise.all(promises).then(() => res(event)).catch(rej);
-    });
-}
-
-
+$('#filter-contact').on('change', function () {
+    payload.type = $(this).val();
+    template.render();
+})
 
 template.render = () => {
 
     if (this instanceof HTMLElement) {
         template.el = this;
     }
-    if (!template.el) {
-        __.toast("No element found", 5, 'text-danger');
-        return;
-    }
+
     if (!template.fetchURL) {
         __.toast("No fetch URL found", 5, 'text-danger');
         return;
     }
-
-
-    __.http.post(template.fetchURL, { type: template.filter || null })
+    __.http.post(template.fetchURL, payload)
         .then(function (response) {
             if (!response.data || response.data.length === 0) {
                 $(template.el).html("").append($("<div class=\"d-flex justify-content-center align-items-center\">").css({
@@ -76,23 +44,25 @@ template.render = () => {
         }).catch(function (error) {
             __.toast(error.message || "Something went wrong", 5, 'text-danger');
         });
+}
 
 
-    function createComponent(item) {
+function createComponent(item) {
 
-        return $("<li class=\"list-group-item position-relative d-flex justify-content-start align-items-center \">")
-            .append(
-                $(`<div>`)
-                    .append('<i class="fa-regular fa-file-lines fa-2x text-muted me-2"></i>'),
-                $(`<div class="ms-1">`)
-                    .append(`<h4 class="mb-1">${item.name}</h4>`)
-                    .append($("<div class=\"d-flex justify-content-start align-items-center\">")
-                        .append(icons[item.contact.type || 'default'],)
-                        .append(`<small>${item.contact.name || '<i>No name</i>'}</small>`)
-                    )
-            )
+    return $("<li class=\"list-group-item position-relative d-flex justify-content-start align-items-center \">")
+        .append(
+            $(`<div>`)
+                .append('<i class="fa-regular fa-file-lines fa-2x text-muted me-2"></i>'),
+            $(`<div class="ms-1">`)
+                .append(`<h4 class="mb-1">${item.name}</h4>`)
+                .append($("<div class=\"d-flex justify-content-start align-items-center\">")
+                    .append(icons[item.contact.type || 'default'],)
+                    .append(`<small>${item.contact.name || '<i>No name</i>'}</small>`)
+                )
+        )
 
-            .append(
+        .append(
+            roles.modifyTemplate == true ?
                 $("<div class=\"dropdown position-absolute top-0 end-0\">")
                     .append($("<button class=\"btn btn-sm dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">"),
                         $("<ul class=\"dropdown-menu dropdown-menu-end\">")
@@ -105,10 +75,8 @@ template.render = () => {
                                 .append("Delete")
                                 .on('click', function () {
                                     return template.delete(item);
-                                })))
-            )
-    }
-
+                                }))) : ""
+        )
 }
 
 

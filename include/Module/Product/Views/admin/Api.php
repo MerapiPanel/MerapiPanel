@@ -1,5 +1,5 @@
 <?php
-namespace MerapiPanel\Module\Product\Views;
+namespace MerapiPanel\Module\Product\Views\Admin;
 
 use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Box\Module\Entity\Module;
@@ -12,8 +12,9 @@ class Api extends __Fragment
 		$this->module = $module;
 	}
 
-	function fetchAll() {
-		return $this->module->fetchAll();
+	function isAllowed($id)
+	{
+		return $this->module->getRoles()->isAllowed($id);
 	}
 
 }

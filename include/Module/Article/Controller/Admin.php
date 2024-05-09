@@ -22,23 +22,35 @@ class Admin extends __Controller
         Router::GET("/article/edit/{id}", "edit", self::class);
         Router::GET("/article/view/{id}", "view", self::class);
         $index = Router::GET("/article", "index", self::class);
-
-
         Box::module("Panel")->addMenu([
             "name" => "Article",
             "icon" => "fa-solid fa-newspaper",
             "link" => $index
         ]);
+
+        $roles = json_encode([
+            "modify" => $this->module->getRoles()->isAllowed(1) ? true : false,
+        ]);
+
         $scrips = <<<HTML
         <script>
             __.Article.endpoints = {
-                createURL: "{{ '/article/create/' | access_path }}",
-                editURL: "{{ '/article/edit/{id}' | access_path }}",
+                create: "{{ '/article/create/' | access_path }}",
+                edit: "{{ '/article/edit/{id}' | access_path }}",
                 fetchAll: "{{ '/api/Article/fetchAll' | access_path }}",
                 save: "{{ '/api/Article/save' | access_path }}",
                 delete: "{{ '/api/Article/delete' | access_path }}",
                 update: "{{ '/api/Article/update' | access_path }}",
                 view: "{{ '/article/view/{id}' | access_path }}"
+            }
+            __.Article.config = {
+                roles: $roles,
+                ...{
+                    payload: {
+                        page: 1,
+                        limit: 5
+                    }
+                }
             }
         </script>
         HTML;
@@ -72,9 +84,7 @@ class Admin extends __Controller
     {
 
         $collumns = ["id", "title", "slug", "status", "keywords", "category", "description", "post_date", "update_date", "users.id as author_id", "users.name as author_name"];
-        $opts = ['status' => null];
-
-        $articles = Box::module("Article")->fetchAll($collumns, $opts);
+        $articles = Box::module("Article")->fetchAll($collumns);
         return View::render("index.html.twig", [
             "articles" => $articles
         ]);

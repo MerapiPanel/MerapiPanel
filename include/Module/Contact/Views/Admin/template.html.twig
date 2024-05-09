@@ -12,11 +12,21 @@
 {% endblock %}
 
 
-{% block subheader_search %}{% endblock %}
+{% block subheader_search %}
+<select class="form-select border-0" name="filter" id="filter-contact" style="box-shadow: none;">
+	<option value="">-- Filter --</option>
+	<option value="phone">Phone</option>
+	<option value="email">Email</option>
+	<option value="whatsapp">Whatsapp</option>
+</select>
+{% endblock %}
+
 
 
 {% block subheader_menu %}
+{% if api.Contact.isAllowed(4) %}
 <a class="menu-item" href="{{ '/contact/template/add' | access_path }}">Add Template</a>
+{% endif %}
 {% endblock %}
 
 
@@ -42,22 +52,17 @@
 {% block javascript %}
 {{ parent() }}
 <script>
-	__.template = {
-		fetchURL: "{{ '/api/Contact/Template/fetchAll' | access_path }}",
-		render: function () {
-			console.log(this);
-		}
-	}
-
-
+	__.Contact.Template = "CreateProperty";
+	__.Contact.on("property:Template", function () {
+		__.Contact.Template.fetchURL = "{{ '/api/Contact/Template/fetchAll' | access_path }}";
+	})
+	
 </script>
 <script src="{{ '@contact/dist/template.js' | assets }}?v={{ time() }}"></script>
-
 <script>
-	__.template.el = $('#template-list');
-	__.template.render();
-
-	const template = __.template;
+	const template =__.Contact.Template;
+	template.el = $('#template-list');
+	template.render.call($('#template-list')[0]);
 	template.on('edit', function (e, item) {
 		if (!item.id) {
 			__.toast('Invalid template', 5, 'text-danger');
@@ -67,7 +72,6 @@
 		e.preventDefault();
 		e.stopImmediatePropagation();
 	});
-
 	template.on('delete', function (e, item) {
 		if (!item.id) {
 			__.toast('Invalid template', 5, 'text-danger');
@@ -89,11 +93,9 @@
 				});
 		});
 	});
-
-
 	$('#filter-contact').on('change', function () {
-		__.template.filter = $(this).val();
-		__.template.render();
+		template.filter = $(this).val();
+		template.render();
 	})
 </script>
 {% endblock %}

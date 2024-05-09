@@ -15,14 +15,74 @@ var MUser = __.MUser;
 var _MUser$opts = MUser.opts,
   endpoints = _MUser$opts.endpoints,
   session = _MUser$opts.session;
+var payload = {
+  page: 1,
+  limit: 10,
+  search: ''
+};
+$("#panel-subheader-search").on("submit", function (e) {
+  e.preventDefault();
+  payload.page = 1;
+  payload.search = $(this).find("input").val();
+  MUser.render();
+});
+function createPagination(container, page, totalPages) {
+  $(container).html("");
+  // Define the number of pages to show before and after the current page
+  var range = 3;
+
+  // Determine start and end points for the pagination range
+  var start = Math.max(1, page - range);
+  var end = Math.min(totalPages, page + range);
+
+  // Adjust start and end points if necessary to ensure that range remains constant
+  if (end - start < 2 * range) {
+    if (start === 1) {
+      end = Math.min(totalPages, start + 2 * range);
+    } else if (end === totalPages) {
+      start = Math.max(1, end - 2 * range);
+    }
+  }
+
+  // Add left offset if not on the first page
+  if (page > 1) {
+    $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="1">&laquo;</a></li>');
+  }
+
+  // Add page links
+  for (var i = start; i <= end; i++) {
+    var liClass = i === page ? "page-item active" : "page-item";
+    $(container).append($('<li class="' + liClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>'));
+  }
+
+  // Add right offset if not on the last page
+  if (page < totalPages) {
+    $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="' + totalPages + '">&raquo;</a></li>');
+  }
+
+  // Add event listeners for page links
+  $(container).find("a.page-link").on("click", function (e) {
+    e.preventDefault();
+    payload.page = parseInt($(this).data("page"));
+    MArticle.render();
+  });
+}
 MUser.render = function () {
   if (!MUser.container && this instanceof HTMLElement) {
     MUser.container = this;
   }
-  __.http.get(endpoints.fetch).then(function (result) {
-    $(MUser.container).html("").append(result.data.map(function (user) {
+  __.http.get(endpoints.fetchAll, payload).then(function (result) {
+    var _result$data = result.data,
+      users = _result$data.users,
+      totalPages = _result$data.totalPages,
+      totalResults = _result$data.totalResults;
+    $("#total-records").text("Total Records: ".concat(totalResults));
+    createPagination($("#pagination"), payload.page, totalPages);
+    $(MUser.container).html("").append((users || []).map(function (user) {
       return createComponent(user);
     }));
+  })["catch"](function (err) {
+    __.toast(err.message || "Something went wrong", 5, "text-danger");
   });
 };
 function createComponent(user) {

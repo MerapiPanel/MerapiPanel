@@ -1,4 +1,11 @@
 {% extends "@setting/base.html.twig" %}
+{% block header_title %}Configuration{% endblock %}
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item">Settings</li>
+<li class="breadcrumb-item">Configuration</li>
+<li class="breadcrumb-item active" aria-current="page">{{ module_name | ucfirst }}</li>
+{% endblock %}
 
 {% macro text_item(item) %}
 <div>

@@ -140,7 +140,7 @@ class Widget extends __Fragment
 
 
 
-    function widgetEdit()
+    function edit()
     {
 
         if (!$this->module->getRoles()->isAllowed(0)) {
@@ -168,7 +168,7 @@ class Widget extends __Fragment
             throw new \Exception('Permission denied');
         }
 
-        if (!$data || !is_array($data)) {
+        if (!$data) {
             throw new \Exception('Invalid data');
         }
 
