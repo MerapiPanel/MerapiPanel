@@ -121,12 +121,16 @@ namespace MerapiPanel\Box\Module\Entity {
     }
 
 
+    /**
+     * Class Config - config.json
+     */
     class Config implements \Countable
     {
 
         public array $stack = [];
         protected readonly Module $module;
         protected readonly string $moduleName;
+
 
         function __construct($module)
         {
@@ -138,29 +142,60 @@ namespace MerapiPanel\Box\Module\Entity {
 
                 try {
 
-                    $data = json_decode(file_get_contents($path), true);
-
-                    foreach ($data as $value) {
-                        if (!is_array($value) || !isset($value['name']) || !isset($value['default'])) {
-                            continue;
-                        }
-                        $name = preg_replace("/[^a-zA-Z]+/", "_", strtolower($value['name']));
-                        $default = $value['default'];
-                        $this->stack[$name] = [
-                            "type" => "text",
-                            "value" => null,
-                            "default" => $default,
-                            ...$value
-                        ];
-                    }
-
+                    $this->stack = $this->normalize(json_decode(file_get_contents($path), true));
                     $this->fetch();
+
                 } catch (\Exception $e) {
 
                     error_log($e->getMessage());
                 }
             }
         }
+
+
+        /**
+         * Normalize config array
+         */
+        private function normalize($items, $stack = [], $prefix = null)
+        {
+            if (!is_array($items) || empty($items)) {
+                return $stack;
+            }
+
+            foreach ($items as $value) {
+                if (!is_array($value) || !isset($value['name']) || !isset($value['default'])) {
+                    continue;
+                }
+
+                $name = ($prefix ? "{$prefix}." : "") . preg_replace("/[^a-zA-Z]+/", "_", strtolower($value['name']));
+                $default = $value['default'];
+
+                $data = [
+                    "type" => $value['type'] ?? "text",
+                    "value" => $default,
+                    "default" => $default,
+                    "name" => $name
+                ];
+
+                if (isset($value['label'])) {
+                    $data['label'] = $value['label'];
+                }
+                if (isset($value['description'])) {
+                    $data['description'] = $value['description'];
+                }
+
+                if (isset($value['children'])) {
+                    $childrenPrefix = $name;
+                    $children = $this->normalize($value['children'], [], $childrenPrefix);
+                    $data['children'] = $children;
+                }
+
+                $stack[$value['name']] = $data;
+            }
+
+            return $stack;
+        }
+
 
 
 
@@ -171,96 +206,169 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
+        /**
+         * Set config value
+         */
         public function set(string $name, $value)
         {
-
-            $key = strtolower($name);
-            if (!isset($this->stack[$key])) {
-                return;
-            }
-
-            $this->stack[$key] = [
-                "name" => $name,
-                "default" => $this->stack[$key]["default"],
-                "value" => $value
-            ];
-
-
-            if ($value == $this->stack[$key]["default"] || empty($value)) {
-                $SQL = "DELETE FROM configs WHERE name = :name";
-                DB::instance()->prepare($SQL)->execute(['name' => $this->moduleName . "." . $key]);
-            }
-
+            $this->___set($name, $value);
             $this->post();
         }
 
 
-        public function get(string $key)
+        
+        private function ___set(string $name, $value)
         {
-            if (!isset($this->stack[$key])) {
-                return null;
+            $keys = explode('.', $name);
+            $current = &$this->stack;
+            foreach ($keys as $i => $key) {
+                if (!isset($current[$key])) {
+                    $current[$key] = [];
+                }
+                if ($i === count($keys) - 1) {
+                    $current[$key]['value'] = $value;
+                } else {
+                    $current = &$current[$key]['children'];
+                }
             }
-            if (isset($this->stack[$key]["value"]) && $this->stack[$key]["value"]) {
-                return $this->stack[$key]["value"];
-            }
-            return $this->stack[$key]['default'];
-
         }
 
 
+
+        /**
+         * Get config value
+         */
+        public function get(string $key)
+        {
+            $keys = explode('.', $key);
+            $current = $this->stack;
+            foreach ($keys as $nestedKey) {
+                if (str_contains($nestedKey, '.')) {
+                    $nestedKeys = explode('.', $nestedKey);
+                    foreach ($nestedKeys as $keyPart) {
+                        if (!isset($current[$keyPart]['children'])) {
+                            return null;
+                        }
+                        $current = $current[$keyPart]['children'];
+                    }
+                } else {
+                    if (!isset($current[$nestedKey])) {
+                        return null;
+                    }
+                    $current = $current[$nestedKey];
+                }
+            }
+
+            if (isset($current['required']) && empty($current['value'])) {
+                return $current['default'];
+            }
+            if (isset($current["value"]) && $current["value"]) {
+                return $current["value"];
+            }
+            return $current['default'];
+        }
+
+
+
+        /**
+         * Fetch values from database
+         */
         private function fetch()
         {
 
             $result = DB::table("configs")->select(["name", "value"])->where("name")->like($this->moduleName . ".%")->execute()->fetchAll(PDO::FETCH_ASSOC);
-
             if (!$result) {
                 return;
             }
 
+            $flatten = $this->flatten($this->stack);
             foreach ($result as $row) {
 
                 $name = str_replace($this->moduleName . ".", "", $row['name']);
-
-                if (!isset($this->stack[$name])) {
+                if (!isset($flatten[$name]) || $flatten[$name]['default'] == $row['value']) {
                     $SQL = "DELETE FROM configs WHERE name = :name";
                     DB::instance()->prepare($SQL)->execute(['name' => $row['name']]);
-
                     continue;
                 }
-                $this->stack[$name] = [
-                    ...$this->stack[$name],
-                    "value" => $row['value']
-                ];
+
+                $item = $flatten[$name];
+                if($item["type"] === "checkbox" || $item["type"] === "radio") {
+                    $row['value'] = $row['value'] === "1" ? true : false;
+                }
+                if($flatten[$name]['default'] == $row['value']) {
+                    $SQL = "DELETE FROM configs WHERE name = :name";
+                    DB::instance()->prepare($SQL)->execute(['name' => $row['name']]);
+                    continue;
+                }
+
+                $this->___set($name, $row['value']);
             }
         }
 
 
+
+
+        /**
+         * Save values to database
+         */
         private function post()
         {
             $SQL = "REPLACE INTO configs (name, value) VALUES (:name, :value)";
             $stmt = DB::instance()->prepare($SQL);
-            foreach (array_keys($this->stack) as $key) {
-                if (!isset($this->stack[$key]["value"]) || !$this->stack[$key]["value"]) {
-                    continue;
-                }
+            // filter out items that have not changed
+            $flatten = array_filter($this->flatten($this->stack), function ($item) {
+                return trim($item['value']) !== trim($item['default']);
+            });
+            foreach ($flatten as $key => $item) {
                 $stmt->bindValue(":name", $this->moduleName . "." . $key, PDO::PARAM_STR);
-                $stmt->bindValue(":value", $this->stack[$key]["value"], PDO::PARAM_STR);
+                $stmt->bindValue(":value", $item["value"] ?? "", PDO::PARAM_STR);
                 $stmt->execute();
             }
         }
 
+
+
+        /**
+         * Flatten the stack
+         */
+        private function flatten($stack, $parentKey = '')
+        {
+            $result = [];
+
+            foreach ($stack as $key => $value) {
+                $newKey = $parentKey ? "$parentKey.$key" : $key;
+
+                if (isset($value['children'])) {
+                    $children = $value['children'];
+                    unset($value['children']);
+                    $result[$newKey] = $value;
+                    $result = array_merge($result, $this->flatten($children, $newKey));
+                } else {
+                    if ($parentKey === '') {
+                        $result[$key] = $value;
+                    } else {
+                        $result[$newKey] = $value;
+                    }
+                }
+            }
+
+            return $result;
+        }
+
+
+
+        /**
+         * Get the stack
+         */
         public function getStack()
         {
             return $this->stack;
         }
 
+    
         function __toArray()
         {
-            $data = [];
-            foreach ($this->stack as $key => $value) {
-                $data[$key] = $value["value"] ?: $value["default"];
-            }
-            return $data;
+            return $this->flatten($this->stack);
         }
 
         function __toString()
@@ -270,6 +378,9 @@ namespace MerapiPanel\Box\Module\Entity {
     }
 
 
+    /**
+     * Class Roles - roles.json
+     */
     class Roles
     {
 
@@ -298,6 +409,9 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
+        /**
+         * Get defaults
+         */
         function getDefaults()
         {
             return $this->defaults;
@@ -305,6 +419,9 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
+        /**
+         * Check if role is allowed base on id
+         */
         function isAllowed(mixed $id): bool
         {
 
@@ -327,6 +444,9 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
+        /**
+         * Check if role is allowed compared to user
+         */
         function isAllowedForUser($role, $user): bool
         {
 
@@ -371,6 +491,9 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
+        /**
+         * Get loged in user
+         */
         private function getLogedInUser()
         {
             $user = false;
@@ -388,7 +511,7 @@ namespace MerapiPanel\Box\Module\Entity {
         public function __toArray()
         {
             $data = [
-                "rules" => $this->rules,
+                "roles" => $this->roles,
                 "defaults" => $this->defaults
             ];
             return $data;
@@ -397,7 +520,7 @@ namespace MerapiPanel\Box\Module\Entity {
         public function __toString()
         {
             $data = [
-                "rules" => $this->rules,
+                "roles" => $this->roles,
                 "defaults" => $this->defaults
             ];
             return json_encode($data);

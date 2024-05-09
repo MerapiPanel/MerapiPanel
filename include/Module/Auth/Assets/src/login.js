@@ -7,6 +7,7 @@ navigator.geolocation.getCurrentPosition(function(location) {
 
 
 $("#login-form").on("submit", function (e) {
+    
     e.preventDefault();
 
     if (!this.checkValidity()) {

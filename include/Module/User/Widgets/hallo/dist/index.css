@@ -1,11 +1,1 @@
-body {
-    width: 100vw;
-    display: flex;
-    justify-content: start;
-}
-.widget-user-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 0.3rem;
-    object-fit: cover;
-}
+html,body{height:100vh;width:100vw;margin:0;padding:0;display:flex;justify-content:center;align-items:center}.widget-product-hallo{height:100vh;color:red;font-weight:700;font-size:25px;display:flex;justify-content:center;align-items:center}

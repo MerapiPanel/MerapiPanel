@@ -85,13 +85,13 @@ class Guest extends __Fragment
 
                         DB::table("session_token")->insert([
                             "token" => $token,
-                            "expires" => date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " seconds")),
+                            "expires" => date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " hours")),
                             "client_ip" => self::get_client_ip(),
                             "user_id" => $user["id"]
                         ])->execute();
                     }
 
-                    if (!setcookie($config->get("cookie_name"), AES::encrypt($token), time() + intval($config->get("session_time")), "/")) {
+                    if (!setcookie($config->get("cookie_name"), AES::encrypt($token), strtotime(date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " hours"))), "/")) {
 
                         return View::render("response.html.twig", [
                             "status" => "danger",
@@ -176,13 +176,13 @@ class Guest extends __Fragment
                 } else {
                     DB::table("session_token")->insert([
                         "token" => $token,
-                        "expires" => date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " seconds")),
+                        "expires" => date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " hours")),
                         "client_ip" => self::get_client_ip(),
                         "user_id" => $user["id"]
                     ])->execute();
                 }
 
-                if (!setcookie($config->get("cookie_name"), AES::encrypt($token), time() + intval($config->get("session_time")), "/")) {
+                if (!setcookie($config->get("cookie_name"), AES::encrypt($token), strtotime(date("Y-m-d H:i:s", strtotime(" + " . $config->get("session_time") . " hours"))), "/")) {
 
                     return [
                         "code" => 400,

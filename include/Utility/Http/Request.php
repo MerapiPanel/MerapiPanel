@@ -115,7 +115,7 @@ class Request
      */
     public function http($name = null): mixed
     {
-        if($name == null) {
+        if ($name == null) {
             return $this->header->__get(null);
         }
         $name = $this->camelCaseToKebabCase($name);
@@ -292,8 +292,9 @@ class RequestForm
 
         if (strtoupper($_SERVER['REQUEST_METHOD']) == "POST") {
             $this->dataFromPost();
-        } else
+        } else {
             $this->dataFromPut();
+        }
     }
 
 

@@ -1,11 +1,40 @@
 [
     {
-        "name": "cookie name",
-        "default": "auth"
+        "name": "cookie_name",
+        "label": "Cookie Name",
+        "description": "The name of the cookie to store the login session",
+        "default": "auth",
+        "required": true
     },
     {
-        "name": "session time",
-        "default": 3600
+        "name": "session_time",
+        "label": "Session Time",
+        "description": "Session time in hours",
+        "default": 24,
+        "required": true
+    },
+    {
+        "name": "geo",
+        "type": "checkbox",
+        "default": false,
+        "label": "Geo Location",
+        "description": "Enable Geo Location",
+        "children": [
+            {
+                "name": "distance",
+                "default": 300,
+                "label": "Max Distance",
+                "description": "Max distance in kilo meter to allow login from last location, default 300 km",
+                "type": "number"
+            },
+            {
+                "name": "limit",
+                "default": 10,
+                "label": "Limit",
+                "description": "Max number of login from last location, default 10",
+                "type": "number"
+            }
+        ]
     },
     {
         "name": "google_oauth_id",

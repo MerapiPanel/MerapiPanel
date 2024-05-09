@@ -19,6 +19,7 @@ class Middleware extends __Middleware
 
         $config = $this->module->getConfig();
         $cookieName = $config->get('cookie_name');
+
         $s_token = $_COOKIE[$cookieName] ?? null;
 
         if ($s_token && $token = AES::decrypt($s_token)) {

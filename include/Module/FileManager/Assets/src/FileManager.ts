@@ -25,13 +25,25 @@ type Asset = {
     [key: string]: any
 }
 FileManager.config = {
-    enable_select_folder: true,
+    ...{
+        enable_select_folder: true,
+        enable_upload: true,
+        enable_create_folder: true,
+        enable_delete: true,
+        enable_rename: true,
+        enable_download: true,
+        enable_view: true,
+        extensions: ["img", "jpeg", "jpg", "png", "gif", "svg", "webp"],
+    },
+    ...FileManager.config
 }
-
-FileManager.filter = {
-    extensions: null
+FileManager.roles = {
+    ...{
+        upload: false,
+        modify: false,
+    },
+    ...FileManager.roles
 }
-
 
 FileManager.uploadInfo = function (id: string) {
     return new Promise((resolve, reject) => {
@@ -44,6 +56,10 @@ FileManager.uploadInfo = function (id: string) {
 // upload handler
 FileManager.uploadHandler = function (files: File[], appendTo: JQuery<HTMLElement>) {
 
+    if (!FileManager.roles.upload) {
+        __.toast("You don't have permission to upload files", 5, 'text-danger');
+        return;
+    }
     FileManager.fire("upload", files);
     FileManager.upload_files.push(...files);
 
@@ -201,7 +217,10 @@ FileManager.upload_files = [];
 
 // show upload manager
 FileManager.upload = function (files: File[] = []) {
-
+    if (!FileManager.roles.upload) {
+        __.toast("You don't have permission to upload files", 5, 'text-danger');
+        return;
+    }
     let folder: any = null;
     if (FileManager.selectedFolder) {
         folder = FileManager.selectedFolder.path || null;
@@ -633,8 +652,16 @@ FileManager.on("property:Modal", (e, Modal: any) => {
         }
     }
 
+
     function showContextMenu(e: Event, asset: Asset) {
 
+        if (!FileManager.roles.modify) {
+            return;
+        }
+
+        const config = FileManager.config;
+        if (config.enable_context_menu == false) return false;
+        if (!config.enable_view && !config.enable_rename && !config.enable_new_folder && !config.enable_download && !config.enable_delete) return false;
 
         function adjustContentPosition(content: HTMLElement) {
             var rect = content.getBoundingClientRect();
@@ -653,32 +680,35 @@ FileManager.on("property:Modal", (e, Modal: any) => {
             }
         }
 
+        function hideContextMenu() {
+            $("#filemanager-context-menu").remove();
+            $(`#${assetId(asset)}`).removeClass("bg-primary bg-opacity-10");
+            $(document).off("click", clickOutsideHandler);
+        }
 
         function clickOutsideHandler(e) {
-            if (!$(e.target).closest('#context-menu').length) {
-                $("#context-menu").remove();
-                $(`#${assetId(asset)}`).removeClass("bg-primary bg-opacity-10");
-                $(document).off("click", clickOutsideHandler);
+            if (!$(e.target).closest('#filemanager-context-menu').length) {
+                hideContextMenu();
             }
         }
         $(".file-asset").removeClass("bg-primary bg-opacity-10");
         $(`#${assetId(asset)}`).addClass("bg-primary bg-opacity-10");
-        $("#context-menu").remove();
+        $("#filemanager-context-menu").remove();
 
-        const content = $(`<ul class="list-group list-group-flush" id="context-menu">`)
+        const content = $(`<ul class="list-group list-group-flush" id="filemanager-context-menu">`)
             .append(
                 $(`<li class="list-group-item fw-semibold px-3 py-2">${icons[asset.type]} /${truncateStringFromStart(asset.path.replace(/^[/]content\//, ""), 22).replace(/^\//, "")}</li>`),
-                asset.type !== "folder"
+                asset.type !== "folder" && config.enable_view
                     ? $(`<li class="list-group-item "><i class="fa-regular fa-folder-open"></i> Open</li>`)
                         .on("mouseenter", function () {
                             $(this).addClass("bg-primary text-white");
                         }).on("mouseleave", function () {
                             $(this).removeClass("bg-primary text-white");
                         }).on("click", function () {
-                            $("#context-menu").remove();
+                            hideContextMenu();
                             FileManager.AssetView.show(asset);
                         }) : "",
-                asset.path != "/" ? $(`<li class="list-group-item"><i class="fa-solid fa-pen-to-square"></i> Rename</li>`)
+                asset.path != "/" && config.enable_rename ? $(`<li class="list-group-item"><i class="fa-solid fa-pen-to-square"></i> Rename</li>`)
                     .on("mouseenter", function () {
                         $(this).addClass("bg-primary text-white");
                     })
@@ -686,10 +716,10 @@ FileManager.on("property:Modal", (e, Modal: any) => {
                         $(this).removeClass("bg-primary text-white");
                     })
                     .on("click", function () {
-                        $("#context-menu").remove();
+                        hideContextMenu();
                         FileManager.rename(asset);
                     }) : "",
-                asset.type == "folder" ? $(`<li class="list-group-item"><i class="fa-solid fa-folder-plus"></i> Folder</li>`)
+                asset.type == "folder" && config.enable_new_folder ? $(`<li class="list-group-item"><i class="fa-solid fa-folder-plus"></i> Folder</li>`)
                     .on("mouseenter", function () {
                         $(this).addClass("bg-primary text-white");
                     })
@@ -697,11 +727,11 @@ FileManager.on("property:Modal", (e, Modal: any) => {
                         $(this).removeClass("bg-primary text-white");
                     })
                     .on("click", function () {
-                        $("#context-menu").remove();
+                        hideContextMenu();
                         FileManager.newFolder(asset);
                     })
                     : "",
-                asset.type !== "folder" ? $(`<li class="list-group-item"><i class="fa-solid fa-download"></i> Download</li>`)
+                asset.type !== "folder" && config.enable_download ? $(`<li class="list-group-item"><i class="fa-solid fa-download"></i> Download</li>`)
                     .on("mouseenter", function () {
                         $(this).addClass("bg-primary text-white");
                     })
@@ -709,11 +739,11 @@ FileManager.on("property:Modal", (e, Modal: any) => {
                         $(this).removeClass("bg-primary text-white");
                     })
                     .on("click", () => {
-                        $("#context-menu").remove();
+                        hideContextMenu();
                         const a = $('<a>').prop('download', asset.name).prop('target', '_blank').attr('href', window.location.origin + asset.path);
                         a[0].click();
                     }) : "",
-                asset.path != "/" ? $(`<li class="list-group-item"><i class="fa-solid fa-trash"></i> Delete</li>`)
+                asset.path != "/" && config.enable_delete ? $(`<li class="list-group-item"><i class="fa-solid fa-trash"></i> Delete</li>`)
                     .on("mouseenter", function () {
                         $(this).addClass("bg-danger text-white");
                     })
@@ -721,7 +751,7 @@ FileManager.on("property:Modal", (e, Modal: any) => {
                         $(this).removeClass("bg-danger text-white");
                     })
                     .on("click", function () {
-                        $("#context-menu").remove();
+                        hideContextMenu();
                         FileManager.delete(asset);
                     }) : ""
             )
@@ -782,66 +812,68 @@ FileManager.on("property:Modal", (e, Modal: any) => {
                 minHeight: "400px",
             })
             .append(
-                $(`<div id="upload">`)
-                    .css({
-                        position: 'relative',
-                        flex: "1 1 300px",
-                        minHeight: "200px",
-                        width: "100%",
-                        border: "1px solid #eee",
-                        borderRadius: "5px",
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: "10px",
-                        cursor: "pointer"
-                    })
-                    .append(
-                        $(`<div class="w-100">`).append(
-                            FileManager.config.enable_select_folder
-                                ? $(`<h5 id="upload-path">upload to: /</h5>`)
-                                : $(`<h5 id="upload-path"></h5>`)
-                        ),
+                FileManager.roles.upload && FileManager.config.enable_upload ?
+                    $(`<div id="upload">`)
+                        .css({
+                            position: 'relative',
+                            flex: "1 1 300px",
+                            minHeight: "200px",
+                            width: "100%",
+                            border: "1px solid #eee",
+                            borderRadius: "5px",
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: "10px",
+                            cursor: "pointer"
+                        })
+                        .append(
+                            $(`<div class="w-100">`).append(
+                                FileManager.config.enable_select_folder
+                                    ? $(`<h5 id="upload-path">upload to: /</h5>`)
+                                    : $(`<h5 id="upload-path"></h5>`)
+                            ),
 
-                        $("<div class='text-center'>")
-                            .on("click", () => {
-                                const input = $(`<input type="file" multiple>`).on('input', (e) => { if (!e.target || !(e.target as any).files) return; FileManager.upload((e.target as any).files); });
-                                if (FileManager.filter.extensions) {
-                                    let extensions: string[] = [];
-                                    Object.values(FileManager.filter.extensions).forEach(ext => {
-                                        if (typeof ext === 'string' || ext instanceof String) {
-                                            if (ext.startsWith(".")) {
-                                                ext.replace(/^./, "");
+                            $("<div class='text-center'>")
+                                .on("click", () => {
+                                    const input = $(`<input type="file" multiple>`).on('input', (e) => { if (!e.target || !(e.target as any).files) return; FileManager.upload((e.target as any).files); });
+                                    if (FileManager.config.extensions) {
+                                        let extensions: string[] = [];
+                                        Object.values(FileManager.config.extensions).forEach(ext => {
+                                            if (typeof ext === 'string' || ext instanceof String) {
+                                                if (ext.startsWith(".")) {
+                                                    ext.replace(/^./, "");
+                                                }
+                                                extensions.push(ext as string);
                                             }
-                                            extensions.push(ext as string);
-                                        }
-                                    });
-                                    input.attr("accept", extensions.join(", "));
-                                }
-                                input.trigger("click");
-                            })
-                            .on("drop", (e) => {
-                                e.preventDefault();
-                                console.log(e);
-                            })
-                            .css({
-                                margin: "auto 0px",
-                                width: "100%",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignContent: "center",
-                                alignItems: "center",
-                                flexDirection: "column",
-                            })
-                            .append(
-                                $(`<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                                        });
+                                        input.attr("accept", extensions.join(", "));
+                                    }
+                                    input.trigger("click");
+                                })
+                                .on("drop", (e) => {
+                                    e.preventDefault();
+                                    console.log(e);
+                                })
+                                .css({
+                                    margin: "auto 0px",
+                                    width: "100%",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    flexDirection: "column",
+                                })
+                                .append(
+                                    $(`<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
                                     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
                                     <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
                                 </svg>`),
-                                $(`<h5 class="text-center mt-3">`).text("Click or Drop Files Here"),
-                            )
-                    )
+                                    $(`<h5 class="text-center mt-3">`).text("Click or Drop Files Here"),
+                                )
+                        )
+                    : ""
             )
             .append(
                 $(`<div class="list-group list-group-flush" id="assets-content">`).css({ maxHeight: "65vh", overflow: "auto", flex: "1 1 300px", minHeight: "50vh" })
@@ -924,9 +956,9 @@ FileManager.on("property:Modal", (e, Modal: any) => {
             }
             const formData = new FormData();
             formData.append("folder", folder);
-            if (FileManager.filter.extensions) {
-                Object.keys(FileManager.filter.extensions).forEach(key => {
-                    formData.append(`extensions[${key}]`, FileManager.filter.extensions[key]);
+            if (FileManager.config.extensions) {
+                Object.keys(FileManager.config.extensions).forEach(key => {
+                    formData.append(`extensions[${key}]`, FileManager.config.extensions[key]);
                 })
             }
             __.http.post(fetchURL, formData).then(result => {
@@ -943,9 +975,9 @@ FileManager.on("property:Modal", (e, Modal: any) => {
 
     Modal.createAssetDom = function (asset: any) {
 
-
-
         function assetClickHandler() {
+            // hideContextMenu();
+            $("#filemanager-context-menu").remove();
             if (asset.type == "folder") {
                 if (FileManager.config.enable_select_folder) {
                     FileManager.selectedFolder = asset;
@@ -959,7 +991,7 @@ FileManager.on("property:Modal", (e, Modal: any) => {
                 } else {
                     $(this).find(".fa-angle-up").removeClass("fa-angle-up").addClass("fa-angle-down");
                 }
-            } else {
+            } else if (FileManager.config.enable_view) {
                 FileManager.AssetView.show(asset);
             }
         }

@@ -1,0 +1,18 @@
+[
+    {
+        "name": "profile",
+        "label": "Profile",
+        "type": "checkbox",
+        "default": true,
+        "description": "Enable user profile",
+        "children": [
+            {
+                "name": "change_avatar",
+                "label": "Change Avatar",
+                "type": "checkbox",
+                "default": true,
+                "description": "Enable user to change avatar"
+            }
+        ]
+    }
+]

@@ -49,7 +49,9 @@ class Api extends __Fragment
         $module = Box::module(ucfirst($module_name));
         $config = $module->getConfig();
         foreach ($input as $name) {
-            $config->set($name, $req->$name());
+            // Request query name must be in snake case
+            $queryName = preg_replace("/\./", "_", $name);
+            $config->set($name, $req->$queryName());
         }
 
         return true;

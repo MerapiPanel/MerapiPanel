@@ -23,6 +23,17 @@ class Admin extends __Fragment
     public function register()
     {
 
+        Box::module("Panel")->addMenu([
+            "name" => "File Manager",
+            "icon" => "fa-solid fa-folder-tree",
+            "link" => "javascript:__.FileManager.Modal.show()", 
+        ]);
+
+        $roles = json_encode([
+            "upload" => $this->module->getRoles()->isAllowed(0),
+            "modify" => $this->module->getRoles()->isAllowed(1),
+        ]);
+
         $panel = Box::module("Panel");
         $script = <<<HTML
         <script>
@@ -34,9 +45,11 @@ class Admin extends __Fragment
                 rename: "{{ '/api/FileManager/rename' | access_path }}",
                 newFolder: "{{ '/api/FileManager/newFolder' | access_path }}",
             }
+            __.FileManager.roles = $roles;
         </script>
         HTML;
         $panel->Scripts->add("filemanager-opts", $script);
+        $panel->Scripts->add("filemanager", "<script src='/public/assets/@FileManager/dist/FileManager.js'></script>");
 
     }
 
