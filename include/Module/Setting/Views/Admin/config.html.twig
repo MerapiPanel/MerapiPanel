@@ -10,9 +10,7 @@
 {% macro text_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="text" class="form-control" name="{{ item.name }}"
-            value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly
-            %}readonly{% endif %} />
+        <input type="text" class="form-control" name="{{ item.name }}"value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -22,7 +20,7 @@
 {% macro select_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <select class="form-select" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %}>
+        <select class="form-select" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}>
             {% for option in item.options %}
             <option value="{{ option.value }}" {% if (item.value ?? item.default)==option.value %}selected{% endif %}>{{
                 option.label }}</option>
@@ -38,8 +36,7 @@
 {% macro textarea_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif
-            %}>{{ item.value ?? item.default }}</textarea>
+        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -50,8 +47,7 @@
 {% macro checkbox_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="checkbox" class="form-check-input" name="{{ item.name }}" value="1" {% if item.value %}checked{%
-            endif %} {% if item.readonly %}readonly{% endif %} />
+        <input type="checkbox" class="form-check-input" name="{{ item.name }}" value="1" {% if item.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -64,8 +60,7 @@
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         {% for option in item.options %}
         <div class="form-check">
-            <input type="radio" class="form-check-input" name="{{ item.name }}" value="{{ option.value }}" {% if
-                item.value==option.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} />
+            <input type="radio" class="form-check-input" name="{{ item.name }}" value="{{ option.value }}" {% if item.value==option.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
             <label class="form-check-label">{{ option.label }}</label>
         </div>
         {% endfor %}
@@ -79,8 +74,7 @@
 {% macro color_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input style="width: 50px; height: 50px; outline: none; border: none;" type="color" class="form-control p-0"
-            name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} />
+        <input style="width: 50px; height: 50px; outline: none; border: none;" type="color" class="form-control p-0" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -91,7 +85,7 @@
 {% macro file_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} />
+        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -102,7 +96,7 @@
 {% macro image_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} />
+        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -113,8 +107,7 @@
 {% macro wysiwyg_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif
-            %}>{{ item.value ?? item.default }}</textarea>
+        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -125,8 +118,7 @@
 {% macro datetime_item(item) %}
 <div>
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="datetime-local" class="form-control" name="{{ item.name }}"
-            value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} />
+        <input type="datetime-local" class="form-control" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>

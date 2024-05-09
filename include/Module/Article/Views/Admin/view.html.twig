@@ -1,0 +1,36 @@
+{% extends "@panel/base.html.twig" %}
+{% block header_title %}View Article{% endblock %}
+
+{% block subheader_outer %}{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
+<li class="breadcrumb-item"><a href="{{ '/article' | access_path }}">Article</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ article.title }} <i style="font-size: 0.7rem;">#{{ article.id }}</i></li>
+{% endblock %}
+
+
+{% block stylesheet %}
+{{ parent() }}
+{% if article.data.css %}
+{{ '<style>' | raw }}{{ article.data.css }}{{ '</style>' | raw }}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section>
+    <header class="mb-3 border-bottom w-100 p-3 mx-auto" style="max-width: 1460px;">
+        <h1 class="text-3xl">{{ article.title }}</h1>
+        <p>
+            Author: {{ article.users_name }} <br>
+            Date: {{ article.date | date('d.m.Y') }}
+        </p>
+        <p>
+            {{ article.description | truncate(100, '...') }}
+        </p>
+    </header>
+    <article>
+        {{ components | raw }}
+    </article>
+</section>
+{% endblock %}

@@ -29,10 +29,14 @@ class Service extends __Fragment
             return null;
         }
 
-        $SQL = "SELECT A.id, A.name, A.email, A.role, A.post_date, A.update_date FROM session_token B JOIN users A ON A.id = B.user_id WHERE B.token = :token";
+        $SQL = "SELECT * FROM session_token WHERE token = :token";
         $stmt = DB::instance()->prepare($SQL);
         $stmt->execute(['token' => $token]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $session = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($session) {
+            return Box::module("User")->fetch(["id", "name", "email", "role", "status", "post_date", "update_date"], ["id" => $session['user_id']]);
+        }
+        return null;
     }
 
 

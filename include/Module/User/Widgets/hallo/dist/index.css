@@ -1,0 +1,11 @@
+body {
+    width: 100vw;
+    display: flex;
+    justify-content: start;
+}
+.widget-user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 0.3rem;
+    object-fit: cover;
+}

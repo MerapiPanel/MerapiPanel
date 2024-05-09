@@ -1,5 +1,5 @@
 <?php
-namespace MerapiPanel\Module\Dashboard\Views;
+namespace MerapiPanel\Module\Dashboard\Views\Admin;
 use MerapiPanel\Box\Module\__Fragment;
 class Api extends __Fragment {
     protected $module;

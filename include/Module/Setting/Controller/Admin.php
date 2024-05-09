@@ -63,6 +63,17 @@ class Admin extends __Fragment
                 ]
             ]
         ]);
+
+        $roles = json_encode([
+            "modifyConfig" => $this->module->getRoles()->isAllowed(1) ? true : false,
+            "modifyRule" => $this->module->getRoles()->isAllowed(2) ? true : false
+        ]);
+        $html = <<<HTML
+        <script>
+            __.Setting.roles = {$roles};
+        </script>
+        HTML;
+        Box::module("Panel")->Scripts->add("setting-opts", $html);
     }
 
 

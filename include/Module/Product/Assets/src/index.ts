@@ -196,16 +196,15 @@ function createCard(product: Product): JQuery<HTMLElement> {
                 .append($(`<div><span class='fw-semibold'>${config.currency_symbol} ${product.price}</span> | <i class='fw-light'>${product.category}</i></div>`))
         )
         .append(
-            (roles.modify == true) ?
-                $(`<div class='dropdown position-absolute end-0 top-0' style='z-index: 1;' role='dropdown'>`)
-                    .append("<button class='btn dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Action</button>")
-                    .append(
-                        $(`<div class='dropdown-menu dropdown-menu-end' aria-labelledby='dropdownMenuButton'>`)
-                            .append($(`<a class='dropdown-item' href='#'>View</a>`).on('click', () => actionView(product)))
-                            .append($(`<a class='dropdown-item' href='#'>Quick Edit</a>`).on('click', () => actionQuickEdit(product)))
-                            .append($(`<a class='dropdown-item' href='#'>Edit</a>`).on('click', () => actionEdit(product)))
-                            .append($(`<a class='dropdown-item' href='#'>Delete</a>`).on('click', () => actionDelete(product)))
-                    ) : ""
+            $(`<div class='dropdown position-absolute end-0 top-0' style='z-index: 1;' role='dropdown'>`)
+                .append("<button class='btn dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Action</button>")
+                .append(
+                    $(`<div class='dropdown-menu dropdown-menu-end' aria-labelledby='dropdownMenuButton'>`)
+                        .append($(`<a class='dropdown-item' href='#'>View</a>`).on('click', () => actionView(product)))
+                        .append(roles.modify ? $(`<a class='dropdown-item' href='#'>Quick Edit</a>`).on('click', () => actionQuickEdit(product)) : "")
+                        .append(roles.modify ? $(`<a class='dropdown-item' href='#'>Edit</a>`).on('click', () => actionEdit(product)) : "")
+                        .append(roles.modify ? $(`<a class='dropdown-item' href='#'>Delete</a>`).on('click', () => actionDelete(product)) : "")
+                )
         );
 
 
@@ -224,7 +223,11 @@ function createCard(product: Product): JQuery<HTMLElement> {
 }
 
 function actionView(product: Product): void {
-    window.location.href = __.endpoints.view.replace("{id}", product.id);
+    if (!MProduct.endpoints.view) {
+        __.toast("Endpoint not found", 5, "text-danger");
+        return;
+    }
+    window.location.href = MProduct.endpoints.view.replace("{id}", product.id);
 }
 
 function actionQuickEdit(product: Product): void {

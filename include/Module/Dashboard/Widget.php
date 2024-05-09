@@ -70,6 +70,8 @@ class Widget extends __Fragment
                     <title>Widget | $name</title>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <link rel="stylesheet" href="{{ 'dist/main.css' | assets | url }}" type="text/css">
+                    <link rel="stylesheet" href="{{ '/vendor/fontawesome/css/all.min.css' | assets | url }}" type="text/css">
+                    <style>body, html {height: 100vh;display: flex;align-items: center;justify-content: center;}</style>
                     $css_content
                 </head>
                 <body>
@@ -172,7 +174,7 @@ class Widget extends __Fragment
             throw new \Exception('Invalid data');
         }
 
-        $file = __DIR__ . "/../widget.json";
+        $file = __DIR__ . "/widget.json";
         file_put_contents($file, is_string($data) ? $data : json_encode($data));
 
         return is_string($data) ? json_decode($data, true) : $data;

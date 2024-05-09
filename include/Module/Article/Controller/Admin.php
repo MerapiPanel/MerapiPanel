@@ -70,7 +70,7 @@ class Admin extends __Controller
 
         $components = Box::module("Editor")->Blocks->render($article['data']['components']);
 
-        return View::render("public.html.twig", [
+        return View::render("view.html.twig", [
             "article" => $article,
             "components" => $components
         ]);

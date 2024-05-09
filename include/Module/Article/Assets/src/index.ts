@@ -147,7 +147,7 @@ function createCard(article: any): JQuery<HTMLElement> {
                     $(`<button class='btn btn-sm btn-primary px-5 mb-2'>View</button>`)
                         .on('click', () => {
                             if (endpoints.view) {
-                                window.open(endpoints.view.replace('{id}', article.id), '_blank');
+                                window.location.href = endpoints.view.replace('{id}', article.id);
                             } else {
                                 __.toast("No view endpoint found", 5, 'text-danger');
                             }
