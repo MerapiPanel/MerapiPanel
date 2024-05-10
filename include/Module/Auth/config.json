@@ -21,10 +21,10 @@
         "description": "Enable Geo Location",
         "children": [
             {
-                "name": "distance",
+                "name": "range",
                 "default": 300,
-                "label": "Max Distance",
-                "description": "Max distance in kilo meter to allow login from last location, default 300 km",
+                "label": "Max Range",
+                "description": "Max range in kilo meter to allow login from last location, default 300 km",
                 "type": "number"
             },
             {
@@ -37,11 +37,28 @@
         ]
     },
     {
-        "name": "google_oauth_id",
-        "default": ""
-    },
-    {
-        "name": "google_oauth_secret",
-        "default": ""
+        "name": "google_auth",
+        "type": "checkbox",
+        "default": false,
+        "label": "Google Auth",
+        "description": "Enable Google Auth",
+        "children": [
+            {
+                "name": "client_id",
+                "default": "",
+                "required": true,
+                "label": "Client ID",
+                "description": "Google Client ID",
+                "type": "text"
+            },
+            {
+                "name": "client_secret",
+                "default": "",
+                "required": true,
+                "label": "Client Secret",
+                "description": "Google Client Secret",
+                "type": "text"
+            }
+        ]
     }
 ]

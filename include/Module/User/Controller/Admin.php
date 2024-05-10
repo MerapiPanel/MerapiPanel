@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\User\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
+use MerapiPanel\Database\DB;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Util;
 use MerapiPanel\Views\View;
@@ -27,6 +28,8 @@ class Admin extends __Fragment
             return;
         }
 
+        $config = $this->module->getConfig();
+
         Router::GET("/users/add", "addUser", self::class);
         $index = Router::GET("/users", "index", self::class);
         Box::module("Panel")->addMenu([
@@ -34,6 +37,17 @@ class Admin extends __Fragment
             "link" => $index,
             'icon' => 'fa-solid fa-user'
         ]);
+
+        if($config->get("profile")) {
+            Box::module("Panel")->addMenu([
+                "name" => "Profile",
+                "link" => Router::GET("/users/profile", "profile", self::class),
+                'icon' => '<i class="fa-regular fa-circle-user"></i>',
+                "order" => 1,
+                "parent" => "Users"
+            ]);
+        }
+        
 
         $script = <<<HTML
         <script>
@@ -55,15 +69,14 @@ class Admin extends __Fragment
 
     function addUser(Request $req)
     {
-
         return View::render("add_user.twig");
     }
 
-    function avatar($req)
-    {
+    function profile(Request $req) {
 
-
-        return View::render("setting_avatar.html.twig");
+        $user = Box::module("Auth")->getLogedinUser();
+        $session_data = DB::table("session_geo")->select("*")->where("user_id")->equals($user['id'])->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        return View::render("profile.html.twig", ["user" => $user, "session_data" => $session_data]);
     }
 
     public function index($req)

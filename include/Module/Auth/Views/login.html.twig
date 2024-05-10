@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
 
+{% block javascript_header %}
+{{ parent() }}
+
+{% endblock %}
+
 {% block content %}
 
 <section class="container">
@@ -17,7 +22,7 @@
 
                 <div class="col-12 col-lg-6 mx-auto">
 
-                    <form action="{{ login_endpoint | url }}" method="post" id="login-form"
+                    <form action="{{ '/public/api/Auth/login' | url }}" method="post" id="login-form"
                         class="needs-validation  card card-body shadow-sm border-0" novalidate>
 
                         <div class="form-group mb-3">
@@ -48,10 +53,8 @@
                             </div>
                             <div class="col-12 mt-4">
                                 <div class="d-flex justify-content-center align-items-end flex-wrap gap-3">
-                                    {% if setting.google_oauth_id is not empty and setting.google_oauth_secret is not
-                                    empty %}
-                                    <div class="d-none" id="g_id_onload" data-client_id="{{ setting.google_oauth_id }}"
-                                        data-login_uri="{{ login_api_endpoint | url }}" data-auto_prompt="false">
+                                    {% if setting.google_oauth_id is not empty and setting.google_oauth_secret is not empty %}
+                                    <div class="d-none" id="g_id_onload" data-client_id="{{ setting.google_oauth_id }}" data-login_uri="{{ login_api_endpoint | url }}" data-auto_prompt="false">
                                     </div>
 
                                     <div class="d-inline-block g_id_signin vertical-align-middle" data-type="standard"
@@ -97,9 +100,11 @@
 
 {% block javascript %}
 {{ parent() }}
+<script>
+    __.Auth.config = {{ config|json_encode|raw }}
+</script>
 
 <script type="text/javascript" src="{{ '@auth/dist/login.js' | assets }}"></script>
-
 {% if setting.google_oauth_id is not empty and setting.google_oauth_secret is not empty %}
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 {% endif %}

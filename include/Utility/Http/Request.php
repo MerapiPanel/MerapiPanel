@@ -193,6 +193,12 @@ class Request
     }
 
 
+    public static function getUserAgent()
+    {
+        return self::getInstance()->http('user-agent');
+    }
+
+
 }
 
 

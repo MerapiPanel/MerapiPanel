@@ -3,14 +3,14 @@
         "name": "profile",
         "label": "Profile",
         "type": "checkbox",
-        "default": true,
+        "default": false,
         "description": "Enable user profile",
         "children": [
             {
                 "name": "change_avatar",
                 "label": "Change Avatar",
                 "type": "checkbox",
-                "default": true,
+                "default": false,
                 "description": "Enable user to change avatar"
             }
         ]

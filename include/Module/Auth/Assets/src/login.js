@@ -1,60 +1,94 @@
-import { toast, cookie } from "@il4mb/merapipanel";
+const __ = window.__;
 
-navigator.geolocation.getCurrentPosition(function(location) {
-    console.log(location.coords.latitude);
-    console.log(location.coords.longitude);
-});
+const MAuth = __.Auth;
+MAuth.payload = {
+    latitude: null,
+    longitude: null,
+    email: null
+}
 
+var delay;
+function submitHandler(e) {
+    if (delay) clearTimeout(delay);
 
-$("#login-form").on("submit", function (e) {
-    
     e.preventDefault();
-
     if (!this.checkValidity()) {
         return;
     }
-
 
     $("#loading").removeClass("d-none");
     $("#login-btn").prop("disabled", true);
     $("#error").addClass("d-none");
 
-    
+
     var form = $(this);
-    var data = form.serialize();
     var url = form.attr("action");
-    var method = form.attr("method");
+    var email = form.find("[name='email']").val();
+    var password = form.find("[name='password']").val();
+    if (!email || email.length == 0) {
+        __.toast("Email is required", 5, 'text-danger');
+        $("#loading").addClass("d-none");
+        $("#login-btn").prop("disabled", false);
+        $("#error").removeClass("d-none");
+        $("#error").text("Email is required");
+        return;
+    }
+    if (!password || password.length == 0) {
+        __.toast("Password is required", 5, 'text-danger');
+        $("#loading").addClass("d-none");
+        $("#login-btn").prop("disabled", false);
+        $("#error").removeClass("d-none");
+        $("#error").text("Password is required");
+        return;
+    }
 
 
-    $.ajax({
-        url: url,
-        method: method,
-        data: data,
-        success: function (response) {
+    delay = setTimeout(function () {
 
-            setTimeout(() => {
-                if (cookie.cookie_get(response.data["cookie-name"])) {
-                    window.location.reload();
-                } else {
-                    toast("Can't start session, make sure you have enabled cookies in your browser", 10, "text-danger");
-                    $("#error").removeClass("d-none");
-                    $("#error").text("Can't start session, make sure you have enabled cookies in your browser");
-                }
-
+        __.http.post(url, {
+            ...MAuth.payload,
+            ...{
+                email: email,
+                password: password
+            }
+        })
+            .then((response) => {
+                window.location.reload();
+            })
+            .catch((error) => {
+                __.toast(error.message || "Error: Please try again!", 5, 'text-danger');
                 $("#loading").addClass("d-none");
                 $("#login-btn").prop("disabled", false);
+                $("#error").removeClass("d-none");
+                $("#error").text(error.message || "Error: Please try again!");
+            })
+        $("#login-form").off("submit", submitHandler).on("submit", submitHandler);
 
-            }, 1000);
+    }, 1000);
+}
 
-            toast(response.message, 5, "text-success");
-        },
-        error: function (response) {
-            toast(response.responseJSON?.message || response.statusText, 5, "text-danger");
-            $("#loading").addClass("d-none");
-            $("#login-btn").prop("disabled", false);
-            $("#error").removeClass("d-none");
-            $("#error").text(response.responseJSON?.message || response.statusText);
-        },
-    });
 
-});
+
+if (MAuth.config.geo) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (location) {
+            MAuth.payload.latitude = location.coords.latitude;
+            MAuth.payload.longitude = location.coords.longitude;
+            $("#login-form").on("submit", submitHandler);
+        }, function (error) {
+            __.toast(error.message || "Error getting location", 5, "text-danger");
+            $("#login-form").off("submit", submitHandler);
+            $("[type='submit']").prop("disabled", true);
+            $("input").prop("disabled", true);
+        });
+    } else {
+        __.toast("Geolocation is not supported by this browser.", 5, "text-danger");
+        $("#login-form").off("submit", submitHandler);
+        $("[type='submit']").prop("disabled", true);
+        $("input").prop("disabled", true);
+    }
+} else {
+    $("#login-form").on("submit", submitHandler);
+}
+
+$("#login-form").on("submit", submitHandler);

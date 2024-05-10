@@ -43,13 +43,16 @@ namespace MerapiPanel\Views {
         {
 
             $default_api = $this->module->Views->Api;
-            if ($default_api && (method_exists($default_api, $name) || (method_exists($default_api, "method_exists") && $default_api->method_exists($name)))) {
+            if ($default_api && (method_exists($default_api, $name) || (method_exists($default_api, "__method_exists") && $default_api->__method_exists($name)))) {
+             
                 return $default_api->$name(...$arguments);
             } else if ($this->accessName != "guest") {
                 $accessName = ucfirst($this->accessName);
+
+               
                 if ($this->module->Views->$accessName) {
                     $_api = $this->module->Views->$accessName->Api;
-                    if ($_api && (method_exists($_api, $name) || (method_exists($_api, "method_exists") && $_api->method_exists($name)))) {
+                    if ($_api && (method_exists($_api, $name) || (method_exists($_api, "__method_exists") && $_api->__method_exists($name)))) {
                         return $_api->$name(...$arguments);
                     }
                 }

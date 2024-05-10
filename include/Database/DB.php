@@ -47,7 +47,7 @@ final class DB extends PDO
         $this->password = $password;
         $this->database = $database;
 
-        parent::__construct('mysql:host=' . $this->host . '; ' . 'port=' . $this->port . '; dbname=' . $this->database, $this->username, $this->password);
+        parent::__construct('mysql:host=' . $this->host . ';' . 'port=' . $this->port . ';dbname=' . $this->database . ";charset=utf8;", $this->username, $this->password);
     }
 
 

@@ -163,7 +163,7 @@ namespace MerapiPanel\Box\Module\Entity {
             }
 
             foreach ($items as $value) {
-                if (!is_array($value) || !isset($value['name']) || empty($value['name']) || !isset($value['default']) ) {
+                if (!is_array($value) || !isset($value['name']) || empty($value['name']) || !isset($value['default'])) {
                     continue;
                 }
 
@@ -200,6 +200,12 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
+        public function isRequired(string $name): bool {
+            return isset($this->flatten($this->stack)[$name]['required']);
+        }
+
+
+
         /**
          * Set config value
          */
@@ -210,7 +216,7 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
-        
+
         private function ___set(string $name, $value)
         {
             $keys = explode('.', $name);
@@ -236,30 +242,19 @@ namespace MerapiPanel\Box\Module\Entity {
         {
             $keys = explode('.', $key);
             $current = $this->stack;
-            foreach ($keys as $nestedKey) {
-                if (str_contains($nestedKey, '.')) {
-                    $nestedKeys = explode('.', $nestedKey);
-                    foreach ($nestedKeys as $keyPart) {
-                        if (!isset($current[$keyPart]['children'])) {
-                            return null;
-                        }
-                        $current = $current[$keyPart]['children'];
-                    }
+            foreach ($keys as $i => $nestedKey) {
+                if (!isset($current[$nestedKey])) {
+                    return null;
+                }
+                if ($i === count($keys) - 1) {
+                    return $current[$nestedKey]['value'];
+                } else if (isset($current[$nestedKey]['children'])) {
+                    $current = $current[$nestedKey]['children'];
                 } else {
-                    if (!isset($current[$nestedKey])) {
-                        return null;
-                    }
-                    $current = $current[$nestedKey];
+                    return null;
                 }
             }
-
-            if (isset($current['required']) && empty($current['value'])) {
-                return $current['default'];
-            }
-            if (isset($current["value"]) && $current["value"]) {
-                return $current["value"];
-            }
-            return $current['default'];
+            return null;
         }
 
 
@@ -286,10 +281,10 @@ namespace MerapiPanel\Box\Module\Entity {
                 }
 
                 $item = $flatten[$name];
-                if($item["type"] === "checkbox" || $item["type"] === "radio") {
+                if ($item["type"] === "checkbox" || $item["type"] === "radio") {
                     $row['value'] = $row['value'] === "1" ? true : false;
                 }
-                if($flatten[$name]['default'] == $row['value']) {
+                if ($flatten[$name]['default'] == $row['value']) {
                     $SQL = "DELETE FROM configs WHERE name = :name";
                     DB::instance()->prepare($SQL)->execute(['name' => $row['name']]);
                     continue;
@@ -317,6 +312,20 @@ namespace MerapiPanel\Box\Module\Entity {
                 $stmt->bindValue(":name", $this->moduleName . "." . $key, PDO::PARAM_STR);
                 $stmt->bindValue(":value", $item["value"] ?? "", PDO::PARAM_STR);
                 $stmt->execute();
+            }
+
+
+            $SQL = "DELETE FROM configs WHERE name  = :name";
+            $sameDefault = array_filter($this->flatten($this->stack), function ($item) {
+                return trim($item['value']) === trim($item['default']);
+            });
+
+            if (!empty($sameDefault)) {
+                $stmt = DB::instance()->prepare($SQL);
+                foreach ($sameDefault as $key => $item) {
+                    $stmt->bindValue(":name", $this->moduleName . "." . $key, PDO::PARAM_STR);
+                    $stmt->execute();
+                }
             }
         }
 
@@ -359,10 +368,14 @@ namespace MerapiPanel\Box\Module\Entity {
             return $this->stack;
         }
 
-    
+
         function __toArray()
         {
-            return $this->flatten($this->stack);
+            $output = [];
+            foreach ($this->flatten($this->stack) as $item) {
+                $output[$item["name"]] = $item["value"];
+            }
+            return $output;
         }
 
         function __toString()

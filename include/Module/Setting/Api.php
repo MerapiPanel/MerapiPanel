@@ -31,11 +31,10 @@ class Api extends __Fragment
         $req = Request::getInstance();
         $token = $req->setting_token();
 
+
+
         if (!$token || !AES::decrypt($token)) {
-            return [
-                "code" => 401,
-                "message" => "Unauthorized"
-            ];
+            throw new \Exception("Invalid token");
         }
         $data = AES::decrypt($token);
         $entry = unserialize($data);
@@ -48,10 +47,26 @@ class Api extends __Fragment
         $input = $entry['input'];
         $module = Box::module(ucfirst($module_name));
         $config = $module->getConfig();
+        $stack = [];
+        // Fetch values from request, check required
         foreach ($input as $name) {
             // Request query name must be in snake case
             $queryName = preg_replace("/\./", "_", $name);
-            $config->set($name, $req->$queryName());
+            $value = $req->$queryName();
+            if (empty($value) && $config->isRequired($name)) {
+                if (str_contains($name, ".") && count(explode(".", $name)) > 1) {
+                    $names = explode(".", $name);
+                    $parentName = implode(".", array_slice($names, 0, count($names) - 1));
+                    if($req->$parentName() == true || $req->$parentName() == 1){
+                        throw new \Exception("Missing required parameter: $name");
+                    }
+                }
+            }
+            $stack[$name] = $value;
+        }
+        
+        foreach ($stack as $name => $value) {
+            $config->set($name, $value);
         }
 
         return true;

@@ -50,8 +50,21 @@ namespace MerapiPanel\Box\Module\Entity {
         {
 
             if (!method_exists($this->instance, $method)) {
+                $caller = debug_backtrace();
+                if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
+                    throw new \Exception("Method not found: " . $method . " in " . $this->className . " called from " . $caller[0]['file'] . ":" . $caller[0]['line']);
+                }
                 throw new \Exception("Method not found: " . $method . " in " . $this->className);
             }
+
+            if (!$this->__isAllowed($method)) {
+                $caller = debug_backtrace();
+                if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
+                    throw new \Exception("Method not found: " . $method . " in " . $this->className . " called from " . $caller[0]['file'] . ":" . $caller[0]['line']);
+                }
+                throw new \Exception("Method not allowed: " . $method . " in " . $this->className);
+            }
+
 
             $output = call_user_func_array([$this->instance, $method], $args);
             $result = &$output;
@@ -83,6 +96,7 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
+
         public static function instanceOf(Proxy $a, Proxy $b)
         {
             return $a->className == $b->className;
@@ -90,7 +104,37 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
-        public function method_params($method)
+        public function __isAllowed($method)
+        {
+
+            $module = $this->getModule();
+
+            $reflectorMethod = new \ReflectionMethod($this->instance, $method);
+            if (!$reflectorMethod->isPublic()) {
+                throw new \Exception("Method not public: " . $method . " in " . $this->className);
+            }
+            $comment = $reflectorMethod->getDocComment();
+
+            preg_match("/@admin\s+(\w+)/", $comment, $matches);
+            if (isset($matches[1]) && $module->Service instanceof Proxy && $module->Service->method_exists("isAdmin") && $module->Service->isAdmin()) {
+                return $matches[1] == 'true';
+            }
+
+
+            preg_match("/@guest\s+(\w+)/", $comment, $matches);
+            if (isset($matches[1]) && ($module->Service instanceof Proxy && $module->Service->method_exists("isGuest") && $module->Service->isGuest() || $matches[1] == 'false')) {
+                return $matches[1] == 'true';
+            }
+
+
+
+            return true;
+        }
+
+
+
+
+        public function __method_params($method)
         {
 
             $reflectionMethod = new \ReflectionMethod($this->className, $method);
@@ -99,7 +143,7 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
-        public function method_exists($method)
+        public function __method_exists($method)
         {
 
             return method_exists($this->instance, $method);

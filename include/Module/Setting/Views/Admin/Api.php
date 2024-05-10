@@ -47,8 +47,9 @@ class Api extends __Fragment
             }
         }
 
-        return AES::encrypt(serialize(["module" => $moduleName, "input" => $inputNames]));
-
+        $text = serialize(["module" => $moduleName, "input" => $inputNames]);
+        $token = AES::encrypt($text);
+        return $token;
     }
 
 

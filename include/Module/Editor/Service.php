@@ -7,6 +7,8 @@ use MerapiPanel\Views\View;
 
 class Service extends __Fragment
 {
+
+	
 	protected Module $module;
 	function onCreate(Module $module)
 	{
@@ -15,8 +17,8 @@ class Service extends __Fragment
 		View::getInstance()->getTwig()->addExtension(new EditorExtension());
 	}
 
-	// add other funstion here
 
+	// add other funstion here
 	public function findComponent($components, $type, $deep = 5)
 	{
 
@@ -35,13 +37,6 @@ class Service extends __Fragment
 
 
 		return null;
-	}
-
-
-	function getAttribute($component, $attr)
-	{
-
-		
 	}
 
 }

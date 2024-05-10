@@ -16,34 +16,25 @@ class Middleware extends __Middleware
 
     function handle(Request $request, Closure $next)
     {
+        $config      = $this->module->getConfig();
+        $cookie_name = $config->get("cookie_name");
 
-        $config = $this->module->getConfig();
-        $cookieName = $config->get('cookie_name');
-
-        $s_token = $_COOKIE[$cookieName] ?? null;
-
-        if ($s_token && $token = AES::decrypt($s_token)) {
-            $query = DB::table("session_token")->select("*")->where("token")->equals($token)->execute();
-
-            if ($query->rowCount() > 0) {
-
-                // Box::module()->__on("*", function ($a, &$b) { });
-
-                $session = $query->fetch(PDO::FETCH_ASSOC);
-                if (strtotime($session["expires"]) > time()) {
-                    $user_id = $session["user_id"];
-                    $user = Box::module("User")->fetch(["status"], ['id' => $user_id]);
-                    if ($user && $user["status"] == "2") {
-                        return $next($request);
-                    }
-                }
+        if($session = $this->module->getSession()) {
+            
+            if(strtotime($session['expire']) > time()) {
+                return $next($request);
             }
         }
+
+
+        //setcookie($cookie_name, "", time() - 3600, "/");
+        $arrayConfig = $config->__toArray();
+        unset($arrayConfig["cookie_name"], $arrayConfig['google_auth.client_secret']);
 
         return new Response(View::render("login.html.twig", [
             "login_endpoint" => "/auth/" . ltrim($_ENV["__MP_ADMIN__"]['prefix'], "/"),
             "login_api_endpoint" => "/auth/api/" . ltrim($_ENV["__MP_ADMIN__"]['prefix'], "/"),
-            "setting" => $config->__toArray()
+            "config" => $arrayConfig
         ]), 401);
     }
 }
