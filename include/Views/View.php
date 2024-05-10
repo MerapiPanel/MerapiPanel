@@ -33,11 +33,11 @@ class View
         }
 
         $this->intl = new Intl();
+        $this->lang = $this->intl->getLocale();
+        
         $this->twig = new Twig($this->loader);
-
         $this->twig->enableDebug();
         $this->twig->AddExtension(new TranslationExtension($this->intl));
-        $this->lang = $this->intl->getLocale();
 
         // Load our own Twig extensions
         $files = glob(__DIR__ . "/Extension/*.php");
@@ -58,6 +58,9 @@ class View
         $this->addGlobal("lang", $this->lang);
         $this->addGlobal("api", new ApiServices());
         $this->addGlobal('__env__', $_ENV);
+
+
+        
     }
 
 
@@ -258,4 +261,18 @@ class View
     }
 
 
+
+    public static function shutdown()
+    {
+
+        if (file_exists(__DIR__ . "/__.dat")) {
+            if (filemtime(__DIR__ . "/__.dat") < time() - 3600) {
+                $serialize = serialize(self::getInstance()->getTwig());
+                file_put_contents(__DIR__ . "/__.dat", $serialize);
+            }
+        } else {
+            $serialize = serialize(self::getInstance()->getTwig());
+            file_put_contents(__DIR__ . "/__.dat", $serialize);
+        }
+    }
 }

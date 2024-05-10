@@ -72,7 +72,7 @@ MUser.render = function () {
 
             const { users, totalPages, totalResults } = result.data;
             $("#total-records").text(`Total Records: ${totalResults}`);
-            
+
             createPagination($("#pagination"), payload.page, totalPages);
 
             $(MUser.container).html("").append((users || []).map((user) => createComponent(user)));
@@ -90,32 +90,45 @@ function createComponent(user) {
         .append(`<img class="w-full h-full object-cover rounded-2" width="45" height="45" src="${user.avatar ? user.avatar : ''}" alt="${user.name}">`)
         .append(
             $(`<div class="ms-2 w-100">`)
+            .css(MUser.opts.profilePage && endpoints.profileURL && MUser.opts.allowVisit ? { cursor: 'pointer' } : {})
                 .append(`<div class="fw-bold">${user.name} ${user.email == session.email ? '<small><i>( You )</i></small>' : ''}</div>`)
                 .append(`<div class='d-flex flex-wrap align-items-end align-content-end'>${user.email} - <i>${user.role}</i><span class="badge badge-sm bg-${['danger', 'warning', 'primary'][user.status]} ms-2">${['Inactive', 'Suspended', 'Active'][user.status]}</span></div></div>`)
+                .on('click', () => {
+                    if (MUser.opts.profilePage && endpoints.profileURL && MUser.opts.allowVisit) {
+                        window.location.href = endpoints.profileURL.replace('{user_id}', user.id);
+                    }
+                })
         )
         .append(
-            $(`<div class="dropdown position-absolute top-0 end-0">`)
-                .append(`<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>`)
-                .append(
-                    $(`<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">`)
-                        .append(
-                            $(`<li><a class="dropdown-item text-primary" href="#">Edit</a></li>`)
-                                .on('click', () => editUser(user))
-                        )
-                        .append(
-                            user.status === 2 ?
-                                $(`<li><a class="dropdown-item  text-warning" href="#">Suspend</a></li>`)
-                                    .on('click', () => suspendUser(user))
-                                : user.status === 1 ?
-                                    $(`<li><a class="dropdown-item  text-success" href="#">Unsuspend</a></li>`)
-                                        .on('click', () => unsuspendUser(user))
+            MUser.opts.allowModify ?
+                $(`<div class="dropdown position-absolute top-0 end-0">`)
+                    .append(`<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>`)
+                    .append(
+                        $(`<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">`)
+                            .append(
+                                $(`<li><a class="dropdown-item text-primary" href="#"><i class="fa-solid fa-user-pen"></i> Edit</a></li>`)
+                                    .on('click', () => editUser(user))
+                            )
+                            .append(
+                                user.status == 2 ?
+                                    $(`<li><a class="dropdown-item  text-warning" href="#"><i class="fa-solid fa-user-slash"></i> Suspend</a></li>`)
+                                        .on('click', () => suspendUser(user))
+                                    : user.status == 1 ?
+                                        $(`<li><a class="dropdown-item  text-success" href="#"><i class="fa-solid fa-user-check"></i> Unsuspend</a></li>`)
+                                            .on('click', () => unsuspendUser(user))
+                                        : ''
+                            )
+                            .append(
+                                user.logedin
+                                    ? $(`<li><a class="dropdown-item text-warning" href="#"><i class="fa-solid fa-circle-exclamation"></i> Force Logout</a></li>`)
+                                        .on('click', () => forceLogout(user))
                                     : ''
-                        )
-                        .append(
-                            $(`<li><a class="dropdown-item bg-danger bg-opacity-10 text-danger" href="#">Delete</a></li>`)
-                                .on('click', () => deleteUser(user))
-                        )
-                )
+                            )
+                            .append(
+                                $(`<li><a class="dropdown-item bg-danger bg-opacity-10 text-danger" href="#"><i class="fa-solid fa-user-xmark"></i> Delete</a></li>`)
+                                    .on('click', () => deleteUser(user))
+                            )
+                    ) : ""
         )
 }
 
@@ -147,7 +160,7 @@ function editUser(user) {
                 .append(
                     $(`<select class="form-select" name="role" id="role" required>`)
                         .append(
-                            (MUser.opts.roles || []).map((role) => `<option value="${role}" ${user.role == role ? 'selected' : ''}>${role}</option>`)
+                            (MUser.opts.roleNames || []).map((role) => `<option value="${role}" ${user.role == role ? 'selected' : ''}>${role}</option>`)
                         )
                 )
         )
@@ -291,8 +304,6 @@ function editUser(user) {
                 __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
 
-        }).catch(() => {
-            __.toast('Action Canceled', 5, 'text-warning');
         })
     }
 
@@ -336,10 +347,10 @@ function deleteUser(user) {
             }).catch((error) => {
                 __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
+        }).catch((error) => {
+            $(".modal:not(#modal-edit-user)").remove();
         })
-        .catch(() => {
-            __.toast('Action Canceled', 5, 'text-warning');
-        })
+
 }
 
 
@@ -381,9 +392,10 @@ function suspendUser(user) {
                 __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
         })
-        .catch(() => {
-            __.toast('Action Canceled', 5, 'text-warning');
+        .catch((error) => {
+            $(".modal:not(#modal-edit-user)").remove();
         })
+
 }
 
 
@@ -424,8 +436,51 @@ function unsuspendUser(user) {
             }).catch((error) => {
                 __.toast(error.message || error.statusText || error, 5, 'text-danger');
             })
+        }).catch((error) => {
+            $(".modal:not(#modal-edit-user)").remove();
         })
-        .catch(() => {
-            __.toast('Action Canceled', 5, 'text-warning');
+}
+
+
+function forceLogout(user) {
+
+    __.dialog.confirm("Are you sure?",
+        $(`<div>Force Logout <b>${user.name}</b>?</div>`)
+            .append("<p>Are you sure you want to force logout user details as shown below?</p>")
+            .append(
+                $(`<table class="table table-bordered">`)
+                    .append(
+                        $(`<tr>`)
+                            .append(`<th>id</th>`)
+                            .append(`<td>${user.id}</td>`)
+                    )
+                    .append(
+                        $(`<tr>`)
+                            .append(`<th>Email</th>`)
+                            .append(`<td>${user.email}</td>`)
+                    )
+                    .append(
+                        $(`<tr>`)
+                            .append(`<th>Role</th>`)
+                            .append(`<td>${user.role}</td>`)
+                    )
+            )
+    )
+        .then(() => {
+
+            __.http.post(endpoints.forceLogout, { user_id: user.id }).then((result) => {
+
+                if (result.code === 200) {
+                    __.toast('User force logged out successfully', 5, 'text-success');
+                    MUser.render();
+                } else {
+                    throw new Error(result.message);
+                }
+            }).catch((error) => {
+                __.toast(error.message || error.statusText || error, 5, 'text-danger');
+            })
+        }).catch((error) => {
+            $(".modal:not(#modal-edit-user)").remove();
         })
+
 }

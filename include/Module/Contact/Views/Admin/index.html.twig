@@ -22,7 +22,7 @@
 
 
 {% block subheader_menu %}
-{% if api.Contact.isAllowed(1) %}
+{% if api.Contact.getRoles.isAllowed(1) %}
 <button class="menu-item" onclick="__.Contact.add()">Add Contact</button>
 {% endif %}
 {% endblock %}

@@ -114,7 +114,7 @@
                         <div class="ms-auto position-relative">
                             <!-- Rounded switch -->
                             <label class="switch">
-                                <input data-role="{{ item.name }}" data-name="{{ itemstack.module }}.{{ role.id }}" type="checkbox" {% if (api.Setting.isAllowed(2) == false or api.Setting.isAllowed(2) == 0) or (role.enable == 0 or role.enable == false) %}disabled{% endif %} {% if role.value %}checked{% endif %}>
+                                <input data-role="{{ item.name }}" data-name="{{ itemstack.module }}.{{ role.id }}" type="checkbox" {% if (api.Setting.getRoles.isAllowed(2) == false or api.Setting.getRoles.isAllowed(2) == 0) or (role.enable == 0 or role.enable == false) %}disabled{% endif %} {% if role.value %}checked{% endif %}>
                                 <span class="slider round"></span>
                             </label>
                         </div>

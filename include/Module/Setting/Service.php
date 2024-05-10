@@ -58,14 +58,6 @@ class Service extends __Fragment
 
 
 
-    
-    
-    function isAllowed($id) {
-        return $this->module->getRoles()->isAllowed($id);
-    }
-
-
-
 
 
     function token(string $form, $moduleName = null)

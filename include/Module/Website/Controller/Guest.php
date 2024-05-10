@@ -74,6 +74,9 @@ HTML;
                 } catch (\Throwable $th) {
                     $_variables = [];
                 }
+                $_variables["_page"] = $page;
+                $_variables["_request"] = Request::getInstance();
+                $_variables["_lang"] = $lang;
                 $output = $template->render($_variables);
 
                 try {

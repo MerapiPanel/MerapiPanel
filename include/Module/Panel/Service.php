@@ -11,16 +11,19 @@ use MerapiPanel\Views\View;
 class Service extends __Fragment
 {
 
-    public $allowed = true;
     protected $ListMenu = [];
     protected $module;
-
-
     function onCreate(Box\Module\Entity\Module $module)
     {
         $this->module = $module;
+    }
+
+
+    function initialize()
+    {
         View::getInstance()->getTwig()->addExtension(new ViewExtension());
     }
+
 
 
     public function getMenu()
@@ -61,13 +64,16 @@ class Service extends __Fragment
                     $item['childs'] = $childItems;
                 }
 
-                // Add the current item to the menu.
-                $menu[] = $item;
-            }
-        }
+                // if same name and path dont stored in menu
+                $find = array_filter($menu, function ($menu) use ($item) {
+                    return $menu['name'] === $item['name'] && $menu['link'] === $item['link'];
+                });
+                if (empty($find)) {
+                    // Add the current item to the menu.
+                    $menu[] = $item;
+                }
 
-        if ($parentId == null) {
-            return $menu;
+            }
         }
 
         return array_values($menu);
@@ -183,12 +189,6 @@ class Service extends __Fragment
         $path = $request->getPath();
 
         return strtolower(preg_replace('/[^a-z]+/i', '', $link)) == strtolower(preg_replace('/[^a-z]+/i', '', $path));
-    }
-
-
-    public function setAllowed($allow = true)
-    {
-        $this->allowed = $allow;
     }
 
 

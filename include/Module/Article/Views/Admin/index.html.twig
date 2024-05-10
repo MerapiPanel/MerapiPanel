@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block subheader_menu %}
-{% if api.Article.isAllowModify(1) %}
+{% if api.Article.getRoles.isAllowed(1) %}
 <a href="{{ 'article/create' | access_path }}" class="menu-item">
     <i class="fa fa-plus"></i> new article
 </a>

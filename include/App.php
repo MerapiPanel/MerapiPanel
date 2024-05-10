@@ -106,7 +106,7 @@ namespace MerapiPanel {
             parent::initialize();
 
             foreach ($main_services as $service) {
-                if ($proxy->__method_exists("initialize")) {
+                if ($service->__method_exists("initialize")) {
                     $service->initialize();
                 }
             }

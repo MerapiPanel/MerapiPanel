@@ -200,7 +200,8 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
-        public function isRequired(string $name): bool {
+        public function isRequired(string $name): bool
+        {
             return isset($this->flatten($this->stack)[$name]['required']);
         }
 
@@ -211,6 +212,19 @@ namespace MerapiPanel\Box\Module\Entity {
          */
         public function set(string $name, $value)
         {
+            if (
+                $this->module->Service?->__method_exists("ON_CONFIG_SET")
+                && $this->module->Service?->__method_is_static("ON_CONFIG_SET")
+            ) {
+                // Check if the current function is indirectly called from onConfigSet
+                $backtrace = debug_backtrace();
+                $callerFunction = isset($backtrace[1]['function']) ? $backtrace[1]['function'] : '';
+                if (strtoupper($callerFunction) === 'ON_CONFIG_SET') {
+                    error_log("onConfigSet ignored infinite recursion");
+                    return;
+                }
+                $this->module->Service?->ON_CONFIG_SET($name, $value);
+            }
             $this->___set($name, $value);
             $this->post();
         }
@@ -505,7 +519,7 @@ namespace MerapiPanel\Box\Module\Entity {
         {
             $user = false;
             try {
-                $user = Box::module("Auth")->getLogedinUser();
+                $user = Box::module("Auth")->Session->getUser();
             } catch (\Throwable $e) {
                 // ignore
                 error_log($e->getMessage());

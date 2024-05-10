@@ -21,38 +21,61 @@ class Service extends __Fragment
     }
 
 
-    public function getSession() {
-        $cookie_name = $this->module->getConfig()->get("cookie_name");
-        if (!isset($_COOKIE[$cookie_name]) || !$token = AES::decrypt($_COOKIE[$cookie_name] ?? "")) {
-            return null;
-        }
-        return DB::table("session")->select("*")->where("token")->equals($token)->execute()->fetch(PDO::FETCH_ASSOC);
-    }
 
 
-    function getLogedinUser()
+    static function ON_CONFIG_SET($key, $value)
     {
-        $cookie_name = $this->module->getConfig()->get("cookie_name");
-        if (!isset($_COOKIE[$cookie_name]) || !$token = AES::decrypt($_COOKIE[$cookie_name] ?? "")) {
-            return null;
+        if ($key == "session_time" && $value < 1) {
+            throw new \Exception("Session time cannot be 0");
         }
-
-        $SQL = "SELECT user_id FROM `session` WHERE token = :token";
-        $stmt = DB::instance()->prepare($SQL);
-        $stmt->execute(['token' => $token]);
-        $session = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($session) {
-            return Box::module("User")->fetch(["id", "name", "email", "role", "status", "post_date", "update_date"], ["id" => $session['user_id']]);
+        if ($key == "cookie_name" && strlen($value) < 4) {
+            throw new \Exception("Cookie name cannot be less than 4 characters");
         }
-        return null;
     }
+
+
+
+    function forceLogout($user_id)
+    {
+        $session_time = $this->module->getConfig()->get("session_time");
+        $SQL = "UPDATE `session` SET post_date = :time WHERE user_id = :id AND post_date > :time";
+        $stmt = DB::instance()->prepare($SQL);
+        $stmt->execute([
+            'id' => $user_id,
+            'time' => date("Y-m-d H:i:s", time() - ($session_time * 60 * 60)),
+        ]);
+    }
+
+
+
+    public function isLogedin($user_id)
+    {
+        $session_time = $this->module->getConfig()->get("session_time"); // in hours
+        $SQL = "SELECT post_date FROM `session` WHERE user_id = :id AND post_date > :time ORDER BY post_date DESC LIMIT 1";
+        $stmt = DB::instance()->prepare($SQL);
+        $stmt->execute(['id' => $user_id, 'time' => date("Y-m-d H:i:s", time() - ($session_time * 60 * 60))]);
+        return $stmt->rowCount() > 0;
+    }
+
+
 
 
 
     // Module Api check isAdmin
     public function isAdmin()
     {
-        return $this->getLogedinUser() != null;
+
+        $config = $this->module->getConfig();
+        $session_time = $config->get("session_time"); // in hours
+        if ($session = $this->module->Session->getCurrent()) {
+            if (strtotime($session['post_date']) + ($session_time * 60 * 60) > time()) {
+                // if login
+                return $this->module->Session->getUser() != null;
+            }
+            // if not login
+        }
+
+        return false;
     }
 
 
@@ -92,7 +115,6 @@ class Service extends __Fragment
             'user_id' => $user['id'],
             'ip' => Request::getClientIP(),
             'user_agent' => Request::getUserAgent(),
-            'expire' => date("Y-m-d H:i:s", strtotime("+$session_time hours")),
             'logitudelatitude' => $longitude . "," . $latitude,
             'post_date' => date("Y-m-d H:i:s"),
             'data' => []
@@ -122,7 +144,6 @@ class Service extends __Fragment
                 'user_id' => $session['user_id'],
                 'ip' => $session['ip'],
                 'user_agent' => $session['user_agent'],
-                'expire' => $session['expire'],
                 'logitudelatitude' => $session['logitudelatitude'],
                 'post_date' => $session['post_date'],
                 'data' => !is_string($session['data']) ? json_encode($session['data']) : $session['data'],
@@ -176,7 +197,7 @@ class Service extends __Fragment
         $session_geo = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($session_geo) {
             try {
-                [$lastLatitude, $lastLongitude] = explode(",", $session_geo['logitudelatitude'], 2);
+                [$lastLongitude, $lastLatitude] = explode(",", $session_geo['logitudelatitude'], 2);
                 return GeoLocation::isWithinRange($latitude, $longitude, $lastLatitude, $lastLongitude, intval($range));
             } catch (\Throwable $e) {
                 return false;

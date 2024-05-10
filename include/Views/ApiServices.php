@@ -16,11 +16,8 @@ namespace MerapiPanel\Views {
             $this->accessName = isset($_ENV['__MP_ACCESS__']) ? $_ENV['__MP_ACCESS__'] : "guest";
         }
 
-
-
         public function __call($name, $arguments)
         {
-
             return new ApiProxy($name);
         }
     }
@@ -31,17 +28,16 @@ namespace MerapiPanel\Views {
     {
 
         protected Module $module;
-        protected $accessName = "guest";
 
         public function __construct($module)
         {
-            $this->accessName = isset($_ENV['__MP_ACCESS__']) ? $_ENV['__MP_ACCESS__'] : "guest";
             $this->module = Box::module($module);
         }
 
 
         public function __call($name, $arguments)
         {
+
             $output = null;
             $service = $this->module->Service;
             if ($service->__method_exists($name)) {
@@ -51,6 +47,10 @@ namespace MerapiPanel\Views {
                 $output = $service->$name(...$arguments);
             } else if($this->module->$name instanceof Proxy) {
                 $output = $this->module->$name;
+            } else if(method_exists($this->module, $name)) {
+                $output = $this->module->$name(...$arguments);
+            } else {
+                error_log("Method $name not found in {$this->module->namespace}");
             }
             
             return $output;

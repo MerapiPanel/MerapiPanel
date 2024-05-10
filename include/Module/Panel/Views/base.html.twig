@@ -5,13 +5,13 @@
 
 {% block stylesheet %}
 {{ parent() }}
-<link rel="stylesheet" href="{{ '@panel/dist/panel.css' | assets }}?v={{ time() }}">
+<link rel="stylesheet" href="{{ '@panel/dist/panel.css' | assets }}">
 {% endblock %}
 
 
 {% block head_javascript %}
 {{ parent() }}
-<script src="{{ '@panel/dist/panel.bundle.js' | assets }}"></script>
+<script src="{{ '@panel/dist/panel.js' | assets }}"></script>
 <!-- @Panel:scripts -->
 {{ panel_render(api.Panel.Scripts.getScripts) }}
 <!--/ @Panel:scripts -->
@@ -61,8 +61,6 @@
         {% block container %}
         <div class="panel-container">
 
-
-            {% if api.Panel.allowed %}
             {% block subheader_outer %}
             <div class="panel-subheader" id="panel-subheader">
                 {% block subheader %}
@@ -94,13 +92,9 @@
                     {% endblock %}
                 </div>
                 {% endblock %}
-
                 {% endblock %}
-
-
             </div>
             {% endblock %}
-            {% endif %}
 
             {% block content_outer %}
             <div class="panel-content">

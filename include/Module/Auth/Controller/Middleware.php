@@ -2,32 +2,32 @@
 namespace MerapiPanel\Module\Auth\Controller;
 
 use Closure;
-use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Middleware;
-use MerapiPanel\Database\DB;
-use MerapiPanel\Utility\AES;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Views\View;
-use PDO;
 
 class Middleware extends __Middleware
 {
 
     function handle(Request $request, Closure $next)
     {
-        $config      = $this->module->getConfig();
-        $cookie_name = $config->get("cookie_name");
-
-        if($session = $this->module->getSession()) {
-            
-            if(strtotime($session['expire']) > time()) {
-                return $next($request);
-            }
+        
+        if($this->module->isAdmin()) {
+            return $next($request);
         }
 
 
-        //setcookie($cookie_name, "", time() - 3600, "/");
+        
+        if($request->http("x-requested-with") == "XMLHttpRequest") {
+            return new Response([
+                "code" => 401,
+                "message" => "Unauthorized"
+            ], 401);
+        }
+
+
+        $config = $this->module->getConfig();
         $arrayConfig = $config->__toArray();
         unset($arrayConfig["cookie_name"], $arrayConfig['google_auth.client_secret']);
 

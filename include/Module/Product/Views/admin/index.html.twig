@@ -10,7 +10,7 @@
 
 
 {% block subheader_menu %}
-{% if api.Product.isAllowed(1) %}
+{% if api.Product.getRoles.isAllowed(1) %}
 <a href="{{ '/product/new' | access_path }}" class="menu-item">
     <i class="fa fa-plus"></i> new product
 </a>

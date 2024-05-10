@@ -4,34 +4,134 @@
 
 {% block breadcrumb_item %}
 <li class="breadcrumb-item"><a href="{{ '/' | access_path }}">Home</a></li>
-<li class="breadcrumb-item"><a href="{{ '/users' | access_path }}">Users</a></li>
+{% if api.User.getRoles.isAllowed(1) %}<li class="breadcrumb-item"><a href="{{ '/users' | access_path }}">Users</a></li>
+{% endif %}
 <li class="breadcrumb-item active" aria-current="page">Profile</li>
 {% endblock %}
 
 {% block subheader_outer %}{% endblock %}
 
-{% block content %}
-<div class="row">
 
+{% if user is null %}
+{% set user = api.Auth.Session.getUser %}
+{% set user_sessions = api.Auth.Session.getUserSessions %}
+{% else %}
+{% set user_sessions = api.Auth.Session.getUserSessions(user.id) %}
+{% endif %}
+
+
+{% block content %}
+
+{% set device_icons = {
+    Windows: "fa-desktop",
+    iPad: "fa-tablet-screen-button",
+    iPhone: "fa-mobile-screen-button",
+    'Android Device': "fa-mobile",
+    Linux: "fa-laptop",
+    Macintosh: "fa-laptop",
+    Unknown: "fa-question"
+} %}
+
+
+<div class="row pb-5">
     <div class="col-12">
         <div class="bg-dark text-white position-relative" style="min-height: 300px;">
             <div class="position-absolute top-50 start-50 translate-middle text-center mt-4">
-                <img src="{{ user.avatar }}" alt="" class="rounded-circle" style="width: 100px; height: 100px;">
+                <img src="{{ user.avatar }}" alt="" class="rounded-circle object-fit-cover bg-light"
+                    style="width: 100px; height: 100px;box-shadow: 0 0 8px rgb(255 255 255 / 60%);" id="avatar">
                 <h1 class="mt-3 fs-2">{{ user.name }}</h1>
+                <small class="d-block">{{ user.email }}</small>
                 <i>{{ user.role | ucfirst }} </i>
+                {% if api.User.getConfig.get("profile.change_avatar") and user.id == api.Auth.Session.getUser.id %}
+                <button class="btn position-absolute end-0 top-0 text-primary" type="button" id="change-avatar"><i class="fa-solid fa-pen"></i></button>
+                {% endif %}
+
             </div>
         </div>
     </div>
     <div class="px-3 px-lg-5 pt-3">
-        <h4 class="mt-3 fs-5">Sessions</h4>
+        <h4 class="mt-3 fs-5 mb-1">Sessions</h4>
         <ul class="list-group list-group-flush">
-            {% for session in session_data %}
-            <li class="list-group-item ">
-                <i class="fa fa-map-marker"></i> {{ session.display_name }} - <i class="fa fa-clock"></i> {{ session.post_date | date('d M Y H:i:s') }}
+            {% for session in user_sessions %}
+            <li class="list-group-item {% if session.is_current %}bg-primary bg-opacity-10{% endif %}">
+                <div>
+                    <h3 class="mb-2"><i class="fa fa-clock"></i> {{ session.post_date | date('d M Y H:i:s') }} - {{ session.time_ago }}</h3>
+                    <div class="ms-2">
+                        <p class="mb-0"><i class="fa-solid {{ device_icons[session.device] }}"></i> {{ session.device }} - {{ session.browser }}</p>
+                        {% if api.Auth.getConfig.get("geo") %}
+                        <small class="text-muted"><i class="fa fa-map-marker"></i> {{ session.data.display_name ?? "Unknown" }}</small>
+                        {% endif %}
+                    </div>
+
+                </div>
             </li>
             {% endfor %}
         </ul>
     </div>
 </div>
+
+{% endblock %}
+
+{% block javascript %}
+{{ parent() }}
+{% if api.User.getConfig.get("profile.change_avatar") and user.id == api.Auth.Session.getUser.id %}
+<script>
+    $("#change-avatar").click(function () {
+        $("<input type='file' accept='image/*' />").on("change", function () {
+
+            var file = this.files[0];
+            // max size 1mb
+            if (file.size > 1048576) {
+                __.toast("Please select a file smaller than 1mb", 5, 'text-danger');
+                return;
+            }
+            __.http.post("{{ '/api/User/uploadAvatar' | access_path }}", {
+                avatar: file
+            }).then((result) => {
+                $("#avatar").attr('src', result.data);
+            }).catch((err) => {
+                __.toast(err.message || "Something went wrong", 5, 'text-danger');
+            });
+        }).click();
+    });
+    $('#avatar').click(function () {
+        let $this = $(this);
+        const modal = __.modal.create("Avatar", $(`<img src="${$this.attr('src')}" class="w-100" />`));
+        modal.el.find(".modal-footer").remove();
+        modal.el.find(".modal-header").remove();
+        modal.on("modal:hide", function () {
+            modal.el.remove();
+        })
+        if (!$this.attr('src').startsWith('http')) {
+            modal.el.find(".modal-body").append(
+                $("<button class='btn text-danger btn-sm position-absolute end-0 top-0'><i class='fa fa-trash'></i> Delete</button>")
+                    .click(function () {
+                        __.http.get("{{ '/api/User/deleteAvatar' | access_path }}")
+                        .then((result) => {
+                            $("#avatar").attr('src', result.data);
+                            modal.hide();
+                        }).catch((err) => {
+                            __.toast(err.message || "Something went wrong", 5, 'text-danger');
+                        });
+                    })
+            )
+        }
+        modal.show();
+    });
+</script>
+{% else %}
+<script>
+    $('#avatar').click(function () {
+        let $this = $(this);
+        const modal = __.modal.create("Avatar", $(`<img src="${$this.attr('src')}" class="w-100" />`));
+        modal.el.find(".modal-footer").remove();
+        modal.el.find(".modal-header").remove();
+        modal.on("modal:hide", function () {
+            modal.el.remove();
+        })
+        modal.show();
+    });
+</script>
+{% endif %}
 
 {% endblock %}

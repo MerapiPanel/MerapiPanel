@@ -5,6 +5,7 @@ namespace MerapiPanel\Module\User;
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Database\DB;
+use MerapiPanel\Utility\Util;
 use PDO;
 
 class Service extends __Fragment
@@ -20,6 +21,13 @@ class Service extends __Fragment
     }
 
 
+
+    function getRoleNames()
+    {
+        return Util::getRoles();
+    }
+
+    
 
     function update($id, $name, $email, $password, $confirmPassword, $role, $status)
     {
@@ -60,12 +68,11 @@ class Service extends __Fragment
             $user['role'] = $role;
         }
 
-        if (!empty($status)) {
+        if (in_array($status, [0, 1, 2])) {
             $user['status'] = $status;
         }
 
         $user['update_date'] = date('Y-m-d H:i:s');
-
         DB::table("users")->update($user)->where("id")->equals($id)->execute();
 
         return $user;
@@ -155,8 +162,13 @@ class Service extends __Fragment
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($user && isset($user['email'])) {
-            $user['avatar'] = "https://gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?d=mp?s=45";
+            $user['avatar'] = "https://gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?s=200";
+            if (file_exists(__DIR__ . "/avatars/" . $user['id'] . ".webp")) {
+                $user['avatar'] = $this->fullPathToRelativePath(__DIR__ . "/avatars/" . $user['id'] . ".webp", $_ENV['__MP_CWD__']);
+            }
+            $user['logedin'] = Box::module("Auth")->isLogedin($user['id']);
         }
+
 
         return $user;
     }
@@ -188,7 +200,7 @@ class Service extends __Fragment
 
         // Execute the count query to get total results
         $totalCount = DB::instance()->query($countSQL)->fetchColumn();
-        if(!$totalCount) {
+        if (!$totalCount) {
             return [
                 'users' => [],
                 'totalPages' => 0,
@@ -205,11 +217,17 @@ class Service extends __Fragment
         // Execute the main query to fetch users
         $users = DB::instance()->query($SQL)->fetchAll(PDO::FETCH_ASSOC);
 
-        if($users){
-            foreach($users as $key => $user){
-                $users[$key]['avatar'] = "https://gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?d=mp&s=45";
+
+        foreach ($users as $key => $user) {
+
+            $users[$key]['avatar'] = "https://gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?s=200";
+            if (file_exists(__DIR__ . "/avatars/" . $users[$key]['id'] . ".webp")) {
+                $users[$key]['avatar'] = $this->fullPathToRelativePath(__DIR__ . "/avatars/" . $users[$key]['id'] . ".webp", $_ENV['__MP_CWD__']);
             }
+            $users[$key]['logedin'] = Box::module("Auth")->isLogedin($user['id']);
+
         }
+
 
         // Return the users, total pages, and total results
         return [
@@ -236,4 +254,87 @@ class Service extends __Fragment
         DB::table("users")->delete()->where("id")->equals($id)->execute();
     }
 
+
+
+    function uploadAvatar()
+    {
+
+        if (!$this->module->getConfig()->get("profile.change_avatar")) {
+            throw new \Exception('Change avatar is disabled');
+        }
+
+
+        $user = Box::module("Auth")->Session->getUser();
+        if (!$user || !$user['id']) {
+            throw new \Exception("Unauthorized");
+        }
+
+        $max_size = 1024 * 1024; // 1MB
+        $allowed_ext = ["jpg", "jpeg", "png", "svg", "webp"];
+
+        $file = $_FILES['avatar'];
+        if (!$file) {
+            throw new \Exception("File not found");
+        }
+        $file_name = $file['name'];
+        $file_tmp_name = $file['tmp_name'];
+        $file_size = $file['size'];
+        $file_error = $file['error'];
+
+        if ($file_error > 0) {
+            throw new \Exception("Error uploading file");
+        }
+
+        if ($file_size > $max_size) {
+            throw new \Exception("File is too big, please choose file under 1MB");
+        }
+
+        $file_ext = explode(".", $file_name);
+        $file_ext = strtolower(end($file_ext));
+        if (!in_array($file_ext, $allowed_ext)) {
+            throw new \Exception("File type not allowed");
+        }
+        $file_new_name = $user['id'] . ".webp";
+
+        if (!file_exists(__DIR__ . "/avatars/")) {
+            mkdir(__DIR__ . "/avatars/", 0777, true); // Create folder if it doesn't exist
+        }
+        move_uploaded_file($file_tmp_name, __DIR__ . "/avatars/" . $file_new_name);
+
+        return $this->fullPathToRelativePath(__DIR__ . "/avatars/" . $file_new_name, $_ENV['__MP_CWD__']) . "?t=" . time();
+
+    }
+
+
+    function deleteAvatar()
+    {
+
+        if (!$this->module->getConfig()->get("profile.change_avatar")) {
+            throw new \Exception('Change avatar is disabled');
+        }
+
+
+        $user = Box::module("Auth")->Session->getUser();
+        if (!$user || !$user['id']) {
+            throw new \Exception("Unauthorized");
+        }
+        if (file_exists(__DIR__ . "/avatars/" . $user['id'] . ".webp")) {
+            unlink(__DIR__ . "/avatars/" . $user['id'] . ".webp");
+        }
+        return "https://gravatar.com/avatar/" . md5(strtolower(trim($user['email']))) . "?s=200";
+    }
+
+
+    function fullPathToRelativePath($fullPath, $basePath)
+    {
+        // Normalize directory separators and remove trailing slashes
+        $fullPath = rtrim(str_replace('\\', '/', $fullPath), '/');
+        $basePath = rtrim(str_replace('\\', '/', $basePath), '/');
+
+        // Construct the relative path
+        $relativePath = str_replace($basePath, '', $fullPath);
+
+        // Return the relative path
+        return $relativePath;
+    }
 }

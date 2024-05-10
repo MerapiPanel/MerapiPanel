@@ -9,14 +9,21 @@
 
 
 {% block subheader_menu %}
-
+{% if api.User.getRoles.isAllowed(1) %}
 <a href="{{ '/users/add' | access_path }}" class="menu-item">
     <i class="fa fa-plus"></i> add user
 </a>
-
+{% endif %}
 {% endblock %}
 
-
+{% block stylesheet %}
+{{ parent() }}
+<style>
+    .list-group-item img {
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
 
 
 

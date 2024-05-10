@@ -16,3 +16,10 @@ html, body {
 	justify-content: center;
 	align-items: center;
 }
+.widget-user-avatar {
+	width: 75px;
+	height: 75px;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 0.3rem;;
+}

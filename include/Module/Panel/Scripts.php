@@ -8,7 +8,7 @@ class Scripts extends __Fragment
 {
 
     protected $scripts = [];
-    private $box;
+    protected $module;
 
     function onCreate(\MerapiPanel\Box\Module\Entity\Module $module)
     {

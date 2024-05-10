@@ -33,7 +33,7 @@ const entry = () => {
 }
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: entry(),
     output: {
         filename: '[name].js',

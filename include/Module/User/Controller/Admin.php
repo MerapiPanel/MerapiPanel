@@ -24,11 +24,19 @@ class Admin extends __Fragment
     public function register()
     {
 
-        if(!$this->module->getRoles()->isAllowed(0)) {
+        $config = $this->module->getConfig();
+        if (!$this->module->getRoles()->isAllowed(0)) {
+            if ($config->get("profile")) {
+                Box::module("Panel")->addMenu([
+                    "name" => "Profile",
+                    "link" => Router::GET("/users/profile", "profile", self::class),
+                    'icon' => '<i class="fa-regular fa-circle-user"></i>',
+                    "order" => 4
+                ]);
+            }
             return;
         }
 
-        $config = $this->module->getConfig();
 
         Router::GET("/users/add", "addUser", self::class);
         $index = Router::GET("/users", "index", self::class);
@@ -38,7 +46,7 @@ class Admin extends __Fragment
             'icon' => 'fa-solid fa-user'
         ]);
 
-        if($config->get("profile")) {
+        if ($config->get("profile")) {
             Box::module("Panel")->addMenu([
                 "name" => "Profile",
                 "link" => Router::GET("/users/profile", "profile", self::class),
@@ -46,6 +54,9 @@ class Admin extends __Fragment
                 "order" => 1,
                 "parent" => "Users"
             ]);
+            if ($this->module->getRoles()->isAllowed(2)) {
+                Router::GET("/users/profile/{user_id}", "otherProfile", self::class);
+            }
         }
         $roleNames = json_encode(Util::getRoles());
 
@@ -56,10 +67,15 @@ class Admin extends __Fragment
                 fetch: "{{ '/api/User/fetch' | access_path }}",
                 fetchAll: "{{ '/api/User/fetchAll' | access_path }}",
                 update: "{{ '/api/User/update' | access_path }}",
-                delete: "{{ '/api/User/delete' | access_path }}"
+                delete: "{{ '/api/User/delete' | access_path }}",
+                forceLogout: "{{ '/api/Auth/forceLogout' | access_path }}",
+                profileURL: "{{ '/users/profile/{user_id}' | access_path }}",
             },
-            session: {{ api.Auth.getLogedinUser | json_encode | raw }},
-            roles: $roleNames
+            session: {{ api.Auth.Session.getUser() | json_encode | raw }},
+            roleNames: $roleNames,
+            allowModify: {{ api.User.getRoles.isAllowed(1) | json_encode | raw }},
+            allowVisit: {{ api.User.getRoles.isAllowed(2) | json_encode | raw }},
+            profilePage: {{ api.User.getConfig.get('profile') | json_encode | raw }},
         }
         </script>
         HTML;
@@ -74,12 +90,25 @@ class Admin extends __Fragment
 
 
 
-    function profile(Request $req) {
+    function profile(Request $req)
+    {
         return View::render("profile.html.twig");
     }
 
+    function otherProfile(Request $req)
+    {
 
-    
+        $user_id = $req->user_id();
+        $user = $this->module->fetch(...[
+            "where" => [
+                "id" => $user_id
+            ]
+        ]);
+        return View::render("profile.html.twig", ["user" => $user]);
+    }
+
+
+
     public function index($req)
     {
 

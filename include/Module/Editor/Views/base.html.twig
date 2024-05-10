@@ -1,8 +1,18 @@
 {% extends "base.html.twig" %}
 
+{% block meta %}
+<meta charset="utf-8">
+<title>{% block meta_title %}Merapi panel{% endblock %}</title>
+{% endblock %}
+
 {% block stylesheet %}
 {{ parent() }}
 <link rel="stylesheet" href="{{ '@editor/dist/main.css' | assets }}">
+<style>
+	.editor-app {
+		min-width: 1024px;
+}
+</style>
 {% endblock %}
 
 {% block head_javascript %}

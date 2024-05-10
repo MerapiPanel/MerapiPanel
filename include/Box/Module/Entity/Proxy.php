@@ -4,7 +4,6 @@ namespace MerapiPanel\Box\Module\Entity {
     use Closure;
     use MerapiPanel\Box\Module\__Fragment;
     use ReflectionClass;
-    use ReflectionParameter;
 
     class Proxy extends Fragment
     {
@@ -52,7 +51,11 @@ namespace MerapiPanel\Box\Module\Entity {
             if (!method_exists($this->instance, $method)) {
                 $caller = debug_backtrace();
                 if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
-                    throw new \Exception("Method not found: " . $method . " in " . $this->className . " called from " . $caller[0]['file'] . ":" . $caller[0]['line']);
+                    $trace = $caller[0];
+                    if (isset($caller[0]['class']) && strpos($caller[0]['class'], "MerapiPanel\\Box\\Module\\") !== false) {
+                        $trace = $caller[1];
+                    }
+                    throw new \Exception("Method not found: " . $method . " in " . $this->className . " called from " . $trace['file'] . ":" . $trace['line']);
                 }
                 throw new \Exception("Method not found: " . $method . " in " . $this->className);
             }
@@ -60,7 +63,11 @@ namespace MerapiPanel\Box\Module\Entity {
             if (!$this->__isMethodAllowed($method)) {
                 $caller = debug_backtrace();
                 if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
-                    throw new \Exception("Method not found: " . $method . " in " . $this->className . " called from " . $caller[0]['file'] . ":" . $caller[0]['line']);
+                    $trace = $caller[0];
+                    if (isset($caller[0]['class']) && strpos($caller[0]['class'], "MerapiPanel\\Box\\Module\\") !== false) {
+                        $trace = $caller[1];
+                    }
+                    throw new \Exception("Method not allowed: " . $method . " in " . $this->className . " called from " . $trace['file'] . ":" . $trace['line']);
                 }
                 throw new \Exception("Method not allowed: " . $method . " in " . $this->className);
             }
@@ -125,6 +132,43 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
             return true;
+        }
+
+
+        
+
+
+        public function __method_is_public($method)
+        {
+
+            $reflectorMethod = new \ReflectionMethod($this->instance, $method);
+            return $reflectorMethod->isPublic();
+        }
+
+        public function __method_is_private($method)
+        {
+            $reflectorMethod = new \ReflectionMethod($this->instance, $method);
+            return $reflectorMethod->isPrivate();
+        }
+        public function __method_is_protected($method)
+        {
+            $reflectorMethod = new \ReflectionMethod($this->instance, $method);
+            return $reflectorMethod->isProtected();
+        }
+        public function __method_is_abstract($method)
+        {
+            $reflectorMethod = new \ReflectionMethod($this->instance, $method);
+            return $reflectorMethod->isAbstract();
+        }
+        public function __method_is_final($method)
+        {
+            $reflectorMethod = new \ReflectionMethod($this->instance, $method);
+            return $reflectorMethod->isFinal();
+        }
+        public function __method_is_static($method)
+        {
+            $reflectorMethod = new \ReflectionMethod($this->instance, $method);
+            return $reflectorMethod->isStatic();
         }
 
 

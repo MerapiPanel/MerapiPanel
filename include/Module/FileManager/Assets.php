@@ -81,7 +81,7 @@ enum AssetsType: string
 
 class Assets extends __Fragment
 {
-    
+
     public string $routeLink = "/public/assets/{data}";
     protected Module $module;
 
@@ -191,31 +191,30 @@ class Assets extends __Fragment
 
         $response = new Response();
 
-        // Determine the last modified time of the file for caching
-        $lastModifiedTime = filemtime($file);
-        $etag = md5($lastModifiedTime . $file);
+        if ($_ENV['__MP_CACHE__'] === true) {
+            // Determine the last modified time of the file for caching
+            $lastModifiedTime = filemtime($file);
+            $etag = md5($lastModifiedTime . $file);
 
-        $response->setStatusCode(200);
-        $response->setHeader("Status-Code", 200);
-        $response->setHeader("Cache-Control", "public, max-age=86400");
-        $response->setHeader("Last-Modified", gmdate("D, d M Y H:i:s", $lastModifiedTime) . " GMT");
-        $response->setHeader("Etag", $etag);
+            $response->setStatusCode(200);
+            $response->setHeader("Status-Code", 200);
+            $response->setHeader("Cache-Control", "public, max-age=86400");
+            $response->setHeader("Last-Modified", gmdate("D, d M Y H:i:s", $lastModifiedTime) . " GMT");
+            $response->setHeader("Etag", $etag);
 
-        // Check if the page has been modified since the browser's cache
-        if ($req->http("if-modified-since") && $req->http("if-modified-since") == gmdate("D, d M Y H:i:s", $lastModifiedTime)) {
-            // Return 304 Not Modified without any content if the ETag matches
-            $response->setStatusCode(304);
-            return $response;
+            // Check if the page has been modified since the browser's cache
+            if ($req->http("if-modified-since") && $req->http("if-modified-since") == gmdate("D, d M Y H:i:s", $lastModifiedTime)) {
+                // Return 304 Not Modified without any content if the ETag matches
+                $response->setStatusCode(304);
+                return $response;
+            }
         }
 
         $output = file_get_contents($file);
-
         $mimeTypes = json_decode(file_get_contents(__DIR__ . "/mimeType.json"), true);
 
         // Set the appropriate Content-Type header
         $contentType = $mimeTypes[strtolower(pathinfo($file, PATHINFO_EXTENSION))] ?? 'application/octet-stream'; // Default to binary if MIME type is application/octet-stream
-        // error_log("From Assets Traying Get : " . $contentType);
-
         $response->setHeader("Content-Type", $contentType);
         $response->setContent($output);
 

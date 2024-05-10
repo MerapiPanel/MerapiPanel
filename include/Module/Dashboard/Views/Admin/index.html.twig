@@ -16,13 +16,13 @@
 
 {% block stylesheet %}
 {{ parent() }}
-<link rel="stylesheet" href="{{ '@dashboard/dist/index.css' | assets | url }}?v={{ time() }}">
+<link rel="stylesheet" href="{{ '@dashboard/dist/index.css' | assets | url }}">
 {% endblock %}
 
 
 
 {% block subheader_outer %}
-{% if api.Dashboard.isAllowed(0) %}
+{% if api.Dashboard.getRoles.isAllowed(0) %}
 {{ parent() }}
 {% endif %}
 {% endblock %}
@@ -38,13 +38,12 @@
 
 {% block javascript %}
 {{ parent() }}
-<script src="{{ '@dashboard/dist/index.js' | assets | url }}?v={{ time() }}"></script>
+<script src="{{ '@dashboard/dist/index.js' | assets | url }}"></script>
 {% endblock %}
 
 
 
 
 {% block content %}
-{{ api.Dashboard.test({hallo2:"hallo2", hallo:"hallo"}) }}
 <div class="pb-5" id="root"></div>
 {% endblock %}

@@ -18,7 +18,6 @@ class Service extends __Fragment
 		$this->module = $module;
 	}
 
-	// add other funstion here
 
 
 	public function fetch($columns = ["id", "title", "price", "category", "description", "data", "status", "post_date", "update_date"], $id = 1)

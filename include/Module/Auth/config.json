@@ -4,13 +4,18 @@
         "label": "Cookie Name",
         "description": "The name of the cookie to store the login session",
         "default": "auth",
+        "minLength": 5,
+        "maxLength": 50,
         "required": true
     },
     {
         "name": "session_time",
         "label": "Session Time",
         "description": "Session time in hours",
+        "type": "number",
         "default": 24,
+        "min": 1,
+        "max": 360,
         "required": true
     },
     {

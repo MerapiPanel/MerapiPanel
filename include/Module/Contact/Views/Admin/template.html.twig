@@ -24,7 +24,7 @@
 
 
 {% block subheader_menu %}
-{% if api.Contact.isAllowed(4) %}
+{% if api.Contact.getRoles.isAllowed(4) %}
 <a class="menu-item" href="{{ '/contact/template/add' | access_path }}">Add Template</a>
 {% endif %}
 {% endblock %}

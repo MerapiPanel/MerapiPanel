@@ -1,6 +1,6 @@
 <?php
 use MerapiPanel\Box;
-$user = Box::module("Auth")->getLogedinUser();
+$user = Box::module("Auth")->Session->getUser();
 
 // write logic here
 ?>

@@ -4,6 +4,7 @@ namespace MerapiPanel\Exception;
 
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Views\View;
+use Symfony\Component\Filesystem\Path;
 use Throwable;
 use Twig\Loader\FilesystemLoader;
 
@@ -94,19 +95,21 @@ class Catcher
         if (!isset($code) || $code == 0) {
             $code = 500;
         }
-
         $view = View::getInstance();
-        $view->setLoader(new FilesystemLoader(__DIR__ . "/Views"));
+        $extension = "html";
+        $base = $_ENV['__MP_CWD__'] . "/errors";
+        if ($_ENV['__MP_DEBUG__'] || !file_exists($_ENV['__MP_CWD__'] . "/errors/error.$extension")) {
+            $extension = "html.twig";
+            $base = __DIR__ . "/Views";
+        }
 
-        $template = "error.html.twig";
-
-        $loader = $view->getLoader();
-        if ($loader->exists("{$code}.html.twig")) {
-            $template = "{$code}.html.twig";
+        $template = Path::join($base, "error.$extension");
+        if (file_exists(Path::join($base, "{$code}.$extension"))) {
+            $template = Path::join($base, "{$code}.$extension");
         }
 
         $response = new Response(
-            $view->load($template)->render([
+            $view->getTwig()->createTemplate(file_get_contents($template))->render([
                 "error" => [
                     "file" => $file,
                     "line" => $line,
@@ -117,7 +120,7 @@ class Catcher
                     "snippet" => $snippet
                 ]
             ]),
-            (int)$code
+            (int) $code
         );
         $response->setHeader("Content-Type", "text/html");
         return $response;
