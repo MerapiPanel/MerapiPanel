@@ -13,7 +13,7 @@
 {{ parent() }}
 <script src="{{ '@panel/dist/panel.bundle.js' | assets }}"></script>
 <!-- @Panel:scripts -->
-{{ panel_render(api.Panel.getScripts) }}
+{{ panel_render(api.Panel.Scripts.getScripts) }}
 <!--/ @Panel:scripts -->
 {% endblock %}
 
@@ -103,10 +103,7 @@
             {% endif %}
 
             {% block content_outer %}
-            {% if api.Panel.allowed %}
             <div class="panel-content">
-
-
                 {% block content %}
                 <div class="flex-grow-1 align-content-center" id="panel-content">
                     <div class="text-center">
@@ -116,14 +113,6 @@
                 </div>
                 {% endblock %}
             </div>
-            {% else %}
-            <div class="flex-grow-1 align-content-center" id="panel-content">
-                <div class="text-center">
-                    <h2 class="fs-2 fw-bold">Not Allowed</h2>
-                    <p>you have no permission to access this page</p>
-                </div>
-            </div>
-            {% endif %}
             {% endblock %}
 
         </div>

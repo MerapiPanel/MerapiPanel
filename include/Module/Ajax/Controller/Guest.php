@@ -1,22 +1,25 @@
 <?php
-namespace MerapiPanel\Module\Api\Controller {
+namespace MerapiPanel\Module\Ajax\Controller {
 
     use MerapiPanel\Box;
+    use MerapiPanel\Box\Module\__Controller;
     use MerapiPanel\Utility\Http\Request;
     use MerapiPanel\Utility\Router;
 
-    class Admin extends __Default
+    class Guest extends __Controller
     {
+
 
         function register()
         {
-            Router::GET("/api/{module_name}/{method_name}", "apiCall", self::class);
-            Router::GET("/api/{module_name}/{service_name}/{method_name}", "apiCallService", self::class);
-
-            Router::POST("/api/{module_name}/{method_name}", "post_apiCall", self::class);
-            Router::POST("/api/{module_name}/{service_name}/{method_name}", "post_apiCallService", self::class);
+            
+            Router::GET("/public/api/{module_name}/{method_name}", "apiCall", self::class);
+            Router::POST("/public/api/{module_name}/{method_name}", "postApiCall", self::class);
+            Router::POST("/public/api/{module_name}/{method_name}", "post_apiCall", self::class);
+            Router::POST("/public/api/{module_name}/{service_name}/{method_name}", "post_apiCallService", self::class);
 
         }
+
 
         function apiCall(Request $request)
         {
@@ -27,11 +30,12 @@ namespace MerapiPanel\Module\Api\Controller {
 
                 ob_start();
                 $module = Box::module($moduleName);
-                if ($module->Api instanceof Proxy) {
-                    $module = $module->Api;
+                if ($module->Ajax instanceof Proxy) {
+                    $module = $module->Ajax;
                 }
 
                 $params = $module->__method_params($methodName);
+
                 if (!empty($params)) {
                     foreach ($params as $key => $value) {
                         $paramName = $value->name;
@@ -60,7 +64,6 @@ namespace MerapiPanel\Module\Api\Controller {
                 }
                 ob_clean();
 
-
                 return [
                     "code" => 200,
                     "message" => "Success",
@@ -68,14 +71,15 @@ namespace MerapiPanel\Module\Api\Controller {
                 ];
 
             } catch (\Throwable $e) {
+                
                 return [
                     "code" => 500,
                     "message" => $e->getMessage()
                 ];
             }
         }
-        
-        function post_apiCall(Request $request)
+
+        function postApiCall(Request $request)
         {
             $moduleName = $request->module_name();
             $methodName = $request->method_name();
@@ -84,8 +88,8 @@ namespace MerapiPanel\Module\Api\Controller {
 
                 ob_start();
                 $module = Box::module($moduleName);
-                if ($module->Api) {
-                    $module = $module->Api;
+                if ($module->Ajax) {
+                    $module = $module->Ajax;
                 }
                 $params = $module->__method_params($methodName);
                 if (!empty($params)) {
@@ -132,6 +136,7 @@ namespace MerapiPanel\Module\Api\Controller {
 
 
         }
+
 
 
         function apiCallService(Request $request)

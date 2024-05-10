@@ -10,7 +10,7 @@ use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Util;
 
 
-class Api extends __Fragment
+class Ajax extends __Fragment
 {
 
     protected $module;

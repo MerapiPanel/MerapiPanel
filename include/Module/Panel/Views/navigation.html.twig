@@ -24,11 +24,11 @@
     <div class="sidebar-container">
         <button class="sidebar-close" onclick="closeNav()"></button>
         <div class="sidebar-header">
-            <img width="110" height="65" src="{{ '@panel/assets/logo.svg?v=1' | assets }}" alt="">
+            <img width="110" height="65" src="{{ '@panel/assets/logo.svg' | assets }}" alt="">
         </div>
 
         <ul class="nav-menu">
-            {{ _self.render_menu(api.Panel.listmenu) }}
+            {{ _self.render_menu(api.Panel.getMenu) }}
         </ul>
     </div>
 </nav>

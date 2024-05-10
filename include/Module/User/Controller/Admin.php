@@ -47,7 +47,7 @@ class Admin extends __Fragment
                 "parent" => "Users"
             ]);
         }
-        
+        $roleNames = json_encode(Util::getRoles());
 
         $script = <<<HTML
         <script>
@@ -58,8 +58,8 @@ class Admin extends __Fragment
                 update: "{{ '/api/User/update' | access_path }}",
                 delete: "{{ '/api/User/delete' | access_path }}"
             },
-            session: {{ api.Auth.LogedinUser | json_encode | raw }},
-            roles: {{ api.User.getRoles | json_encode | raw }}
+            session: {{ api.Auth.getLogedinUser | json_encode | raw }},
+            roles: $roleNames
         }
         </script>
         HTML;
@@ -72,13 +72,14 @@ class Admin extends __Fragment
         return View::render("add_user.twig");
     }
 
-    function profile(Request $req) {
 
-        $user = Box::module("Auth")->getLogedinUser();
-        $session_data = DB::table("session_geo")->select("*")->where("user_id")->equals($user['id'])->execute()->fetchAll(\PDO::FETCH_ASSOC);
-        return View::render("profile.html.twig", ["user" => $user, "session_data" => $session_data]);
+
+    function profile(Request $req) {
+        return View::render("profile.html.twig");
     }
 
+
+    
     public function index($req)
     {
 

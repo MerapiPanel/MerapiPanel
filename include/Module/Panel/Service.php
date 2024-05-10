@@ -7,6 +7,7 @@ use MerapiPanel\Box\Module\__Fragment;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Views\View;
 
+
 class Service extends __Fragment
 {
 
@@ -47,7 +48,7 @@ class Service extends __Fragment
 
         $menu = [];
 
-        foreach ($items as $key => $item) {
+        foreach ($items as $item) {
 
             $parent = isset($item['parent']) && !empty($item['parent']) ? strtolower($item['parent']) : null;
             // Check if the current item has a "parent" key that matches the provided $parentId.
@@ -174,7 +175,7 @@ class Service extends __Fragment
     }
 
 
-    
+
     private function isCurrent($link)
     {
 
@@ -188,5 +189,17 @@ class Service extends __Fragment
     public function setAllowed($allow = true)
     {
         $this->allowed = $allow;
+    }
+
+
+    function getAbsolutePath($path)
+    {
+        return str_replace(str_replace('\\', '/', $_ENV['__MP_CWD__']), "", $path);
+    }
+
+
+    function isFile($path)
+    {
+        return is_file($path);
     }
 }

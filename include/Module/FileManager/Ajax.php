@@ -6,7 +6,7 @@ use MerapiPanel\Utility\Http\Request;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 
-class Api extends __Fragment
+class Ajax extends __Fragment
 {
     protected $module;
 

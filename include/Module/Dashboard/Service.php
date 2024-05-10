@@ -10,4 +10,12 @@ class Service extends __Fragment
         $this->module = $module;
     }
 
+
+    function test($hallo, $hallo2) {
+
+        error_log("test $hallo $hallo2");
+
+        return "Hallo user";
+    }
+
 }

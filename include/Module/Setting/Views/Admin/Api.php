@@ -18,39 +18,6 @@ class Api extends __Fragment
 
 
 
-    function token(string $form, $moduleName = null)
-    {
-
-        $form = preg_replace("/\n/im", "", $form);
-
-        $inputNames = [];
-        preg_match_all("/<[input|textarea|select].*?name=\"(.*?)\".*?>/i", $form, $matches);
-        if (isset($matches[1])) {
-            $inputNames = $matches[1];
-        }
-
-        $route = Router::getInstance()->getRoute();
-        if (!$route) {
-            return "";
-        }
-        if (empty($moduleName)) {
-            $contoller = $route->getController();
-            if (gettype($contoller) !== "string") {
-                return "";
-            }
-
-            preg_match("/Module\\\(\w+)\\\/i", $contoller, $matches);
-            if (isset($matches[1])) {
-                $moduleName = $matches[1];
-            } else {
-                return "";
-            }
-        }
-
-        $text = serialize(["module" => $moduleName, "input" => $inputNames]);
-        $token = AES::encrypt($text);
-        return $token;
-    }
 
 
 
@@ -69,8 +36,6 @@ class Api extends __Fragment
 
 
     
-    function isAllowed($id) {
-        return $this->module->getRoles()->isAllowed($id);
-    }
+
 
 }

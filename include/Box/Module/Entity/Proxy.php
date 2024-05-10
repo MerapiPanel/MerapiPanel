@@ -57,7 +57,7 @@ namespace MerapiPanel\Box\Module\Entity {
                 throw new \Exception("Method not found: " . $method . " in " . $this->className);
             }
 
-            if (!$this->__isAllowed($method)) {
+            if (!$this->__isMethodAllowed($method)) {
                 $caller = debug_backtrace();
                 if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
                     throw new \Exception("Method not found: " . $method . " in " . $this->className . " called from " . $caller[0]['file'] . ":" . $caller[0]['line']);
@@ -104,25 +104,21 @@ namespace MerapiPanel\Box\Module\Entity {
 
 
 
-        public function __isAllowed($method)
+        public function __isMethodAllowed($method)
         {
 
             $module = $this->getModule();
-
             $reflectorMethod = new \ReflectionMethod($this->instance, $method);
             if (!$reflectorMethod->isPublic()) {
                 throw new \Exception("Method not public: " . $method . " in " . $this->className);
             }
             $comment = $reflectorMethod->getDocComment();
-
             preg_match("/@admin\s+(\w+)/", $comment, $matches);
-            if (isset($matches[1]) && $module->Service instanceof Proxy && $module->Service->method_exists("isAdmin") && $module->Service->isAdmin()) {
+            if (isset($matches[1]) && $module->Service instanceof Proxy && $module->Service->__method_exists("isAdmin") && $module->Service->isAdmin()) {
                 return $matches[1] == 'true';
             }
-
-
             preg_match("/@guest\s+(\w+)/", $comment, $matches);
-            if (isset($matches[1]) && ($module->Service instanceof Proxy && $module->Service->method_exists("isGuest") && $module->Service->isGuest() || $matches[1] == 'false')) {
+            if (isset($matches[1]) && ($module->Service instanceof Proxy && $module->Service->__method_exists("isGuest") && $module->Service->isGuest() || $matches[1] == 'false')) {
                 return $matches[1] == 'true';
             }
 

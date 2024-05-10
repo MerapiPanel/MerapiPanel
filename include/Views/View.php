@@ -19,7 +19,7 @@ class View
     private $file;
     protected Intl $intl;
     protected $lang = false;
-    private TemplateWrapper $wrapper; 
+    private TemplateWrapper|null $wrapper = null;
 
 
     public function __construct(array|ArrayLoader $loader = [])
@@ -33,7 +33,7 @@ class View
         }
 
         $this->intl = new Intl();
-        $this->twig = new Twig($this->loader, []);
+        $this->twig = new Twig($this->loader);
 
         $this->twig->enableDebug();
         $this->twig->AddExtension(new TranslationExtension($this->intl));
@@ -62,7 +62,8 @@ class View
 
 
 
-    function getIntl(): Intl {
+    function getIntl(): Intl
+    {
         return $this->intl;
     }
 
@@ -226,7 +227,6 @@ class View
                         throw new Exception("View file not found: $template");
                     }
                 }
-
 
 
                 // tell intl to scan views folder

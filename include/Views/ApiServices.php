@@ -3,6 +3,7 @@ namespace MerapiPanel\Views {
 
     use MerapiPanel\Box;
     use MerapiPanel\Box\Module\Entity\Module;
+    use MerapiPanel\Box\Module\Entity\Proxy;
 
     class ApiServices
     {
@@ -41,24 +42,18 @@ namespace MerapiPanel\Views {
 
         public function __call($name, $arguments)
         {
-
-            $default_api = $this->module->Views->Api;
-            if ($default_api && (method_exists($default_api, $name) || (method_exists($default_api, "__method_exists") && $default_api->__method_exists($name)))) {
-             
-                return $default_api->$name(...$arguments);
-            } else if ($this->accessName != "guest") {
-                $accessName = ucfirst($this->accessName);
-
-               
-                if ($this->module->Views->$accessName) {
-                    $_api = $this->module->Views->$accessName->Api;
-                    if ($_api && (method_exists($_api, $name) || (method_exists($_api, "__method_exists") && $_api->__method_exists($name)))) {
-                        return $_api->$name(...$arguments);
-                    }
+            $output = null;
+            $service = $this->module->Service;
+            if ($service->__method_exists($name)) {
+                if($arguments && count($arguments) === 1 && is_array($arguments[0])) {
+                    $arguments = $arguments[0];
                 }
+                $output = $service->$name(...$arguments);
+            } else if($this->module->$name instanceof Proxy) {
+                $output = $this->module->$name;
             }
-
-            return null;
+            
+            return $output;
         }
     }
 }

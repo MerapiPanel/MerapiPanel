@@ -8,12 +8,6 @@ use Throwable;
 use Twig\Loader\FilesystemLoader;
 
 
-// $__v = 1;
-// ini_set('display_errors', $__v);
-// ini_set('display_startup_errors', $__v);
-// error_reporting($__v);
-
-
 
 class Catcher
 {
