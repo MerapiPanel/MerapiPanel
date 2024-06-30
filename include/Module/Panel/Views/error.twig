@@ -1,0 +1,124 @@
+{% extends "@panel/base.html.twig" %}
+
+{% block header_title %}Caught an Error{% endblock %}
+{% block subheader_outer %}{% endblock %}
+
+{% block stylesheet %}
+{{parent()}}
+<style>
+    .panel-container {
+        background-color: rgba(255, 241, 241, 0.437);
+        box-shadow: 0 0 0 2px brown;
+        min-height: 72vh;
+    }
+    
+    .snippet {
+        position: relative;
+        display: block;
+    }
+    .snippet-header * {
+        font-size: 1.15rem;
+        word-wrap: break-word;
+    }
+    .snippet-content {
+        font-family: monospace;
+        font-size: 0.8rem;
+        box-shadow: 0 0 0 1px rgba(155, 9, 9, 0.48);
+        overflow: auto;
+    }
+    .snippet-content table {
+        width: 100%;
+        column-gap: 0;
+        white-space: pre;
+    }
+    .snippet-content table .line-number {
+        padding: 0.15rem 0.5rem;
+        width: 2rem;
+        padding-right: 0.5rem;
+        color: #3e0d0d;
+        position: sticky;
+        left: 0;
+        background-color: white;
+    }
+    
+    .snippet-content table .highlight .line-number {
+        color: #ff0000;
+    }
+    
+    .snippet-content table .highlight .line-content {
+        color: #ff0000;
+        background-color: #e6e6e6;
+    }
+    
+    .trace-header * {
+        font-size: 1.15rem;
+        font-weight: 600;
+        word-wrap: break-word;
+    }
+    .trace-content {
+        list-style: none;
+        padding-left: 0;
+        font-size: 0.8rem;
+        line-height: 1.6rem;
+        font-family: monospace;
+    }
+    
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+<section class="p-3">
+    <header class="d-flex align-items-end flex-wrap fs-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A5 5 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A5 5 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623M4 7v4a4 4 0 0 0 3.5 3.97V7zm4.5 0v7.97A4 4 0 0 0 12 11V7zM12 6a4 4 0 0 0-1.334-2.982A3.98 3.98 0 0 0 8 2a3.98 3.98 0 0 0-2.667 1.018A4 4 0 0 0 4 6z" />
+        </svg>
+        <div class="ms-2">ERROR CODE <b>{{ code == 0 ? "500" : code }}</b></div>
+    </header>
+</section>
+
+<div class="my-3 p-3">
+
+    <div class="text-break">
+        Unexpected <b>{{ type }}</b> throw "{{ message }}" at {{ file }}:{{ line }}
+    </div>
+
+    <div class="row align-items-baseline">
+        <div class="col-12 col-lg-6">
+            <section class="snippet py-5">
+                <header class="snippet-header mb-2">
+                    <h2>{{ file }}</h2>
+                </header>
+                <div class="snippet-content">
+                    {{ snippet | raw }}
+                </div>
+            </section>
+        </div>
+        <div class="col-12 col-md-6">
+            <section class="trace">
+                <header class="trace-header">
+                    <h2>Stack Trace</h2>
+                </header>
+                <ul class="trace-content">
+                    {% for trace in trace %}
+                    <li class="trace-line">
+                        <span class="trace-line-code">
+                            {{ trace.file }}
+                            <span class="text-primary fw-bold">
+                                {{"{"}}{{ trace.function }}{{"}"}}
+                            </span>
+                        </span>
+                        {% if trace.line %}
+                        <span class="trace-line-number">:{{ trace.line }}</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

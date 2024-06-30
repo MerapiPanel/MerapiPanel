@@ -9,7 +9,7 @@
 
 
 {% block subheader_menu %}
-{% if api.User.getRoles.isAllowed(1) %}
+{% if _box.User.getRoles.isAllowed(1) %}
 <a href="{{ '/users/add' | access_path }}" class="menu-item">
     <i class="fa fa-plus"></i> add user
 </a>
@@ -27,7 +27,7 @@
 
 
 
-{% set usersLen = (api.User.fetchAll|length ) -1 %}
+{% set usersLen = (_box.User.fetchAll|length ) -1 %}
 
 
 {% block content %}

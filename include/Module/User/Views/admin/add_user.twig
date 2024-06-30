@@ -54,7 +54,7 @@
                 <label for="role">role :</label>
                 <select name="role" id="role" class="form-control" required>
                     <option value="">-- select role --</option>
-                    {% for item in api.User.getRoleNames %}
+                    {% for item in _box.User.getRoleNames %}
                     <option value="{{ item }}">{{ item }}</option>
                     {% endfor %}
                 </select>

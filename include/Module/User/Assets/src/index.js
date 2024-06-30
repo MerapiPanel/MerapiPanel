@@ -90,7 +90,7 @@ function createComponent(user) {
         .append(`<img class="w-full h-full object-cover rounded-2" width="45" height="45" src="${user.avatar ? user.avatar : ''}" alt="${user.name}">`)
         .append(
             $(`<div class="ms-2 w-100">`)
-            .css(MUser.opts.profilePage && endpoints.profileURL && MUser.opts.allowVisit ? { cursor: 'pointer' } : {})
+                .css(MUser.opts.profilePage && endpoints.profileURL && MUser.opts.allowVisit ? { cursor: 'pointer' } : {})
                 .append(`<div class="fw-bold">${user.name} ${user.email == session.email ? '<small><i>( You )</i></small>' : ''}</div>`)
                 .append(`<div class='d-flex flex-wrap align-items-end align-content-end'>${user.email} - <i>${user.role}</i><span class="badge badge-sm bg-${['danger', 'warning', 'primary'][user.status]} ms-2">${['Inactive', 'Suspended', 'Active'][user.status]}</span></div></div>`)
                 .on('click', () => {
@@ -292,11 +292,12 @@ function editUser(user) {
         __.dialog.confirm("Confirm Change ?", dialog_content).then(() => {
 
             __.http.post(endpoints.update, formData).then((result) => {
-                if (result.code === 200) {
-
+                if (result.status) {
                     __.toast('User updated successfully', 5, 'text-success');
+                    Object.keys(result.data).forEach(key => {
+                        user[key] = result.data[key];
+                    })
                     MUser.render();
-
                 } else {
                     throw new Error(result.message);
                 }

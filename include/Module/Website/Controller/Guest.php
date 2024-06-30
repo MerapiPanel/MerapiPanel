@@ -67,7 +67,7 @@ HTML;
                 $_variables = [];
                 try {
 
-                    $variables = is_string($variables) ? json_decode($variables, true) : $variables;
+                    $variables = is_string($variables) ? json_decode($variables??'[]', true) : $variables;
                     if (is_array($variables) && count($variables) > 0) {
                         $_variables = Box::module("Website")->Variable->execute($variables);
                     }

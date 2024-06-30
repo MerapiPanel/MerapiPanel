@@ -4,6 +4,7 @@ namespace MerapiPanel\Module\Panel;
 
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Fragment;
+use MerapiPanel\Box\Module\Entity\Module;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Views\View;
 
@@ -13,8 +14,11 @@ class Service extends __Fragment
 
     protected $ListMenu = [];
     protected $module;
-    function onCreate(Box\Module\Entity\Module $module)
+    function onCreate(Module $module)
     {
+        if (Box::module("Auth")->isAdmin() && isset($_ENV['__MP_ADMIN__']['prefix']) && strpos(Request::getInstance()->getPath(), $_ENV['__MP_ADMIN__']['prefix']) === 0) {
+            View::getInstance()->setErrorTemplate("@panel/error.twig");
+        }
         $this->module = $module;
     }
 
@@ -72,7 +76,6 @@ class Service extends __Fragment
                     // Add the current item to the menu.
                     $menu[] = $item;
                 }
-
             }
         }
 

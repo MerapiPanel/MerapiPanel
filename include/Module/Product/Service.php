@@ -12,6 +12,7 @@ use Throwable;
 
 class Service extends __Fragment
 {
+	
 	protected Module $module;
 	function onCreate(Module $module)
 	{

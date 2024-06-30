@@ -149,7 +149,7 @@
         email: '<i class="fas fa-envelope fa-lg"></i>',
         whatsapp: '<i class="fab fa-whatsapp fa-lg"></i>'
     }
-    const contacts = JSON.parse('{{ api.Contact.fetchAll | json_encode | raw }}');
+    const contacts = JSON.parse('{{ _box.Contact.fetchAll | json_encode | raw }}');
 
 
 

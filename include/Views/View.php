@@ -3,6 +3,7 @@
 namespace MerapiPanel\Views;
 
 use Exception;
+use MerapiPanel\Exception\Catcher;
 use MerapiPanel\Views\Loader;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Views\Abstract\Extension;
@@ -44,6 +45,7 @@ class ViewException extends Extension
             "code" => $t->getCode(),
             "message" => $t->getMessage(),
             "previus" => $t->getPrevious(),
+            "snippet" => Catcher::getCodeSnippet($t->getFile(), $t->getLine()),
             "trace" => $t->getTrace(),
             "file" => $t->getFile(),
             "line" => $t->getLine()
@@ -97,15 +99,17 @@ class View
         $this->twig->addExtension(self::$viewException);
 
 
-        $this->addGlobal("http", [
-            "request" => Request::getInstance()
-        ]);
+        $this->addGlobal("_req", Request::getInstance());
         $this->addGlobal("_lang", $this->lang);
         $this->addGlobal("_box", new ApiServices());
         $this->addGlobal('__env__', $_ENV);
     }
 
 
+    function setErrorTemplate($template, $error_code = "default")
+    {
+        self::$viewException->fn_error_template($error_code, $template);
+    }
 
     function getIntl(): Intl
     {

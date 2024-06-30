@@ -22,7 +22,7 @@
 
 
 {% block subheader_menu %}
-{% if api.Contact.getRoles.isAllowed(1) %}
+{% if _box.Contact.getRoles.isAllowed(1) %}
 <button class="menu-item" onclick="__.Contact.add()">Add Contact</button>
 {% endif %}
 {% endblock %}
@@ -30,7 +30,7 @@
 
 
 
-{% set total = api.Contact.count %}
+{% set total = _box.Contact.count %}
 
 {% block content %}
 

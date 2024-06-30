@@ -143,7 +143,7 @@ class Catcher
 
 
 
-    private static function extractTypeFromString($errorString)
+    public static function extractTypeFromString($errorString)
     {
         preg_match('/^(.*?)\:/i', $errorString, $matches);
 
@@ -157,7 +157,7 @@ class Catcher
 
 
 
-    private static function extractMessageFromString($errorString)
+    public static function extractMessageFromString($errorString)
     {
         $stackTracePosition = strpos($errorString, 'Stack trace:');
         if ($stackTracePosition !== false) {
@@ -169,7 +169,7 @@ class Catcher
 
 
 
-    private static function transformTracerFromArray(array $traceData = [])
+    public static function transformTracerFromArray(array $traceData = [])
     {
 
         $tracer = [];
@@ -190,7 +190,7 @@ class Catcher
     }
 
 
-    private static function extractTracerFromString($errorString, $errorFile): array
+    public static function extractTracerFromString($errorString, $errorFile): array
     {
 
         preg_match('/Stack trace:(.*)/s', $errorString, $matches);
@@ -213,7 +213,7 @@ class Catcher
 
 
 
-    private static function splitTraceDataFromString($traceString)
+    public static function splitTraceDataFromString($traceString)
     {
         $matches = [];
 
@@ -243,7 +243,7 @@ class Catcher
 
 
 
-    private static function getCodeSnippet(string $file, int $line, int $maxLines = 10)
+    public static function getCodeSnippet(string $file, int $line, int $maxLines = 10)
     {
 
         if (!file_exists($file)) {

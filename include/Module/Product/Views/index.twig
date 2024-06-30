@@ -10,7 +10,7 @@
 
 
 {% block subheader_menu %}
-{% if api.Product.getRoles.isAllowed(1) %}
+{% if _box.Product.getRoles.isAllowed(1) %}
 <a href="{{ '/product/new' | access_path }}" class="menu-item">
     <i class="fa fa-plus"></i> new product
 </a>
@@ -18,7 +18,7 @@
 {% endblock %}
 
 
-{% set productLen = (api.product.fetchAll|length)-1 %}
+{% set productLen = (_box.product.fetchAll|length)-1 %}
 {% block content %}
 
 <h2 class="ms-3 mt-3" id="total-records">Total Records: {{ productLen }}</h2>

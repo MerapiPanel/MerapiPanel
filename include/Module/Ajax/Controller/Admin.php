@@ -1,4 +1,5 @@
 <?php
+
 namespace MerapiPanel\Module\Ajax\Controller {
 
     use MerapiPanel\Box;
@@ -17,7 +18,6 @@ namespace MerapiPanel\Module\Ajax\Controller {
 
             Router::POST("/api/{module_name}/{method_name}", [$this, "post_apiCall"]);
             Router::POST("/api/{module_name}/{service_name}/{method_name}", [$this, "post_apiCallService"]);
-
         }
 
         function apiCall(Request $request)
@@ -25,114 +25,86 @@ namespace MerapiPanel\Module\Ajax\Controller {
             $moduleName = $request->module_name();
             $methodName = $request->method_name();
 
-            try {
+            ob_start();
+            $module = Box::module($moduleName);
+            if ($module->Ajax instanceof Proxy) {
+                $module = $module->Ajax;
+            }
 
-                ob_start();
-                $module = Box::module($moduleName);
-                if ($module->Ajax instanceof Proxy) {
-                    $module = $module->Ajax;
-                }
-
-                $params = $module->__method_params($methodName);
-                if (!empty($params)) {
-                    foreach ($params as $key => $value) {
-                        $paramName = $value->name;
-                        if (!$value->isOptional()) {
+            $params = $module->__method_params($methodName);
+            if (!empty($params)) {
+                foreach ($params as $key => $value) {
+                    $paramName = $value->name;
+                    if (!$value->isOptional()) {
+                        $params[$key] = $request->$paramName();
+                    } else {
+                        if ($request->$paramName()) {
                             $params[$key] = $request->$paramName();
                         } else {
-                            if ($request->$paramName()) {
-                                $params[$key] = $request->$paramName();
-                            } else {
-                                $params[$key] = $value->getDefaultValue();
-                            }
+                            $params[$key] = $value->getDefaultValue();
                         }
-
                     }
-                    $output = $module->$methodName(...array_values($params));
-                } else {
-                    $output = $module->$methodName();
                 }
-
-                if (gettype($output) === "object" && method_exists($output, "__toArray")) {
-                    $output = $output->__toArray();
-                } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
-                    $output = $output->__toJSON();
-                } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
-                    $output = $output->__toString();
-                }
-                ob_clean();
-
-
-                return [
-                    "code" => 200,
-                    "message" => "Success",
-                    "data" => $output
-                ];
-
-            } catch (\Throwable $e) {
-                return [
-                    "code" => 500,
-                    "message" => $e->getMessage()
-                ];
+                $output = $module->$methodName(...array_values($params));
+            } else {
+                $output = $module->$methodName();
             }
+
+            if (gettype($output) === "object" && method_exists($output, "__toArray")) {
+                $output = $output->__toArray();
+            } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
+                $output = $output->__toJSON();
+            } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
+                $output = $output->__toString();
+            }
+            ob_clean();
+
+
+            return $output;
         }
-        
+
         function post_apiCall(Request $request)
         {
             $moduleName = $request->module_name();
             $methodName = $request->method_name();
 
-            try {
 
-                ob_start();
-                $module = Box::module($moduleName);
-                if ($module->Ajax) {
-                    $module = $module->Ajax;
-                }
-                $params = $module->__method_params($methodName);
-                if (!empty($params)) {
-                    foreach ($params as $key => $value) {
-                        $paramName = $value->name;
-                        if (!$value->isOptional()) {
+
+            ob_start();
+            $module = Box::module($moduleName);
+            if ($module->Ajax) {
+                $module = $module->Ajax;
+            }
+            $params = $module->__method_params($methodName);
+            if (!empty($params)) {
+                foreach ($params as $key => $value) {
+                    $paramName = $value->name;
+                    if (!$value->isOptional()) {
+                        $params[$key] = $request->$paramName();
+                    } else {
+                        if ($request->$paramName()) {
                             $params[$key] = $request->$paramName();
                         } else {
-                            if ($request->$paramName()) {
-                                $params[$key] = $request->$paramName();
-                            } else {
-                                $params[$key] = $value->getDefaultValue();
-                            }
+                            $params[$key] = $value->getDefaultValue();
                         }
-
                     }
-                    $output = $module->$methodName(...array_values($params));
-                } else {
-                    $output = $module->$methodName();
                 }
-
-                if (gettype($output) === "object" && method_exists($output, "__toArray")) {
-                    $output = $output->__toArray();
-                } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
-                    $output = $output->__toJSON();
-                } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
-                    $output = $output->__toString();
-                }
-                ob_clean();
-
-
-                return [
-                    "code" => 200,
-                    "message" => "Success",
-                    "data" => $output
-                ];
-
-            } catch (\Throwable $e) {
-                return [
-                    "code" => 500,
-                    "message" => $e->getMessage()
-                ];
+                $output = $module->$methodName(...array_values($params));
+            } else {
+                $output = $module->$methodName();
             }
 
+            if (gettype($output) === "object" && method_exists($output, "__toArray")) {
+                $output = $output->__toArray();
+            } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
+                $output = $output->__toJSON();
+            } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
+                $output = $output->__toString();
+            }
+            ob_clean();
 
+
+            return $output;
         }
 
 
@@ -143,47 +115,34 @@ namespace MerapiPanel\Module\Ajax\Controller {
             $methodName = $request->method_name();
             $serviceName = $request->service_name();
 
-            try {
 
-                ob_start();
-                $module = Box::module($moduleName)->$serviceName;
-                if (!$module) {
-                    throw new \Exception("Service {$serviceName} not found");
+            ob_start();
+            $module = Box::module($moduleName)->$serviceName;
+            if (!$module) {
+                throw new \Exception("Service {$serviceName} not found");
+            }
+            $params = $module->__method_params($methodName);
+            if (!empty($params)) {
+                foreach ($params as $key => $value) {
+                    $paramName = $value->name;
+                    $params[$key] = $request->$paramName;
                 }
-                $params = $module->__method_params($methodName);
-                if (!empty($params)) {
-                    foreach ($params as $key => $value) {
-                        $paramName = $value->name;
-                        $params[$key] = $request->$paramName;
-                    }
-                    $output = $module->$methodName(...array_values($params));
-                } else {
-                    $output = $module->$methodName();
-                }
-
-                if (gettype($output) === "object" && method_exists($output, "__toArray")) {
-                    $output = $output->__toArray();
-                } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
-                    $output = $output->__toJSON();
-                } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
-                    $output = $output->__toString();
-                }
-                ob_clean();
-
-
-                return [
-                    "code" => 200,
-                    "message" => "Success",
-                    "data" => $output
-                ];
-
-            } catch (\Exception $e) {
-                return [
-                    "code" => 500,
-                    "message" => $e->getMessage()
-                ];
+                $output = $module->$methodName(...array_values($params));
+            } else {
+                $output = $module->$methodName();
             }
 
+            if (gettype($output) === "object" && method_exists($output, "__toArray")) {
+                $output = $output->__toArray();
+            } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
+                $output = $output->__toJSON();
+            } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
+                $output = $output->__toString();
+            }
+            ob_clean();
+
+
+            return $output;
         }
 
 
@@ -193,48 +152,35 @@ namespace MerapiPanel\Module\Ajax\Controller {
             $methodName = $request->method_name();
             $serviceName = $request->service_name();
 
-            try {
 
-                ob_start();
-                $module = Box::module($moduleName)->$serviceName;
-                if (!$module) {
-                    throw new \Exception("Service {$serviceName} not found");
+
+            ob_start();
+            $module = Box::module($moduleName)->$serviceName;
+            if (!$module) {
+                throw new \Exception("Service {$serviceName} not found");
+            }
+            $params = $module->__method_params($methodName);
+            if (!empty($params)) {
+                foreach ($params as $key => $value) {
+                    $paramName = $value->name;
+                    $params[$key] = $request->$paramName();
                 }
-                $params = $module->__method_params($methodName);
-                if (!empty($params)) {
-                    foreach ($params as $key => $value) {
-                        $paramName = $value->name;
-                        $params[$key] = $request->$paramName();
-                    }
-                    $output = $module->$methodName(...array_values($params));
-                } else {
-                    $output = $module->$methodName();
-                }
-
-                if (gettype($output) === "object" && method_exists($output, "__toArray")) {
-                    $output = $output->__toArray();
-                } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
-                    $output = $output->__toJSON();
-                } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
-                    $output = $output->__toString();
-                }
-                ob_clean();
-
-
-                return [
-                    "code" => 200,
-                    "message" => "Success",
-                    "data" => $output
-                ];
-
-            } catch (\Exception $e) {
-                return [
-                    "code" => 500,
-                    "message" => $e->getMessage()
-                ];
+                $output = $module->$methodName(...array_values($params));
+            } else {
+                $output = $module->$methodName();
             }
 
-        }
+            if (gettype($output) === "object" && method_exists($output, "__toArray")) {
+                $output = $output->__toArray();
+            } else if (gettype($output) === "object" && method_exists($output, "__toJSON")) {
+                $output = $output->__toJSON();
+            } else if (gettype($output) === "object" && method_exists($output, "__toString")) {
+                $output = $output->__toString();
+            }
+            ob_clean();
 
+
+            return  $output;
+        }
     }
 }

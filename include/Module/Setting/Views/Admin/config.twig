@@ -10,7 +10,7 @@
 {% macro text_item(item) %}
 <div class="py-2 config-item config-text">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.label ?? item.name }} :</span>
-        <input type="text" class="form-control" name="{{ item.name }}"value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %} />
+        <input type="text" class="form-control" name="{{ item.name }}"value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %} />
         {% if item.help or item.description %}<small class="form-text text-muted">{{ item.description ?? item.help }}</small>{% endif %}
     </label>
 </div>
@@ -19,7 +19,7 @@
 {% macro number_item(item) %}
 <div class="py-2 config-item config-number">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.label ?? item.name }} :</span>
-        <input type="number" class="form-control" name="{{ item.name }}"value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
+        <input type="number" class="form-control" name="{{ item.name }}"value="{% if item.value %}{{ item.value }}{% else %}{{ item.default }}{% endif %}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help or item.description %}<small class="form-text text-muted">{{ item.description ?? item.help }}</small>{% endif %}
     </label>
 </div>
@@ -29,7 +29,7 @@
 {% macro select_item(item) %}
 <div class="py-2 config-item config-select">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <select class="form-select" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}>
+        <select class="form-select" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}>
             {% for option in item.options %}
             <option value="{{ option.value }}" {% if (item.value ?? item.default)==option.value %}selected{% endif %}>{{
                 option.label }}</option>
@@ -45,7 +45,7 @@
 {% macro textarea_item(item) %}
 <div class="py-2 config-item config-textarea">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
+        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -56,7 +56,7 @@
 {% macro checkbox_item(item) %}
 <div class="py-2 config-item config-checkbox">
     <label class="form-check-label w-100">
-        <input type="checkbox" class="form-check-input" name="{{ item.name }}" value="1" {% if item.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
+        <input type="checkbox" class="form-check-input" name="{{ item.name }}" value="1" {% if item.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
         <span class="fw-semibold ms-2">{{ item.label ?? item.name }} </span>
         {% if item.help or item.description %}<small class="form-text text-muted d-block">{{ item.help ?? item.description }}</small>{% endif %}
     </label>
@@ -75,7 +75,7 @@
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
         {% for option in item.options %}
         <div class="form-check">
-            <input type="radio" class="form-check-input" name="{{ item.name }}" value="{{ option.value }}" {% if item.value==option.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
+            <input type="radio" class="form-check-input" name="{{ item.name }}" value="{{ option.value }}" {% if item.value==option.value %}checked{% endif %} {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
             <label class="form-check-label">{{ option.label }}</label>
         </div>
         {% endfor %}
@@ -89,7 +89,7 @@
 {% macro color_item(item) %}
 <div class="py-2 config-item config-color">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input style="width: 50px; height: 50px; outline: none; border: none;" type="color" class="form-control p-0" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
+        <input style="width: 50px; height: 50px; outline: none; border: none;" type="color" class="form-control p-0" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -100,7 +100,7 @@
 {% macro file_item(item) %}
 <div class="py-2 config-item config-file">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
+        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -111,7 +111,7 @@
 {% macro image_item(item) %}
 <div class="py-2 config-item config-image">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
+        <input type="file" class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -122,7 +122,7 @@
 {% macro wysiwyg_item(item) %}
 <div class="py-2 config-item config-wysiwyg">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
+        <textarea class="form-control" name="{{ item.name }}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}>{{ item.value ?? item.default }}</textarea>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>
@@ -133,7 +133,7 @@
 {% macro datetime_item(item) %}
 <div class="py-2 config-item config-datetime">
     <label class="form-label w-100"><span class="fw-semibold">{{ item.name }} :</span>
-        <input type="datetime-local" class="form-control" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if api.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
+        <input type="datetime-local" class="form-control" name="{{ item.name }}" value="{{ item.value ?? item.default }}" {% if item.readonly %}readonly{% endif %} {% if _box.Setting.getRoles.isAllowed(1) == false %}disabled{% endif %}/>
         {% if item.help %}<small class="form-text text-muted">{{ item.help }}</small>{% endif %}
     </label>
 </div>

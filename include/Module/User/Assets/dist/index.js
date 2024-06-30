@@ -1,1 +1,301 @@
-(()=>{function e(e,t){if(e){if("string"==typeof e)return a(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);return"Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?a(e,t):void 0}}function a(e,a){(null==a||a>e.length)&&(a=e.length);for(var t=0,n=new Array(a);t<a;t++)n[t]=e[t];return n}var t=window.__,n=t.MUser,o=n.opts,s=o.endpoints,d=o.session,r={page:1,limit:10,search:""};$("#panel-subheader-search").on("submit",(function(e){e.preventDefault(),r.page=1,r.search=$(this).find("input").val(),n.render()})),n.render=function(){!n.container&&this instanceof HTMLElement&&(n.container=this),t.http.get(s.fetchAll,r).then((function(a){var o=a.data,i=o.users,l=o.totalPages,c=o.totalResults;$("#total-records").text("Total Records: ".concat(c)),function(e,a,t){$(e).html("");var n=Math.max(1,a-3),o=Math.min(t,a+3);o-n<6&&(1===n?o=Math.min(t,n+6):o===t&&(n=Math.max(1,o-6))),a>1&&$(e).append('<li class="page-item"><a class="page-link" href="#" data-page="1">&laquo;</a></li>');for(var s=n;s<=o;s++){var d=s===a?"page-item active":"page-item";$(e).append($('<li class="'+d+'"><a class="page-link" href="#" data-page="'+s+'">'+s+"</a></li>"))}a<t&&$(e).append('<li class="page-item"><a class="page-link" href="#" data-page="'+t+'">&raquo;</a></li>'),$(e).find("a.page-link").on("click",(function(e){e.preventDefault(),r.page=parseInt($(this).data("page")),MArticle.render()}))}($("#pagination"),r.page,l),$(n.container).html("").append((i||[]).map((function(a){return function(a){return $('<li class="list-group-item d-flex align-items-start position-relative">').append('<img class="w-full h-full object-cover rounded-2" width="45" height="45" src="'.concat(a.avatar?a.avatar:"",'" alt="').concat(a.name,'">')).append($('<div class="ms-2 w-100">').css(n.opts.profilePage&&s.profileURL&&n.opts.allowVisit?{cursor:"pointer"}:{}).append('<div class="fw-bold">'.concat(a.name," ").concat(a.email==d.email?"<small><i>( You )</i></small>":"","</div>")).append("<div class='d-flex flex-wrap align-items-end align-content-end'>".concat(a.email," - <i>").concat(a.role,'</i><span class="badge badge-sm bg-').concat(["danger","warning","primary"][a.status],' ms-2">').concat(["Inactive","Suspended","Active"][a.status],"</span></div></div>")).on("click",(function(){n.opts.profilePage&&s.profileURL&&n.opts.allowVisit&&(window.location.href=s.profileURL.replace("{user_id}",a.id))}))).append(n.opts.allowModify?$('<div class="dropdown position-absolute top-0 end-0">').append('<button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>').append($('<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">').append($('<li><a class="dropdown-item text-primary" href="#"><i class="fa-solid fa-user-pen"></i> Edit</a></li>').on("click",(function(){return function(a){var o=$('<form class="needs-validation">').append('<input type="hidden" name="id" value="'.concat(a.id,'" readonly>')).append($('<div class="mb-3">').append('<label for="name" class="form-label">Name</label>').append('<input type="text" class="form-control" name="name" placeholder="Enter name" pattern="[a-zA-Z ]+" id="name" value="'.concat(a.name,'" required>')).append('<div class="valid-feedback">Looks good!</div>').append('<div class="invalid-feedback">Please enter a valid name.</div>')).append($('<div class="mb-3">').append('<label for="email" class="form-label">Email</label>').append('<input type="email" class="form-control" id="email" name="email" placeholder="Enter email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$" value="'.concat(a.email,'" required>')).append('<div class="valid-feedback">Looks good!</div>').append('<div class="invalid-feedback">Please enter a valid email address.</div>')).append(a.role&&$('<div class="mb-3">').append('<label for="role" class="form-label">Role</label>').append($('<select class="form-select" name="role" id="role" required>').append((n.opts.roleNames||[]).map((function(e){return'<option value="'.concat(e,'" ').concat(a.role==e?"selected":"",">").concat(e,"</option>")}))))).append(void 0!==a.status&&$('<div class="mb-3">').append('<label for="status" class="form-label">Status</label>').append($('<select class="form-select" name="status" id="status" required>').append(["unactive","suspended","active"].map((function(e,t){return'<option value="'.concat(t,'" ').concat(a.status==t?"selected":"",">").concat(e,"</option>")}))))).append($('<div class="mb-3">').append($("<div class='form-check'>").append('<label class="form-check-label" for="change-password">Change Password</label>').append($('<input class="form-check-input" type="checkbox" id="change-password" name="change-password">').on("change",(function(){this.checked?($("#password-container").removeClass("d-none"),$("#password").prop({required:!0,value:"",disabled:!1,readonly:!1}),$("#confirm-password").prop({required:!0,value:"",disabled:!1,readonly:!1})):($("#password-container").addClass("d-none"),$("#password").prop({required:!1,value:"",disabled:!0,readonly:!0}),$("#confirm-password").prop({required:!1,value:"",disabled:!0,readonly:!0}))})))).append($('<div class="mb-3 mt-2 d-none" id="password-container">').append($('<div class="mb-3">').append('<label for="password" class="form-label">Password</label>').append('<input type="password" name="password" placeholder="Enter password" pattern="(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" class="form-control" id="password" disabled="true">').append('<div class="valid-feedback">Looks good!</div>').append('<div class="invalid-feedback">Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters</div>')).append($('<div class="mb-3">').append('<label for="confirm-password" class="form-label">Confirm Password</label>').append($('<input type="password" name="confirm-password" class="form-control" id="confirm-password" disabled="true">').on("input",(function(){var e=this;setTimeout((function(){$(e).val()!==$("#password").val()?$(e).addClass("is-invalid"):$(e).removeClass("is-invalid")}),100)}))).append('<div class="valid-feedback d-none">Looks good!</div>').append('<div class="invalid-feedback d-none">Please enter the same password as the first password</div>')))),d=$("#modal-edit-user").length>0?t.modal.from($("#modal-edit-user")):t.modal.create("Edit User",o);d.el.attr("id","modal-edit-user"),d.content=o,d.show(),d.action.positive=function(){var o=$(d.el.find("form"));if(!o[0].checkValidity())return o[0].reportValidity(),void toast("Please enter valid data",5,"text-warning");if(o.find('[name="change-password"]').is(":checked")){var r=o.find('[name="password"]').val(),i=o.find('[name="confirm-password"]').val();if(r.length<6||r!==i)return toast("Password and confirm password must be same",5,"text-warning"),o.find('[name="confirm-password"]').addClass("is-invalid"),void o.find('[name="confirm-password"]').trigger("focus")}var l=new FormData(o[0]),c=$("<div class='w-100 d-block'>");c.append($("<div class='row border-bottom mb-1'>").append("<div class='col-6 fw-semibold'>Old</div>").append("<div class='col-6 fw-semibold'>New</div>"));var p={status:["unactive","suspended","active"]};l.get("change-password")&&l.delete("change-password");var u,f,m,h=function(a,t){var n="undefined"!=typeof Symbol&&a[Symbol.iterator]||a["@@iterator"];if(!n){if(Array.isArray(a)||(n=e(a))){n&&(a=n);var o=0,s=function(){};return{s,n:function(){return o>=a.length?{done:!0}:{done:!1,value:a[o++]}},e:function(e){throw e},f:s}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var d,r=!0,i=!1;return{s:function(){n=n.call(a)},n:function(){var e=n.next();return r=e.done,e},e:function(e){i=!0,d=e},f:function(){try{r||null==n.return||n.return()}finally{if(i)throw d}}}}(l.entries());try{for(h.s();!(u=h.n()).done;){var v=(f=u.value,m=2,function(e){if(Array.isArray(e))return e}(f)||function(e,a){var t=null==e?null:"undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(null!=t){var n,o,s,d,r=[],i=!0,l=!1;try{if(s=(t=t.call(e)).next,0===a){if(Object(t)!==t)return;i=!1}else for(;!(i=(n=s.call(t)).done)&&(r.push(n.value),r.length!==a);i=!0);}catch(e){l=!0,o=e}finally{try{if(!i&&null!=t.return&&(d=t.return(),Object(d)!==d))return}finally{if(l)throw o}}return r}}(f,m)||e(f,m)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()),b=v[0],w=v[1];"confirm-password"!==b&&c.append($("<div class='row'>").append("<div class='col-6 text-muted'>".concat(p[b]?p[b][a[b]]:a[b]||b,"</div>")).append("<div class='col-6'>".concat(b.includes("password")?w.split("").map((function(){return"*"})).join(""):p[b]?p[b][w]:w,"</div>")))}}catch(e){h.e(e)}finally{h.f()}t.dialog.confirm("Confirm Change ?",c).then((function(){t.http.post(s.update,l).then((function(e){if(200!==e.code)throw new Error(e.message);t.toast("User updated successfully",5,"text-success"),n.render()})).catch((function(e){t.toast(e.message||e.statusText||e,5,"text-danger")}))}))}}(a)}))).append(2==a.status?$('<li><a class="dropdown-item  text-warning" href="#"><i class="fa-solid fa-user-slash"></i> Suspend</a></li>').on("click",(function(){return function(e){t.dialog.warning("Are you sure?",$("<div>Suspend <b>".concat(e.name,"</b>?</div>")).append("<p>Are you sure you want to suspend user details as shown below?</p>").append($('<table class="table table-bordered">').append($("<tr>").append("<th>id</th>").append("<td>".concat(e.id,"</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(e.email,"</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(e.role,"</td>"))))).then((function(){t.http.post(s.update,{status:1,id:e.id}).then((function(e){if(200!==e.code)throw new Error(e.message);t.toast("User suspended successfully",5,"text-success"),n.render()})).catch((function(e){t.toast(e.message||e.statusText||e,5,"text-danger")}))})).catch((function(e){$(".modal:not(#modal-edit-user)").remove()}))}(a)})):1==a.status?$('<li><a class="dropdown-item  text-success" href="#"><i class="fa-solid fa-user-check"></i> Unsuspend</a></li>').on("click",(function(){return function(e){t.dialog.confirm("Are you sure?",$("<div>Unsuspend <b>".concat(e.name,"</b>?</div>")).append("<p>Are you sure you want to unsuspend user details as shown below?</p>").append($('<table class="table table-bordered">').append($("<tr>").append("<th>id</th>").append("<td>".concat(e.id,"</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(e.email,"</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(e.role,"</td>"))))).then((function(){t.http.post(s.update,{status:2,id:e.id}).then((function(e){if(200!==e.code)throw new Error(e.message);t.toast("User unsuspended successfully",5,"text-success"),n.render()})).catch((function(e){t.toast(e.message||e.statusText||e,5,"text-danger")}))})).catch((function(e){$(".modal:not(#modal-edit-user)").remove()}))}(a)})):"").append(a.logedin?$('<li><a class="dropdown-item text-warning" href="#"><i class="fa-solid fa-circle-exclamation"></i> Force Logout</a></li>').on("click",(function(){return function(e){t.dialog.confirm("Are you sure?",$("<div>Force Logout <b>".concat(e.name,"</b>?</div>")).append("<p>Are you sure you want to force logout user details as shown below?</p>").append($('<table class="table table-bordered">').append($("<tr>").append("<th>id</th>").append("<td>".concat(e.id,"</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(e.email,"</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(e.role,"</td>"))))).then((function(){t.http.post(s.forceLogout,{user_id:e.id}).then((function(e){if(200!==e.code)throw new Error(e.message);t.toast("User force logged out successfully",5,"text-success"),n.render()})).catch((function(e){t.toast(e.message||e.statusText||e,5,"text-danger")}))})).catch((function(e){$(".modal:not(#modal-edit-user)").remove()}))}(a)})):"").append($('<li><a class="dropdown-item bg-danger bg-opacity-10 text-danger" href="#"><i class="fa-solid fa-user-xmark"></i> Delete</a></li>').on("click",(function(){return function(e){t.dialog.danger("Are you sure?",$("<div>Delete <b>".concat(e.name,"</b>?</div>")).append("<p>Are you sure you want to delete user details as shown below?</p>").append($('<table class="table table-bordered">').append($("<tr>").append("<th>id</th>").append("<td>".concat(e.id,"</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(e.email,"</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(e.role,"</td>")))).append('<p class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> This action cannot be undone.</p>')).then((function(){t.http.post(s.delete,{id:e.id}).then((function(e){if(200!==e.code)throw new Error(e.message);t.toast("User deleted successfully",5,"text-success"),n.render()})).catch((function(e){t.toast(e.message||e.statusText||e,5,"text-danger")}))})).catch((function(e){$(".modal:not(#modal-edit-user)").remove()}))}(a)})))):"")}(a)})))})).catch((function(e){t.toast(e.message||"Something went wrong",5,"text-danger")}))}})();
+/******/ (() => { // webpackBootstrap
+var __webpack_exports__ = {};
+/*!*************************************************!*\
+  !*** ./include/Module/user/Assets/src/index.js ***!
+  \*************************************************/
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+var __ = window.__;
+var MUser = __.MUser;
+var _MUser$opts = MUser.opts,
+  endpoints = _MUser$opts.endpoints,
+  session = _MUser$opts.session;
+var payload = {
+  page: 1,
+  limit: 10,
+  search: ''
+};
+$("#panel-subheader-search").on("submit", function (e) {
+  e.preventDefault();
+  payload.page = 1;
+  payload.search = $(this).find("input").val();
+  MUser.render();
+});
+function createPagination(container, page, totalPages) {
+  $(container).html("");
+  // Define the number of pages to show before and after the current page
+  var range = 3;
+
+  // Determine start and end points for the pagination range
+  var start = Math.max(1, page - range);
+  var end = Math.min(totalPages, page + range);
+
+  // Adjust start and end points if necessary to ensure that range remains constant
+  if (end - start < 2 * range) {
+    if (start === 1) {
+      end = Math.min(totalPages, start + 2 * range);
+    } else if (end === totalPages) {
+      start = Math.max(1, end - 2 * range);
+    }
+  }
+
+  // Add left offset if not on the first page
+  if (page > 1) {
+    $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="1">&laquo;</a></li>');
+  }
+
+  // Add page links
+  for (var i = start; i <= end; i++) {
+    var liClass = i === page ? "page-item active" : "page-item";
+    $(container).append($('<li class="' + liClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>'));
+  }
+
+  // Add right offset if not on the last page
+  if (page < totalPages) {
+    $(container).append('<li class="page-item"><a class="page-link" href="#" data-page="' + totalPages + '">&raquo;</a></li>');
+  }
+
+  // Add event listeners for page links
+  $(container).find("a.page-link").on("click", function (e) {
+    e.preventDefault();
+    payload.page = parseInt($(this).data("page"));
+    MArticle.render();
+  });
+}
+MUser.render = function () {
+  if (!MUser.container && this instanceof HTMLElement) {
+    MUser.container = this;
+  }
+  __.http.get(endpoints.fetchAll, payload).then(function (result) {
+    var _result$data = result.data,
+      users = _result$data.users,
+      totalPages = _result$data.totalPages,
+      totalResults = _result$data.totalResults;
+    $("#total-records").text("Total Records: ".concat(totalResults));
+    createPagination($("#pagination"), payload.page, totalPages);
+    $(MUser.container).html("").append((users || []).map(function (user) {
+      return createComponent(user);
+    }));
+  })["catch"](function (err) {
+    __.toast(err.message || "Something went wrong", 5, "text-danger");
+  });
+};
+function createComponent(user) {
+  return $("<li class=\"list-group-item d-flex align-items-start position-relative\">").append("<img class=\"w-full h-full object-cover rounded-2\" width=\"45\" height=\"45\" src=\"".concat(user.avatar ? user.avatar : '', "\" alt=\"").concat(user.name, "\">")).append($("<div class=\"ms-2 w-100\">").css(MUser.opts.profilePage && endpoints.profileURL && MUser.opts.allowVisit ? {
+    cursor: 'pointer'
+  } : {}).append("<div class=\"fw-bold\">".concat(user.name, " ").concat(user.email == session.email ? '<small><i>( You )</i></small>' : '', "</div>")).append("<div class='d-flex flex-wrap align-items-end align-content-end'>".concat(user.email, " - <i>").concat(user.role, "</i><span class=\"badge badge-sm bg-").concat(['danger', 'warning', 'primary'][user.status], " ms-2\">").concat(['Inactive', 'Suspended', 'Active'][user.status], "</span></div></div>")).on('click', function () {
+    if (MUser.opts.profilePage && endpoints.profileURL && MUser.opts.allowVisit) {
+      window.location.href = endpoints.profileURL.replace('{user_id}', user.id);
+    }
+  })).append(MUser.opts.allowModify ? $("<div class=\"dropdown position-absolute top-0 end-0\">").append("<button class=\"btn dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Actions</button>").append($("<ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuButton1\">").append($("<li><a class=\"dropdown-item text-primary\" href=\"#\"><i class=\"fa-solid fa-user-pen\"></i> Edit</a></li>").on('click', function () {
+    return editUser(user);
+  })).append(user.status == 2 ? $("<li><a class=\"dropdown-item  text-warning\" href=\"#\"><i class=\"fa-solid fa-user-slash\"></i> Suspend</a></li>").on('click', function () {
+    return suspendUser(user);
+  }) : user.status == 1 ? $("<li><a class=\"dropdown-item  text-success\" href=\"#\"><i class=\"fa-solid fa-user-check\"></i> Unsuspend</a></li>").on('click', function () {
+    return unsuspendUser(user);
+  }) : '').append(user.logedin ? $("<li><a class=\"dropdown-item text-warning\" href=\"#\"><i class=\"fa-solid fa-circle-exclamation\"></i> Force Logout</a></li>").on('click', function () {
+    return forceLogout(user);
+  }) : '').append($("<li><a class=\"dropdown-item bg-danger bg-opacity-10 text-danger\" href=\"#\"><i class=\"fa-solid fa-user-xmark\"></i> Delete</a></li>").on('click', function () {
+    return deleteUser(user);
+  }))) : "");
+}
+function editUser(user) {
+  var content = $("<form class=\"needs-validation\">").append("<input type=\"hidden\" name=\"id\" value=\"".concat(user.id, "\" readonly>"))
+  // name
+  .append($("<div class=\"mb-3\">").append("<label for=\"name\" class=\"form-label\">Name</label>").append("<input type=\"text\" class=\"form-control\" name=\"name\" placeholder=\"Enter name\" pattern=\"[a-zA-Z ]+\" id=\"name\" value=\"".concat(user.name, "\" required>")).append("<div class=\"valid-feedback\">Looks good!</div>").append("<div class=\"invalid-feedback\">Please enter a valid name.</div>"))
+  // email
+  .append($("<div class=\"mb-3\">").append("<label for=\"email\" class=\"form-label\">Email</label>").append("<input type=\"email\" class=\"form-control\" id=\"email\" name=\"email\" placeholder=\"Enter email\" pattern=\"[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$\" value=\"".concat(user.email, "\" required>")).append("<div class=\"valid-feedback\">Looks good!</div>").append("<div class=\"invalid-feedback\">Please enter a valid email address.</div>"))
+  // role
+  .append(user.role && $("<div class=\"mb-3\">").append("<label for=\"role\" class=\"form-label\">Role</label>").append($("<select class=\"form-select\" name=\"role\" id=\"role\" required>").append((MUser.opts.roleNames || []).map(function (role) {
+    return "<option value=\"".concat(role, "\" ").concat(user.role == role ? 'selected' : '', ">").concat(role, "</option>");
+  }))))
+  // status
+  .append(user.status !== undefined && $("<div class=\"mb-3\">").append("<label for=\"status\" class=\"form-label\">Status</label>").append($("<select class=\"form-select\" name=\"status\" id=\"status\" required>").append(['unactive', 'suspended', 'active'].map(function (status, index) {
+    return "<option value=\"".concat(index, "\" ").concat(user.status == index ? 'selected' : '', ">").concat(status, "</option>");
+  }))))
+  // password
+  .append($('<div class="mb-3">').append($("<div class='form-check'>").append("<label class=\"form-check-label\" for=\"change-password\">Change Password</label>").append($("<input class=\"form-check-input\" type=\"checkbox\" id=\"change-password\" name=\"change-password\">").on('change', function () {
+    if (this.checked) {
+      $('#password-container').removeClass('d-none');
+      $('#password').prop({
+        required: true,
+        value: "",
+        disabled: false,
+        readonly: false
+      });
+      $('#confirm-password').prop({
+        required: true,
+        value: "",
+        disabled: false,
+        readonly: false
+      });
+    } else {
+      $('#password-container').addClass('d-none');
+      $('#password').prop({
+        required: false,
+        value: "",
+        disabled: true,
+        readonly: true
+      });
+      $('#confirm-password').prop({
+        required: false,
+        value: "",
+        disabled: true,
+        readonly: true
+      });
+    }
+  }))).append($("<div class=\"mb-3 mt-2 d-none\" id=\"password-container\">").append($("<div class=\"mb-3\">").append("<label for=\"password\" class=\"form-label\">Password</label>").append("<input type=\"password\" name=\"password\" placeholder=\"Enter password\" pattern=\"(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}\" class=\"form-control\" id=\"password\" disabled=\"true\">").append("<div class=\"valid-feedback\">Looks good!</div>").append("<div class=\"invalid-feedback\">Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters</div>")).append($("<div class=\"mb-3\">").append("<label for=\"confirm-password\" class=\"form-label\">Confirm Password</label>").append($("<input type=\"password\" name=\"confirm-password\" class=\"form-control\" id=\"confirm-password\" disabled=\"true\">").on('input', function () {
+    var _this = this;
+    setTimeout(function () {
+      if ($(_this).val() !== $('#password').val()) {
+        $(_this).addClass('is-invalid');
+      } else {
+        $(_this).removeClass('is-invalid');
+      }
+    }, 100);
+  })).append("<div class=\"valid-feedback d-none\">Looks good!</div>").append("<div class=\"invalid-feedback d-none\">Please enter the same password as the first password</div>"))));
+  var modal = $("#modal-edit-user").length > 0 ? __.modal.from($("#modal-edit-user")) : __.modal.create("Edit User", content);
+  modal.el.attr("id", "modal-edit-user");
+  modal.content = content;
+  modal.show();
+  modal.action.positive = function () {
+    var form = $(modal.el.find('form'));
+    if (!form[0].checkValidity()) {
+      form[0].reportValidity();
+      toast('Please enter valid data', 5, 'text-warning');
+      return;
+    }
+    if (form.find('[name="change-password"]').is(':checked')) {
+      var password = form.find('[name="password"]').val();
+      var confirmPassword = form.find('[name="confirm-password"]').val();
+      if (password.length < 6 || password !== confirmPassword) {
+        toast('Password and confirm password must be same', 5, 'text-warning');
+        form.find('[name="confirm-password"]').addClass('is-invalid');
+        form.find('[name="confirm-password"]').trigger('focus');
+        return;
+      }
+    }
+    var formData = new FormData(form[0]);
+    var dialog_content = $("<div class='w-100 d-block'>");
+    dialog_content.append($("<div class='row border-bottom mb-1'>").append("<div class='col-6 fw-semibold'>Old</div>").append("<div class='col-6 fw-semibold'>New</div>"));
+    var resolves = {
+      status: ['unactive', 'suspended', 'active']
+    };
+    if (formData.get('change-password')) {
+      formData["delete"]('change-password');
+    }
+    var _iterator = _createForOfIteratorHelper(formData.entries()),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _step$value = _slicedToArray(_step.value, 2),
+          key = _step$value[0],
+          value = _step$value[1];
+        if (key === 'confirm-password') continue;
+        dialog_content.append($("<div class='row'>").append("<div class='col-6 text-muted'>".concat(resolves[key] ? resolves[key][user[key]] : user[key] || key, "</div>")).append("<div class='col-6'>".concat(!key.includes("password") ? resolves[key] ? resolves[key][value] : value : value.split('').map(function () {
+          return '*';
+        }).join(''), "</div>")));
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+    __.dialog.confirm("Confirm Change ?", dialog_content).then(function () {
+      __.http.post(endpoints.update, formData).then(function (result) {
+        if (result.status) {
+          __.toast('User updated successfully', 5, 'text-success');
+          Object.keys(result.data).forEach(function (key) {
+            user[key] = result.data[key];
+          });
+          MUser.render();
+        } else {
+          throw new Error(result.message);
+        }
+      })["catch"](function (error) {
+        __.toast(error.message || error.statusText || error, 5, 'text-danger');
+      });
+    });
+  };
+}
+function deleteUser(user) {
+  __.dialog.danger("Are you sure?", $("<div>Delete <b>".concat(user.name, "</b>?</div>")).append("<p>Are you sure you want to delete user details as shown below?</p>").append($("<table class=\"table table-bordered\">").append($("<tr>").append("<th>id</th>").append("<td>".concat(user.id, "</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(user.email, "</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(user.role, "</td>")))).append("<p class=\"text-danger\"><i class=\"fa-solid fa-triangle-exclamation\"></i> This action cannot be undone.</p>")).then(function () {
+    __.http.post(endpoints["delete"], {
+      id: user.id
+    }).then(function (result) {
+      if (result.code === 200) {
+        __.toast('User deleted successfully', 5, 'text-success');
+        MUser.render();
+      } else {
+        throw new Error(result.message);
+      }
+    })["catch"](function (error) {
+      __.toast(error.message || error.statusText || error, 5, 'text-danger');
+    });
+  })["catch"](function (error) {
+    $(".modal:not(#modal-edit-user)").remove();
+  });
+}
+function suspendUser(user) {
+  __.dialog.warning("Are you sure?", $("<div>Suspend <b>".concat(user.name, "</b>?</div>")).append("<p>Are you sure you want to suspend user details as shown below?</p>").append($("<table class=\"table table-bordered\">").append($("<tr>").append("<th>id</th>").append("<td>".concat(user.id, "</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(user.email, "</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(user.role, "</td>"))))).then(function () {
+    __.http.post(endpoints.update, {
+      status: 1,
+      id: user.id
+    }).then(function (result) {
+      if (result.code === 200) {
+        __.toast('User suspended successfully', 5, 'text-success');
+        MUser.render();
+      } else {
+        throw new Error(result.message);
+      }
+    })["catch"](function (error) {
+      __.toast(error.message || error.statusText || error, 5, 'text-danger');
+    });
+  })["catch"](function (error) {
+    $(".modal:not(#modal-edit-user)").remove();
+  });
+}
+function unsuspendUser(user) {
+  __.dialog.confirm("Are you sure?", $("<div>Unsuspend <b>".concat(user.name, "</b>?</div>")).append("<p>Are you sure you want to unsuspend user details as shown below?</p>").append($("<table class=\"table table-bordered\">").append($("<tr>").append("<th>id</th>").append("<td>".concat(user.id, "</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(user.email, "</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(user.role, "</td>"))))).then(function () {
+    __.http.post(endpoints.update, {
+      status: 2,
+      id: user.id
+    }).then(function (result) {
+      if (result.code === 200) {
+        __.toast('User unsuspended successfully', 5, 'text-success');
+        MUser.render();
+      } else {
+        throw new Error(result.message);
+      }
+    })["catch"](function (error) {
+      __.toast(error.message || error.statusText || error, 5, 'text-danger');
+    });
+  })["catch"](function (error) {
+    $(".modal:not(#modal-edit-user)").remove();
+  });
+}
+function forceLogout(user) {
+  __.dialog.confirm("Are you sure?", $("<div>Force Logout <b>".concat(user.name, "</b>?</div>")).append("<p>Are you sure you want to force logout user details as shown below?</p>").append($("<table class=\"table table-bordered\">").append($("<tr>").append("<th>id</th>").append("<td>".concat(user.id, "</td>"))).append($("<tr>").append("<th>Email</th>").append("<td>".concat(user.email, "</td>"))).append($("<tr>").append("<th>Role</th>").append("<td>".concat(user.role, "</td>"))))).then(function () {
+    __.http.post(endpoints.forceLogout, {
+      user_id: user.id
+    }).then(function (result) {
+      if (result.code === 200) {
+        __.toast('User force logged out successfully', 5, 'text-success');
+        MUser.render();
+      } else {
+        throw new Error(result.message);
+      }
+    })["catch"](function (error) {
+      __.toast(error.message || error.statusText || error, 5, 'text-danger');
+    });
+  })["catch"](function (error) {
+    $(".modal:not(#modal-edit-user)").remove();
+  });
+}
+/******/ })()
+;

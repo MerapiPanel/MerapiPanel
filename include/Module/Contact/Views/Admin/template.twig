@@ -24,13 +24,13 @@
 
 
 {% block subheader_menu %}
-{% if api.Contact.getRoles.isAllowed(4) %}
+{% if _box.Contact.getRoles.isAllowed(4) %}
 <a class="menu-item" href="{{ '/contact/template/add' | access_path }}">Add Template</a>
 {% endif %}
 {% endblock %}
 
 
-{% set total = api.Contact.template.count %}
+{% set total = _box.Contact.template.count %}
 
 {% block content %}
 

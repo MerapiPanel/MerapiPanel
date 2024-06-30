@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block subheader_menu %}
-{% if api.Article.getRoles.isAllowed(1) %}
+{% if _box.Article.getRoles.isAllowed(1) %}
 <a href="{{ 'article/create' | access_path }}" class="menu-item">
     <i class="fa fa-plus"></i> new article
 </a>
@@ -22,7 +22,7 @@
 <li class="breadcrumb-item">Article</li>
 {% endblock %}
 
-{% set articleLen = (api.article.fetchAll | length) -1 %}
+{% set articleLen = (_box.article.fetchAll | length) -1 %}
 
 {% block content %}
 <h2 class="ms-3 mt-3" id="total-records">Total Records: {{ articleLen }}</h2>

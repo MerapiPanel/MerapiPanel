@@ -15,23 +15,30 @@ class Admin extends __Controller
     {
 
         if ($this->module->getRoles()->isAllowed(0)) {
-            $customize = Router::GET("website/customize", [$this, 'customize']);
+
             Box::module("Panel")->addMenu([
                 "name" => "Website",
                 "icon" => "fa-solid fa-globe",
+                "link" => Router::GET("website", [$this, 'index']),
                 "children" => [
                     [
                         "name" => "Customize",
                         "icon" => "fa-solid fa-paint-roller",
-                        "link" => $customize
+                        "link" => Router::GET("website/customize", [$this, 'customize'])
                     ]
                 ]
             ]);
         }
     }
 
-    function customize(Request $request)
+
+    function index()
     {
-        return View::render("customize.html.twig", []);
+        return View::render('admin/index');
+    }
+
+    function customize()
+    {
+        return View::render("admin/customize", []);
     }
 }

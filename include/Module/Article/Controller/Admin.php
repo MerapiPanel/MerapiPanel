@@ -97,7 +97,7 @@ class Admin extends __Controller
 
         $config = $this->module->getConfig();
 
-        return View::render("editor.html.twig", [
+        return View::render("editor", [
             "settings" => [
                 "prefix" => $_ENV['__MP_' . strtoupper($_ENV["__MP_ACCESS__"]) . '__']['prefix'],
                 "path_edit" => $config->get('path_edit'),
@@ -118,7 +118,7 @@ class Admin extends __Controller
         }
         $config = $this->module->getConfig();
 
-        return View::render("editor.html.twig", [
+        return View::render("editor", [
             "article" => [
                 "id" => $article['id'],
                 "title" => $article['title'],

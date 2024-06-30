@@ -71,11 +71,11 @@ class Admin extends __Fragment
                 forceLogout: "{{ '/api/Auth/forceLogout' | access_path }}",
                 profileURL: "{{ '/users/profile/{user_id}' | access_path }}",
             },
-            session: {{ api.Auth.Session.getUser() | json_encode | raw }},
+            session: {{ _box.Auth.Session.getUser() | json_encode | raw }},
             roleNames: $roleNames,
-            allowModify: {{ api.User.getRoles.isAllowed(1) | json_encode | raw }},
-            allowVisit: {{ api.User.getRoles.isAllowed(2) | json_encode | raw }},
-            profilePage: {{ api.User.getConfig.get('profile') | json_encode | raw }},
+            allowModify: {{ _box.User.getRoles.isAllowed(1) | json_encode | raw }},
+            allowVisit: {{ _box.User.getRoles.isAllowed(2) | json_encode | raw }},
+            profilePage: {{ _box.User.getConfig.get('profile') | json_encode | raw }},
         }
         </script>
         HTML;

@@ -22,8 +22,8 @@ class Admin extends __Fragment
     public function register()
     {
 
-        Router::POST("/settings/auth", "UpdateSetting", self::class);
-        $logout = Router::GET("/auth/logout", "logout", self::class);
+        Router::POST("/settings/auth", [$this, "UpdateSetting"]);
+        $logout = Router::GET("/auth/logout", [$this, "logout"]);
 
         Box::module("Panel")->addMenu([
             "name" => "Logout",

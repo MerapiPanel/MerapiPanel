@@ -81,7 +81,7 @@ class Admin extends __Fragment
     function index($view)
     {
 
-        return View::render('index.html.twig');
+        return View::render('admin/index');
     }
 
 
@@ -89,7 +89,7 @@ class Admin extends __Fragment
     {
 
         $rolesData = $this->getRolesData();
-        return View::render('role.html.twig', [
+        return View::render('admin/role', [
             "rolestack" => $rolesData
         ]);
     }
@@ -171,7 +171,7 @@ class Admin extends __Fragment
     {
         $statck = Router::getInstance()->getRouteStack();
 
-        return View::render('route.html.twig', [
+        return View::render('admin/route', [
             "route_stack" => array_map(
 
                 fn($key) => [
@@ -201,7 +201,7 @@ class Admin extends __Fragment
         $module = Box::module(ucfirst($module_name));
         $configs = $module->getConfig()->getStack();
 
-        return View::render('config.html.twig', [
+        return View::render('config', [
             "configs" => $configs,
             "module_name" => $module_name
         ]);

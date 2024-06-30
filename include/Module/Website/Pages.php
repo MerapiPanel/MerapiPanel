@@ -58,11 +58,11 @@ class Pages extends __Fragment
 
 
         foreach ($pages as &$page) {
-            if (isset($page['components'])) {
+            if (isset($page['components']) && is_string($page['components'])) {
                 $page['components'] = json_decode($page['components'], true);
 
             }
-            if (isset($page['variables'])) {
+            if (isset($page['variables']) && is_string($page['variables'])) {
                 $page['variables'] = json_decode($page['variables'], true);
             }
         }

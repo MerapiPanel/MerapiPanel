@@ -76,12 +76,12 @@ class Admin extends __Controller
 			$data['product'] = $product;
 		}
 
-		return View::render("view.html.twig", $data);
+		return View::render("view", $data);
 	}
 
 	function new()
 	{
-		return View::render("editor.html.twig");
+		return View::render("editor");
 	}
 
 	function edit(Request $request)
@@ -93,7 +93,7 @@ class Admin extends __Controller
 			throw new \Exception("Product not found", 404);
 		}
 
-		return View::render("editor.html.twig", [
+		return View::render("editor", [
 			"product" => $product
 		]);
 	}
