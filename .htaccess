@@ -1,9 +1,29 @@
-RewriteEngine on
+Options -Indexes
+RewriteEngine On
+RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Return 404 for specific files
-RewriteCond %{REQUEST_URI} ^/merapi/config/(.*) [NC,OR]
+<IfModule mod_speling.c>
+    CheckSpelling On
+    CheckCaseOnly On
+</IfModule>
+
+
+# Rewrite condition to check if the requested file does not exist
+RewriteCond %{REQUEST_FILENAME} !-f
+# Rewrite condition to check if the requested directory does not exist
+RewriteCond %{REQUEST_FILENAME} !-d
+
+
+
+# Check if the requested file does not exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^public/assets/@(.*?)/(.*) /include/Module/$1/Assets/$2 [L]
+# RewriteRule ^public/assets/@(.*)/(.*)$ /include/Module/$1/Assets/$2 [L]
+RewriteRule ^public/assets(.*)$ /include/buildin$1 [NC,L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [NC,L,QSA]
 
 # RewriteEngine On

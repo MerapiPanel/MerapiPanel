@@ -20,9 +20,7 @@ function submitHandler(e) {
     $("#login-btn").prop("disabled", true);
     $("#error").addClass("d-none");
 
-
     var form = $(this);
-    var url = form.attr("action");
     var email = form.find("[name='email']").val();
     var password = form.find("[name='password']").val();
     if (!email || email.length == 0) {
@@ -45,7 +43,7 @@ function submitHandler(e) {
 
     delay = setTimeout(function () {
 
-        __.http.post(url, {
+        __.http.post(window.location.href, {
             ...MAuth.payload,
             ...{
                 email: email,
@@ -53,7 +51,11 @@ function submitHandler(e) {
             }
         })
             .then((response) => {
-                window.location.reload();
+                if (response.status && __.cookie.cookie_get("auth")) {
+                    window.location.reload();
+                } else {
+                    __.toast("Login failed, please contact support!", 5, 'text-danger');
+                }
             })
             .catch((error) => {
                 __.toast(error.message || "Error: Please try again!", 5, 'text-danger');
@@ -65,30 +67,6 @@ function submitHandler(e) {
         $("#login-form").off("submit", submitHandler).on("submit", submitHandler);
 
     }, 1000);
-}
-
-
-
-if (MAuth.config.geo) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (location) {
-            MAuth.payload.latitude = location.coords.latitude;
-            MAuth.payload.longitude = location.coords.longitude;
-            $("#login-form").on("submit", submitHandler);
-        }, function (error) {
-            __.toast(error.message || "Error getting location", 5, "text-danger");
-            $("#login-form").off("submit", submitHandler);
-            $("[type='submit']").prop("disabled", true);
-            $("input").prop("disabled", true);
-        });
-    } else {
-        __.toast("Geolocation is not supported by this browser.", 5, "text-danger");
-        $("#login-form").off("submit", submitHandler);
-        $("[type='submit']").prop("disabled", true);
-        $("input").prop("disabled", true);
-    }
-} else {
-    $("#login-form").on("submit", submitHandler);
 }
 
 $("#login-form").on("submit", submitHandler);

@@ -6,6 +6,7 @@ use Exception;
 use MerapiPanel\Exception\HTTP_CODE;
 use MerapiPanel\Exception\HttpException;
 use MerapiPanel\Box;
+use MerapiPanel\Box\Module\Entity\Proxy;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Middlewares;
@@ -43,44 +44,26 @@ class Router
     }
 
 
-
-
-    private static function resolveCallback($method, $caller)
-    {
-
-        $file = $caller["file"];
-        if (is_string($method)) {
-            if (PHP_OS == "WINNT") {
-                preg_match("/\\\\Module\\\\(.*)\\\\.*\\\\(.*)\.php$/", $file, $matches);
-            } else {
-                preg_match("/\/Module\/(.*)\/.*\/(.*)\.php$/", $file, $matches);
-            }
-
-            if (isset($matches[1]) && isset($matches[2])) {
-                $className = "\\MerapiPanel\\Module\\{$matches[1]}\\Controller\\{$matches[2]}";
-                if (class_exists($className)) {
-                    return $className . "@" . $method;
-                }
-            }
-        }
-
-        return null;
-    }
-
     private static function resolvePath($path, $caller)
     {
 
         $file = $caller["file"];
+        $basename = strtoupper(basename($file, ".php"));
         $middleware = null;
-
-        if (isset($_ENV['__MP_ACCESS__']) && strtolower(basename($file, ".php")) === strtolower($_ENV['__MP_ACCESS__']) && isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"])) {
-
-            $adminPrefix = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]['prefix'];
-            $path = $adminPrefix . "/" . trim($path, "/");
-            if (isset($_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"])) {
-                $middleware = $_ENV["__MP_" . strtoupper($_ENV["__MP_ACCESS__"]) . "__"]["middleware"];
+        if (isset($_ENV['__MP_' . $basename . '__'])) {
+            $config = $_ENV['__MP_' . $basename . '__'];
+            if (isset($config['prefix'])) {
+                $prefix = $config['prefix'];
+                $path = ltrim($prefix, '/') . "/" . trim($path, "/");
             }
 
+            if (isset($config['middleware'])) {
+                $middleware = $config['middleware'];
+            }
+        }
+
+        if (isset($path[0]) && $path[0] != "/") {
+            $path = "/" . $path;
         }
 
         return [$path, $middleware];
@@ -92,29 +75,32 @@ class Router
      * Retrieves a route object for a GET request.
      *
      * @param string $path The path for the route.
-     * @param string|callable $method The callback function for the route.
-     * @param string $controller The callback function for the route.
-     * @param bool $isAdmin Determines if the route is for an admin.
+     * @param string|callable|array $method The callback function for the route.
      * @return Route The route object.
      */
-    public static function GET(string $path, string|callable $method, string $controller = null): Route
+    public static function GET(string $path, string|callable|array $method): Route
     {
 
         $instance = Router::getInstance();
-        $callback = $method;
         $middleware = null;
+        $caller = debug_backtrace()[0];
 
-        if (!is_callable($method)) {
+        $instance = Router::getInstance();
+        $middleware = null;
+        $caller = debug_backtrace()[0];
 
-
-            $caller = debug_backtrace()[0];
-            $callback = self::resolveCallback($method, $caller);
-            if (!$callback) {
-                throw new \InvalidArgumentException("Callback is invalid");
-            }
-
-
+        if (is_array($method) && count($method) === 2) {
+            [$controller, $method] = $method;
+            $callback = [$controller, $method];
             [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if (is_string($method) && str_contains($method, "@")) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if ($method instanceof \Closure) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else {
+            throw new \InvalidArgumentException("Invalid route definition");
         }
 
         $route = new Route(Route::GET, $path, $callback, $middleware);
@@ -128,30 +114,28 @@ class Router
      * Creates a new POST route and adds it to the route collection.
      *
      * @param string $path The path of the route.
-     * @param string|callable $method The callback function for the route.
-     * @param string $controller The controller function to be executed when the route is matched.
-     * @param bool $isAdmin Whether the route is for admin only.
+     * @param string|callable|array $method The callback function for the route.
      * @return Route The created route.
      */
-    public static function POST(string $path, string|callable $method, string $controller = null): Route
+    public static function POST(string $path, string|callable|array $method): Route
     {
 
         $instance = Router::getInstance();
-        $callback = $method;
         $middleware = null;
+        $caller = debug_backtrace()[0];
 
-
-        if (!is_callable($method)) {
-
-
-            $caller = debug_backtrace()[0];
-            $callback = self::resolveCallback($method, $caller);
-            if (!$callback) {
-                throw new \InvalidArgumentException("Callback is invalid");
-            }
-
-
+        if (is_array($method) && count($method) === 2) {
+            [$controller, $method] = $method;
+            $callback = [$controller, $method];
             [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if (is_string($method) && str_contains($method, "@")) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if ($method instanceof \Closure) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else {
+            throw new \InvalidArgumentException("Invalid route definition");
         }
 
 
@@ -166,30 +150,28 @@ class Router
      * Adds a PUT route to the router.
      *
      * @param string $path The path for the route.
-     * @param string|callable $method The callback function for the route.
-     * @param string $controller The controller function to be executed when the route is matched.
-     * @param bool $isAdmin (optional) Whether the route is for admin use only. Defaults to false.
+     * @param string|callable|array $method The callback function for the route.
      * @return Route The added route.
      */
-    public static function PUT(string $path, string|callable $method, string $controller = null): Route
+    public static function PUT(string $path, string|callable|array $method): Route
     {
 
         $instance = Router::getInstance();
-        $callback = $method;
         $middleware = null;
+        $caller = debug_backtrace()[0];
 
-
-        if (!is_callable($method)) {
-
-
-            $caller = debug_backtrace()[0];
-            $callback = self::resolveCallback($method, $caller);
-            if (!$callback) {
-                throw new \InvalidArgumentException("Callback is invalid");
-            }
-
-
+        if (is_array($method) && count($method) === 2) {
+            [$controller, $method] = $method;
+            $callback = [$controller, $method];
             [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if (is_string($method) && str_contains($method, "@")) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if ($method instanceof \Closure) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else {
+            throw new \InvalidArgumentException("Invalid route definition");
         }
 
         $route = new Route(Route::PUT, $path, $callback, $middleware);
@@ -203,36 +185,32 @@ class Router
      *
      * @param string $path The path of the route.
      * @param string|callable $method The callback function for the route.
-     * @param string $controller The controller function to handle the route.
-     * @param bool $isAdmin (optional) Indicates if the route is for an admin. Defaults to false.
      * @return Route The created route.
      */
-    public static function DELETE(string $path, string|callable $method, string $controller = null): Route
+    public static function DELETE(string $path, string|callable|array $method): Route
     {
 
         $instance = Router::getInstance();
-        $callback = $method;
         $middleware = null;
+        $caller = debug_backtrace()[0];
 
-
-        if (!is_callable($method)) {
-
-
-            $caller = debug_backtrace()[0];
-            $callback = self::resolveCallback($method, $caller);
-            if (!$callback) {
-                throw new \InvalidArgumentException("Callback is invalid");
-            }
-
-
+        if (is_array($method) && count($method) === 2) {
+            [$controller, $method] = $method;
+            $callback = [$controller, $method];
             [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if (is_string($method) && str_contains($method, "@")) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else if ($method instanceof \Closure) {
+            $callback = $method;
+            [$path, $middleware] = self::resolvePath($path, $caller);
+        } else {
+            throw new \InvalidArgumentException("Invalid route definition");
         }
-
 
         $route = new Route(Route::DELETE, $path, $callback, $middleware);
         return $instance->addRoute(Route::DELETE, $route);
     }
-
 
 
     function resetRoute()
@@ -245,7 +223,9 @@ class Router
         ];
     }
 
-    public function getRouteStack() {
+
+    public function getRouteStack()
+    {
         return $this->routeStack;
     }
 
@@ -323,7 +303,6 @@ class Router
 
 
 
-
     /**
      * Matches a route against a given path and saves the route parameters.
      *
@@ -334,29 +313,35 @@ class Router
     protected function matchRoute($route, $path)
     {
 
-        if (strlen($path) > 1 && substr($path, -1) !== "/") {
-            $path .= "/";
+        $path = preg_replace('/\?.*/', '', $path);
+        if ($route == $path) {
+            return true;
         }
-        if (strlen($route) > 1 && substr($route, -1) !== "/") {
-            $route .= "/";
+        $params = $this->extractRouteParams($route, $path);
+        
+        if (!empty($params)) {
+            preg_match('/\{(\w+)\[(.*)\]\}/', $route, $matchesExpectedValue);
+            if (isset($matchesExpectedValue[1], $matchesExpectedValue[2])) {
+                $expected_value = explode(',', $matchesExpectedValue[2]);
+                if (!isset($params[$matchesExpectedValue[1]])) {
+                    return false;
+                }
+                if (!in_array($params[$matchesExpectedValue[1]], $expected_value)) {
+                    return false;
+                }
+            }
+
+            $route = preg_replace('/\{(\w+)\[(.*)\]\}/', '{$1}', $route);
+
+            $expacted_path = str_replace(array_map(function ($key) {
+                return '{' . $key . '}';
+            }, array_keys($params)), array_values($params), $route);
+            $expacted = preg_replace('/\/$/', '', $expacted_path) . '/';
+            $path = preg_replace('/\/$/', '', $path) . '/';
+
+            return $expacted == $path;
         }
-
-
-        $pattern = preg_replace('/\//', '\/', $route);
-
-        preg_match("/\{(.*)\[(.*)\]\}/", $route, $matches);
-        if (isset($matches[1], $matches[2])) {
-            // parameter with expacted value
-            $parameter = $matches[1];
-            $expacted = $matches[2];
-            $pattern = preg_replace("/\{$parameter\[$expacted\]\}/", "(" . implode("|", explode(",", $expacted)) . ")", $pattern);
-        }
-        $pattern = '/^' . preg_replace('/\{(.+?)\}/', '(.+?)', $pattern) . '$/';
-
-        // Use preg_match to check if the path matches the pattern
-        preg_match($pattern, $path, $matches);
-
-        return !empty($matches);
+        return false;
     }
 
 
@@ -371,34 +356,29 @@ class Router
      */
     protected function extractRouteParams($route, $path)
     {
-
-        if (strlen($path) > 1 && substr($path, -1) !== "/")
-            $path .= "/";
-        if (strlen($route) > 1 && substr($route, -1) !== "/")
-            $route .= "/";
-
+     
+        $path    = preg_replace('/\?.*/', '', $path);
         $pattern = preg_replace('/\//', '\/', $route);
-        $pattern = '/^' . preg_replace('/\{(.*?)\}/', '(.*?)', $pattern) . '$/';
+        $pattern = preg_replace('/\{(\w+|\w+\[.*\])\}$/', '(.*)', $pattern);
+        $pattern = '/^' . preg_replace('/\{(.*?)\}/', '(.*?)', $pattern) . '/';
 
         // Use preg_match to check if the path matches the pattern
-        preg_match($pattern, $path, $matches);
+        preg_match($pattern, preg_replace('/\/$/', '', $path) . "/", $matches);
         // Remove the first element, as it contains the full match
         array_shift($matches);
-
+        if (!empty($matches) && !empty($matches[count($matches) - 1])) {
+            $matches[count($matches) - 1] = preg_replace('/\/$/', '', $matches[count($matches) - 1]);
+        }
         // Get the parameter names from the route
         preg_match_all('/\{(.*?)\}/im', $route, $paramNames);
-
         $paramNames = $paramNames[1];
         $paramNames = array_map(function ($name) {
             return preg_replace('/\[.*\]+/', '', $name);
         }, $paramNames);
-
-
         // Combine the parameter names with the matched values
-        $routeParams = array_combine($paramNames, $matches);
-
+        $routeParams = array_combine($paramNames, empty($matches) ? array_fill(0, count($paramNames), null) : $matches);
         // Return the matched route parameters
-        return $routeParams;
+        return array_filter($routeParams);
     }
 
 
@@ -425,7 +405,7 @@ class Router
         $route = $this->getRoute();
         $callback = $route->getController();
         // Get the middlewares for this route.
-        $middlewares = new Middlewares($route->getMiddlewares());
+        $middlewares = new Middlewares($route->getMiddlewares() ?? []);
 
         $response = $middlewares->handle(
             $request,
@@ -457,130 +437,136 @@ class Router
      */
     protected function callCallback(Request $request, $callback): Response
     {
-
-        // echo "call callback ". $callback;
-
         $response = new Response();
+
         if (is_callable($callback)) {
-
-            $output = call_user_func($callback, ...[$request, &$response]);
-            if ($output instanceof Response) {
-                return $output;
-            }
-
-            if (is_array($output) || is_object($output) && isset($output['code'])) {
-                $response->setStatusCode($output['code']);
-            }
-            $response->setContent($output);
-
-            return $response;
-
-        } else if (is_string($callback) && strpos($callback, '@') !== false) {
-
-            list($controllerClassName, $method) = explode('@', $callback);
-            preg_match('/\\\Module\\\(.+?)\\\Controller\\\(.+)/i', $controllerClassName, $matches);
-            if (isset($matches[1], $matches[2])) {
-
-                $module = Box::module(ucfirst($matches[1]));
-                if (!$module) {
-                    throw new Exception("Module {{$matches[1]}} not found ");
-                }
-                $cName = $matches[2];
-                $controller = $module->Controller->$cName;
-                if (!$controller) {
-                    throw new Exception("Controller {{$controller}} not found ");
-                }
-
-            } else if (class_exists($controllerClassName)) {
-                $reflector = new \ReflectionClass($controllerClassName);
-                $controller = $reflector->newInstanceWithoutConstructor();
-            }
-
-            if (!$controller) {
-                throw new Exception("Controller not found ");
-            }
-
-            $output = $controller->$method(...[$request, &$response]);
-
-            if ($output instanceof Response) {
-                error_clear_last(); // clear last error
-                $output->send();
-                return $output;
-            }
-
-
-
-            if (is_string($output)) {
-
-                error_clear_last(); // clear last error
-                $response->setContent($output);
-                return $response;
-            }
-            // event method get return an array
-            elseif (is_array($output)) {
-                error_clear_last(); // clear last error
-                return $this->handleApiResponse($output);
-            } else {
-
-                throw new Exception("Unxpected response type, Controller: $controller Method: $method should return View, string or array but " . gettype($output) . " returned", 400);
-            }
-
+            return $this->handleCallableCallback($callback, $request, $response);
+        } elseif (is_string($callback) && strpos($callback, '@') !== false) {
+            return $this->handleStringCallback($callback, $request, $response);
         } else {
-
-            return new Response('Internal server error', 500);
+            return $this->handleInvalidCallback();
         }
     }
 
 
 
-    public function handleApiResponse($result = [])
+
+    private function handleCallableCallback($callback, Request $request, Response $response): Response
     {
-
-        $response = new Response();
-        $response->setHeader('Content-Type', 'application/json');
-
-        $content = ["code" => 200, "message" => null, "data" => null];
-
-        if (is_array($result)) {
-
-            if (isset($result["code"])) {
-                $content["code"] = $result["code"];
-            }
-            if (isset($result["message"])) {
-                $content["message"] = $result["message"];
-            }
-            if (isset($result["data"])) {
-                $content["data"] = $result["data"];
-            }
-        } elseif (is_string($result)) {
-
-            $json = json_decode($result, true);
-
-            if (json_last_error() === JSON_ERROR_NONE) {
-
-                if (isset($json["code"])) {
-                    $content["code"] = $json["code"];
-                }
-                if (isset($json["message"])) {
-                    $content["message"] = $json["message"];
-                }
-                if (isset($json["data"])) {
-                    $content["data"] = $json["data"];
-                }
-            } else {
-
-                $content["code"] = 200;
-                $content["message"] = $result;
-                $content["data"] = [];
-            }
+        if (is_array($callback) && count($callback) == 2 && $callback[0] instanceof Proxy) {
+            [$instance, $method] = $callback;
+            $output = $this->outputFromService($instance, $method);
+        } else if (is_callable($callback)) {
+            $output = call_user_func($callback, ...[$request, &$response]);
         }
 
-        if (isset($content['data']) && $content['data'] == null) {
-            // unset($content['data']);
+        if ($output instanceof Response) {
+            return $output;
         }
 
-        $response->setContent($content);
-        $response->setStatusCode($content['code']);
+        if ($request->http('x-requested-with') == 'XMLHttpRequest') {
+            $response->setContent([
+                'status' => $response->getStatusCode() === 200,
+                'message' => "Success",
+                'data' => $output
+            ]);
+        } else {
+            $response->setContent($output);
+        }
+
         return $response;
+    }
+
+
+
+    private function handleStringCallback(string $callback, Request $request, Response $response): Response
+    {
+        list($controllerClassName, $method) = explode('@', $callback);
+        $controller = $this->getControllerInstance($controllerClassName);
+        if (!$controller) {
+            throw new Exception("Controller not found: {$controllerClassName}");
+        }
+
+        $output = $controller->$method(...[$request, &$response]);
+
+        if ($output instanceof Response) {
+            return $output;
+        }
+
+        if ($request->http('x-requested-with') == 'XMLHttpRequest') {
+            $response->setContent([
+                'status' => $response->getStatusCode() == 200,
+                'message' => "Success",
+                'data' => $output
+            ]);
+            $response->setHeader('Content-Type', 'application/json');
+        } else {
+            $response->setContent($output);
+        }
+
+        return $response;
+    }
+
+    private function handleInvalidCallback(): Response
+    {
+        return new Response([
+            'message' => 'Controller not found',
+            'status' => false
+        ], 500);
+    }
+
+    private function getControllerInstance(string $controllerClassName)
+    {
+        preg_match('/\\\Module\\\(.+?)\\\Controller\\\(.+)/i', $controllerClassName, $matches);
+        if (isset($matches[1], $matches[2])) {
+            $module = Box::module(ucfirst($matches[1]));
+            if (!$module) {
+                throw new Exception("Module not found: {$matches[1]}");
+            }
+            $controllerName = $matches[2];
+            return $module->Controller->$controllerName ?? null;
+        } elseif (class_exists($controllerClassName)) {
+            $reflector = new \ReflectionClass($controllerClassName);
+            return $reflector->newInstanceWithoutConstructor();
+        }
+
+        return null;
+    }
+
+    private function outputFromService($module, $function)
+    {
+        $request = Request::getInstance();
+        $params = $module->__method_params($function);
+
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $paramName = $value->name;
+                if (strtoupper($request->getMethod()) == "GET") {
+                    if (!$value->isOptional()) {
+                        $params[$key] = $request->$paramName ?? null;
+                    } else {
+                        if ($request->$paramName()) {
+                            $params[$key] = $request->$paramName ?? null;
+                        } else {
+                            $params[$key] = $value->getDefaultValue();
+                        }
+                    }
+                } else {
+                    if (!$value->isOptional()) {
+                        $params[$key] = $request->$paramName() ?? null;
+                    } else {
+                        if ($request->$paramName()) {
+                            $params[$key] = $request->$paramName() ?? null;
+                        } else {
+                            $params[$key] = $value->getDefaultValue();
+                        }
+                    }
+                }
+            }
+
+            return $module->$function(...array_values($params));
+        }
+
+        return $module->$function();
     }
 }

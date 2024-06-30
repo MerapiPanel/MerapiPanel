@@ -19,7 +19,7 @@ class Guest extends __Fragment
 
     public function register()
     {
-        Router::GET(Box::module("FileManager")->Assets->routeLink, "assetsLoader", self::class);
+        Router::GET(Box::module("FileManager")->Assets->routeLink, [$this, 'assetsLoader']);
     }
 
 

@@ -12,8 +12,8 @@ class Guest extends __Controller
 
 	function register()
 	{
-		Router::GET("/contact/link/redirect/TP-{id}", "withTemplate", self::class);
-		Router::GET("/contact/link/redirect/CT-{id}", "contact", self::class);
+		Router::GET("/contact/link/redirect/TP-{id}", [$this, 'withTemplate']);
+		Router::GET("/contact/link/redirect/CT-{id}", [$this, 'contact']);
 		// register other route
 	}
 

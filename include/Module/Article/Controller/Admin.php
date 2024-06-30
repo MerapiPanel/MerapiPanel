@@ -18,10 +18,10 @@ class Admin extends __Controller
             return;
         }
 
-        Router::GET("/article/create/", "create", self::class);
-        Router::GET("/article/edit/{id}", "edit", self::class);
-        Router::GET("/article/view/{id}", "view", self::class);
-        $index = Router::GET("/article", "index", self::class);
+        Router::GET("/article/create/", [$this, 'create']);
+        Router::GET("/article/edit/{id}", [$this, 'edit']);
+        Router::GET("/article/view/{id}", [$this, 'view']);
+        $index = Router::GET("/article", [$this, 'index']);
         Box::module("Panel")->addMenu([
             "name" => "Article",
             "icon" => "fa-solid fa-newspaper",
@@ -70,7 +70,7 @@ class Admin extends __Controller
 
         $components = Box::module("Editor")->Blocks->render($article['data']['components']);
 
-        return View::render("view.html.twig", [
+        return View::render("view", [
             "article" => $article,
             "components" => $components
         ]);
@@ -85,7 +85,7 @@ class Admin extends __Controller
 
         $collumns = ["id", "title", "slug", "status", "keywords", "category", "description", "post_date", "update_date", "users.id as author_id", "users.name as author_name"];
         $articles = Box::module("Article")->fetchAll($collumns);
-        return View::render("index.html.twig", [
+        return View::render("index", [
             "articles" => $articles
         ]);
     }

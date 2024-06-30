@@ -11,7 +11,15 @@ namespace MerapiPanel {
         "START_TIME" => microtime(true), // start time
         "CWD" => realpath(__DIR__ . "/.."), // current working directory
         "APP" => __DIR__,
+        "VERSION" => "1.1.1"
     ];
+
+    if (!file_exists($config['APP'] . "/config/env.php") && file_exists($config['CWD'] . "/install/index.php")) {
+        header("Location: /install/index.php");
+        exit;
+    } else if (!file_exists($config['APP'] . "/config/env.php") && !file_exists($config['CWD'] . "/install/index.php")) {
+        exit("MerapiPanel installer not found. Please install MerapiPanel first. Visit https://github.com/MerapiPanel/MerapiPanel to install.");
+    }
 
     $loaded_config = include __DIR__ . "/config/env.php"; // load config
 
@@ -121,8 +129,6 @@ namespace MerapiPanel {
         {
 
             echo Router::dispatch(Request::getInstance());
-            // send signal for shutdown to all modules in parent
-            parent::shutdown();
         }
     }
 }

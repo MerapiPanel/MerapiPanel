@@ -55,7 +55,7 @@ namespace MerapiPanel\Box\Module\Entity {
                     if (isset($caller[0]['class']) && strpos($caller[0]['class'], "MerapiPanel\\Box\\Module\\") !== false) {
                         $trace = $caller[1];
                     }
-                    throw new \Exception("Method not found: " . $method . " in " . $this->className . " called from " . $trace['file'] . ":" . $trace['line']);
+                    throw new \Exception("Method not found: " . $method . " in " . $this->className . (isset($trace['file'], $trace['code']) ? " called from " . $trace['file'] . ":" . $trace['line'] : ''));
                 }
                 throw new \Exception("Method not found: " . $method . " in " . $this->className);
             }
@@ -67,7 +67,7 @@ namespace MerapiPanel\Box\Module\Entity {
                     if (isset($caller[0]['class']) && strpos($caller[0]['class'], "MerapiPanel\\Box\\Module\\") !== false) {
                         $trace = $caller[1];
                     }
-                    throw new \Exception("Method not allowed: " . $method . " in " . $this->className . " called from " . $trace['file'] . ":" . $trace['line']);
+                    throw new \Exception("Method not allowed: " . $method . " in " . $this->className . (isset($trace['file'], $trace['code']) ? " called from " . $trace['file'] . ":" . $trace['line'] : ''));
                 }
                 throw new \Exception("Method not allowed: " . $method . " in " . $this->className);
             }

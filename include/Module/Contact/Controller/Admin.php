@@ -13,20 +13,20 @@ class Admin extends __Controller
 	function register()
 	{
 
-		Router::GET("/contact/template/add", "addTemplate", self::class);
-		Router::GET("/contact/template/edit/{id}", "editTemplate", self::class);
+		Router::GET("/contact/template/add", [$this, 'addTemplate']);
+		Router::GET("/contact/template/edit/{id}", [$this, 'editTemplate']);
 
 
 		if ($this->module->getRoles()->isAllowed(0)) {
 			// register other route
 			Box::module("Panel")->addMenu([
 				"name" => "Contact",
-				"link" => Router::GET("/contact", "index", self::class),
+				"link" => Router::GET("/contact", [$this, 'index']),
 				"icon" => "fa-solid fa-phone",
 				"children" => [
 					[
 						"name" => "Template",
-						"link" => Router::GET("/contact/template", "template", self::class),
+						"link" => Router::GET("/contact/template", [$this, 'template']),
 						"icon" => "fa-solid fa-list",
 					]
 				]
@@ -55,13 +55,13 @@ class Admin extends __Controller
 	function index()
 	{
 		// Box::module("Panel")->setAllowed(false);
-		return View::render("index.html.twig");
+		return View::render("admin/index");
 	}
 
 
 	function template()
 	{
-		return View::render("template.html.twig");
+		return View::render("admin/template");
 	}
 
 	function addTemplate()

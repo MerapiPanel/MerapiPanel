@@ -1,7 +1,8 @@
 <?php
+
 namespace MerapiPanel\Views\Extension;
 
-use MerapiPanel\Utility\Http\Request;
+use MerapiPanel\Utility\AES;
 use MerapiPanel\Views\Abstract\Extension;
 
 class Bundle extends Extension
@@ -36,13 +37,11 @@ class Bundle extends Extension
         return time();
     }
 
-    
+
     public function fn_microtime($as_float = true)
     {
         return microtime($as_float);
     }
-
-
 
 
 
@@ -60,12 +59,6 @@ class Bundle extends Extension
 
 
 
-    function fl_preg_replace($pattern, $replacement, $subject)
-    {
-        return preg_replace($pattern, $replacement, $subject);
-    }
-
-
     /**
      * Get block content from the context
      * @option needs_context true
@@ -79,26 +72,35 @@ class Bundle extends Extension
     }
 
 
-    public function fl_truncate($text, $length, $ellipsis = '...')
+    function fn_error_log($message)
     {
-        if (mb_strlen($text) <= $length) {
-            return $text;
-        }
 
-        // Truncate the text to the specified length and append ellipsis
-        return rtrim(mb_substr($text, 0, $length)) . $ellipsis;
+        error_log(is_string($message) ? $message : print_r($message, 1));
     }
 
+   
 
-
-    function fl_ucfirst($string)
+    function fl_urlencode($string)
     {
-        return ucfirst($string);
+        return urlencode("$string");
+    }
+    function fl_urldecode($string)
+    {
+        return urldecode("$string");
     }
 
+    function fn_is_string($value)
+    {
+        return is_string($value);
+    }
 
-    function fn_error_log($message) {
-        
-        error_log(is_string($message) ? $message : json_encode($message));
+    function fn_is_numberic($value)
+    {
+        return is_numeric($value);
+    }
+
+    function fn_is_array($value)
+    {
+        return is_array($value);
     }
 }

@@ -12,7 +12,7 @@ class Admin extends __Controller
     public function register()
     {
 
-        Router::GET("/", "index", self::class);
+        Router::GET("/", [$this, 'index']);
     }
 
     function index()

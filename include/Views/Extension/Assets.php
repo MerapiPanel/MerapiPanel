@@ -11,7 +11,7 @@ class Assets extends Extension
     function fl_assets($path)
     {
 
-        return Box::module("FileManager")->Assets->url(ltrim($path, "\\/"));
+        return "/public/assets/". ltrim($path, "\\/");
     }
 
     /**

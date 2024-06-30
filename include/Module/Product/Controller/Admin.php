@@ -16,10 +16,10 @@ class Admin extends __Controller
 			return;
 		}
 
-		$index = Router::GET("/product", "index", self::class);
-		Router::GET("/product/new", "new", self::class);
-		Router::GET("/product/edit/{id}", "edit", self::class);
-		Router::GET("/product/view/{id}", "view", self::class);
+		$index = Router::GET("/product", [$this, 'index']);
+		Router::GET("/product/new", [$this, 'new']);
+		Router::GET("/product/edit/{id}", [$this, 'edit']);
+		Router::GET("/product/view/{id}", [$this, 'view']);
 		// register other route
 
 		Box::module("Panel")->addMenu([
@@ -62,7 +62,7 @@ class Admin extends __Controller
 	}
 	function index()
 	{
-		return View::render("index.html.twig");
+		return View::render("index");
 	}
 
 

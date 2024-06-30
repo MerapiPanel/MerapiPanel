@@ -11,9 +11,9 @@ class Admin extends __Controller
 
 	function register()
 	{
-		Router::GET("/editor/api/load", "apiLoad", self::class);
-		Router::POST("/editor/api/save", "apiSave", self::class);
-		Router::GET("/Editor", "index", self::class);
+		Router::GET("/editor/api/load", [$this, 'apiLoad']);
+		Router::POST("/editor/api/save", [$this, 'apiSave']);
+		Router::GET("/Editor", [$this, 'index']);
 		// register other route
 	}
 	function index()

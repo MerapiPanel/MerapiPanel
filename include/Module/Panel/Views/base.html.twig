@@ -13,7 +13,7 @@
 {{ parent() }}
 <script src="{{ '@panel/dist/panel.js' | assets }}"></script>
 <!-- @Panel:scripts -->
-{{ panel_render(api.Panel.Scripts.getScripts) }}
+{{ panel_render(_box.Panel.Scripts.getScripts) }}
 <!--/ @Panel:scripts -->
 {% endblock %}
 

@@ -23,6 +23,7 @@ class Twig extends \Twig\Environment
 
     public function load($name): TemplateWrapper
     {
+        
         return parent::load($name);
     }
 }

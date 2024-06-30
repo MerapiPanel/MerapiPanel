@@ -18,6 +18,9 @@ namespace MerapiPanel\Views {
 
         public function __call($name, $arguments)
         {
+            if (strtolower($name) === $name) {
+                error_log("Calling ApiService is in Case Sensitive, Module may not found in linux");
+            }
             return new ApiProxy($name);
         }
     }
@@ -41,18 +44,18 @@ namespace MerapiPanel\Views {
             $output = null;
             $service = $this->module->Service;
             if ($service->__method_exists($name)) {
-                if($arguments && count($arguments) === 1 && is_array($arguments[0])) {
+                if ($arguments && count($arguments) === 1 && is_array($arguments[0])) {
                     $arguments = $arguments[0];
                 }
                 $output = $service->$name(...$arguments);
-            } else if($this->module->$name instanceof Proxy) {
+            } else if ($this->module->$name instanceof Proxy) {
                 $output = $this->module->$name;
-            } else if(method_exists($this->module, $name)) {
+            } else if (method_exists($this->module, $name)) {
                 $output = $this->module->$name(...$arguments);
             } else {
                 error_log("Method $name not found in {$this->module->namespace}");
             }
-            
+
             return $output;
         }
     }

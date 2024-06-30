@@ -13,10 +13,10 @@ namespace MerapiPanel\Module\Ajax\Controller {
         function register()
         {
             
-            Router::GET("/public/api/{module_name}/{method_name}", "apiCall", self::class);
-            Router::POST("/public/api/{module_name}/{method_name}", "postApiCall", self::class);
-            Router::POST("/public/api/{module_name}/{method_name}", "post_apiCall", self::class);
-            Router::POST("/public/api/{module_name}/{service_name}/{method_name}", "post_apiCallService", self::class);
+            Router::GET("/public/api/{module_name}/{method_name}", [$this, 'apiCall']);
+            Router::POST("/public/api/{module_name}/{method_name}", [$this, 'postApiCall']);
+            Router::POST("/public/api/{module_name}/{method_name}", [$this, 'post_apiCall']);
+            Router::POST("/public/api/{module_name}/{service_name}/{method_name}", [$this, 'post_apiCallService']);
 
         }
 

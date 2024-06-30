@@ -10,7 +10,7 @@ class Guest extends __Controller
 
 	function register()
 	{
-		Router::GET("/Editor", "index", self::class);
+		Router::GET("/Editor", [$this, 'index']);
 		// register other route
 	}
 	function index()

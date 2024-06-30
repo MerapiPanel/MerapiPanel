@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 var __webpack_exports__ = {};
 /*!*************************************************!*\
-  !*** ./include/Module/Auth/Assets/src/login.js ***!
+  !*** ./include/Module/auth/Assets/src/login.js ***!
   \*************************************************/
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -27,7 +27,6 @@ function submitHandler(e) {
   $("#login-btn").prop("disabled", true);
   $("#error").addClass("d-none");
   var form = $(this);
-  var url = form.attr("action");
   var email = form.find("[name='email']").val();
   var password = form.find("[name='password']").val();
   if (!email || email.length == 0) {
@@ -47,11 +46,15 @@ function submitHandler(e) {
     return;
   }
   delay = setTimeout(function () {
-    __.http.post(url, _objectSpread(_objectSpread({}, MAuth.payload), {
+    __.http.post(window.location.href, _objectSpread(_objectSpread({}, MAuth.payload), {
       email: email,
       password: password
     })).then(function (response) {
-      window.location.reload();
+      if (response.status && __.cookie.cookie_get("auth")) {
+        window.location.reload();
+      } else {
+        __.toast("Login failed, please contact support!", 5, 'text-danger');
+      }
     })["catch"](function (error) {
       __.toast(error.message || "Error: Please try again!", 5, 'text-danger');
       $("#loading").addClass("d-none");
@@ -61,27 +64,6 @@ function submitHandler(e) {
     });
     $("#login-form").off("submit", submitHandler).on("submit", submitHandler);
   }, 1000);
-}
-if (MAuth.config.geo) {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (location) {
-      MAuth.payload.latitude = location.coords.latitude;
-      MAuth.payload.longitude = location.coords.longitude;
-      $("#login-form").on("submit", submitHandler);
-    }, function (error) {
-      __.toast(error.message || "Error getting location", 5, "text-danger");
-      $("#login-form").off("submit", submitHandler);
-      $("[type='submit']").prop("disabled", true);
-      $("input").prop("disabled", true);
-    });
-  } else {
-    __.toast("Geolocation is not supported by this browser.", 5, "text-danger");
-    $("#login-form").off("submit", submitHandler);
-    $("[type='submit']").prop("disabled", true);
-    $("input").prop("disabled", true);
-  }
-} else {
-  $("#login-form").on("submit", submitHandler);
 }
 $("#login-form").on("submit", submitHandler);
 /******/ })()

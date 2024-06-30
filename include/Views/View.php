@@ -5,11 +5,51 @@ namespace MerapiPanel\Views;
 use Exception;
 use MerapiPanel\Views\Loader;
 use MerapiPanel\Utility\Http\Request;
+use MerapiPanel\Views\Abstract\Extension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Filesystem\Path;
+use Throwable;
+use Twig\Error\RuntimeError;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\LoaderInterface;
 use Twig\TemplateWrapper;
+
+
+class ViewException extends Extension
+{
+    private static $templates = [];
+
+    function fn_error_template($code, $template)
+    {
+        self::$templates[$code] = $template;
+    }
+
+    function fn_throw($message, $code = 0)
+    {
+        throw new Exception($message ?? 'Unknown error!', $code);
+    }
+
+    public static function send(Throwable $t)
+    {
+        $template = false;
+        if (isset(self::$templates[$t->getCode()])) {
+            $template = self::$templates[$t->getCode()];
+        } else if (isset(self::$templates["default"])) {
+            $template = self::$templates["default"];
+        } else {
+            throw $t;
+        }
+        $view = View::getInstance();
+        return $view->load($template)->render([
+            "code" => $t->getCode(),
+            "message" => $t->getMessage(),
+            "previus" => $t->getPrevious(),
+            "trace" => $t->getTrace(),
+            "file" => $t->getFile(),
+            "line" => $t->getLine()
+        ]);
+    }
+}
 
 class View
 {
@@ -20,13 +60,14 @@ class View
     protected Intl $intl;
     protected $lang = false;
     private TemplateWrapper|null $wrapper = null;
+    private static ViewException $viewException;
 
 
     public function __construct(array|ArrayLoader $loader = [])
     {
 
         if (gettype($loader) == "array") {
-            $loader = array_merge([Path::join($_ENV["__MP_APP__"], "Buildin", "Views")], $loader);
+            $loader = array_merge([Path::join($_ENV["__MP_APP__"], "buildin", "Views")], $loader);
             $this->loader = new Loader($loader);
         } else {
             $this->loader = $loader;
@@ -34,7 +75,7 @@ class View
 
         $this->intl = new Intl();
         $this->lang = $this->intl->getLocale();
-        
+
         $this->twig = new Twig($this->loader);
         $this->twig->enableDebug();
         $this->twig->AddExtension(new TranslationExtension($this->intl));
@@ -52,15 +93,16 @@ class View
                 $this->twig->addExtension(new $className($this));
             }
         }
+        self::$viewException = new ViewException();
+        $this->twig->addExtension(self::$viewException);
 
 
-        $this->addGlobal("request", Request::getInstance());
-        $this->addGlobal("lang", $this->lang);
-        $this->addGlobal("api", new ApiServices());
+        $this->addGlobal("http", [
+            "request" => Request::getInstance()
+        ]);
+        $this->addGlobal("_lang", $this->lang);
+        $this->addGlobal("_box", new ApiServices());
         $this->addGlobal('__env__', $_ENV);
-
-
-        
     }
 
 
@@ -131,8 +173,9 @@ class View
 
 
 
-    function getTwig(): Twig
+    function getTwig(): Twig|string
     {
+
         return $this->twig;
     }
 
@@ -187,92 +230,72 @@ class View
     {
 
 
-        $backtrace = debug_backtrace();
-        $caller = $backtrace[0];
+        try {
 
+            $backtrace = debug_backtrace();
+            $caller = $backtrace[0];
 
-        // set locale
-        if ($lang && $lang != self::getInstance()->lang) {
-            self::getInstance()->intl->setLocale($lang);
-        }
-
-
-        if (isset($caller['file'])) {
-
-            // find the module name
-            $file_path = $caller['file'];
-            if (PHP_OS == "WINNT") {
-                preg_match("/\\\Module\\\(.*?)\\\.*\\\(.*)\\..*/im", $file_path, $matches);
-            } else {
-                preg_match("/\\/Module\\/(.*?)\\/.*\\/(.*)\\..*/im", $file_path, $matches);
+            // set locale
+            if ($lang && $lang != self::getInstance()->lang) {
+                self::getInstance()->intl->setLocale($lang);
             }
 
 
-            if (isset($matches[1], $matches[2])) { // is a module
+            if (isset($caller['file'])) {
 
-                $module_name = strtolower($matches[1]);
-                $template = "@$module_name/$file";
-
-                // if is admin
-                if (strtolower($matches[2]) == 'admin') {
-                    if (self::getInstance()->getLoader()->exists("@$module_name/$matches[2]/$file")) {
-                        $template = "@$module_name/$matches[2]/$file";
-                    }
+                // find the module name
+                $caller_file_path = $caller['file'];
+                if (PHP_OS == "WINNT") {
+                    preg_match("/\\\Module\\\(.*?)\\\.*/im", $caller_file_path, $matches);
+                } else {
+                    preg_match("/\\/Module\\/(.*?)\\/.*/im", $caller_file_path, $matches);
                 }
 
-                if (!self::getInstance()->getLoader()->exists($template))
-                // if template not found in current loader
-                {
+                if (isset($matches[1])) { // is a module
 
-                    if (self::getInstance()->getLoader()->exists($file)) {
-                        $template = "$file";
-                    } else {
-                        throw new Exception("View file not found: $template");
+                    if (!preg_match('/\.\w+$/', $file)) {
+                        $file = $file . ".twig";
                     }
+
+                    $module_name = strtolower($matches[1]);
+                    $template = "@$module_name/$file";
+
+                    if (!self::getInstance()->getLoader()->exists($template))
+                    // if template not found in current loader
+                    {
+
+                        if (self::getInstance()->getLoader()->exists($file)) {
+                            $template = "$file";
+                        } else {
+                            throw new Exception("View file not found: $template");
+                        }
+                    }
+
+
+                    // tell intl to scan views folder
+                    self::getInstance()->intl->scanResources(
+                        isset($module_path)
+                            ? Path::join($module_path, "Views")
+                            : Path::join(
+                                substr($caller_file_path, 0, (strpos($caller_file_path, $matches[1]) + strlen($matches[1]))),
+                                "Views"
+                            )
+                    );
+
+                    // tell intl to load the intl template
+                    self::getInstance()->intl->onViewFileLoaded(self::getInstance()->getLoader()->getSourceContext($template)->getPath());
+
+                    // render the template
+                    return self::getInstance()->load($template)->render($data);
                 }
 
-
-                // tell intl to scan views folder
-                self::getInstance()->intl->scanResources(
-                    isset($module_path)
-                    ? Path::join($module_path, "Views")
-                    : Path::join(
-                        substr($file_path, 0, (strpos($file_path, $matches[1]) + strlen($matches[1]))),
-                        "Views"
-                    )
-                );
-
-                self::getInstance()->intl->onViewFileLoaded(
-                    is_file($template)
-                    ? $template
-                    : Path::join(
-                        substr($file_path, 0, (strpos($file_path, $matches[1]) + strlen($matches[1]))),
-                        "Views",
-                        (strtolower($matches[2]) !== "guest" ? $matches[2] : ""),
-                        $file
-                    )
-                );
-
-                return self::getInstance()->load($template)->render($data);
+                return self::getInstance()->load($file)->render($data);
             }
-
-            return self::getInstance()->load($file)->render($data);
-        }
-    }
-
-
-
-    public static function shutdown()
-    {
-
-        if (file_exists(__DIR__ . "/__.dat")) {
-            if (filemtime(__DIR__ . "/__.dat") < time() - 3600) {
-                $serialize = serialize(self::getInstance()->getTwig());
-                file_put_contents(__DIR__ . "/__.dat", $serialize);
+        } catch (Throwable $t) {
+            if ($t instanceof RuntimeError) {
+                return self::$viewException->send($t->getPrevious() ?? $t);
             }
-        } else {
-            $serialize = serialize(self::getInstance()->getTwig());
-            file_put_contents(__DIR__ . "/__.dat", $serialize);
+            return self::$viewException->send($t);
         }
     }
 }

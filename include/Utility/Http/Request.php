@@ -13,6 +13,7 @@ class Request
     protected $method;
     protected $path;
     private static $instance;
+    private RequestURI $uri;
 
     /**
      * Constructs a new instance of the class.
@@ -24,13 +25,17 @@ class Request
 
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $this->uri = new RequestURI();
         $this->header = new RequestHeader();
         $this->query = new RequestQuery();
         $this->form = new RequestForm();
-
     }
 
 
+    public function getURI(): RequestURI
+    {
+        return $this->uri;
+    }
     public static function getInstance(): Request
     {
 
@@ -92,6 +97,11 @@ class Request
 
 
 
+    function getForm()
+    {
+        return $this->form;
+    }
+
 
 
     /**
@@ -100,7 +110,7 @@ class Request
      * @param string $headerName The name of the header to retrieve.
      * @return mixed|null The value of the header if it exists, or null otherwise.
      */
-    public function getHeader()
+    public function getHeader(): RequestHeader|null
     {
 
         // Check if the header exists in the headers array
@@ -155,7 +165,7 @@ class Request
         // error_log("From Request Traying Get : " . $name);
         $name = $this->camelCaseToKebabCase($name);
         if (!isset($this->query->$name))
-            return false;
+            return '';
         return $this->query->$name;
     }
 
@@ -197,10 +207,94 @@ class Request
     {
         return self::getInstance()->http('user-agent');
     }
-
-
 }
 
+
+
+class RequestURI
+{
+    private $url;
+    private $protocol;
+    private $host;
+    private $path;
+    private $query;
+    private $fragment;
+
+    public function __construct()
+    {
+        // Check if the current request is using HTTPS
+        $is_https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+        // Get the protocol
+        $this->url = ($is_https ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        $this->protocol = parse_url($this->url, PHP_URL_SCHEME);
+        $this->host = parse_url($this->url, PHP_URL_HOST);
+        $this->path = parse_url($this->url, PHP_URL_PATH);
+        $this->query = parse_url($this->url, PHP_URL_QUERY);
+        $this->fragment = parse_url($this->url, PHP_URL_FRAGMENT);
+    }
+
+    public function addQuery($name, $value)
+    {
+        // Parse the existing query string into an array
+        $queryArray = [];
+        if ($this->query) {
+            parse_str($this->query, $queryArray);
+        }
+
+        // Add the new query parameter
+        $queryArray[$name] = $value;
+
+        // Build the new query string
+        $this->query = http_build_query($queryArray);
+
+        // Rebuild the URL
+        return $this->buildUrl();
+    }
+
+    public function setQuery(string|array $query)
+    {
+        if (is_array($query)) {
+            $this->query = http_build_query($query);
+        } else {
+            $this->query = $query;
+        }
+
+        // Rebuild the URL
+        return $this->buildUrl();
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        // Rebuild the URL
+        return $this->buildUrl();
+    }
+
+    private function buildUrl()
+    {
+        $this->url = $this->protocol . '://' . $this->host . $this->path;
+        if ($this->query) {
+            $this->url .= '?' . $this->query;
+        }
+        if ($this->fragment) {
+            $this->url .= '#' . $this->fragment;
+        }
+
+        return $this->url;
+    }
+
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    function __toString()
+    {
+        return $this->url;
+    }
+}
 
 
 
@@ -246,12 +340,17 @@ class RequestHeader
     {
         unset($this->stack_data[$key]);
     }
+
+    public function toArray()
+    {
+        return $this->stack_data;
+    }
 }
 
 
 
 
-class RequestQuery
+class RequestQuery implements \ArrayAccess
 {
     private $stack_data = [];
     public function __construct()
@@ -279,6 +378,30 @@ class RequestQuery
     public function __unset($key)
     {
         unset($this->stack_data[$key]);
+    }
+
+
+
+    function offsetExists(mixed $offset): bool
+    {
+        return isset($this->stack_data[$offset]);
+    }
+    function offsetGet(mixed $offset): mixed
+    {
+        return $this->stack_data[$offset];
+    }
+    function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->stack_data[$offset] = $value;
+    }
+    function offsetUnset(mixed $offset): void
+    {
+        unset($this->stack_data[$offset]);
+    }
+
+    public function toArray()
+    {
+        return $this->stack_data;
     }
 }
 
@@ -388,5 +511,10 @@ class RequestForm
     public function __unset($key)
     {
         unset($this->stack_data[$key]);
+    }
+
+    public function toArray()
+    {
+        return $this->stack_data;
     }
 }

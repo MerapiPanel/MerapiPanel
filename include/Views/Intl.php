@@ -2,6 +2,7 @@
 
 namespace MerapiPanel\Views;
 
+use MerapiPanel\Box;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\JsonFileLoader;
@@ -29,7 +30,7 @@ class Intl extends Translator
             $locale = locale_get_default();
             $locale = explode("_", $locale);
 
-            if (isset ($locale[1])) {
+            if (isset($locale[1])) {
                 $this->setLocale(strtolower($locale[1]));
             }
         }
@@ -38,7 +39,10 @@ class Intl extends Translator
         $this->addLoader('yml', new YamlFileLoader());
         $this->addLoader('array', new ArrayLoader());
         $this->addLoader('json', new JsonFileLoader());
-        $this->addResource('yaml', __DIR__ . '/locales/en.yaml', 'en');
+        foreach (glob(__DIR__ . "/locales/*.yaml") as $file) {
+            $name = basename($file, ".yaml");
+            $this->addResource('yaml', $file, $name);
+        }
     }
 
 
@@ -57,7 +61,6 @@ class Intl extends Translator
                     $this->addResource('yaml', $file, strtolower(basename($file, ".yml")));
                 }
             }
-
         } else {
 
             foreach (glob($directory . "/intl.{yaml,yml,json}", GLOB_BRACE) as $file) {
@@ -90,10 +93,10 @@ class Intl extends Translator
 
         $filename = basename($file, "." . pathinfo($file, PATHINFO_EXTENSION));
         $dirname = dirname($file);
+        $pattern = Path::join($dirname, $filename . ".intl.{yaml,yml,json}");
+        $intl_files = glob($pattern, GLOB_BRACE);
 
-        $intl_files = glob(Path::join($dirname, $filename . ".intl.{yaml,yml,json}"), GLOB_BRACE);
-
-        if (isset ($intl_files[0])) {
+        if (isset($intl_files[0])) {
             try {
 
                 $locale = null;
@@ -116,7 +119,5 @@ class Intl extends Translator
                 error_log("ERROR IN LOADING LOCALE: " . $e->getMessage());
             }
         }
-
     }
-
 }

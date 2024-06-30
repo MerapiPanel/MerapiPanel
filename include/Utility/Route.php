@@ -15,7 +15,7 @@ class Route
 
     protected readonly string $method;
     protected readonly string $path;
-    protected readonly string|Closure $controller;
+    protected readonly string|Closure|array $controller;
     protected array $middlewares = [];
 
 
@@ -25,7 +25,7 @@ class Route
      *
      * @param string $method The HTTP method to be used.
      * @param string $path The path for the request.
-     * @param string|Closure $controller The controller to be used.
+     * @param string|Closure|array $controller The controller to be used.
      * @param string|Closure $middleware The middleware to be used.
      */
     public function __construct($method, $path, $controller, $middleware = null)
@@ -75,7 +75,7 @@ class Route
      *
      * @return string|Closure The controller.
      */
-    public function getController(): string|Closure
+    public function getController(): string|Closure|array
     {
 
         return $this->controller;

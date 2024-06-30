@@ -31,12 +31,12 @@ class Admin extends __Fragment
             return;
         }
 
-        Router::POST("/settings/general", "updateSetting", self::class);
-        Router::POST("/setting/endpoint/save", "saveEndpoint", self::class);
-        Router::GET("/settings/config/{module_name}/", "config_module", self::class);
+        Router::POST("/settings/general", [$this, 'updateSetting']);
+        Router::POST("/setting/endpoint/save", [$this, 'saveEndpoint']);
+        Router::GET("/settings/config/{module_name}/", [$this, 'config_module']);
 
-        // $general = Router::GET("/settings/general", "index", self::class);
-        $route = Router::GET("/settings/route", "route", self::class);
+        // $general = Router::GET("/settings/general", [$this, 'index']);
+        $route = Router::GET("/settings/route", [$this, 'route']);
 
         Box::module("Panel")->addMenu([
             'order' => 100,
@@ -59,7 +59,7 @@ class Admin extends __Fragment
                     'order' => 0,
                     'name' => "Role",
                     'icon' => 'fa-solid fa-user-tag',
-                    'link' => Router::GET("/settings/role", "role", self::class)
+                    'link' => Router::GET("/settings/role", [$this, 'role'])
                 ]
             ]
         ]);

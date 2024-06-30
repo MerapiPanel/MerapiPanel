@@ -10,7 +10,7 @@ class ViewExtension extends Extension
      * @param array $config
      * @option needs_environment true
      */
-    function fn_panel_render(\Twig\Environment $env, $html = "")
+    function fn_panel_render(\Twig\Environment $env, string $html = "")
     {
         // Render the Twig template
         $result = $env->createTemplate($html)->render([]);

@@ -21,21 +21,20 @@ class Admin extends __Fragment
 
     public function register()
     {
-        Router::GET("/widget/load/{name}", "widgetLoadComponent", self::class);
-        $route = Router::GET("/", "index", self::class);
 
         Box::module("Panel")->addMenu([
             'order' => 0,
             'name' => 'Dashboard',
             'icon' => 'fa-solid fa-house',
-            'link' => $route
+            'link' => Router::GET("/dashboard", [$this, "index"])
         ]);
+        Router::GET("/widget/load/{name}", [$this, "widgetLoadComponent"]);
     }
 
 
-    public function index($view)
+    public function index()
     {
-        return View::render("index.html.twig");
+        return View::render("admin/index");
     }
 
 

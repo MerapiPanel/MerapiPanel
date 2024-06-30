@@ -150,7 +150,7 @@ class Response
             $this->setHeader("Content-Type", "application/json");
         }
 
-        @header("X-Powered-By: MerapiPanel 1.0.0; PHP " . PHP_VERSION);
+        @header("X-Powered-By: MerapiPanel $_ENV[__MP_VERSION__]; PHP " . PHP_VERSION);
 
         self::http_response_code($this->statusCode);
 
@@ -341,7 +341,7 @@ class Action
     public function redirect($target): Response
     {
         $this->res->setHeader("Location", $target);
-        $this->res->setStatusCode(301);
+        $this->res->setStatusCode(302);
 
         return $this->res;
     }

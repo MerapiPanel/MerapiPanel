@@ -29,7 +29,7 @@ class Admin extends __Fragment
             if ($config->get("profile")) {
                 Box::module("Panel")->addMenu([
                     "name" => "Profile",
-                    "link" => Router::GET("/users/profile", "profile", self::class),
+                    "link" => Router::GET("/users/profile", [$this, 'profile']),
                     'icon' => '<i class="fa-regular fa-circle-user"></i>',
                     "order" => 4
                 ]);
@@ -38,8 +38,8 @@ class Admin extends __Fragment
         }
 
 
-        Router::GET("/users/add", "addUser", self::class);
-        $index = Router::GET("/users", "index", self::class);
+        Router::GET("/users/add", [$this, 'addUser']);
+        $index = Router::GET("/users", [$this, 'index']);
         Box::module("Panel")->addMenu([
             "name" => "Users",
             "link" => $index,
@@ -49,13 +49,13 @@ class Admin extends __Fragment
         if ($config->get("profile")) {
             Box::module("Panel")->addMenu([
                 "name" => "Profile",
-                "link" => Router::GET("/users/profile", "profile", self::class),
+                "link" => Router::GET("/users/profile", [$this, 'profile']),
                 'icon' => '<i class="fa-regular fa-circle-user"></i>',
                 "order" => 1,
                 "parent" => "Users"
             ]);
             if ($this->module->getRoles()->isAllowed(2)) {
-                Router::GET("/users/profile/{user_id}", "otherProfile", self::class);
+                Router::GET("/users/profile/{user_id}", [$this, 'otherProfile']);
             }
         }
         $roleNames = json_encode(Util::getRoles());
@@ -85,14 +85,14 @@ class Admin extends __Fragment
 
     function addUser(Request $req)
     {
-        return View::render("add_user.twig");
+        return View::render("admin/add_user");
     }
 
 
 
     function profile(Request $req)
     {
-        return View::render("profile.html.twig");
+        return View::render("admin/profile");
     }
 
     function otherProfile(Request $req)
@@ -104,7 +104,7 @@ class Admin extends __Fragment
                 "id" => $user_id
             ]
         ]);
-        return View::render("profile.html.twig", ["user" => $user]);
+        return View::render("admin/profile", ["user" => $user]);
     }
 
 
@@ -112,6 +112,6 @@ class Admin extends __Fragment
     public function index($req)
     {
 
-        return View::render("index.html.twig");
+        return View::render("admin/index");
     }
 }

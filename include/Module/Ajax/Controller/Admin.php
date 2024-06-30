@@ -3,6 +3,7 @@ namespace MerapiPanel\Module\Ajax\Controller {
 
     use MerapiPanel\Box;
     use MerapiPanel\Box\Module\__Controller;
+    use MerapiPanel\Box\Module\Entity\Proxy;
     use MerapiPanel\Utility\Http\Request;
     use MerapiPanel\Utility\Router;
 
@@ -11,11 +12,11 @@ namespace MerapiPanel\Module\Ajax\Controller {
 
         function register()
         {
-            Router::GET("/api/{module_name}/{method_name}", "apiCall", self::class);
-            Router::GET("/api/{module_name}/{service_name}/{method_name}", "apiCallService", self::class);
+            Router::GET("/api/{module_name}/{method_name}", [$this, "apiCall"]);
+            Router::GET("/api/{module_name}/{service_name}/{method_name}", [$this, "apiCallService"]);
 
-            Router::POST("/api/{module_name}/{method_name}", "post_apiCall", self::class);
-            Router::POST("/api/{module_name}/{service_name}/{method_name}", "post_apiCallService", self::class);
+            Router::POST("/api/{module_name}/{method_name}", [$this, "post_apiCall"]);
+            Router::POST("/api/{module_name}/{service_name}/{method_name}", [$this, "post_apiCallService"]);
 
         }
 

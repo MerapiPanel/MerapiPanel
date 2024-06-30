@@ -2,11 +2,12 @@
 
 namespace MerapiPanel\Exception;
 
+use MerapiPanel\App;
+use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Views\View;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
-use Twig\Loader\FilesystemLoader;
 
 
 
@@ -95,6 +96,15 @@ class Catcher
         if (!isset($code) || $code == 0) {
             $code = 500;
         }
+
+        if (Request::getInstance()->http("x-requested-with") == "XMLHttpRequest") {
+            return new Response([
+                'status' => false,
+                "message" => $message
+            ], 199 < $code && 300 < $code ? (int)$code : 500);
+        }
+
+
         $view = View::getInstance();
         $extension = "html";
         $base = $_ENV['__MP_CWD__'] . "/errors";

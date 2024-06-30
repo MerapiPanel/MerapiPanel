@@ -1,19 +1,32 @@
 {% macro render_menu(menu) %}
 
 {% for item in menu %}
-<li class="nav-item{{ item.active ? ' active' : '' }}">
-    <a {% if item.link %}href="{{ item.link }}" {% endif %}>
-        {% if api.Panel.isFile(item.icon) %}
-        <img width="14" height="14" class="object-fit-cover" src="{{ api.Panel.getAbsolutePath(item.icon) }}" alt="Icon">
-        {% else %}
-        {{ item.icon | raw }}
+{% set random = random(1000, 9999) %}
+<li class="nav-item{{ item.active ? ' active' : '' }} pe-0">
+    <div class="d-flex">
+        <a {% if item.link %}href="{{ item.link }}" {% endif %} class="nav-link py-2">
+            {% if _box.Panel.isFile(item.icon) %}
+            <img width="14" height="14" class="object-fit-cover" src="{{ _box.Panel.getAbsolutePath(item.icon) }}"
+                alt="Icon">
+            {% else %}
+            {{ item.icon | raw }}
+            {% endif %}
+            {{item.name | trans }}
+        </a>
+        {% if item.childs %}
+        <button class="ms-auto btn btn-link py-0" type="button" data-bs-toggle="collapse" data-bs-target="#{{ random }}"
+            aria-expanded="false">
+            <i class="fa-solid fa-angle-down"></i>
+        </button>
         {% endif %}
-        {{item.name}}
-    </a>
+
+    </div>
     {% if item.childs %}
-    <ul class="nav-menu">
-        {{ _self.render_menu(item.childs) }}
-    </ul>
+    <div class="collapse{{ item.active ? ' show' : '' }} menu-childs" id="{{ random }}">
+        <ul class="nav-menu">
+            {{ _self.render_menu(item.childs) }}
+        </ul>
+    </div>
     {% endif %}
 
 </li>
@@ -23,12 +36,12 @@
 <nav class="sidebar" id="sidebar">
     <div class="sidebar-container">
         <button class="sidebar-close" onclick="closeNav()"></button>
-        <div class="sidebar-header">
-            <img width="110" height="65" src="{{ '@panel/assets/logo.svg' | assets }}" alt="">
+        <div class="sidebar-header py-3">
+            <img width="110" height="35" class="object-fit-contain" src="https://raw.githubusercontent.com/il4mb/merapihost/main/admin.png" alt="">
         </div>
 
         <ul class="nav-menu">
-            {{ _self.render_menu(api.Panel.getMenu) }}
+            {{ _self.render_menu(_box.Panel.getMenu) }}
         </ul>
     </div>
 </nav>
@@ -41,4 +54,17 @@
     function closeNav() {
         document.getElementById("sidebar").classList.remove("open");
     }
+    $(".nav-item").has(".nav-item.active").find(".menu-childs").addClass("show");
+    $(".nav-item").has(".nav-item.active").find("[data-bs-toggle='collapse']").html('<i class="fa-solid fa-angle-up"></i>');
+    $("[data-bs-toggle='collapse']").click(function () {
+        setTimeout(() => {
+            let target = $(this).attr('data-bs-target');
+            if ($(target).hasClass('show')) {
+                $(this).html('<i class="fa-solid fa-angle-up"></i>');
+            } else {
+                $(this).html('<i class="fa-solid fa-angle-down"></i>');
+            }
+        }, 400);
+    });
+    $(".nav-item.active").find("[data-bs-toggle='collapse']").html('<i class="fa-solid fa-angle-up"></i>');
 </script>

@@ -13,7 +13,7 @@ class Guest extends __Controller
 
     public function register()
     {
-       // Router::GET("/article/{slug}", "index", self::class);
+       // Router::GET("/article/{slug}", [$this, 'index']);
     }
 
     public function index(Request $request)

@@ -15,7 +15,7 @@ class Admin extends __Controller
     {
 
         if ($this->module->getRoles()->isAllowed(0)) {
-            $customize = Router::GET("website/customize", "customize", self::class);
+            $customize = Router::GET("website/customize", [$this, 'customize']);
             Box::module("Panel")->addMenu([
                 "name" => "Website",
                 "icon" => "fa-solid fa-globe",
