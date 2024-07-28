@@ -3,6 +3,7 @@
 namespace MerapiPanel\Utility;
 
 use Exception;
+use MerapiPanel\App;
 use MerapiPanel\Exception\HTTP_CODE;
 use MerapiPanel\Exception\HttpException;
 use MerapiPanel\Box;
@@ -54,7 +55,7 @@ class Router
             $config = $_ENV['__MP_' . $basename . '__'];
             if (isset($config['prefix'])) {
                 $prefix = $config['prefix'];
-                $path = ltrim($prefix, '/') . "/" . trim($path, "/");
+                $path = ltrim($prefix, '/') . "/" . ltrim($path, "/");
             }
 
             if (isset($config['middleware'])) {
@@ -65,6 +66,7 @@ class Router
         if (isset($path[0]) && $path[0] != "/") {
             $path = "/" . $path;
         }
+
 
         return [$path, $middleware];
     }
@@ -80,10 +82,6 @@ class Router
      */
     public static function GET(string $path, string|callable|array $method): Route
     {
-
-        $instance = Router::getInstance();
-        $middleware = null;
-        $caller = debug_backtrace()[0];
 
         $instance = Router::getInstance();
         $middleware = null;
@@ -150,10 +148,10 @@ class Router
      * Adds a PUT route to the router.
      *
      * @param string $path The path for the route.
-     * @param string|callable|array $method The callback function for the route.
+     * @param string|callable $method The callback function for the route.
      * @return Route The added route.
      */
-    public static function PUT(string $path, string|callable|array $method): Route
+    public static function PUT(string $path, string|callable $method): Route
     {
 
         $instance = Router::getInstance();
@@ -213,6 +211,8 @@ class Router
     }
 
 
+
+
     function resetRoute()
     {
         $this->routeStack = [
@@ -222,7 +222,6 @@ class Router
             "DELETE" => []
         ];
     }
-
 
     public function getRouteStack()
     {
@@ -296,7 +295,9 @@ class Router
             }
         }
 
-
+        if (App::$isApi) {
+            throw new Exception("Invalid path", 404);
+        }
 
         throw new HttpException("Route not found " . $request->getPath(), HTTP_CODE::NOT_FOUND);
     }
@@ -318,7 +319,6 @@ class Router
             return true;
         }
         $params = $this->extractRouteParams($route, $path);
-        
         if (!empty($params)) {
             preg_match('/\{(\w+)\[(.*)\]\}/', $route, $matchesExpectedValue);
             if (isset($matchesExpectedValue[1], $matchesExpectedValue[2])) {
@@ -332,7 +332,6 @@ class Router
             }
 
             $route = preg_replace('/\{(\w+)\[(.*)\]\}/', '{$1}', $route);
-
             $expacted_path = str_replace(array_map(function ($key) {
                 return '{' . $key . '}';
             }, array_keys($params)), array_values($params), $route);
@@ -356,8 +355,7 @@ class Router
      */
     protected function extractRouteParams($route, $path)
     {
-     
-        $path    = preg_replace('/\?.*/', '', $path);
+        $path = preg_replace('/\?.*/', '', $path);
         $pattern = preg_replace('/\//', '\/', $route);
         $pattern = preg_replace('/\{(\w+|\w+\[.*\])\}$/', '(.*)', $pattern);
         $pattern = '/^' . preg_replace('/\{(.*?)\}/', '(.*?)', $pattern) . '/';
@@ -464,7 +462,7 @@ class Router
             return $output;
         }
 
-        if ($request->http('x-requested-with') == 'XMLHttpRequest') {
+        if ($request->http('x-requested-with') == 'XMLHttpRequest' || $request->http('sec-fetch-mode') == 'cors') {
             $response->setContent([
                 'status' => $response->getStatusCode() === 200,
                 'message' => "Success",
@@ -493,7 +491,7 @@ class Router
             return $output;
         }
 
-        if ($request->http('x-requested-with') == 'XMLHttpRequest') {
+        if ($request->http('x-requested-with') == 'XMLHttpRequest'|| $request->http('sec-fetch-mode') == 'cors') {
             $response->setContent([
                 'status' => $response->getStatusCode() == 200,
                 'message' => "Success",

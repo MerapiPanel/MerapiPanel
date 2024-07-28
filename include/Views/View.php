@@ -3,7 +3,7 @@
 namespace MerapiPanel\Views;
 
 use Exception;
-use MerapiPanel\Exception\Catcher;
+use MerapiPanel\API;
 use MerapiPanel\Views\Loader;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Views\Abstract\Extension;
@@ -18,11 +18,20 @@ use Twig\TemplateWrapper;
 
 class ViewException extends Extension
 {
+
     private static $templates = [];
+
+    function setTemplate($code, $template)
+    {
+        if (!View::getInstance()->getLoader()->exists($template)) {
+            throw new Exception("Template does't exist!");
+        }
+        self::$templates[$code] = $template;
+    }
 
     function fn_error_template($code, $template)
     {
-        self::$templates[$code] = $template;
+        $this->setTemplate($code, $template);
     }
 
     function fn_throw($message, $code = 0)
@@ -45,7 +54,6 @@ class ViewException extends Extension
             "code" => $t->getCode(),
             "message" => $t->getMessage(),
             "previus" => $t->getPrevious(),
-            "snippet" => Catcher::getCodeSnippet($t->getFile(), $t->getLine()),
             "trace" => $t->getTrace(),
             "file" => $t->getFile(),
             "line" => $t->getLine()
@@ -62,7 +70,7 @@ class View
     protected Intl $intl;
     protected $lang = false;
     private TemplateWrapper|null $wrapper = null;
-    private static ViewException $viewException;
+    private ViewException $viewException;
 
 
     public function __construct(array|ArrayLoader $loader = [])
@@ -95,21 +103,23 @@ class View
                 $this->twig->addExtension(new $className($this));
             }
         }
-        self::$viewException = new ViewException();
-        $this->twig->addExtension(self::$viewException);
+        $this->viewException = new ViewException();
+        $this->twig->addExtension($this->viewException);
 
 
-        $this->addGlobal("_req", Request::getInstance());
-        $this->addGlobal("_lang", $this->lang);
+        $this->addGlobal("request", Request::getInstance());
+        $this->addGlobal("lang", $this->lang);
         $this->addGlobal("_box", new ApiServices());
         $this->addGlobal('__env__', $_ENV);
     }
 
 
-    function setErrorTemplate($template, $error_code = "default")
+    function getErrorHandler()
     {
-        self::$viewException->fn_error_template($error_code, $template);
+        return $this->viewException;
     }
+
+
 
     function getIntl(): Intl
     {
@@ -297,9 +307,10 @@ class View
             }
         } catch (Throwable $t) {
             if ($t instanceof RuntimeError) {
-                return self::$viewException->send($t->getPrevious() ?? $t);
+                return self::getInstance()->getErrorHandler()->send($t->getPrevious() ?? $t);
             }
-            return self::$viewException->send($t);
+            return self::getInstance()->getErrorHandler()->send($t);
         }
+        return "";
     }
 }

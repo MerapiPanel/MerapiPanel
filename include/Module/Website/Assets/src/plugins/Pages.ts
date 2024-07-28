@@ -39,8 +39,8 @@ export const Register = (editor: Editor, opts: {
         run: function () {
             if (customizePage) {
                 customizePage.components = JSON.stringify(editor.getComponents()) as any;
-                customizePage.styles = editor.getCss() as any;
-                customizePage.isChanged = false;
+                customizePage.styles     = editor.getCss() as any;
+                customizePage.isChanged  = false;
             }
             render();
             return customizePage;
@@ -48,6 +48,7 @@ export const Register = (editor: Editor, opts: {
     });
 
     editor.Commands.add("pages:customize", {
+
         run: function (editor, sender, opts) {
 
             const pageKeys = ["id", "name", "title", "description", "route", "components", "styles", "variables", "header", "post_date", "update_date", "isChanged"];
@@ -748,9 +749,6 @@ export const Register = (editor: Editor, opts: {
     }
 
 
-
-
-    // startEdit(customizePage as any);
     var delay: any = null;
     editor.on("update", (e) => {
         if (delay) clearTimeout(delay);

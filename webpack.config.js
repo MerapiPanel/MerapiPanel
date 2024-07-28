@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const LodashModule = require("lodash-webpack-plugin");
 const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { exit } = require('process');
 const stylesHandler = MiniCssExtractPlugin.loader;
 
 const moduleEntry = () => {
@@ -42,16 +43,14 @@ const buildinEntry = () => {
 };
 
 
-const entry = () => {
-    return {
-        ...moduleEntry(),
-        ...buildinEntry()
-    }
+const entry = {
+    ...moduleEntry(),
+    ...buildinEntry()
 }
 
 module.exports = {
     mode: 'production',
-    entry: entry(),
+    entry: entry,
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, "./include/buildin/dist")

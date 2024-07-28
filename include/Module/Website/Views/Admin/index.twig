@@ -1,7 +1,6 @@
 {% extends "@panel/base.html.twig" %}
+{% block header_title %}Manage Website{% endblock %}
 
-{{_box.Website.fetch_all|json_encode|raw}}
-
-{% block cintent %}
+{% block content %}
 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae dicta dolorem repudiandae repellat voluptate tempora asperiores maxime, sunt corrupti reprehenderit ipsum iste architecto illum possimus doloribus reiciendis illo. Perspiciatis, officiis?
 {% endblock %}

@@ -4,7 +4,6 @@ namespace MerapiPanel\Module\Website\Controller;
 
 use MerapiPanel\Box;
 use MerapiPanel\Box\Module\__Controller;
-use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Router;
 use MerapiPanel\Views\View;
 

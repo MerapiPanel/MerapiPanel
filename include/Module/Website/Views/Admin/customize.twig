@@ -62,12 +62,13 @@ fetchBlockURL: "/editor/api/load" | access_path
 
 	__.website = {};
 	__.website.saveURL = "{{ '/api/Website/Pages/save' | access_path | url }}";
-	fetch("{{ '/api/Website/Pages/fetchAll' | access_path }}")
+	fetch("{{'/api/Website/Pages/fetchAll'|access_path}}")
 		.then(response => response.json())
 		.then(response => {
 			__.website.pages = response.data;
 		});
 	__.website.testVariable = function (data) {
+
 		const formData = new FormData();
 
 		Object.keys(data).forEach(function (key) {
@@ -102,7 +103,6 @@ fetchBlockURL: "/editor/api/load" | access_path
 	}
 
 	__.website.deletePage = function (page) {
-		console.log(page);
 		return new Promise(function (resolve, reject) {
 			__.http.post("{{ '/api/Website/Pages/delete' | access_path }}", {
 				id: page.id

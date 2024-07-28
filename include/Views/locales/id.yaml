@@ -10,8 +10,6 @@ yaers: tahun
 annual: tahunan
 unpaid: belum dibayar
 paid: lunas
-canceled: dibatalkan
-cancel: batal
 inactive: tidak aktif
 pending: tertunda
 active: aktif
@@ -30,19 +28,18 @@ total records: catatan total
 name: nama
 email address: alamat email
 last update: terakhir diperbarui
-change password: ganti kata sandi
-gender: jenis kelamin
-male: laki-laki
-female: perempuan
+change password: Ganti Kata Sandi
+gender: Jenis Kelamin
+male: Laki-Laki
+female: Perempuan
 the bill is currently in the queue for review!: tagihan saat ini sedang dalam antrian untuk ditinjau!
 evidence of transfer: Bukti transfer
-pay now: bayar sekarang
+pay now: Bayar Sekarang
 waiting for a response: menunggu tanggapan
 all: semua
 show all: tampilkan semua
 apply: terapkan
 status: status
-amount: jumlah
 domain: domain
 client: klien
 registrar: registrar
@@ -57,4 +54,7 @@ delete: hapus
 uncategory: tidak berkategori
 yes: iya
 no: tidak
-manage email account: kelola akun email
+confirm: konfirmasi
+completed: selesai
+submit changes: kirim perubahan
+mark as complete: tandai selesai

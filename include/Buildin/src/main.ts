@@ -295,7 +295,7 @@ const Box = {
             const $this = $(this);
             const src = $this.attr("src") ?? "";
 
-            if ($this[0].naturalWidth == 0 && $this[0].naturalHeight == 0) {
+            if (($this[0] as any).naturalWidth == 0 && ($this[0] as any).naturalHeight == 0) {
 
                 $this.prop("src", placeholder);
                 const image = new Image();

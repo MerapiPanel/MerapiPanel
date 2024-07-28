@@ -1,7 +1,6 @@
 import { AddComponentTypeOptions, Component, Editor, EditorConfig } from "grapesjs";
 import { __MP } from "../../../../Buildin/src/main";
 import * as Pages from "./plugins/Pages";
-import { color } from "@codemirror/theme-one-dark";
 
 const editor: {
     config: EditorConfig,
@@ -20,10 +19,13 @@ interface Customize extends __MP {
 const __: Customize = (window as any).__;
 
 
+/**
+ * On PostSave Callback
+ */
 editor.callback = function () {
 
     const gjsEditor: Editor = this.editor;
-    const page = gjsEditor.runCommand("pages:save");
+    const page     = gjsEditor.runCommand("pages:save");
     const formData = new FormData();
 
     Object.keys(page).forEach((key) => {
@@ -63,8 +65,9 @@ editor.callback = function () {
         }).catch((error) => {
             this.reject(error || "Failed to save page", 5, 'text-danger');
         });
-
 }
+
+
 editor.onReady = function (editor: Editor) {
 
     const { BlockManager, Components, Panels } = editor;
@@ -359,6 +362,7 @@ editor.onReady = function (editor: Editor) {
             type: "website-twig-if",
         }
     });
+
     BlockManager.add("twig-for", {
         category: "Twig",
         label: "Twig For",
@@ -366,6 +370,7 @@ editor.onReady = function (editor: Editor) {
             type: "website-twig-for",
         }
     });
+
     BlockManager.add("twig-else", {
         category: "Twig",
         label: "Twig Else",
@@ -373,6 +378,7 @@ editor.onReady = function (editor: Editor) {
             type: "website-twig-else",
         }
     });
+
     BlockManager.getCategories().forEach((category, index) => {
         if (category.attributes.id === 'Twig') {
             category.attributes.order = 0;
@@ -405,6 +411,7 @@ editor.onReady = function (editor: Editor) {
     const pagesContainer = $(`<div class="editor-layout pages-manager hide p-2 flex-wrap gap-2">`);
     $(".editor-sidebar").append(pagesContainer);
 
+    console.log(__.website)
     Pages.Register(editor, {
         appendTo: ".pages-manager",
         pages: __.website.pages || []
@@ -440,10 +447,7 @@ editor.onReady = function (editor: Editor) {
 
 
     function updateMenu(navbar: Component) {
-
         const navitems = navbar.components().filter(component => component.get("type") == "bs-nav-item");
-
-       // console.log(JSON.parse(JSON.stringify(navitems)));
     }
 
 }

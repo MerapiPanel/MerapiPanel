@@ -341,7 +341,7 @@ class Action
     public function redirect($target): Response
     {
         $this->res->setHeader("Location", $target);
-        $this->res->setStatusCode(302);
+        $this->res->setStatusCode(301);
 
         return $this->res;
     }

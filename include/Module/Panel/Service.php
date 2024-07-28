@@ -14,10 +14,11 @@ class Service extends __Fragment
 
     protected $ListMenu = [];
     protected $module;
-    function onCreate(Module $module)
+    function onCreate(Box\Module\Entity\Module $module)
     {
-        if (Box::module("Auth")->isAdmin() && isset($_ENV['__MP_ADMIN__']['prefix']) && strpos(Request::getInstance()->getPath(), $_ENV['__MP_ADMIN__']['prefix']) === 0) {
-            View::getInstance()->setErrorTemplate("@panel/error.twig");
+        
+        if(strpos(Request::getInstance()->getPath(), $_ENV['__MP_ADMIN__']['prefix']) == 0 && Box::module("Auth")->isAdmin()) {
+            View::getInstance()->getErrorHandler()->setTemplate("default", "@panel/error.twig");
         }
         $this->module = $module;
     }
