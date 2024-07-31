@@ -11,6 +11,11 @@
 
 {% block head_javascript %}
 {{ parent() }}
+<script>
+    window.access_path = function (path) {
+        return "{{'/'|access_path}}".replace(/\/$/, '')+"/" + path.replace(/^\//, '')
+    }
+</script>
 <script src="{{ '@panel/dist/panel.js' | assets }}"></script>
 <!-- @Panel:scripts -->
 {{ panel_render(_box.Panel.Scripts.getScripts) }}
@@ -129,7 +134,7 @@
             })
         }
 
-        if($("#subheader-menu").children().length == 0) {
+        if ($("#subheader-menu").children().length == 0) {
             $("#subheader-actions").hide();
         }
     </script>

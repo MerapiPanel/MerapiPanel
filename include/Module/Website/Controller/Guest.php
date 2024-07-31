@@ -32,13 +32,15 @@ class Guest extends __Fragment
             Router::GET($route, function () use ($page, $BlocksEditor, $module) {
 
                 $components = $page['components'] ?? [];
-                $styles = $page['styles'] ?? "";
-                $header = $page['header'] ?? "";
-                $variables = $page['variables'] ?? "";
-                $content = $BlocksEditor->render($components);
+                $styles     = $page['styles'] ?? "";
+                $header     = $page['header'] ?? "";
+                $variables  = $page['variables'] ?? "";
+                $content    = $BlocksEditor->render($components);
                 self::cleanTwigFragmentFromHtml($content);
                 $lang = View::getInstance()->getIntl()->getLocale();
 
+                $styles .= $BlocksEditor->getStyles();
+                
                 $html = <<<HTML
 <!DOCTYPE html>
 <html lang="{$lang}">
@@ -67,7 +69,7 @@ HTML;
                 $_variables = [];
                 try {
 
-                    $variables = is_string($variables) ? json_decode($variables??'[]', true) : $variables;
+                    $variables = is_string($variables) ? json_decode($variables ?? '[]', true) : $variables;
                     if (is_array($variables) && count($variables) > 0) {
                         $_variables = Box::module("Website")->Variable->execute($variables);
                     }
@@ -89,9 +91,8 @@ HTML;
                     // silent
                 }
 
-                return $output;
+                return View::minimizeHTML($output);
             });
-
         }
     }
 
@@ -125,6 +126,4 @@ HTML;
         // If no match is found, return null
         return null;
     }
-
-
 }

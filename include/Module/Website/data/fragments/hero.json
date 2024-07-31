@@ -1,0 +1,45 @@
+{
+    "label": "hero banner",
+    "media": "<img width='150px' src='/public/assets/Website/img/hero-banner.jpg'/>",
+    "content": {
+        "attributes": {
+            "id": "igoh",
+            "style": "position: relative; max-height: 400px; overflow-x: hidden; overflow-y: hidden;"
+        },
+        "components": [
+            {
+                "type": "image",
+                "resizable": {
+                    "ratioDefault": 1
+                },
+                "classes": [
+                    "d-block",
+                    "w-100"
+                ],
+                "attributes": {
+                    "src": "/content/upload/2024-07-28/blue-texture.jpg"
+                }
+            },
+            {
+                "attributes": {
+                    "id": "if7r"
+                },
+                "components": [
+                    {
+                        "type": "text",
+                        "attributes": {
+                            "id": "i2h8",
+                            "style": "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: drop-shadow(rgba(68, 68, 68, 0.667) 2px 4px 4px); color: rgb(255, 255, 255); font-weight: bold; font-size: 25px;"
+                        },
+                        "components": [
+                            {
+                                "type": "textnode",
+                                "content": "WELCOME to WEBSITE"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

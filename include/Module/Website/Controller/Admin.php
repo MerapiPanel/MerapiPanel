@@ -27,6 +27,9 @@ class Admin extends __Controller
                     ]
                 ]
             ]);
+
+            Router::GET("fragment/list-pops", [$this->module->Fragments, "listpops"]);
+            Router::GET("asset/list-pops", [$this->module->Assets, "listpops"]);
         }
     }
 

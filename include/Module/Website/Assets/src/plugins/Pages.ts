@@ -39,8 +39,8 @@ export const Register = (editor: Editor, opts: {
         run: function () {
             if (customizePage) {
                 customizePage.components = JSON.stringify(editor.getComponents()) as any;
-                customizePage.styles     = editor.getCss() as any;
-                customizePage.isChanged  = false;
+                customizePage.styles = editor.getCss() as any;
+                customizePage.isChanged = false;
             }
             render();
             return customizePage;
@@ -65,6 +65,11 @@ export const Register = (editor: Editor, opts: {
             const styles = customizePage.styles || "";
             editor.setComponents(components);
             editor.setStyle(styles);
+            const wrapper: any = editor.getWrapper();
+            wrapper.addStyle({
+                'min-height': '100vh',
+                'display': 'block'
+            });
             stopEdit();
             render();
         }

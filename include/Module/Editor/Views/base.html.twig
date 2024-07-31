@@ -1,9 +1,4 @@
-{% extends "base.html.twig" %}
-
-{% block meta %}
-<meta charset="utf-8">
-<title>{% block meta_title %}Merapi panel{% endblock %}</title>
-{% endblock %}
+{% extends "@panel/base.html.twig" %}
 
 {% block stylesheet %}
 {{ parent() }}
@@ -45,10 +40,11 @@
 {% endblock %}
 
 
-
-
-{% block content %}
-<div id="editor"></div>
+{% block body %}
+<body>
+	<div id="editor"></div>
+	{{block('javascript')??''}}
+</body>
 {% endblock %}
 
 

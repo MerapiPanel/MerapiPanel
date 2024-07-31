@@ -12,6 +12,7 @@ use Symfony\Component\Filesystem\Path;
 use Throwable;
 use Twig\Error\RuntimeError;
 use Twig\Loader\ArrayLoader;
+use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface;
 use Twig\TemplateWrapper;
 
@@ -73,7 +74,7 @@ class View
     private ViewException $viewException;
 
 
-    public function __construct(array|ArrayLoader $loader = [])
+    public function __construct(array|ArrayLoader|FilesystemLoader $loader = [])
     {
 
         if (gettype($loader) == "array") {
@@ -300,10 +301,13 @@ class View
                     self::getInstance()->intl->onViewFileLoaded(self::getInstance()->getLoader()->getSourceContext($template)->getPath());
 
                     // render the template
-                    return self::getInstance()->load($template)->render($data);
+                    $ouput = self::getInstance()->load($template)->render($data);
                 }
-
-                return self::getInstance()->load($file)->render($data);
+                if (!isset($ouput)) {
+                    $ouput = self::getInstance()->load($file)->render($data);
+                }
+                $ouput = self::minimizeHTML($ouput);
+                return $ouput;
             }
         } catch (Throwable $t) {
             if ($t instanceof RuntimeError) {
@@ -312,5 +316,11 @@ class View
             return self::getInstance()->getErrorHandler()->send($t);
         }
         return "";
+    }
+
+    public static function minimizeHTML($html)
+    {
+        $ouput = preg_replace('/(>)(\s+|\n|\r)(<)/', '$1$3', $html);
+        return $ouput;
     }
 }

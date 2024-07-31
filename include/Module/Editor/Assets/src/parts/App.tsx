@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 import { Payload } from "../main";
 import { App as EditorApp, Navbar, EditorBody, EditorCanvas, Sidebar, LoadingScreen, LoadingAction } from "@il4mb/merapipanel/editor";
 import { Panel, Btn, LayerManager, BlockManager, StyleManager, TraitsManager, SelectorManager } from "@il4mb/merapipanel/editor/partial";
-import { AddComponentTypeOptions, BlockProperties, Editor } from "grapesjs";
+import { AddComponentTypeOptions, BlockProperties, Command, CommandObject, CommandOptions, Editor } from "grapesjs";
 import { CodeEditor, Bootstrap5 } from "@il4mb/merapipanel/editor/plugins";
 import $ from "jquery";
 import { toast } from "@il4mb/merapipanel/toast";
@@ -41,6 +41,10 @@ const ___InitRegisterBlocks = async (editor: Editor, blocks: any[], setLoadingWi
     for (const i in blocks) {
 
         const blockDefine: BlockDefine = blocks[i];
+        if (!blockDefine.index) {
+            console.error(`Cant register block ${i}`);
+            continue;
+        }
 
         (window as any).BlockRegister = (modelCallback: any) => {
 

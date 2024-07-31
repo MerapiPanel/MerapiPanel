@@ -22,7 +22,6 @@ export type Payload = {
     setEditor: (editor: Editor) => void
 }
 
-
 const payload = (window as any).editor as Payload;
 
 if (!payload.config.container) {

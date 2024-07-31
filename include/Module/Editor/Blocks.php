@@ -1,19 +1,22 @@
 <?php
+
 namespace MerapiPanel\Module\Editor {
 
     use MerapiPanel\Box;
     use MerapiPanel\Box\Module\__Fragment;
+    use MerapiPanel\Box\Module\Entity\Module;
+    use MerapiPanel\Utility\Util;
     use Symfony\Component\Filesystem\Path;
 
     class Blocks extends __Fragment
     {
 
-        protected $replace = [];
         protected $module;
-        function onCreate(\MerapiPanel\Box\Module\Entity\Module $module)
+        private $styles = "";
+
+        function onCreate(Module $module)
         {
             $this->module = $module;
-
         }
 
         function getBlocks()
@@ -23,7 +26,7 @@ namespace MerapiPanel\Module\Editor {
             $blocks = [];
             foreach (glob(Path::join($module_dirname, "**", "Blocks", "*", "index.php")) as $block_file) {
 
-                $data = require_once ($block_file);
+                $data = require_once($block_file);
                 if (!is_array($data)) {
                     continue;
                 }
@@ -31,7 +34,6 @@ namespace MerapiPanel\Module\Editor {
                 $data = array_combine(array_keys($data), array_map(function ($item) use ($block_file) {
                     if (is_string($item) && strpos($item, "file:.") === 0) {
                         $item = str_replace("file:.", str_replace(Path::normalize($_ENV['__MP_CWD__']), "", Path::normalize(dirname($block_file))), $item);
-
                     }
                     return $item;
                 }, array_values($data)));
@@ -42,6 +44,11 @@ namespace MerapiPanel\Module\Editor {
             return $blocks;
         }
 
+        private function defaultRender($tagName = "div", $attributes = [], $content = "")
+        {
+            $attribute = (!empty($attributes) ? " " : "") . implode(" ", array_map(fn ($k) => "$k=\"$attributes[$k]\"", array_keys($attributes)));
+            return "<$tagName{$attribute}>{$content}</$tagName>";
+        }
 
         private function renderResolve($component = [])
         {
@@ -53,7 +60,7 @@ namespace MerapiPanel\Module\Editor {
             if (isset($component['tagName'])) {
                 $className = isset($component['classes']) ? implode(" ", $component['classes']) : null;
                 $attribute = isset($component['attributes']) ? implode(" ", array_map(function ($attr) use ($component) {
-                    if (isset ($component['attributes'][$attr])) {
+                    if (isset($component['attributes'][$attr])) {
                         return "{$attr}=\"{$component['attributes'][$attr]}\"";
                     }
                     return $attr;
@@ -66,8 +73,6 @@ namespace MerapiPanel\Module\Editor {
                 } else {
                     return "<{$component['tagName']} " . ($className ? " class='$className'" : '') . " {$attribute}/>";
                 }
-
-
             } else if (isset($component['components'])) {
                 $component['type'] = "editor-group";
                 return $this->render([$component]);
@@ -75,15 +80,12 @@ namespace MerapiPanel\Module\Editor {
         }
 
 
-        function render($components = [], $replacer = [])
+        function render($components = [])
         {
 
             if (gettype($components) === "string")
                 return $components;
 
-            if (!empty($replacer)) {
-                $this->replace = $replacer;
-            }
             $resolve_namespace = [
                 "bs" => "Editor",
             ];
@@ -92,6 +94,20 @@ namespace MerapiPanel\Module\Editor {
             foreach ($components as $key => $component) {
 
                 $type = $component['type'] ?? null;
+                if (isset($component["attributes"]["style"])) {
+                    $selector = "";
+                    if (!isset($component["attributes"]["id"])) {
+                        $component["attributes"]["id"] = Util::uniq(46);
+                    }
+                    $selector .= "#" . $component["attributes"]["id"];
+                    if (isset($component["attributes"]["classes"])) {
+                        $selector .= "." . implode(".", $component["attributes"]["classes"]);
+                    }
+
+                    $this->styles .= "$selector{" . $component['attributes']['style'] . "}";
+                    unset($component["attributes"]["style"]);
+                }
+
 
 
                 if (!$type) {
@@ -99,13 +115,17 @@ namespace MerapiPanel\Module\Editor {
                     continue;
                 }
 
-                if (isset($this->replace[$type])) {
-                    $rendered[] = is_array($this->replace[$type]) ? $this->renderResolve($this->replace[$type]) : $this->replace[$type];
-                    continue;
-                }
 
                 if ($type === "textnode") {
-                    $rendered[] = $component['content'];
+                    $rendered[] = $component["content"];
+                    continue;
+                }
+                if ($type === "text") {
+                    $rendered[] = $this->defaultRender(...[
+                        "tagName"    => "span",
+                        "attributes" => $component['attributes'] ?? [],
+                        "content"    =>  isset($component['content']) ? $component['content'] : $this->render($component['components'] ?? [])
+                    ]);
                     continue;
                 }
 
@@ -119,7 +139,6 @@ namespace MerapiPanel\Module\Editor {
                     }
                     $module = ucfirst($resolve_namespace[$matches[0]] ?? $matches[0]);
                     $blockName = trim(str_replace($matches[0], "", $type), '-');
-
                 } else {
 
                     $module = "Editor";
@@ -129,15 +148,21 @@ namespace MerapiPanel\Module\Editor {
 
                 $fragment = Path::join(Box::module($module)->path, "Blocks", $blockName, "render.php");
                 if (!file_exists($fragment)) {
-                    $rendered[] = "<div class='text-center border border-warning bg-dark bg-opacity-10 py-3'>Block $module:$blockName</div>";
+                    $rendered[] = $this->defaultRender(...[
+                        "attributes" => $component['attributes'] ?? [],
+                        "content" =>  isset($component['content']) ? $component['content'] : $this->render($component['components'] ?? [])
+                    ]);
                     continue;
                 }
                 $rendered[] = blockContext($component, $fragment, $key);
-
-
             }
             $output = implode("", $rendered);
             return $output;
+        }
+
+        function getStyles()
+        {
+            return $this->styles;
         }
     }
 }

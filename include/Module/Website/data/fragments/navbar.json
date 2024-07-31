@@ -1,0 +1,116 @@
+{
+    "label": "navbar",
+    "media": "<img width='150px' src='/public/assets/Website/img/navbar.jpg'/>",
+    "content": {
+        "type": "bs-navbar",
+        "classes": [
+            "navbar",
+            "navbar-expand-lg",
+            "bg-body-tertiary"
+        ],
+        "attributes": {
+            "expand": "lg"
+        },
+        "components": [
+            {
+                "type": "container",
+                "classes": [
+                    "container-fluid"
+                ],
+                "attributes": {
+                    "size": "fluid"
+                },
+                "components": [
+                    {
+                        "type": "bs-navbar-brand",
+                        "classes": [
+                            "navbar-brand"
+                        ],
+                        "attributes": {},
+                        "components": [
+                            {
+                                "type": "text",
+                                "attributes": {
+                                    "id": "ipns"
+                                },
+                                "components": [
+                                    {
+                                        "type": "textnode",
+                                        "content": "Website"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "bs-navbar-toggler",
+                        "classes": [
+                            "navbar-toggler"
+                        ],
+                        "attributes": {
+                            "data-bs-toggle": "collapse"
+                        },
+                        "components": [
+                            {
+                                "tagName": "span",
+                                "type": "text",
+                                "classes": [
+                                    "navbar-toggler-icon"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "bs-navbar-collapse",
+                        "classes": [
+                            "collapse",
+                            "navbar-collapse"
+                        ],
+                        "attributes": {
+                            "id": "18f3ac17907"
+                        },
+                        "components": [
+                            {
+                                "type": "bs-navbar-nav",
+                                "classes": [
+                                    "navbar-nav",
+                                    "me-auto",
+                                    "mb-2",
+                                    "mb-lg-0"
+                                ],
+                                "attributes": {},
+                                "components": [
+                                    {
+                                        "type": "bs-nav-item",
+                                        "classes": [
+                                            "nav-item"
+                                        ],
+                                        "attributes": {},
+                                        "components": [
+                                            {
+                                                "type": "bs-nav-link",
+                                                "classes": [
+                                                    "nav-link"
+                                                ],
+                                                "attributes": {
+                                                    "href": "/",
+                                                    "target": "_self"
+                                                },
+                                                "components": [
+                                                    {
+                                                        "type": "textnode",
+                                                        "content": "Home"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

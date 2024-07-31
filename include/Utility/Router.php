@@ -295,10 +295,6 @@ class Router
             }
         }
 
-        if (App::$isApi) {
-            throw new Exception("Invalid path", 404);
-        }
-
         throw new HttpException("Route not found " . $request->getPath(), HTTP_CODE::NOT_FOUND);
     }
 

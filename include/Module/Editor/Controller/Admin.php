@@ -1,4 +1,5 @@
 <?php
+
 namespace MerapiPanel\Module\Editor\Controller;
 
 use MerapiPanel\Box\Module\__Controller;
@@ -14,8 +15,8 @@ class Admin extends __Controller
 		Router::GET("/editor/api/load", [$this, 'apiLoad']);
 		Router::POST("/editor/api/save", [$this, 'apiSave']);
 		Router::GET("/Editor", [$this, 'index']);
-		// register other route
 	}
+	
 	function index()
 	{
 		return View::render("index.html.twig");
@@ -23,12 +24,7 @@ class Admin extends __Controller
 
 	function apiLoad()
 	{
-
-		return [
-			"code" => 200,
-			"message" => "success",
-			"data" => $this->getModule()->Blocks->getBlocks() ?? [],
-		];
+		return $this->getModule()->Blocks->getBlocks() ?? [];
 	}
 
 	function apiSave(Request $request)

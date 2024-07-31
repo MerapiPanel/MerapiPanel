@@ -1,6 +1,30 @@
 {% extends "@panel/base.html.twig" %}
+{% block stylesheet %}
+{{parent()}}
+<style>
+    .assets-container {
+        min-height: 300px;
+    }
+</style>
+{% endblock %}
+{% block javascript %}
+{{parent()}}
+<script src="/public/assets/Website/dist/index.js"></script>
+{% endblock %}
+
+
 {% block header_title %}Manage Website{% endblock %}
 
 {% block content %}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae dicta dolorem repudiandae repellat voluptate tempora asperiores maxime, sunt corrupti reprehenderit ipsum iste architecto illum possimus doloribus reiciendis illo. Perspiciatis, officiis?
+<div class="row">
+    <div class="col-12 col-lg-8">
+
+    </div>
+
+    <div class="col-12 col-lg-4 p-3">
+        <h2 class="fs-4 fw-semibold">Assets</h2>
+        <small>global assets for all pages on the website</small>
+        <div class="rounded-3 shadow-sm m-3 p-3" id="assets-root"></div>
+    </div>
+</div>
 {% endblock %}

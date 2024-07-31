@@ -1,30 +1,24 @@
 Options -Indexes
 RewriteEngine On
-RewriteCond %{HTTPS} off
+RewriteBase /
+
+# RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+# RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# RewriteCond %{HTTPS} off
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-<IfModule mod_speling.c>
-    CheckSpelling On
-    CheckCaseOnly On
-</IfModule>
-
-
-# Rewrite condition to check if the requested file does not exist
-RewriteCond %{REQUEST_FILENAME} !-f
-# Rewrite condition to check if the requested directory does not exist
-RewriteCond %{REQUEST_FILENAME} !-d
-
-
+ErrorDocument 400 /index.php
+ErrorDocument 401 /index.php
+ErrorDocument 403 /index.php
+ErrorDocument 404 /index.php
+ErrorDocument 500 /index.php
 
 # Check if the requested file does not exist
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^public/assets/@(.*?)/(.*) /include/Module/$1/Assets/$2 [L]
-# RewriteRule ^public/assets/@(.*)/(.*)$ /include/Module/$1/Assets/$2 [L]
+RewriteRule ^public/assets/([A-Z][a-z]+)/(.*) /include/Module/$1/Assets/$2 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^public/assets(.*)$ /include/buildin$1 [NC,L,QSA]
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !\.(css|js|svg|jpg|png|ttf|woff2|webp|webv|gif|webmanifest|txt|map)$ [NC]
 RewriteRule ^ index.php [NC,L,QSA]
-
-# RewriteEngine On
-# RewriteRule ^ index.php [L]

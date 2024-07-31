@@ -8,7 +8,7 @@ use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Views\View;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
-
+use Twig\Loader\FilesystemLoader;
 
 
 class Catcher
@@ -21,7 +21,6 @@ class Catcher
 
         register_shutdown_function([$this, 'shutdown']);
         set_exception_handler([$this, "exception"]);
-
     }
 
     public static function init()
@@ -88,6 +87,9 @@ class Catcher
 
     private static function send($file = "", $line = 0, $message = "", $code = 500, $type = "", $trace = [], $snippet = "")
     {
+
+        // error_log($message);
+
         // transform ti absolute path
         if (isset($file)) {
             $file = str_replace($_ENV['__MP_CWD__'], "{CWD}", $file);
@@ -96,14 +98,13 @@ class Catcher
         if (!isset($code) || $code == 0) {
             $code = 500;
         }
-
-        if (Request::getInstance()->http("x-requested-with") == "XMLHttpRequest") {
+        $request = Request::getInstance();
+        if ($request->http('x-requested-with') == 'XMLHttpRequest' || $request->http('sec-fetch-mode') == 'cors') {
             return new Response([
                 'status' => false,
                 "message" => $message
             ], 199 < $code && 300 < $code ? (int)$code : 500);
         }
-
 
         $view = View::getInstance();
         $extension = "html";
@@ -111,6 +112,8 @@ class Catcher
         if ($_ENV['__MP_DEBUG__'] || !file_exists($_ENV['__MP_CWD__'] . "/errors/error.$extension")) {
             $extension = "html.twig";
             $base = __DIR__ . "/Views";
+        } else {
+            $view = View::newInstance(new FilesystemLoader(__DIR__ . "/Views"));
         }
 
         $template = Path::join($base, "error.$extension");
@@ -143,7 +146,7 @@ class Catcher
 
 
 
-    public static function extractTypeFromString($errorString)
+    private static function extractTypeFromString($errorString)
     {
         preg_match('/^(.*?)\:/i', $errorString, $matches);
 
@@ -157,7 +160,7 @@ class Catcher
 
 
 
-    public static function extractMessageFromString($errorString)
+    private static function extractMessageFromString($errorString)
     {
         $stackTracePosition = strpos($errorString, 'Stack trace:');
         if ($stackTracePosition !== false) {
@@ -169,7 +172,7 @@ class Catcher
 
 
 
-    public static function transformTracerFromArray(array $traceData = [])
+    private static function transformTracerFromArray(array $traceData = [])
     {
 
         $tracer = [];
@@ -190,7 +193,7 @@ class Catcher
     }
 
 
-    public static function extractTracerFromString($errorString, $errorFile): array
+    private static function extractTracerFromString($errorString, $errorFile): array
     {
 
         preg_match('/Stack trace:(.*)/s', $errorString, $matches);
@@ -213,7 +216,7 @@ class Catcher
 
 
 
-    public static function splitTraceDataFromString($traceString)
+    private static function splitTraceDataFromString($traceString)
     {
         $matches = [];
 
@@ -243,7 +246,7 @@ class Catcher
 
 
 
-    public static function getCodeSnippet(string $file, int $line, int $maxLines = 10)
+    private static function getCodeSnippet(string $file, int $line, int $maxLines = 10)
     {
 
         if (!file_exists($file)) {
@@ -276,5 +279,4 @@ class Catcher
 
         return $snippet;
     }
-
 }
