@@ -9,7 +9,8 @@ const __: __MP = (window as any).__;
 
 const AssetItem = ({ asset }: { asset: any }) => {
 
-    const { refresh, setRefresh } = useContext(AppContext) as any;
+    const { refresh, setRefresh, setChanged } = useContext(AppContext) as any;
+
 
     const icons = {
         "style": '<i class="fa-brands fa-css3-alt fa-2x"></i>',
@@ -37,6 +38,9 @@ const AssetItem = ({ asset }: { asset: any }) => {
                 if ((e as any).status) {
                     __.toast("Success update asset", 5, "text-success");
                     setRefresh(true);
+                    setTimeout(() => {
+                        setChanged(asset);
+                    }, 100);
                 } else throw new Error(e.message);
             })
             .catch(err => {

@@ -46,6 +46,7 @@ namespace MerapiPanel\Module\Editor {
 
         private function defaultRender($tagName = "div", $attributes = [], $content = "")
         {
+            error_log($content . " " . print_r($attributes, 1));
             $attribute = (!empty($attributes) ? " " : "") . implode(" ", array_map(fn ($k) => "$k=\"$attributes[$k]\"", array_keys($attributes)));
             return "<$tagName{$attribute}>{$content}</$tagName>";
         }
@@ -94,6 +95,10 @@ namespace MerapiPanel\Module\Editor {
             foreach ($components as $key => $component) {
 
                 $type = $component['type'] ?? null;
+                $attributes = $component['attributes'] ?? [];
+                if (isset($component['classes'])) {
+                    $attributes["class"] = implode(" ", array_filter($component['classes'], fn ($v) => is_string($v)));
+                }
                 if (isset($component["attributes"]["style"])) {
                     $selector = "";
                     if (!isset($component["attributes"]["id"])) {
@@ -108,23 +113,21 @@ namespace MerapiPanel\Module\Editor {
                     unset($component["attributes"]["style"]);
                 }
 
-
-
                 if (!$type) {
                     $rendered[] = $this->renderResolve($component);
                     continue;
                 }
 
-
                 if ($type === "textnode") {
                     $rendered[] = $component["content"];
                     continue;
                 }
+                
                 if ($type === "text") {
                     $rendered[] = $this->defaultRender(...[
                         "tagName"    => "span",
-                        "attributes" => $component['attributes'] ?? [],
-                        "content"    =>  isset($component['content']) ? $component['content'] : $this->render($component['components'] ?? [])
+                        "attributes" => $attributes,
+                        "content"    =>  isset($component['content']) ? $component['content'] : ($this->render($component['components'] ?? []))
                     ]);
                     continue;
                 }
@@ -149,7 +152,7 @@ namespace MerapiPanel\Module\Editor {
                 $fragment = Path::join(Box::module($module)->path, "Blocks", $blockName, "render.php");
                 if (!file_exists($fragment)) {
                     $rendered[] = $this->defaultRender(...[
-                        "attributes" => $component['attributes'] ?? [],
+                        "attributes" => $attributes,
                         "content" =>  isset($component['content']) ? $component['content'] : $this->render($component['components'] ?? [])
                     ]);
                     continue;

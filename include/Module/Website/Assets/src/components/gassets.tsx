@@ -1,7 +1,15 @@
 import React, { createContext, useState } from "react";
 import Container from "./gassets/Container";
 import AddButton from "./gassets/AddButton";
-export const AppContext = createContext({});
+
+interface IContextApp {
+    refresh: boolean
+    setRefresh: React.Dispatch<React.SetStateAction<boolean>>
+    changed?: IGAssets | null
+    setChanged: React.Dispatch<React.SetStateAction<IGAssets | null>>
+}
+export const AppContext = createContext<IContextApp>({} as IContextApp);
+
 
 export type TAssetAttribute = {
     key: string,
@@ -14,18 +22,25 @@ export type TAsset = {
     content?: string,
     type: string
 }
-export const GAssets = () => {
+interface IGAssets {
+    children?: React.JSX.Element
+}
+export const GAssets = ({ children }: IGAssets) => {
 
     const [refresh, setRefresh] = useState(true);
+    const [changed, setChanged] = useState<IGAssets | null>(null);
 
     return (
         <>
             <AppContext.Provider value={{
                 refresh,
-                setRefresh
+                setRefresh,
+                changed,
+                setChanged
             }}>
                 <Container />
                 <AddButton />
+                {children}
             </AppContext.Provider>
         </>
     );

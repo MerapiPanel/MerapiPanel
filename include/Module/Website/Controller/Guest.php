@@ -38,32 +38,38 @@ class Guest extends __Fragment
                 $content    = $BlocksEditor->render($components);
                 self::cleanTwigFragmentFromHtml($content);
                 $lang = View::getInstance()->getIntl()->getLocale();
-
                 $styles .= $BlocksEditor->getStyles();
-                
+
+                $global_scripts = $this->renderGlobalAsset("script");
+                $global_styles = $this->renderGlobalAsset("style");
+                $global_links = $this->renderGlobalAsset("link");
+
                 $html = <<<HTML
-<!DOCTYPE html>
-<html lang="{$lang}">
-    <head>
-        {% block header %}
-        {$header}
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        {% block stylesheet %}
-        <link rel="stylesheet" href="{{ '/dist/main.css' | assets }}">
-        <link rel="stylesheet" href="{{ '/vendor/fontawesome/css/all.min.css' | assets }}">
-        <style>{$styles}</style>
-        {% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {$content}
-        {% block javascript %}
-        <script src="{{ '/vendor/bootstrap/js/bootstrap.bundle.min.js' | assets }}"></script>
-        <script src="{{ '/dist/main.js' | assets }}"></script>
-        {% endblock %}
-    </body>
-</html>
-HTML;
+                <!DOCTYPE html>
+                <html lang="{$lang}">
+                    <head>
+                        {% block header %}
+                        {$header}
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        {% block stylesheet %}
+                        <link rel="stylesheet" href="{{ '/dist/main.css' | assets }}">
+                        <link rel="stylesheet" href="{{ '/vendor/fontawesome/css/all.min.css' | assets }}">
+                        {$global_links}
+                        {$global_styles}
+                        <style>{$styles}</style>
+                        {% endblock %}
+                        {% endblock %}
+                    </head>
+                    <body>
+                        {$content}
+                        {% block javascript %}
+                        <script src="{{ '/vendor/bootstrap/js/bootstrap.bundle.min.js' | assets }}"></script>
+                        <script src="{{ '/dist/main.js' | assets }}"></script>
+                        {$global_scripts}
+                        {% endblock %}
+                    </body>
+                </html>
+                HTML;
                 $twig = View::getInstance()->getTwig();
                 $template = $twig->createTemplate($html, "template");
                 $_variables = [];
@@ -97,6 +103,24 @@ HTML;
     }
 
 
+    private $tempGAssets = [];
+    private function renderGlobalAsset($type = "link")
+    {
+        if (empty($this->tempGAssets)) {
+            $this->tempGAssets = $this->module->Assets->listpops();
+        }
+
+        $filtered = array_filter($this->tempGAssets, fn ($asset) => $asset['type'] == $type);
+        $output = "";
+        foreach ($filtered as $asset) {
+            if ($asset['type'] == $type) {
+                $attributes = implode(" ", array_map(fn ($attr) => "$attr[key]=\"$attr[value]\"", $asset["attributes"] ?? []));
+                $output .= "<$asset[type]" . (!empty($attributes) ? " " : "") . $attributes . ">" . ($asset['content'] ?? '') . "</$asset[type]>";
+            }
+        }
+        error_log($output);
+        return $output;
+    }
 
 
 

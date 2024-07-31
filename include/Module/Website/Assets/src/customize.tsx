@@ -6,6 +6,7 @@ import { GAssets, TAsset } from "./components/gassets";
 
 import React, { createContext, useState } from "react";
 import ReactDOM from "react-dom/client";
+import Listenner from "./components/gassets/Listenner";
 
 const editor: {
     config: EditorConfig,
@@ -412,41 +413,51 @@ function initFragmentsManager(editor: Editor) {
 
 
 
-
-var timeOut: any;
-
 function loadGlobalAssets(editor: Editor) {
 
 
-    editor.Panels.addButton("sidebar-panel", {
+    editor.Panels.addButton("action-panel", {
         id: "gassets",
-        label: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-code" viewBox="0 0 16 16">
-  <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
-  <path d="M8.646 6.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L10.293 9 8.646 7.354a.5.5 0 0 1 0-.708m-1.292 0a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0 0 .708l2 2a.5.5 0 0 0 .708-.708L5.707 9l1.647-1.646a.5.5 0 0 0 0-.708"/>
-</svg>`,
-        togglable: false,
-        context: "sidebar",
+        label: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-code" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/><path d="M8.646 6.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L10.293 9 8.646 7.354a.5.5 0 0 1 0-.708m-1.292 0a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0 0 .708l2 2a.5.5 0 0 0 .708-.708L5.707 9l1.647-1.646a.5.5 0 0 0 0-.708"/></svg>`,
+        togglable: true,
         command: {
             run: function () {
-                $(".editor-sidebar .gasset-manager").removeClass("hide");
+                $(".layer-floating-right").addClass("show");
             },
             stop: function () {
-                $(".editor-sidebar .gasset-manager").addClass("hide");
+                $(".layer-floating-right").removeClass("show");
             }
         }
     });
+    editor.on("component:selected", function (e) {
+        const cropBtn = editor.Panels.getButton('action-panel', 'gassets');
+        cropBtn?.set('active', 0);
+    });
 
-    const pagesContainer = $(`<div class="editor-layout gasset-manager hide p-2 flex-wrap gap-2">`);
-    $(".editor-sidebar").append(pagesContainer);
 
-    if (timeOut) clearTimeout(timeOut);
-    timeOut = setTimeout(() => {
-        fetch((window as any).access_path("api/Website/Assets/listpops"))
-            .then(response => response.json())
-            .then(e => {
-                handleAssets(e.data);
-            });
-    }, 400);
+    const pagesContainer = $(`<div class="gasset-manager p-2" style="min-width: max-content; display: flex; flex-direction: column; justify-content: space-between; align-content: center; align-items: stretch; height: 100%; padding-bottom: 2rem !important;">`);
+    $(".editor-body").append(
+        $(`<div class="layer-floating-right">`)
+            .append(
+                $(`<div class="fw-semibold px-2 fs-5">Global Assets</div>`),
+                pagesContainer
+            )
+    );
+
+
+    fetchAssets();
+
+    let timeOut: any;
+    function fetchAssets() {
+        if (timeOut) clearTimeout(timeOut);
+        timeOut = setTimeout(() => {
+            fetch((window as any).access_path("api/Website/Assets/listpops"))
+                .then(response => response.json())
+                .then(e => {
+                    handleAssets(e.data);
+                });
+        }, 400);
+    }
 
     function handleAssets(assets: TAsset[]) {
 
@@ -456,19 +467,26 @@ function loadGlobalAssets(editor: Editor) {
             const element = doc.createElement(asset.type);
             asset.attributes?.forEach(attr => {
                 element.setAttribute(attr.key, attr.value);
-            })
+            });
+            element.setAttribute("id", asset.id);
             if (asset.content) {
                 element.innerHTML = asset.content;
             }
+            doc.getElementById(asset.id)?.remove();
             doc.head.appendChild(element);
         }
         editor.Canvas.refresh();
     }
 
+    function handleOnChanged(r: boolean) {
+        if (r) fetchAssets();
+    }
 
     ReactDOM.createRoot(pagesContainer[0] as any).render(
         <React.StrictMode>
-            <GAssets />
+            <GAssets>
+                <Listenner onChanged={handleOnChanged} />
+            </GAssets>
         </React.StrictMode>
     )
 

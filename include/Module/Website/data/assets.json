@@ -1,1 +1,1 @@
-[{"name":"style","id":"c7a07af5bcec","content":".hero { min-height: 500px; background: red; }","type":"style"},{"name":"bootstrap js","id":"a98192ccd113","content":"","type":"style"}]
+[{"name":"style","id":"c7a07af5bcec","content":".hero { min-height: 500px; background: red; } .hallo { color: red !important; }","type":"style"},{"name":"bootstrap js","id":"a98192ccd113","content":"","type":"style"}]

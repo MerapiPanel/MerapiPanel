@@ -6,7 +6,31 @@
 <style>
 	.editor-app {
 		min-width: 1024px;
-}
+	}
+	.editor-body {
+		position: relative;
+	}
+	.layer-floating-right {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 100%;
+		max-width: 0px;
+		background: #f3f8ff;
+		z-index: 99;
+		height: 100%;
+		transition: .25s all;
+		box-shadow: 0 0 4px #00000055;
+	}
+	.layer-floating-right.show {
+		max-width: 250px;
+	}
+	.assets-container {
+		overflow: auto;
+		flex: 1;
+		padding-bottom: 5rem;
+	}
+
 </style>
 {% endblock %}
 
