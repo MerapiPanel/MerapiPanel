@@ -4,3 +4,6 @@
 [submodule "include/Module/Dashboard"]
 	path = include/Module/Dashboard
 	url = https://github.com/MerapiPanel/Dashboard
+[submodule "include/Module/Website"]
+	path = include/Module/Website
+	url = https://github.com/MerapiPanel/Website
