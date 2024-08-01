@@ -22,3 +22,6 @@
 [submodule "include/Module/User"]
 	path = include/Module/User
 	url = https://github.com/MerapiPanel/User
+[submodule "include/Module/Editor"]
+	path = include/Module/Editor
+	url = https://github.com/MerapiPanel/Editor
