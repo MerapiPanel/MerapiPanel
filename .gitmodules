@@ -19,3 +19,6 @@
 [submodule "include/Module/Setting"]
 	path = include/Module/Setting
 	url = https://github.com/MerapiPanel/Setting
+[submodule "include/Module/User"]
+	path = include/Module/User
+	url = https://github.com/MerapiPanel/User
