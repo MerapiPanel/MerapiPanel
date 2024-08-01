@@ -6,12 +6,11 @@
     <div class="d-flex">
         <a {% if item.link %}href="{{ item.link }}" {% endif %} class="nav-link py-2">
             {% if _box.Panel.isFile(item.icon) %}
-            <img width="14" height="14" class="object-fit-cover" src="{{ _box.Panel.getAbsolutePath(item.icon) }}"
-                alt="Icon">
+            <img width="14" height="14" class="object-fit-cover" src="{{ _box.Panel.getAbsolutePath(item.icon) }}" alt="Icon">
             {% else %}
             {{ item.icon | raw }}
             {% endif %}
-            {{item.name | trans }}
+            {{item.name | trans|capitalize }}
         </a>
         {% if item.childs %}
         <button class="ms-auto btn btn-link py-0" type="button" data-bs-toggle="collapse" data-bs-target="#{{ random }}"

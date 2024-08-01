@@ -3,7 +3,6 @@
 namespace MerapiPanel\Views;
 
 use Exception;
-use MerapiPanel\API;
 use MerapiPanel\Views\Loader;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Views\Abstract\Extension;
@@ -243,7 +242,6 @@ class View
      */
     public static function render(string $file, array $data = [], $lang = null): mixed
     {
-
 
         try {
 

@@ -1,0 +1,90 @@
+{% extends "@panel/base.html.twig" %}
+{% block header_title %}Systems | Update{% endblock %}
+{% block subheader_outer %}{% endblock %}
+
+{% block content %}
+
+<div class="m-3" id="main-box">
+    <div class="d-flex shadow-sm p-3 rounded-3 ">
+        <div class="pe-4">
+            <svg fill="#2a7fff" width="50" height="50" version="1.1" viewBox="0 0 140.6 99.995" xml:space="preserve"
+                xmlns="http://www.w3.org/2000/svg">
+                <g transform="matrix(.91572 0 0 .95557 -21.347 -76.699)">
+                    <path transform="scale(.26458)"
+                        d="m446.52 303.37c-64.459 89.896-64.806 90.115-64.806 90.115s0.20321 0.16617-40.67-44.482c-268.34 371.11 14.227-19.632-252.94 349.87l0.01612 8e-3c122.92 6e-3 79.294-0.0114 120.16-8e-3 155.46-217.3-8.9653 12.496 147.2-205.78 23.788 26.262 23.676 26.165 23.676 26.165s0.1963-0.13273 37.711-53.01c129.43 233.15-0.33959-0.63941 129.14 232.61 41.345-8e-3 -4.2861 7e-3 122.4-8e-3 -222.55-396.68 0.51175 0.92272-221.9-395.48z" />
+                </g>
+            </svg>
+        </div>
+        <div class="flex-grow-1">
+            <div class="fw-semibold fs-5">MerapiPanel</div>
+            <div>
+                <span class="badge bg-warning">tag {{manifest.version}}</span>
+            </div>
+        </div>
+        <button id="check-update-btn" class="btn btn-secondary" onclick="checkForUpdate()">Check Update</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{parent()}}
+<script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+<script>
+
+    function toLocaleString(isoDate) {
+        const date = new Date(isoDate);
+
+        // Extract date components
+        const options = { month: 'long' };
+        const month = date.toLocaleString('default', options);
+        const day = date.getDate();
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = (hours % 12 || 12).toString().padStart(2, '0');
+
+        // Format the date string
+        const formattedDate = `${month}/${day}/${year}, ${formattedHours}:${minutes}:${seconds} ${ampm}`;
+        return formattedDate;
+
+    }
+
+    function checkForUpdate() {
+        __.http.get("{{'settings/check-update'|access_path}}")
+            .then((result) => handleCheckUpdateResult(result.data)).catch((err) => {
+                __.toast(err.message || "Failed to check update", 5, 'text-danger');
+            });
+    }
+
+    function handleCheckUpdateResult(data) {
+        let $container = $("#main-box");
+        if (data.available == 0) {
+            $("#check-update-btn").text("it's the latest version 🎉").attr("disabled", "true").toggleClass("btn-secondary btn-success");
+        } else if (data.available > 0) {
+
+            $("#check-update-btn").text("Update Available").removeAttr("onclick").off("click").on("click", () => {
+            }).toggleClass("btn-secondary btn-primary");
+
+        }
+
+        var converter = new showdown.Converter(), text = data.lastest.body, html = converter.makeHtml(text);
+        $container.append(
+            $(`<div class='p-3'>`)
+                .append(
+                    $(`<div class="fw-semibold fs-5">${data.lastest.name}</div>`),
+                    `<small>${toLocaleString(data.lastest.published_at)}</small>`,
+                    `<div class='border p-3'>${html}</div>`,
+                    `<a class="d-block" href='${data.lastest.html_url}' target='_blank'>${data.lastest.html_url}</a>`
+                )
+        )
+    }
+
+    $(() => {
+        setTimeout(() => {
+            $("#check-update-btn").trigger("click")
+        }, 400);
+    })
+</script>
+{% endblock %}

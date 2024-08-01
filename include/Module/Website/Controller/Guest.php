@@ -118,7 +118,6 @@ class Guest extends __Fragment
                 $output .= "<$asset[type]" . (!empty($attributes) ? " " : "") . $attributes . ">" . ($asset['content'] ?? '') . "</$asset[type]>";
             }
         }
-        error_log($output);
         return $output;
     }
 

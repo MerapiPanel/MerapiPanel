@@ -1,4 +1,5 @@
 <?php
+
 namespace MerapiPanel\Module\Setting\Controller;
 
 
@@ -43,12 +44,6 @@ class Admin extends __Fragment
             'name' => "Settings",
             'icon' => 'fa-solid fa-gear',
             "children" => [
-                // [
-                //     'order' => 0,
-                //     'name' => "General",
-                //     'icon' => 'fa-solid fa-circle-info',
-                //     'link' => $general->getPath()
-                // ],
                 [
                     'order' => 0,
                     'name' => "Route",
@@ -60,6 +55,12 @@ class Admin extends __Fragment
                     'name' => "Role",
                     'icon' => 'fa-solid fa-user-tag',
                     'link' => Router::GET("/settings/role", [$this, 'role'])
+                ],
+                [
+                    'order' => 10,
+                    'name' => "update",
+                    'icon' => 'fa-solid fa-circle-info',
+                    'link' => Router::GET("/settings/update", [$this, "update"])
                 ]
             ]
         ]);
@@ -74,6 +75,12 @@ class Admin extends __Fragment
         </script>
         HTML;
         Box::module("Panel")->Scripts->add("setting-opts", $html);
+
+
+        Router::GET("settings/check-update", function () {
+            include_once $_ENV['__MP_APP__'] . "/scripts/update.php";
+            return checkForUpdate();
+        });
     }
 
 
@@ -135,25 +142,25 @@ class Admin extends __Fragment
                     $defaults = $item['defaults'] ?? [];
                     $roles = array_map(function ($role) use ($roleName, $defaults, $moduleName, $from_database) {
 
-                        $value = isset ($role['default']) && in_array($role['default'], [0, false]) ? $role['default'] : true;
+                        $value = isset($role['default']) && in_array($role['default'], [0, false]) ? $role['default'] : true;
                         $find = array_values(array_filter($from_database, function ($item) use ($roleName, $moduleName, $role) {
                             return $item['role'] === $roleName && $item['name'] === $moduleName . "." . $role['id'];
                         }));
-                        if (!empty ($find)) {
+                        if (!empty($find)) {
                             $value = $find[0]['value'];
                         } else {
-                            if (isset ($defaults[$roleName]['value'][$role['id']])) {
+                            if (isset($defaults[$roleName]['value'][$role['id']])) {
                                 $value = $defaults[$roleName]['value'][$role['id']];
                             }
                         }
                         return [
                             ...$role,
                             "value" => $value,
-                            "enable" => isset ($defaults[$roleName]['enable']) ? $defaults[$roleName]['enable'] : true
+                            "enable" => isset($defaults[$roleName]['enable']) ? $defaults[$roleName]['enable'] : true
                         ];
                     }, $item['roles']);
 
-                    unset ($item['defaults'], $item['roles']);
+                    unset($item['defaults'], $item['roles']);
                     return [
                         ...$item,
                         "roles" => $roles
@@ -163,7 +170,6 @@ class Admin extends __Fragment
         }
 
         return $data;
-
     }
 
 
@@ -174,11 +180,11 @@ class Admin extends __Fragment
         return View::render('admin/route', [
             "route_stack" => array_map(
 
-                fn($key) => [
+                fn ($key) => [
                     "name" => $key,
                     "routes" => array_map(
 
-                        fn($route) => [
+                        fn ($route) => [
                             "path" => preg_replace("/\{.*\}/", "<span class='text-primary'>$0</span>", $route->__toString()),
                             "method" => $route->getMethod(),
                             "controller" => is_string($route->getController()) ? preg_replace("/\@.*/", "<b>$0</b>", $route->getController()) : "{Closure}",
@@ -208,4 +214,11 @@ class Admin extends __Fragment
     }
 
 
+    function update()
+    {
+        $manifest = json_decode(file_exists($_ENV['__MP_APP__'] . "/manifest.json") ? file_get_contents($_ENV['__MP_APP__'] . "/manifest.json") : "[]");
+        return View::render("update", [
+            "manifest" => $manifest
+        ]);
+    }
 }
