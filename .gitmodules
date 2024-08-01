@@ -7,3 +7,6 @@
 [submodule "include/Module/Website"]
 	path = include/Module/Website
 	url = https://github.com/MerapiPanel/Website
+[submodule "include/Module/FileManager"]
+	path = include/Module/FileManager
+	url = https://github.com/MerapiPanel/FileManager
