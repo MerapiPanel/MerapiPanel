@@ -4,6 +4,6 @@ vendor/
 *.sqlite
 *.db
 *.pem
-include/Module/
+include/Module/*
 public/upload/
 
