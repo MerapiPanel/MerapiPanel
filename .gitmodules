@@ -28,3 +28,6 @@
 [submodule "include/Module/Contact"]
 	path = include/Module/Contact
 	url = https://github.com/MerapiPanel/Contact
+[submodule "include/Module/Auth"]
+	path = include/Module/Auth
+	url = https://github.com/MerapiPanel/Auth
