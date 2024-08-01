@@ -10,3 +10,6 @@
 [submodule "include/Module/FileManager"]
 	path = include/Module/FileManager
 	url = https://github.com/MerapiPanel/FileManager
+[submodule "include/Module/Panel"]
+	path = include/Module/Panel
+	url = https://github.com/MerapiPanel/Panel.git

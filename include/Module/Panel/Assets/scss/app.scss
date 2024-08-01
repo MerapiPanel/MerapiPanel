@@ -1,8 +1,0 @@
-@for $i from 1 through 6 {
-    h#{$i} {
-        margin: 0;
-        font-size: 1em;
-    }
-}
-
-@import "sidebar", "panel";
