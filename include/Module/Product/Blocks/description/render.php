@@ -1,1 +1,0 @@
-<p><?= renderComponents($components) ?></p>

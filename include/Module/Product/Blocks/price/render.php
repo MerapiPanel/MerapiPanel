@@ -1,1 +1,0 @@
-<span>Rp <?= renderComponents($components) ?></span>

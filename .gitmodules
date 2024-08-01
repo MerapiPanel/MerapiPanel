@@ -13,3 +13,9 @@
 [submodule "include/Module/Panel"]
 	path = include/Module/Panel
 	url = https://github.com/MerapiPanel/Panel.git
+[submodule "include/Module/Product"]
+	path = include/Module/Product
+	url = https://github.com/MerapiPanel/Product
+[submodule "include/Module/Setting"]
+	path = include/Module/Setting
+	url = https://github.com/MerapiPanel/Setting
