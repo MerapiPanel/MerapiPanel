@@ -34,3 +34,6 @@
 [submodule "include/Module/Article"]
 	path = include/Module/Article
 	url = https://github.com/MerapiPanel/Article
+[submodule "include/Module/Ajax"]
+	path = include/Module/Ajax
+	url = https://github.com/MerapiPanel/Ajax
