@@ -31,3 +31,6 @@
 [submodule "include/Module/Auth"]
 	path = include/Module/Auth
 	url = https://github.com/MerapiPanel/Auth
+[submodule "include/Module/Article"]
+	path = include/Module/Article
+	url = https://github.com/MerapiPanel/Article
