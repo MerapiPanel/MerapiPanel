@@ -93,4 +93,15 @@ class Bundle extends Extension
     {
         return is_array($value);
     }
+
+    function fn_csrf_token()
+    {
+
+        session_start();
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        $aes = AES::getInstance();
+        return $aes->encrypt($_SESSION['csrf_token']);
+    }
 }

@@ -35,11 +35,12 @@ $taskList[2] = function ($target_dir, $lastest) {
         $extracted_dir = $extractedFirstNode[0];
     }
 
-    return moveFilesAndFolders($extracted_dir, $target_dir);
+    // return moveFilesAndFolders($extracted_dir, $target_dir);
 };
 
 
 $taskList[3] = function ($target_dir, $lastest) {
+    // clean 
 };
 
 
@@ -53,8 +54,6 @@ function startTask($task_id, $target_dir, $lastest)
     }
     return $taskList[$task_id]($target_dir, $lastest);
 };
-
-
 
 
 
@@ -82,6 +81,7 @@ function moveFilesAndFolders($sourceDir, $destinationDir)
     );
 
     foreach ($items as $item) {
+
         $relativePath = $items->getSubPathName(); // Get the relative path of the item
         $destinationPath = $destinationDir . DIRECTORY_SEPARATOR . $relativePath;
 

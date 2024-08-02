@@ -1,0 +1,11 @@
+.babelrc export-ignore
+.gitignore export-ignore
+webpack.config.json export-ignore
+
+content/ export-ignore
+.github/ export-ignore
+schema/ export-ignore
+include/config/ export-ignore
+include/php-error.log export-ignore
+include/scripts/cached export-ignore
+include/scripts/update/data export-ignore

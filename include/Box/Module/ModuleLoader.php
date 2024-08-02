@@ -41,9 +41,13 @@ namespace MerapiPanel\Box\Module {
             foreach (glob(Path::join($this->directory, "*")) as $dirname) {
                 $moduleName = basename($dirname);
                 if (in_array($moduleName, self::getDefaultModules()) || file_exists(Path::join($dirname, ".active"))) {
-                    $service = $container->$moduleName->Service;
-                    if ($service instanceof Proxy && $service->__method_exists("onInit")) {
-                        $service->onInit();
+                    try {
+                        $service = $container->$moduleName->Service;
+                        if ($service instanceof Proxy && $service->__method_exists("onInit")) {
+                            $service->onInit();
+                        }
+                    } catch (Throwable $t) {
+                        // silent
                     }
                 }
             }

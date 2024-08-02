@@ -257,8 +257,21 @@ class Router
 
 
         $instance = Router::getInstance();
-        $method = $request->getMethod();
-        $path = $request->getPath();
+        $method   = $request->getMethod();
+        $path     = $request->getPath();
+
+        if (strtoupper($method) == "POST") {
+            session_start();
+            $csrf_token = $request->csrf_token();
+            $aes = AES::getInstance();
+
+            if (empty($csrf_token) || !$token = $aes->decrypt($csrf_token)) {
+                return new Response('', 410);
+            }
+            if (!isset($_SESSION['csrf_token']) || $token != $_SESSION['csrf_token']) {
+                return new Response('', 410);
+            }
+        }
 
         $stack = $instance->routeStack[$method];
 
@@ -465,6 +478,9 @@ class Router
                 'data' => $output
             ]);
         } else {
+            if (strtoupper($request->getMethod()) == "POST") {
+                unset($_SESSION['csrf_token']);
+            }
             $response->setContent($output);
         }
 
@@ -487,7 +503,7 @@ class Router
             return $output;
         }
 
-        if ($request->http('x-requested-with') == 'XMLHttpRequest'|| $request->http('sec-fetch-mode') == 'cors') {
+        if ($request->http('x-requested-with') == 'XMLHttpRequest' || $request->http('sec-fetch-mode') == 'cors') {
             $response->setContent([
                 'status' => $response->getStatusCode() == 200,
                 'message' => "Success",
@@ -495,6 +511,9 @@ class Router
             ]);
             $response->setHeader('Content-Type', 'application/json');
         } else {
+            if (strtoupper($request->getMethod()) == "POST") {
+                unset($_SESSION['csrf_token']);
+            }
             $response->setContent($output);
         }
 

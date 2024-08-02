@@ -2,13 +2,11 @@
 
 namespace MerapiPanel\Exception;
 
-use MerapiPanel\Exception\Model\Reject;
+use Exception;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Views\View;
-use Symfony\Component\Filesystem\Path;
 use Throwable;
-use Twig\Loader\FilesystemLoader;
 
 
 
@@ -17,12 +15,21 @@ class Catcher
 
     private static $instance = null;
 
+    private static $custom_templates = [];
+
     private function __construct()
     {
 
         register_shutdown_function([$this, 'shutdown']);
         set_exception_handler([$this, "exception"]);
     }
+
+
+    public static function addCustomTemplate($template, $code = "__")
+    {
+        self::$custom_templates[$code] = $template;
+    }
+
 
     public static function init()
     {
@@ -56,7 +63,6 @@ class Catcher
             ob_end_clean();
         }
 
-
         echo self::send(...[
             "file" => $error['file'],
             "line" => $error['line'],
@@ -73,16 +79,6 @@ class Catcher
 
     public function exception(Throwable $e)
     {
-
-        // if ($e instanceof Reject) {
-        //     $code = $e->getCode();
-        //     echo new Response([
-        //         'status' => false,
-        //         'message' => 'Failed',
-        //         ...json_decode($e->getMessage(), true)
-        //     ], $code);
-        //     exit;
-        // }
 
         echo self::send(...[
             "message" => $e->getMessage(),
@@ -117,7 +113,14 @@ class Catcher
         }
 
         $view = View::getInstance();
-        if (!isset($template)) {
+        if (isset(self::$custom_templates[$code])) {
+            $template = self::$custom_templates[$code];
+        }
+        if (!isset($template) && isset(self::$custom_templates['__'])) {
+            $template = self::$custom_templates['__'];
+        }
+
+        if (!isset($template) || !($view->getLoader()->exists($template))) {
             $template = "_error/error.twig";
             if ($view->getLoader()->exists("_error/{$code}.twig")) {
                 $template = "_error/{$code}.twig";

@@ -89,36 +89,8 @@ namespace MerapiPanel {
                 }
             }
 
-
-            $main_services = [];
-            if (isset($_ENV['__MP_SERVICE__'])) {
-                $service = $_ENV['__MP_SERVICE__'];
-                if (is_array($service)) {
-                    foreach ($service as $module) {
-                        /**
-                         * @var Proxy $proxy
-                         */
-                        $proxy = Box::module($module)->Service;
-                        $main_services[] = $proxy;
-                    }
-                } else if (is_string($service)) {
-                    /**
-                     * @var Proxy $proxy
-                     */
-                    $proxy = Box::module($service)->Service;
-                    $main_services[] = $proxy;
-                }
-            }
-
             // send signal for prepare to all modules in parent
             parent::initialize();
-
-            // foreach ($main_services as $service) {
-            //     if ($service->__method_exists("initialize")) {
-            //         $service->initialize();
-            //     }
-            // }
-
         }
 
 
