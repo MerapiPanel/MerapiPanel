@@ -2,13 +2,14 @@
 
 namespace MerapiPanel\Exception;
 
-use MerapiPanel\App;
+use MerapiPanel\Exception\Model\Reject;
 use MerapiPanel\Utility\Http\Request;
 use MerapiPanel\Utility\Http\Response;
 use MerapiPanel\Views\View;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 use Twig\Loader\FilesystemLoader;
+
 
 
 class Catcher
@@ -31,6 +32,7 @@ class Catcher
 
         return self::$instance;
     }
+
 
     public function shutdown()
     {
@@ -72,11 +74,21 @@ class Catcher
     public function exception(Throwable $e)
     {
 
+        // if ($e instanceof Reject) {
+        //     $code = $e->getCode();
+        //     echo new Response([
+        //         'status' => false,
+        //         'message' => 'Failed',
+        //         ...json_decode($e->getMessage(), true)
+        //     ], $code);
+        //     exit;
+        // }
+
         echo self::send(...[
             "message" => $e->getMessage(),
             "file" => $e->getFile(),
             "line" => $e->getLine(),
-            "code" => $e->getCode(),
+            "code" => (int) $e->getCode(),
             "type" => basename($e::class),
             "trace" => self::transformTracerFromArray($e->getTrace()),
             'snippet' => self::getCodeSnippet($e->getFile(), $e->getLine()),
@@ -88,8 +100,6 @@ class Catcher
     private static function send($file = "", $line = 0, $message = "", $code = 500, $type = "", $trace = [], $snippet = "")
     {
 
-        // error_log($message);
-
         // transform ti absolute path
         if (isset($file)) {
             $file = str_replace($_ENV['__MP_CWD__'], "{CWD}", $file);
@@ -98,52 +108,37 @@ class Catcher
         if (!isset($code) || $code == 0) {
             $code = 500;
         }
-        $request = Request::getInstance();
-        if ($request->http('x-requested-with') == 'XMLHttpRequest' || $request->http('sec-fetch-mode') == 'cors') {
+
+        if (Request::getInstance()->http("x-requested-with") == "XMLHttpRequest") {
             return new Response([
-                'status' => false,
+                "code" => $code,
                 "message" => $message
-            ], 199 < $code && 300 < $code ? (int)$code : 500);
+            ], 199 < $code && 300 < $code ? $code : 500);
         }
 
         $view = View::getInstance();
-        $extension = "html";
-        $base = $_ENV['__MP_CWD__'] . "/errors";
-        if ($_ENV['__MP_DEBUG__'] || !file_exists($_ENV['__MP_CWD__'] . "/errors/error.$extension")) {
-            $extension = "html.twig";
-            $base = __DIR__ . "/Views";
-        } else {
-            $view = View::newInstance(new FilesystemLoader(__DIR__ . "/Views"));
-        }
-
-        $template = Path::join($base, "error.$extension");
-        if (file_exists(Path::join($base, "{$code}.$extension"))) {
-            $template = Path::join($base, "{$code}.$extension");
+        if (!isset($template)) {
+            $template = "_error/error.twig";
+            if ($view->getLoader()->exists("_error/{$code}.twig")) {
+                $template = "_error/{$code}.twig";
+            }
         }
 
         $response = new Response(
-            $view->getTwig()->createTemplate(file_get_contents($template))->render([
-                "error" => [
-                    "file" => $file,
-                    "line" => $line,
-                    "message" => $message,
-                    "code" => $code,
-                    "type" => $type,
-                    "trace" => $trace,
-                    "snippet" => $snippet
-                ]
+            $view->load($template)->render([
+                "file" => $file,
+                "line" => $line,
+                "message" => $message,
+                "code" => $code,
+                "type" => $type,
+                "trace" => $trace,
+                "snippet" => $snippet
             ]),
             (int) $code
         );
         $response->setHeader("Content-Type", "text/html");
         return $response;
     }
-
-
-
-
-
-
 
 
     private static function extractTypeFromString($errorString)

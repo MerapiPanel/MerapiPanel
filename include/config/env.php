@@ -7,11 +7,6 @@ return [
     "private-key" => __DIR__ . "/private_key.pem",
     "public-key" => __DIR__ . "/public_key.pem",
     "timezone" => "Asia/Jakarta",
-    "service" => [
-        "Panel",
-        "Setting",
-        "Editor"
-    ],
     "roles" => [
         "admin",
         "editor",
@@ -30,5 +25,12 @@ return [
         "username" => "root",
         "password" => "",
         "database" => "merapi"
+    ],
+    "mysql" => [
+        "host" => "localhost",
+        "username" => "root",
+        "password" => "",
+        "port" => 3306,
+        "database" => [],
     ]
 ];

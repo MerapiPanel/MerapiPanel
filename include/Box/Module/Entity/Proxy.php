@@ -95,8 +95,7 @@ namespace MerapiPanel\Box\Module\Entity {
         {
 
             if (!property_exists($this->instance, $name)) {
-
-                throw new \Exception("Property not found: {" . $name . "} in " . $this->className);
+                return false;
             }
             return $this->instance->$name;
         }

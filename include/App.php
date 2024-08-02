@@ -113,11 +113,11 @@ namespace MerapiPanel {
             // send signal for prepare to all modules in parent
             parent::initialize();
 
-            foreach ($main_services as $service) {
-                if ($service->__method_exists("initialize")) {
-                    $service->initialize();
-                }
-            }
+            // foreach ($main_services as $service) {
+            //     if ($service->__method_exists("initialize")) {
+            //         $service->initialize();
+            //     }
+            // }
 
         }
 

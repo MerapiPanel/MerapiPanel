@@ -10,9 +10,13 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 use Twig\Error\RuntimeError;
+use Twig\Extra\Markdown\DefaultMarkdown;
+use Twig\Extra\Markdown\MarkdownExtension;
+use Twig\Extra\Markdown\MarkdownRuntime;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface;
+use Twig\RuntimeLoader\RuntimeLoaderInterface;
 use Twig\TemplateWrapper;
 
 
@@ -105,11 +109,19 @@ class View
         }
         $this->viewException = new ViewException();
         $this->twig->addExtension($this->viewException);
+        $this->twig->addExtension(new MarkdownExtension());
+        $this->twig->addRuntimeLoader(new class implements RuntimeLoaderInterface {
+            public function load($class) {
+                if (MarkdownRuntime::class === $class) {
+                    return new MarkdownRuntime(new DefaultMarkdown());
+                }
+            }
+        });
 
 
         $this->addGlobal("request", Request::getInstance());
         $this->addGlobal("lang", $this->lang);
-        $this->addGlobal("_box", new ApiServices());
+        $this->addGlobal("_box", new BoxViewApi());
         $this->addGlobal('__env__', $_ENV);
     }
 

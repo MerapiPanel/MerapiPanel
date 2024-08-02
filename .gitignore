@@ -5,5 +5,4 @@ vendor/
 *.db
 *.pem
 
-include/Module/*/
-!include/Module/
+include/Module/*/*

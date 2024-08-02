@@ -32,16 +32,16 @@ namespace MerapiPanel {
 
         protected function __construct()
         {
-            if ($_ENV['__MP_CACHE__'] == true) {
-                if (file_exists(__DIR__ . "/__.dat")) {
-                    $serialize = file_get_contents(__DIR__ . "/__.dat");
-                    $this->module_container = unserialize($serialize);
-                    self::$instance = $this;
-                    return;
-                }
-            } else if (file_exists(__DIR__ . "/__.dat")) {
-                unlink(__DIR__ . "/__.dat");
-            }
+            // if ($_ENV['__MP_CACHE__'] == true) {
+            //     if (file_exists(__DIR__ . "/__.dat")) {
+            //         $serialize = file_get_contents(__DIR__ . "/__.dat");
+            //         $this->module_container = unserialize($serialize);
+            //         self::$instance = $this;
+            //         return;
+            //     }
+            // } else if (file_exists(__DIR__ . "/__.dat")) {
+            //     unlink(__DIR__ . "/__.dat");
+            // }
 
             $this->module_container = new Container(new ModuleLoader(__DIR__ . "/Module"));
             self::$instance = $this;

@@ -1,4 +1,5 @@
 <?php
+
 namespace MerapiPanel\Box\Module {
 
     use Exception;
@@ -16,17 +17,35 @@ namespace MerapiPanel\Box\Module {
 
         protected string $directory;
         protected string $classNamePrefix = "\\MerapiPanel\\Module";
-
+        private static array $defaultModules = ["Setting", "Panel", "Ajax", "Auth", "Editor", "FileManager", "Dashboard", "Setting", "User"];
 
         public function __construct(string $directory)
         {
             $this->directory = $directory;
         }
 
+        public final static function getDefaultModules()
+        {
+            return self::$defaultModules;
+        }
 
         public function initialize(Container $container): void
         {
+            $this->postLoad($container);
             $this->registerController($container);
+        }
+
+
+        public final function postLoad($container)
+        {
+            foreach (glob(Path::join($this->directory, "*/.active")) as $dirname) {
+                $dirname = preg_replace("/\/.active$/", "", $dirname);
+                $moduleName = basename($dirname);
+                $service = $container->$moduleName->Service;
+                if ($service instanceof Proxy && $service->__method_exists("onInit")) {
+                    $service->onInit();
+                }
+            }
         }
 
 
@@ -43,24 +62,27 @@ namespace MerapiPanel\Box\Module {
             foreach (glob(Path::join($this->directory, "*"), GLOB_ONLYDIR) as $dirname) {
                 $moduleName = basename($dirname);
 
-                /**
-                 * @var Fragment $controller
-                 */
-                if ($controller = $container->$moduleName->Controller) {
+                try {
+                    /**
+                     * @var Fragment $controller
+                     */
+                    if ($controller = $container->$moduleName->Controller) {
 
-                    foreach ($access as $accessName) {
-                        $accessName = ucfirst($accessName);
-                        if ($controller->$accessName) {
-                            try {
-                                $controller->$accessName->register();
-                            } catch (Throwable $e) {
-                                error_log("Unable to register controller: $moduleName, " . $e->getMessage());
+                        foreach ($access as $accessName) {
+                            $accessName = ucfirst($accessName);
+                            if ($controller->$accessName) {
+                                try {
+                                    $controller->$accessName->register();
+                                } catch (Throwable $e) {
+                                    error_log("Unable to register controller: $moduleName, " . $e->getMessage());
+                                }
                             }
                         }
                     }
+                } catch (Exception $e) {
+                    // silent
                 }
             }
-
         }
 
 
@@ -78,7 +100,6 @@ namespace MerapiPanel\Box\Module {
                 }
 
                 return new Proxy($name, $parent);
-
             } else if ($parent instanceof Module) {
 
                 if (!class_exists($parent->namespace . '\\' . $name)) {
@@ -101,12 +122,12 @@ namespace MerapiPanel\Box\Module {
             if (!file_exists($path)) {
                 throw new Exception("Module not found: $name");
             }
+
+            if (!in_array($name, self::$defaultModules) && !file_exists(Path::join($path, ".active"))) throw new Exception("Module {$name} inactive", 500);
             return new Module($container, [
                 "namespace" => $this->classNamePrefix . "\\$name",
                 "path" => $path,
             ]);
-
         }
-
     }
 }

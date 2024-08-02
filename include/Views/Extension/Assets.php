@@ -2,7 +2,6 @@
 
 namespace MerapiPanel\Views\Extension;
 
-use MerapiPanel\Box;
 use MerapiPanel\Views\Abstract\Extension;
 
 class Assets extends Extension

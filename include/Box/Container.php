@@ -22,7 +22,6 @@ namespace MerapiPanel\Box {
 
         public function __construct(AbstractLoader $loader)
         {
-
             $this->setLoader($loader);
         }
 
