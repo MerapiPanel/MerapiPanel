@@ -17,7 +17,7 @@ namespace MerapiPanel\Box\Module {
 
         protected string $directory;
         protected string $classNamePrefix = "\\MerapiPanel\\Module";
-        private static array $defaultModules = ["Setting", "Panel", "Ajax", "Auth", "Editor", "FileManager", "Dashboard", "Setting", "User"];
+        private static array $defaultModules = ["Setting", "Panel", "Ajax", "Auth", "Editor", "FileManager", "Dashboard", "Setting", "User", "Website"];
 
         public function __construct(string $directory)
         {
@@ -38,12 +38,13 @@ namespace MerapiPanel\Box\Module {
 
         public final function postLoad($container)
         {
-            foreach (glob(Path::join($this->directory, "*/.active")) as $dirname) {
-                $dirname = preg_replace("/\/.active$/", "", $dirname);
+            foreach (glob(Path::join($this->directory, "*")) as $dirname) {
                 $moduleName = basename($dirname);
-                $service = $container->$moduleName->Service;
-                if ($service instanceof Proxy && $service->__method_exists("onInit")) {
-                    $service->onInit();
+                if (in_array($moduleName, self::getDefaultModules()) || file_exists(Path::join($dirname, ".active"))) {
+                    $service = $container->$moduleName->Service;
+                    if ($service instanceof Proxy && $service->__method_exists("onInit")) {
+                        $service->onInit();
+                    }
                 }
             }
         }
