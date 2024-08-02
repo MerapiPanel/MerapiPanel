@@ -35,7 +35,7 @@ $taskList[2] = function ($target_dir, $lastest) {
         $extracted_dir = $extractedFirstNode[0];
     }
 
-    // return moveFilesAndFolders($extracted_dir, $target_dir);
+    return moveFilesAndFolders($extracted_dir, $target_dir);
 };
 
 
