@@ -2,52 +2,63 @@
 
 namespace MerapiPanel\Utility;
 
+use Exception;
+
 class AES
 {
-    private const AES_METHOD = 'aes-256-cbc';
-    private const RSA_METHOD = OPENSSL_ALGO_SHA256; // You may adjust the RSA encryption method
+    private static $cipher = "AES-256-CBC";
+    private $key;
 
-    public static function encrypt(string $data): ?string
+    // Singleton instance
+    private static $instance;
+
+    // Private constructor to prevent direct instantiation
+    private function __construct()
     {
-        try {
-            // Generate a random AES key and IV
-            $aesKey = openssl_random_pseudo_bytes(32); // 256-bit key
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::AES_METHOD));
-
-            // Encrypt the data using AES
-            $encryptedData = openssl_encrypt($data, self::AES_METHOD, $aesKey, OPENSSL_RAW_DATA, $iv);
-
-            // Encrypt the AES key using RSA
-            $publicKey = openssl_pkey_get_public(file_get_contents($_ENV['__MP_PUBLIC_KEY__']));
-            if (!$publicKey) {
-                return null; // Failed to load public key
-            }
-            openssl_public_encrypt($aesKey, $encryptedKey, $publicKey);
-
-            // Combine the encrypted AES key and IV with the encrypted data
-            return base64_encode($encryptedKey . '::' . $iv . '::' . $encryptedData);
-        } catch (\Throwable $e) {
-            return null;
+        $this->key = file_get_contents($_ENV["__MP_APP__"] . "/config/private_key.pem");
+        if ($this->key === false) {
+            throw new Exception('Failed to read the encryption key');
         }
     }
 
-    public static function decrypt(string $encryptedData): ?string
+    // Get the singleton instance
+    public static function getInstance()
     {
-        try {
-            // Extract the encrypted AES key, IV, and data
-            [$encryptedKey, $iv, $encryptedData] = explode('::', base64_decode($encryptedData), 3);
-
-            // Decrypt the AES key using RSA
-            $privateKey = openssl_pkey_get_private(file_get_contents($_ENV['__MP_PRIVATE_KEY__']));
-            if (!$privateKey) {
-                return null; // Failed to load private key
-            }
-            openssl_private_decrypt($encryptedKey, $aesKey, $privateKey);
-
-            // Decrypt the data using the decrypted AES key and IV
-            return openssl_decrypt($encryptedData, self::AES_METHOD, $aesKey, OPENSSL_RAW_DATA, $iv);
-        } catch (\Throwable $e) {
-            return null;
+        if (!isset(self::$instance)) {
+            self::$instance = new self();
         }
+        return self::$instance;
+    }
+
+    // Encrypt a string
+    public function encrypt($string)
+    {
+        $ivlen = openssl_cipher_iv_length(self::$cipher);
+        $iv = openssl_random_pseudo_bytes($ivlen);
+        $ciphertext = openssl_encrypt($string, self::$cipher, $this->key, OPENSSL_RAW_DATA, $iv);
+        if ($ciphertext === false) {
+            return false;
+        }
+        $hmac = hash_hmac('sha256', $ciphertext, $this->key, true);
+        return base64_encode($iv . $hmac . $ciphertext);
+    }
+
+    // Decrypt a string
+    public function decrypt($string)
+    {
+        $c = base64_decode($string);
+        $ivlen = openssl_cipher_iv_length(self::$cipher);
+        $iv = substr($c, 0, $ivlen);
+        $hmac = substr($c, $ivlen, $sha2len = 32);
+        $ciphertext = substr($c, $ivlen + $sha2len);
+        $original_plaintext = openssl_decrypt($ciphertext, self::$cipher, $this->key, OPENSSL_RAW_DATA, $iv);
+        if ($original_plaintext === false) {
+            return false;
+        }
+        $calcmac = hash_hmac('sha256', $ciphertext, $this->key, true);
+        if (hash_equals($hmac, $calcmac)) {
+            return $original_plaintext;
+        }
+        throw new Exception('Hash verification failed');
     }
 }

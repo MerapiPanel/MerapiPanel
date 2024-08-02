@@ -6,3 +6,4 @@ vendor/
 *.pem
 
 include/Module/*/*
+test.php
