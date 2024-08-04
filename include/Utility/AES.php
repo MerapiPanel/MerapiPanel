@@ -3,6 +3,7 @@
 namespace MerapiPanel\Utility;
 
 use Exception;
+use Throwable;
 
 class AES
 {
@@ -46,19 +47,25 @@ class AES
     // Decrypt a string
     public function decrypt($string)
     {
-        $c = base64_decode($string);
-        $ivlen = openssl_cipher_iv_length(self::$cipher);
-        $iv = substr($c, 0, $ivlen);
-        $hmac = substr($c, $ivlen, $sha2len = 32);
-        $ciphertext = substr($c, $ivlen + $sha2len);
-        $original_plaintext = openssl_decrypt($ciphertext, self::$cipher, $this->key, OPENSSL_RAW_DATA, $iv);
-        if ($original_plaintext === false) {
+        try {
+            $c = base64_decode($string);
+            $ivlen = openssl_cipher_iv_length(self::$cipher);
+            $iv = substr($c, 0, $ivlen);
+            $hmac = substr($c, $ivlen, $sha2len = 32);
+            $ciphertext = substr($c, $ivlen + $sha2len);
+            if ($ciphertext) {
+                $original_plaintext = openssl_decrypt($ciphertext, self::$cipher, $this->key, OPENSSL_RAW_DATA, $iv);
+                if ($original_plaintext === false) {
+                    return false;
+                }
+                $calcmac = hash_hmac('sha256', $ciphertext, $this->key, true);
+                if (hash_equals($hmac, $calcmac)) {
+                    return $original_plaintext;
+                }
+            }
+            throw new Exception('Hash verification failed');
+        } catch (Throwable $t) {
             return false;
         }
-        $calcmac = hash_hmac('sha256', $ciphertext, $this->key, true);
-        if (hash_equals($hmac, $calcmac)) {
-            return $original_plaintext;
-        }
-        throw new Exception('Hash verification failed');
     }
 }

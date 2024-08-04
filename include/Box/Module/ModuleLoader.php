@@ -9,6 +9,7 @@ namespace MerapiPanel\Box\Module {
     use MerapiPanel\Box\Module\Entity\Fragment;
     use MerapiPanel\Box\Module\Entity\Proxy;
     use MerapiPanel\Utility\Http\Request;
+    use Nette\Utils\Arrays;
     use Symfony\Component\Filesystem\Path;
     use Throwable;
 
@@ -27,6 +28,20 @@ namespace MerapiPanel\Box\Module {
         public final static function getDefaultModules()
         {
             return self::$defaultModules;
+        }
+
+        private array $scannedListModule = [];
+        public function getListModule(): array
+        {
+            if (empty($this->scannedListModule)) {
+                foreach (glob(Path::join($this->directory, "*")) as $dirname) {
+                    $moduleName = basename($dirname);
+                    if (in_array($moduleName, self::getDefaultModules()) || file_exists(Path::join($dirname, ".active"))) {
+                        $this->scannedListModule[$moduleName] = $dirname;
+                    }
+                }
+            }
+            return $this->scannedListModule;
         }
 
         public function initialize(Container $container): void

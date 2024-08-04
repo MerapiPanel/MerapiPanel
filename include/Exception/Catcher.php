@@ -105,7 +105,7 @@ class Catcher
             $code = 500;
         }
 
-        if (Request::getInstance()->http("x-requested-with") == "XMLHttpRequest") {
+        if (Request::getInstance()->http("x-requested-with") == "XMLHttpRequest" || Request::getInstance()->http("sec-fetch-mode") == "cors") {
             return new Response([
                 "code" => $code,
                 "message" => $message

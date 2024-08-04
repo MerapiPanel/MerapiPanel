@@ -2,6 +2,7 @@
 
 namespace MerapiPanel\Views\Extension;
 
+use Exception;
 use MerapiPanel\Utility\AES;
 use MerapiPanel\Views\Abstract\Extension;
 
@@ -96,12 +97,27 @@ class Bundle extends Extension
 
     function fn_csrf_token()
     {
-
-        session_start();
+        if (session_status() == PHP_SESSION_DISABLED) {
+            throw new Exception("Could't create csrf token, session is disabled", 500);
+        }
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
         $aes = AES::getInstance();
         return $aes->encrypt($_SESSION['csrf_token']);
+    }
+
+    /**
+     * @option needs_environment true
+     */
+    function fn_csrf_input(\Twig\Environment $env)
+    {
+
+        $token = $this->fn_csrf_token();
+        $input_tag = "<input type=\"hidden\" name=\"csrf_token\" value=\"{$token}\">";
+        return new \Twig\Markup($input_tag, $env->getCharset());
     }
 }

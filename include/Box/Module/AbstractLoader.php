@@ -1,4 +1,5 @@
 <?php
+
 namespace MerapiPanel\Box\Module {
 
     use MerapiPanel\Box\Container;
@@ -13,6 +14,11 @@ namespace MerapiPanel\Box\Module {
         abstract function loadModule(string $name, Container $container): Module;
         abstract function loadFragment(string $name, Module|Fragment $parent): Fragment|null;
         abstract function initialize(Container $container): void;
-    }
 
+        /**
+         * Summary of getListModule
+         * @return array<string, string> list active module key is dirname and value is full path
+         */
+        abstract function getListModule(): array;
+    }
 }

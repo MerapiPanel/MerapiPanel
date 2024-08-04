@@ -34,12 +34,9 @@ const __ = {
 } as __MP;
 
 
-function newProperty(_target: any) {
+function newProperty(_data: any) {
 
-    if (!_target) _target = {};
-
-    _target = {
-
+    const _target = {
         events: [],
         on: function (key: string, callback: Function) {
             if (!_target.events[key]) _target.events[key] = [];
@@ -50,9 +47,7 @@ function newProperty(_target: any) {
             _target.events[key].splice(_target.events[key].indexOf(callback), 1);
         },
         fire: function (key: string, ...data: any) {
-
             if (!_target.events[key]) return new Promise<void>((res) => res());
-
             return new Promise((res, rej) => {
                 const event = new Event(key);
                 const promises = _target.events[key].map(async callback => {
@@ -63,11 +58,17 @@ function newProperty(_target: any) {
                         rej(error);
                     }
                 });
-
                 // Await all promises
                 Promise.all(promises).then(() => res(event)).catch(rej);
             });
         }
+    }
+    if (Object.keys(_data).some(isNaN as any)) {
+        Object.keys(_data).forEach((name) => {
+            if (!Object.keys(_target).includes(name.toLowerCase())) {
+                _target[name] = newProperty(_data[name]);
+            }
+        });
     }
     return new Proxy(_target, {
         get: (target, property: string) => {
@@ -86,9 +87,7 @@ function newProperty(_target: any) {
                     target[property] = value;
                 })
                 .catch(() => false);
-
             return true;
-
         }
     })
 }
@@ -96,26 +95,27 @@ function newProperty(_target: any) {
 
 (window as any).__ = new Proxy(__, {
     get: (target, property: string) => {
-
         if (!target[property]) {
             target[property] = newProperty({});
             return target[property];
         }
-
         if (typeof target[property] === "function") {
             target[property].bind(target);
         }
         return target[property];
     },
     set: (target, property: string, value) => {
-
         if (property && ["on", "off", "fire", "events", "get", "set", "http", "toast", "modal", "dialog"].includes(property.toLowerCase())) {
             console.error(`Error: ${property} is a reserved property`);
             return false;
         }
-
         if (!(property in target) && typeof value === "object") {
             target[property] = { ...value, ...newProperty({}) };
+            if (Object.keys(value).some(isNaN as any)) {
+                Object.keys(value).forEach((name) => {
+                    target[property][name] = newProperty(value[name]);
+                });
+            }
             return true;
         }
         return true;
@@ -125,14 +125,11 @@ function newProperty(_target: any) {
 
 const Box = {
     "form.needs-validation": (el) => {
-
         function validateInput(input) {
             const $input = $(input) as any;
             const pattern = $input.attr("pattern");
-
             if (pattern) {
                 const regex = new RegExp(pattern);
-
                 if (!$input[0].checkValidity()) {
                     // is valid
                     $input.addClass("is-invalid");
@@ -148,7 +145,6 @@ const Box = {
                         $input.removeClass("is-invalid");
                     }
                 }
-
             } else if ($input.attr("minlength") || $input.attr("maxlength")) {
                 if ($input.val().length < $input.attr("minlength") || $input.val().length > $input.attr("maxlength")) {
                     // is invalid
@@ -159,7 +155,6 @@ const Box = {
                     $input.addClass("is-valid");
                     $input.removeClass("is-invalid");
                 }
-
             } else if ($input.attr("min") || $input.attr("max")) {
                 if ($input.val() < $input.attr("min") || $input.val() > $input.attr("max")) {
                     // is invalid
@@ -182,22 +177,17 @@ const Box = {
                     $input.removeClass("is-invalid");
                 }
             } else {
-
                 $input.addClass("is-valid");
                 $input.removeClass("is-invalid");
             }
-
             return $input.hasClass("is-valid");
         }
-
         function validateForm(form) {
-
             const $form = $(form);
             const data: any = {
                 el: null,
                 valid: true
             }
-
             for (let i = 0; i < $form.find("input, textarea, select").length; i++) {
                 const form_el = $($form.find("input, textarea, select")[i]);
                 if (form_el.prop("disabled") || form_el.prop("readonly")) {
@@ -209,20 +199,15 @@ const Box = {
                     break;
                 }
             }
-
             return data;
         }
-
         el.find("input, textarea, select").on("input", function () {
-
             if ($(this).prop("disabled") || $(this).prop("readonly")) {
                 return;
             }
             validateInput(this);
         });
-
         el.each(function () {
-
             this.checkValidity = function () {
                 const data = validateForm(this);
                 if (!data.valid && data.el) {
@@ -230,7 +215,6 @@ const Box = {
                 }
                 return data.valid;
             }
-
             $(this).on("submit", function (e) {
                 e.preventDefault();
                 if (!this.checkValidity()) {
@@ -244,44 +228,41 @@ const Box = {
 
     "[onload]": (el: JQuery) => {
         el.each(function () {
-
             const onload: string = $(this).attr("onload") ?? "";
             function evalInContext() {
                 eval(onload);
             }
             evalInContext.call(this);
-
         })
     },
 
 
     "form[xhr-action]": (el: JQuery) => {
-
         el.each(function () {
-
-            const $this = $(this);
+            (this as any).checkVisibility = () => {}
+            const $this = (window as any).$(this);
             const action = $this.attr("xhr-action");
             const method = ($this.attr("method") as string || "").toLowerCase();
-
             $this.on("submit", function (e) {
-
                 e.preventDefault();
                 const event = $.Event("xhr-submit");
                 $this.trigger(event);
                 if (event.isDefaultPrevented()) {
+                    console.log("Will not forward")
                     return;
                 }
-
                 if (http[method] === undefined) {
                     toast("Method not found", 5, "text-danger");
                     return;
                 }
+
                 http[method](action, new FormData(this as any))
                     .then((response: any, text: any, xhr: any) => {
-                        $(this).trigger("xhr-success", [response, text, xhr]);
+                        $this.trigger("xhr-success", [response, text, xhr]);
                     }).catch((e) => {
-                        console.log(e);
-                        $(this).trigger("xhr-error", [e]);
+                        $this.trigger("xhr-error", [e]);
+                    }).finally(() => {
+                        $this.trigger("xhr-done", [e]);
                     })
             });
         })

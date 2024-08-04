@@ -42,7 +42,7 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
-        public function __on($key, Closure $callback)
+        public function listenOn($key, Closure $callback)
         {
             $this->listener[$key][] = $callback;
         }
@@ -89,6 +89,10 @@ namespace MerapiPanel\Box\Module\Entity {
             return $service->$method(...$args);
         }
 
+        function get($name)
+        {
+            return $this->__get($name);
+        }
 
 
         public function __toString()
@@ -117,7 +121,6 @@ namespace MerapiPanel\Box\Module\Entity {
         {
             return new Roles($this);
         }
-
     }
 
 
@@ -144,7 +147,6 @@ namespace MerapiPanel\Box\Module\Entity {
 
                     $this->stack = $this->normalize(json_decode(file_get_contents($path), true));
                     $this->fetch();
-
                 } catch (\Exception $e) {
 
                     error_log($e->getMessage());
@@ -501,7 +503,6 @@ namespace MerapiPanel\Box\Module\Entity {
                 if (isset($role['default']) && in_array($role['default'], [0, false])) {
                     return $role['default'];
                 }
-
             } catch (\Exception $e) {
                 error_log($e->getMessage());
             }
@@ -547,5 +548,4 @@ namespace MerapiPanel\Box\Module\Entity {
             return json_encode($data);
         }
     }
-
 }

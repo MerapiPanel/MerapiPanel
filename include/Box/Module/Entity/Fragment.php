@@ -30,7 +30,7 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
-        public function __on($key, Closure $callback)
+        public function listenOn($key, Closure $callback)
         {
             $this->listener[$key][] = $callback;
         }
@@ -117,12 +117,34 @@ namespace MerapiPanel\Box\Module\Entity {
             return "Fragment: {$this->resolvePath()}";
         }
 
+        
         public function getContent()
         {
             if (is_file($this->path)) {
-                return file_get_contents($this->path);
+                $content = file_get_contents($this->path);
+                if (json_validate($content)) {
+                    $content = json_decode($content, true);
+                }
+                $result = &$content;
+                if (isset($this->listener["getContent"])) {
+                    foreach ($this->listener["getContent"] as $callback) {
+                        $callback($result, $this);
+                    }
+                }
+                if (isset($this->listener["*"])) {
+                    foreach ($this->listener["*"] as $callback) {
+                        $callback("getContent", $result, $this);
+                    }
+                }
+                return $result;
             }
-            return null;
+            throw new Exception("Could't get content, {$this->path} is not file");
+        }
+
+
+        function get($name)
+        {
+            return $this->__get($name);
         }
     }
 }

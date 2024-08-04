@@ -4,6 +4,7 @@ namespace MerapiPanel\Utility;
 
 use Exception;
 use MerapiPanel\App;
+use MerapiPanel\Box\Module\Entity\Module;
 use MerapiPanel\Exception\HTTP_CODE;
 use MerapiPanel\Exception\HttpException;
 use MerapiPanel\Box;
@@ -260,16 +261,20 @@ class Router
         $method   = $request->getMethod();
         $path     = $request->getPath();
 
-        if (strtoupper($method) == "POST") {
-            session_start();
-            $csrf_token = $request->csrf_token();
-            $aes = AES::getInstance();
+        $AuthModule = Box::module("Auth");
 
-            if (empty($csrf_token) || !$token = $aes->decrypt($csrf_token)) {
-                return new Response('', 410);
-            }
-            if (!isset($_SESSION['csrf_token']) || $token != $_SESSION['csrf_token']) {
-                return new Response('', 410);
+        if (!$AuthModule || ($AuthModule instanceof Module && !$AuthModule->isAdmin())) {
+            if (strtoupper($method) == "POST") {
+                session_start();
+                $csrf_token = $request->csrf_token();
+                $aes = AES::getInstance();
+
+                if (empty($csrf_token) || !$token = $aes->decrypt($csrf_token)) {
+                    return new Response('', 410);
+                }
+                if (!isset($_SESSION['csrf_token']) || $token != $_SESSION['csrf_token']) {
+                    return new Response('', 410);
+                }
             }
         }
 

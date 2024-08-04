@@ -1,4 +1,5 @@
 <?php
+
 namespace MerapiPanel\Box\Module\Entity {
 
     use Closure;
@@ -35,7 +36,7 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
-        public function __on($key, Closure $callback)
+        public function listenOn($key, Closure $callback)
         {
             if (!isset($this->listener[$key])) {
                 $this->listener[$key] = [];
@@ -134,7 +135,7 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
-        
+
 
 
         public function __method_is_public($method)
