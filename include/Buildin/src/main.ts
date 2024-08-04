@@ -73,7 +73,11 @@ function newProperty(_data: any) {
     return new Proxy(_target, {
         get: (target, property: string) => {
             let data = target[property] || undefined;
-            _target.fire(`get:${property}`, data);
+            try {
+                _target.fire(`get:${property}`, data);
+            } catch (errr) {
+                // silent
+            }
             return data;
         },
         set: (target, property: string, value) => {
@@ -239,7 +243,7 @@ const Box = {
 
     "form[xhr-action]": (el: JQuery) => {
         el.each(function () {
-            (this as any).checkVisibility = () => {}
+            (this as any).checkVisibility = () => { }
             const $this = (window as any).$(this);
             const action = $this.attr("xhr-action");
             const method = ($this.attr("method") as string || "").toLowerCase();
