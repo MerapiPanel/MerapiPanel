@@ -176,8 +176,13 @@ class Util
 
 
 
-    public static function siteURL($path = null)
+    public static function siteURL($path = '', $queryParams = [])
     {
+        // Check if the path is a relative path and not an absolute URL
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
         // Check if the current request is using HTTPS
         $is_https = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
 
@@ -190,12 +195,23 @@ class Util
         // Combine protocol and host to get the site URL
         $site_url = $protocol . $host;
 
-        if ($path) {
-            $site_url .= $path;
+        // Ensure the path starts with a slash if it's not empty and doesn't already start with one
+        if (!empty($path) && $path[0] !== '/') {
+            $path = '/' . $path;
+        }
+
+        // Add the path to the site URL
+        $site_url .= $path;
+
+        // If there are query parameters, add them to the URL
+        if (!empty($queryParams)) {
+            $query_string = http_build_query($queryParams);
+            $site_url .= '?' . $query_string;
         }
 
         return $site_url;
     }
+
 
 
 

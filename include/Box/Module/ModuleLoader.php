@@ -51,15 +51,18 @@ namespace MerapiPanel\Box\Module {
         }
 
 
+        private $initiatedList = [];
         public final function postLoad($container)
         {
             foreach (glob(Path::join($this->directory, "*")) as $dirname) {
                 $moduleName = basename($dirname);
+                if (in_array($moduleName, $this->initiatedList)) continue;
                 if (in_array($moduleName, self::getDefaultModules()) || file_exists(Path::join($dirname, ".active"))) {
                     try {
                         $service = $container->$moduleName->Service;
                         if ($service instanceof Proxy && $service->__method_exists("onInit")) {
                             $service->onInit();
+                            $this->initiatedList[] = $moduleName;
                         }
                     } catch (Throwable $t) {
                         // silent
