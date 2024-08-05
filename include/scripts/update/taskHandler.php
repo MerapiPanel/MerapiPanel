@@ -35,7 +35,13 @@ $taskList[2] = function ($target_dir, $lastest) {
         $extracted_dir = $extractedFirstNode[0];
     }
 
-    return moveFilesAndFolders($extracted_dir, $target_dir);
+    $installHook = rtrim($extracted_dir, "\\/") . "/include/scripts/Install.hook.php";
+    if (!is_file($installHook)) throw new Exception("Failed install update, hook install not found!");
+    include_once $installHook;
+
+    befor_install($target_dir);
+    moveFilesAndFolders($extracted_dir, $target_dir);
+    after_install($extracted_dir);
 };
 
 
