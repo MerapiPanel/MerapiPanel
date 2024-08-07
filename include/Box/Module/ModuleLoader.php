@@ -142,10 +142,11 @@ namespace MerapiPanel\Box\Module {
         {
 
             $path = Path::join($this->directory, $name);
+
             if (!file_exists($path)) {
                 throw new Exception("Module not found: $name");
             }
-
+            if (!is_dir(Path::join($path, "data"))) mkdir(Path::join($path, "data"));
             if (!in_array($name, self::$defaultModules) && !file_exists(Path::join($path, ".active"))) throw new Exception("Module {$name} inactive", 500);
             return new Module($container, [
                 "namespace" => $this->classNamePrefix . "\\$name",

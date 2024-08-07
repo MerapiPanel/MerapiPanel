@@ -120,4 +120,10 @@ class Bundle extends Extension
         $input_tag = "<input type=\"hidden\" name=\"csrf_token\" value=\"{$token}\">";
         return new \Twig\Markup($input_tag, $env->getCharset());
     }
+
+
+    function fl_json_decode(string $string)
+    {
+        return json_decode($string, 1);
+    }
 }

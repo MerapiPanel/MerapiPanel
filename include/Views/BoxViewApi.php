@@ -3,7 +3,6 @@
 namespace MerapiPanel\Views {
 
     use MerapiPanel\Box;
-    use MerapiPanel\Box\Module\__Fragment;
     use MerapiPanel\Box\Module\Entity\Module;
     use MerapiPanel\Box\Module\Entity\Proxy;
 
@@ -26,7 +25,6 @@ namespace MerapiPanel\Views {
     }
 
 
-
     class BoxViewProxy
     {
 
@@ -41,19 +39,15 @@ namespace MerapiPanel\Views {
         public function __call($name, $arguments)
         {
 
-            $output  = null;
+            $output = null;
             $service = $this->module->Service;
-
-            if ($this->module->$name instanceof Proxy) {
-                return new ModuleViewProxy($this->module->$name);
-            } else if ($service->__method_exists($name)) {
-
-                $params = $service->__method_params($name);
-                if ($arguments && count($arguments) === 1 && is_array($arguments[0]) && count($params) == count($arguments[0])) {
+            if ($service->__method_exists($name)) {
+                if ($arguments && count($arguments) === 1 && is_array($arguments[0])) {
                     $arguments = $arguments[0];
                 }
                 $output = $service->$name(...$arguments);
-                
+            } else if ($this->module->$name instanceof Proxy) {
+                $output = new ModuleViewProxy($this->module->$name);
             } else if (method_exists($this->module, $name)) {
                 $output = $this->module->$name(...$arguments);
             } else {
@@ -63,6 +57,7 @@ namespace MerapiPanel\Views {
             return $output;
         }
     }
+
 
     class ModuleViewProxy
     {
@@ -82,12 +77,10 @@ namespace MerapiPanel\Views {
                 return new ModuleViewProxy($this->proxy->$name);
             } else if ($this->proxy->__method_exists($name)) {
 
-                $params = $this->proxy->__method_params($name);
-                if ($arguments && count($arguments) === 1 && is_array($arguments[0]) && count($params) == count($arguments[0])) {
+                if ($arguments && count($arguments) == 1 && is_array($arguments[0])) {
                     $arguments = $arguments[0];
                 }
                 $output = $this->proxy->$name(...$arguments);
-
             } else if (method_exists($this->proxy, $name)) {
                 $output = $this->proxy->$name(...$arguments);
             } else {

@@ -5,6 +5,7 @@ namespace MerapiPanel\Box\Module\Entity {
     use Closure;
     use Exception;
     use Symfony\Component\Filesystem\Path;
+    use Throwable;
 
     /**
      * Description: Module Fragment Entity.
@@ -24,9 +25,9 @@ namespace MerapiPanel\Box\Module\Entity {
 
         public function __construct(string $name, Module|Fragment $parent)
         {
-            $this->name = $name;
+            $this->name   = $name;
             $this->parent = $parent;
-            $this->path = $this->resolvePath();
+            $this->path   = $this->resolvePath();
         }
 
 
@@ -66,7 +67,7 @@ namespace MerapiPanel\Box\Module\Entity {
             $path = "";
             $fragment = $this;
             while (($fragment->parent instanceof Fragment)) {
-                $path = Path::join($fragment->parent->name, $path);
+                $path     = Path::join($fragment->parent->name, $path);
                 $fragment = $fragment->parent;
             }
             return str_replace("/", "\\", Path::join($fragment->parent->namespace, $path, $this->name, ($name ? $name : "")));
@@ -87,19 +88,7 @@ namespace MerapiPanel\Box\Module\Entity {
                 $fragment = $this->childrens[$name];
             }
 
-            $result = &$fragment;
-            if (isset($this->listener[$name])) {
-                foreach ($this->listener[$name] as $callback) {
-                    $callback($result, $this);
-                }
-            }
-            if (isset($this->listener["*"])) {
-                foreach ($this->listener["*"] as $callback) {
-                    $callback($name, $result, $this);
-                }
-            }
-
-            return $result;
+            return $fragment;
         }
 
 
@@ -117,26 +106,30 @@ namespace MerapiPanel\Box\Module\Entity {
             return "Fragment: {$this->resolvePath()}";
         }
 
-        
+
         public function getContent()
         {
-            if (is_file($this->path)) {
-                $content = file_get_contents($this->path);
-                if (json_validate($content)) {
-                    $content = json_decode($content, true);
-                }
-                $result = &$content;
-                if (isset($this->listener["getContent"])) {
-                    foreach ($this->listener["getContent"] as $callback) {
-                        $callback($result, $this);
+            try {
+                if (is_file($this->path)) {
+                    $content = file_get_contents($this->path);
+                    if (json_validate($content)) {
+                        $content = json_decode($content, true);
                     }
-                }
-                if (isset($this->listener["*"])) {
-                    foreach ($this->listener["*"] as $callback) {
-                        $callback("getContent", $result, $this);
+                    $result = &$content;
+                    if (isset($this->listener["getContent"])) {
+                        foreach ($this->listener["getContent"] as $callback) {
+                            $callback($result, $this);
+                        }
                     }
+                    if (isset($this->listener["*"])) {
+                        foreach ($this->listener["*"] as $callback) {
+                            $callback("getContent", $result, $this);
+                        }
+                    }
+                    return $result;
                 }
-                return $result;
+            } catch (Throwable $t) {
+                throw $t;
             }
             throw new Exception("Could't get content, {$this->path} is not file");
         }

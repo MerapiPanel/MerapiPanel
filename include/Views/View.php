@@ -110,14 +110,15 @@ class View
         $this->viewException = new ViewException();
         $this->twig->addExtension($this->viewException);
         $this->twig->addExtension(new MarkdownExtension());
-        $this->twig->addRuntimeLoader(new class implements RuntimeLoaderInterface {
-            public function load($class) {
+        $this->twig->addRuntimeLoader(new class implements RuntimeLoaderInterface
+        {
+            public function load($class)
+            {
                 if (MarkdownRuntime::class === $class) {
                     return new MarkdownRuntime(new DefaultMarkdown());
                 }
             }
         });
-
 
         $this->addGlobal("request", Request::getInstance());
         $this->addGlobal("lang", $this->lang);
@@ -186,10 +187,10 @@ class View
     /**
      * Get the template.
      *
-     * @return mixed
+     * @return \Twig\TemplateWrapper 
      * @throws Exception Please load view first before get template
      */
-    public function getTemplate()
+    public function getWrapper()
     {
         if (!isset($this->wrapper))
             throw new Exception("Please load view first before get template");

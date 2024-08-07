@@ -7,7 +7,6 @@ namespace MerapiPanel {
     use MerapiPanel\Box\Module\Entity\Module;
     use MerapiPanel\Box\Module\Entity\Proxy;
     use MerapiPanel\Box\Module\ModuleLoader;
-    use MerapiPanel\Views\View;
 
     /**
      * Description: Box is an instance used for communication between instances in MerapiPanel, especially for modules. With a box, it allows for communication between modules.
@@ -23,67 +22,26 @@ namespace MerapiPanel {
     class Box
     {
 
-
         private static $instance;
         private Container $module_container;
 
-
-
-
         protected function __construct()
         {
-            // if ($_ENV['__MP_CACHE__'] == true) {
-            //     if (file_exists(__DIR__ . "/__.dat")) {
-            //         $serialize = file_get_contents(__DIR__ . "/__.dat");
-            //         $this->module_container = unserialize($serialize);
-            //         self::$instance = $this;
-            //         return;
-            //     }
-            // } else if (file_exists(__DIR__ . "/__.dat")) {
-            //     unlink(__DIR__ . "/__.dat");
-            // }
-
             $this->module_container = new Container(new ModuleLoader(__DIR__ . "/Module"));
             self::$instance = $this;
         }
-
-
-
 
         protected function initialize()
         {
             $this->module_container->initialize();
         }
 
-
-
-
         public static function module($name = null): Container|Fragment|Proxy|Module|null
         {
-
             if (!$name || empty($name)) {
                 return self::$instance->module_container;
             }
             return self::$instance->module_container->$name;
-        }
-
-
-        public static function shutdown()
-        {
-            if ($_ENV['__MP_CACHE__'] == true) {
-
-                if (file_exists(__DIR__ . "/__.dat")) {
-                    if (filemtime(__DIR__ . "/__.dat") < time() - 60 * 60 * 24) { // 24 hours
-                        $serialize = serialize(self::$instance->module_container);
-                        file_put_contents(__DIR__ . "/__.dat", $serialize);
-                    }
-                } else {
-                    $serialize = serialize(self::$instance->module_container);
-                    file_put_contents(__DIR__ . "/__.dat", $serialize);
-                }
-            } else if (file_exists(__DIR__ . "/__.dat")) {
-                unlink(__DIR__ . "/__.dat");
-            }
         }
     }
 }
@@ -93,4 +51,44 @@ namespace {
     use MerapiPanel\Exception\Catcher;
 
     Catcher::init();
+
+    if (!function_exists('write_log')) {
+        function write_log($message, int $type = LOG_INFO)
+        {
+            $file = __DIR__ . "/system.log";
+
+            // Define the log type labels
+            $logTypes = [
+                LOG_EMERG => 'EMERGENCY',
+                LOG_ALERT => 'ALERT',
+                LOG_CRIT => 'CRITICAL',
+                LOG_ERR => 'ERROR',
+                LOG_WARNING => 'WARNING',
+                LOG_NOTICE => 'NOTICE',
+                LOG_INFO => 'INFO',
+                LOG_DEBUG => 'DEBUG',
+            ];
+
+            // Get the current time
+            $time = date('Y-m-d H:i:s');
+
+            // Format the log message
+            $formattedMessage = sprintf("[%s] [%s] %s\n", $logTypes[$type] ?? 'UNKNOWN', $time, is_string($message) ? $message : print_r($message, 1));
+
+            // Read the existing log file
+            $logContents = file_exists($file) ? file($file, FILE_IGNORE_NEW_LINES) : [];
+
+            // Append the new log message
+            $logContents[] = $formattedMessage;
+
+            // Ensure the log file does not exceed 3000 lines
+            if (count($logContents) > 3000) {
+                // Remove the oldest records to keep the log within 3000 lines
+                $logContents = array_slice($logContents, -3000);
+            }
+
+            // Write the log messages back to the file
+            file_put_contents($file, implode("\n", $logContents) . "\n");
+        }
+    }
 }

@@ -3,6 +3,7 @@
 namespace MerapiPanel\Box\Module\Entity {
 
     use Closure;
+    use Exception;
     use MerapiPanel\Box;
     use MerapiPanel\Box\Module\AbstractLoader;
     use MerapiPanel\Box\Container;
@@ -11,8 +12,7 @@ namespace MerapiPanel\Box\Module\Entity {
     use ReflectionObject;
     use ReflectionProperty;
     use Symfony\Component\Filesystem\Path;
-
-
+    use Throwable;
 
     class Module
     {
@@ -23,6 +23,28 @@ namespace MerapiPanel\Box\Module\Entity {
         protected Container $container;
         protected array $listener = [];
 
+        // protected array $error = [];
+        // protected bool $catchError = false;
+
+        // function getError()
+        // {
+        //     return $this->error;
+        // }
+
+        // function setCatchError($catchError)
+        // {
+        //     $this->catchError = $catchError;
+        // }
+
+        // function __putError(Throwable $t)
+        // {
+
+        //     throw $t;
+        //     $file     = $t->getFile();
+        //     $fragment = preg_replace("/.*include(\\|\/|\\\\|\/\/)Module(\\|\/|\\\\|\/\/)/im", "", preg_replace("/\.php$/i", "", $file));
+        //     $fragment = preg_replace("/\\|\/|\\\\|\/\//m", ".", $fragment);
+        //     $this->error[] = $t->getMessage() . " in $fragment line " . $t->getLine();
+        // }
 
 
         public function __construct(Container $container, array $payload)
@@ -36,7 +58,7 @@ namespace MerapiPanel\Box\Module\Entity {
                 if (array_key_exists($name, $payload)) {
                     $this->$name = $payload[$name];
                 } else {
-                    throw new \Exception('Missing required property: ' . $name);
+                    throw new Exception("Missing required property: {$name}");
                 }
             }
         }
@@ -57,6 +79,7 @@ namespace MerapiPanel\Box\Module\Entity {
 
         public function __get($name): Proxy|Fragment|null|bool
         {
+            // dont throw catch here
 
             if (empty($this->fragments[$name])) {
                 $fragment = $this->getLoader()->loadFragment($name, $this);
@@ -82,11 +105,25 @@ namespace MerapiPanel\Box\Module\Entity {
 
         public function __call($method, $args)
         {
+
             $service = $this->Service;
             if (!$service) {
-                throw new \Exception("Default service not found in " . $this->namespace);
+                throw new Exception("Default service not found in {$this->namespace}");
             }
-            return $service->$method(...$args);
+            $output = $service->$method(...$args);
+            $result = &$output;
+
+            if (isset($this->listener[$method])) {
+                foreach ($this->listener[$method] as $callback) {
+                    $callback($result, ...$args);
+                }
+            }
+            if (isset($this->listener["*"])) {
+                foreach ($this->listener["*"] as $callback) {
+                    $callback($method, $result, ...$args);
+                }
+            }
+            return $result;
         }
 
         function get($name)
@@ -100,8 +137,6 @@ namespace MerapiPanel\Box\Module\Entity {
 
             return "Module: {$this->namespace}";
         }
-
-
 
 
         protected Config|null $config = null;
@@ -147,7 +182,7 @@ namespace MerapiPanel\Box\Module\Entity {
 
                     $this->stack = $this->normalize(json_decode(file_get_contents($path), true));
                     $this->fetch();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
 
                     error_log($e->getMessage());
                 }

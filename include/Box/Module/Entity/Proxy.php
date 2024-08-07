@@ -5,6 +5,7 @@ namespace MerapiPanel\Box\Module\Entity {
     use Closure;
     use MerapiPanel\Box\Module\__Fragment;
     use ReflectionClass;
+    use Throwable;
 
     class Proxy extends Fragment
     {
@@ -26,12 +27,15 @@ namespace MerapiPanel\Box\Module\Entity {
             $this->instance = $reflector->newInstanceWithoutConstructor();
 
             if (!($this->instance instanceof __Fragment)) {
-                throw new \Exception("The class " . $this->className . " should extend " . __Fragment::class);
+                throw new \Exception("The class {$this->className} should extend " . __Fragment::class);
             }
 
-
             if (method_exists($this->instance, "onCreate")) {
-                $this->instance->onCreate($this->getModule());
+                try {
+                    $this->instance->onCreate($this->getModule());
+                } catch (Throwable $t) {
+                    // $this->getModule()->__putError($t);
+                }
             }
         }
 
@@ -49,6 +53,7 @@ namespace MerapiPanel\Box\Module\Entity {
         public function __call($method, $args)
         {
 
+            // try {
             if (!method_exists($this->instance, $method)) {
                 $caller = debug_backtrace();
                 if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
@@ -79,22 +84,26 @@ namespace MerapiPanel\Box\Module\Entity {
 
             if (isset($this->listener[$method])) {
                 foreach ($this->listener[$method] as $callback) {
-                    $callback($result, $this);
+                    $callback($result, ...$args);
                 }
             }
             if (isset($this->listener["*"])) {
                 foreach ($this->listener["*"] as $callback) {
-                    $callback($method, $result, $this);
+                    $callback($method, $result, ...$args);
                 }
             }
             return $result;
+            // } catch (Throwable $t) {
+            //     // $this->getModule()->__putError($t);
+            //     // return null;
+            //     throw $t;
+            // }
         }
 
 
 
         public function __get($name)
         {
-
             if (!property_exists($this->instance, $name)) {
                 return false;
             }
@@ -117,7 +126,10 @@ namespace MerapiPanel\Box\Module\Entity {
             $module = $this->getModule();
             $reflectorMethod = new \ReflectionMethod($this->instance, $method);
             if (!$reflectorMethod->isPublic()) {
-                throw new \Exception("Method not public: " . $method . " in " . $this->className);
+                $this->getModule()->__putError(
+                    new \Exception("Method not public: {$method} in {$this->className}")
+                );
+                return false;
             }
             $comment = $reflectorMethod->getDocComment();
             preg_match("/@admin\s+(\w+)/", $comment, $matches);
@@ -128,8 +140,6 @@ namespace MerapiPanel\Box\Module\Entity {
             if (isset($matches[1]) && ($module->Service instanceof Proxy && $module->Service->__method_exists("isGuest") && $module->Service->isGuest() || $matches[1] == 'false')) {
                 return $matches[1] == 'true';
             }
-
-
 
             return true;
         }
