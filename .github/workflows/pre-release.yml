@@ -61,5 +61,4 @@ jobs:
         release_name: "Release ${{ github.ref }}"
         draft: false
         prerelease: false
-        generate_release_notes: true
         token: ${{ secrets.GH_TOKEN }}
