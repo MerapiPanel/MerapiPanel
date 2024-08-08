@@ -40,7 +40,7 @@ $taskList[2] = function ($target_dir, $lastest) {
     include_once $installHook;
 
     befor_install($target_dir);
-    moveFilesAndFolders($extracted_dir, $target_dir);
+    // moveFilesAndFolders($extracted_dir, $target_dir);
     after_install($extracted_dir);
 };
 
@@ -60,10 +60,6 @@ function startTask($task_id, $target_dir, $lastest)
     }
     return $taskList[$task_id]($target_dir, $lastest);
 };
-
-
-
-
 
 
 

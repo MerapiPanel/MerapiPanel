@@ -30,18 +30,20 @@ namespace MerapiPanel\Box\Module\Entity {
             $message = $t->getMessage();
             $file = $t->getFile(); // Use provided file or fallback to Throwable's file
             $line = $t->getLine(); // Use provided line or fallback to Throwable's line
+            if (preg_match("/.*[\/\\\\]include[\/\\\\]Module[\/\\\\]/", $file)) {
 
-            // Process the file path to generate a fragment
-            // Remove leading path up to 'Module' and replace directory separators with dots
-            $fragment = preg_replace("/.*[\/\\\\]Module[\/\\\\]/", "", $file);
-            $fragment = preg_replace("/[\/\\\\]/", ".", $fragment);
-            $fragment = preg_replace("/\.php$/", "", $fragment); // Remove .php extension
+                // Process the file path to generate a fragment
+                // Remove leading path up to 'Module' and replace directory separators with dots
+                $fragment = preg_replace("/.*[\/\\\\]Module[\/\\\\]/", "", $file);
+                $fragment = preg_replace("/[\/\\\\]/", ".", $fragment);
+                $fragment = preg_replace("/\.php$/", "", $fragment); // Remove .php extension
 
-            // Ensure the fragment is not repeated in the error message
-            $errorMessage = "$message $fragment";
+                // Ensure the fragment is not repeated in the error message
+                $errorMessage = "$message $fragment";
+            }
 
             // Create an Error object with the processed message and fragment
-            $faker = Error::caught($t, $errorMessage);
+            $faker = Error::caught($t, $errorMessage ?? null);
 
             // Set the file and line in the Error object if available
             if (!empty($file)) {
