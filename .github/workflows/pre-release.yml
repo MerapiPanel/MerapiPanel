@@ -64,6 +64,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
 
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: prepare-release
+    if: always() # Ensures this job runs regardless of the success or failure of the previous job
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
+
     - name: Remove vendor directory
       run: |
         git rm -r --cached vendor
