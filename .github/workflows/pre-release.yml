@@ -17,7 +17,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_TOKEN }}
 
     - name: Add third-party repository for PHP
       run: sudo add-apt-repository ppa:ondrej/php
@@ -66,4 +66,4 @@ jobs:
         draft: false
         prerelease: false
         generate_release_notes: true
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_TOKEN }}
