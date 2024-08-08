@@ -1,0 +1,43 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, json, bcmath
+
+    - name: Install Composer dependencies
+      run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+    - name: Commit vendor directory
+      run: |
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git add vendor
+        git commit -m "Add vendor directory for release"
+
+    - name: Push changes
+      run: git push origin ${{ github.ref }}
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: "Release ${{ github.ref }}"
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        token: ${{ secrets.GITHUB_TOKEN }}
