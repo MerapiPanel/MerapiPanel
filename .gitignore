@@ -6,5 +6,5 @@ content/*
 *.db
 *.pem
 
-include/Module/*/*
+include/Module/*
 test.php
