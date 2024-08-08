@@ -3,7 +3,6 @@ namespace MerapiPanel {
 
     use MerapiPanel\Utility\Http\Request;
     use MerapiPanel\Utility\Router;
-    use MerapiPanel\Box\Module\Entity\Proxy;
 
     ini_set("error_log", __DIR__ . "/php-error.log");
 
