@@ -61,4 +61,11 @@ jobs:
         release_name: "Release ${{ github.ref }}"
         draft: false
         prerelease: false
-        token: ${{ secrets.GH_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+
+    - name: Remove vendor directory
+      run: |
+        git rm -r --cached vendor
+        git commit -m "Remove vendor directory"
+        git push origin ${{ github.ref }}
