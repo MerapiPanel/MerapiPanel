@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
 
     - name: Add third-party repository for PHP
       run: sudo add-apt-repository ppa:ondrej/php
@@ -43,8 +45,8 @@ jobs:
       
     - name: Commit vendor directory
       run: |
-        git config --local user.email "actions@github.com"
-        git config --local user.name "GitHub Actions"
+        git config --local user.email "durianbohong@gmail.com"
+        git config --local user.name "il4mb"
         git add -f vendor
         git config advice.addIgnoredFile false
         git commit -m "Add vendor directory for release"
