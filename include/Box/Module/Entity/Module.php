@@ -8,6 +8,7 @@ namespace MerapiPanel\Box\Module\Entity {
     use MerapiPanel\Box\Module\AbstractLoader;
     use MerapiPanel\Box\Container;
     use MerapiPanel\Database\DB;
+    use MerapiPanel\Exception\Model\Error;
     use PDO;
     use ReflectionObject;
     use ReflectionProperty;
@@ -23,28 +24,37 @@ namespace MerapiPanel\Box\Module\Entity {
         protected Container $container;
         protected array $listener = [];
 
-        // protected array $error = [];
-        // protected bool $catchError = false;
+        function throwError(Throwable $t, $file = null, $line = null)
+        {
+            // Extract message, file, and line from the Throwable object
+            $message = $t->getMessage();
+            $file = $t->getFile(); // Use provided file or fallback to Throwable's file
+            $line = $t->getLine(); // Use provided line or fallback to Throwable's line
 
-        // function getError()
-        // {
-        //     return $this->error;
-        // }
+            // Process the file path to generate a fragment
+            // Remove leading path up to 'Module' and replace directory separators with dots
+            $fragment = preg_replace("/.*[\/\\\\]Module[\/\\\\]/", "", $file);
+            $fragment = preg_replace("/[\/\\\\]/", ".", $fragment);
+            $fragment = preg_replace("/\.php$/", "", $fragment); // Remove .php extension
 
-        // function setCatchError($catchError)
-        // {
-        //     $this->catchError = $catchError;
-        // }
+            // Ensure the fragment is not repeated in the error message
+            $errorMessage = "$message $fragment";
 
-        // function __putError(Throwable $t)
-        // {
+            // Create an Error object with the processed message and fragment
+            $faker = Error::caught($t, $errorMessage);
 
-        //     throw $t;
-        //     $file     = $t->getFile();
-        //     $fragment = preg_replace("/.*include(\\|\/|\\\\|\/\/)Module(\\|\/|\\\\|\/\/)/im", "", preg_replace("/\.php$/i", "", $file));
-        //     $fragment = preg_replace("/\\|\/|\\\\|\/\//m", ".", $fragment);
-        //     $this->error[] = $t->getMessage() . " in $fragment line " . $t->getLine();
-        // }
+            // Set the file and line in the Error object if available
+            if (!empty($file)) {
+                $faker->setFile($file);
+            }
+            if (!empty($line)) {
+                $faker->setLine($line);
+            }
+
+            // Throw the Error object
+            throw $faker;
+        }
+
 
 
         public function __construct(Container $container, array $payload)
@@ -79,7 +89,6 @@ namespace MerapiPanel\Box\Module\Entity {
 
         public function __get($name): Proxy|Fragment|null|bool
         {
-            // dont throw catch here
 
             if (empty($this->fragments[$name])) {
                 $fragment = $this->getLoader()->loadFragment($name, $this);
@@ -88,16 +97,16 @@ namespace MerapiPanel\Box\Module\Entity {
                 $fragment = &$this->fragments[$name];
             }
             $result = &$fragment;
-            if (isset($this->listener[$name])) {
-                foreach ($this->listener[$name] as $callback) {
-                    $callback($result, $this);
-                }
-            }
-            if (isset($this->listener["*"])) {
-                foreach ($this->listener["*"] as $callback) {
-                    $callback($name, $result, $this);
-                }
-            }
+            // if (isset($this->listener[$name])) {
+            //     foreach ($this->listener[$name] as $callback) {
+            //         $callback($result, $this);
+            //     }
+            // }
+            // if (isset($this->listener["*"])) {
+            //     foreach ($this->listener["*"] as $callback) {
+            //         $callback($name, $result, $this);
+            //     }
+            // }
             return $result;
         }
 
@@ -113,16 +122,16 @@ namespace MerapiPanel\Box\Module\Entity {
             $output = $service->$method(...$args);
             $result = &$output;
 
-            if (isset($this->listener[$method])) {
-                foreach ($this->listener[$method] as $callback) {
-                    $callback($result, ...$args);
-                }
-            }
-            if (isset($this->listener["*"])) {
-                foreach ($this->listener["*"] as $callback) {
-                    $callback($method, $result, ...$args);
-                }
-            }
+            // if (isset($this->listener[$method])) {
+            //     foreach ($this->listener[$method] as $callback) {
+            //         $callback($result, ...$args);
+            //     }
+            // }
+            // if (isset($this->listener["*"])) {
+            //     foreach ($this->listener["*"] as $callback) {
+            //         $callback($method, $result, ...$args);
+            //     }
+            // }
             return $result;
         }
 

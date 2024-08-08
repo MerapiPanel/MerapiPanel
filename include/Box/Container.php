@@ -79,24 +79,7 @@ namespace MerapiPanel\Box {
             if (empty($this->stack[$name])) {
                 $this->stack[$name] = $this->loader->loadModule($name, $this);
             }
-
-            $output = $this->stack[$name];
-            $__ = &$output;
-
-            if (isset($this->events[$name])) {
-
-                foreach ($this->events[$name] as $event) {
-                    $event(...[&$__]);
-                }
-            }
-            if (isset($this->events["*"])) {
-
-                foreach ($this->events["*"] as $event) {
-                    $event(...[$name, &$__]);
-                }
-            }
-
-            return $__;
+            return $this->stack[$name];
 
         }
 

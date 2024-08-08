@@ -331,6 +331,7 @@ class View
 
     public static function minimizeHTML($html)
     {
+        if (!is_string($html)) return $html;
         $ouput = preg_replace('/(>)(\s+|\n|\r)(<)/', '$1$3', $html);
         return $ouput;
     }

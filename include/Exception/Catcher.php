@@ -36,8 +36,6 @@ class Catcher
         if (!isset(self::$instance)) {
             self::$instance = new self();
         }
-
-        return self::$instance;
     }
 
 
@@ -80,6 +78,10 @@ class Catcher
     public function exception(Throwable $e)
     {
 
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
         echo self::send(...[
             "message" => $e->getMessage(),
             "file" => $e->getFile(),
@@ -95,6 +97,8 @@ class Catcher
 
     private static function send($file = "", $line = 0, $message = "", $code = 500, $type = "", $trace = [], $snippet = "")
     {
+
+        // error_log($message . " in " . $file . ":" . $line);
 
         // transform ti absolute path
         if (isset($file)) {

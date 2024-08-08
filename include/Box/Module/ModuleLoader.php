@@ -9,7 +9,6 @@ namespace MerapiPanel\Box\Module {
     use MerapiPanel\Box\Module\Entity\Fragment;
     use MerapiPanel\Box\Module\Entity\Proxy;
     use MerapiPanel\Utility\Http\Request;
-    use Nette\Utils\Arrays;
     use Symfony\Component\Filesystem\Path;
     use Throwable;
 
@@ -138,8 +137,16 @@ namespace MerapiPanel\Box\Module {
         }
 
 
+        private $couter = [];
+
         function loadModule(string $name, Container $container): Module
         {
+
+            // if (isset($this->couter[$name])) {
+            //     $this->couter[$name] += 1;
+            // } else {
+            //     $this->couter[$name] = 1;
+            // }
 
             $path = Path::join($this->directory, $name);
 

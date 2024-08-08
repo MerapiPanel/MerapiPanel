@@ -3,7 +3,9 @@
 namespace MerapiPanel\Box\Module\Entity {
 
     use Closure;
+    use Exception;
     use MerapiPanel\Box\Module\__Fragment;
+    use MerapiPanel\Exception\Model\Faker;
     use ReflectionClass;
     use Throwable;
 
@@ -27,7 +29,11 @@ namespace MerapiPanel\Box\Module\Entity {
             $this->instance = $reflector->newInstanceWithoutConstructor();
 
             if (!($this->instance instanceof __Fragment)) {
-                throw new \Exception("The class {$this->className} should extend " . __Fragment::class);
+                $this->getModule()->throwError(
+                    new Exception("The class {$this->className} should extend " . __Fragment::class),
+                    $this->path,
+                    $this->getClassStartLine()
+                );
             }
 
             if (method_exists($this->instance, "onCreate")) {
@@ -53,51 +59,32 @@ namespace MerapiPanel\Box\Module\Entity {
         public function __call($method, $args)
         {
 
-            // try {
-            if (!method_exists($this->instance, $method)) {
-                $caller = debug_backtrace();
-                if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
-                    $trace = $caller[0];
-                    if (isset($caller[0]['class']) && strpos($caller[0]['class'], "MerapiPanel\\Box\\Module\\") !== false) {
-                        $trace = $caller[1];
+            try {
+                if (!method_exists($this->instance, $method)) {
+                    throw new Exception("Method not found");
+                }
+
+                if (!$this->__isMethodAllowed($method)) {
+                    throw new Exception("Method not allowed");
+                }
+
+                $output = call_user_func_array([$this->instance, $method], $args);
+                $result = &$output;
+
+                if (isset($this->listener[$method])) {
+                    foreach ($this->listener[$method] as $callback) {
+                        $callback($result, ...$args);
                     }
-                    throw new \Exception("Method not found: " . $method . " in " . $this->className . (isset($trace['file'], $trace['code']) ? " called from " . $trace['file'] . ":" . $trace['line'] : ''));
                 }
-                throw new \Exception("Method not found: " . $method . " in " . $this->className);
-            }
-
-            if (!$this->__isMethodAllowed($method)) {
-                $caller = debug_backtrace();
-                if (isset($caller[0]['file']) && isset($caller[0]['line'])) {
-                    $trace = $caller[0];
-                    if (isset($caller[0]['class']) && strpos($caller[0]['class'], "MerapiPanel\\Box\\Module\\") !== false) {
-                        $trace = $caller[1];
+                if (isset($this->listener["*"])) {
+                    foreach ($this->listener["*"] as $callback) {
+                        $callback($method, $result, ...$args);
                     }
-                    throw new \Exception("Method not allowed: " . $method . " in " . $this->className . (isset($trace['file'], $trace['code']) ? " called from " . $trace['file'] . ":" . $trace['line'] : ''));
                 }
-                throw new \Exception("Method not allowed: " . $method . " in " . $this->className);
+                return $result;
+            } catch (Throwable $t) {
+                $this->getModule()->throwError($t);
             }
-
-
-            $output = call_user_func_array([$this->instance, $method], $args);
-            $result = &$output;
-
-            if (isset($this->listener[$method])) {
-                foreach ($this->listener[$method] as $callback) {
-                    $callback($result, ...$args);
-                }
-            }
-            if (isset($this->listener["*"])) {
-                foreach ($this->listener["*"] as $callback) {
-                    $callback($method, $result, ...$args);
-                }
-            }
-            return $result;
-            // } catch (Throwable $t) {
-            //     // $this->getModule()->__putError($t);
-            //     // return null;
-            //     throw $t;
-            // }
         }
 
 
@@ -126,8 +113,10 @@ namespace MerapiPanel\Box\Module\Entity {
             $module = $this->getModule();
             $reflectorMethod = new \ReflectionMethod($this->instance, $method);
             if (!$reflectorMethod->isPublic()) {
-                $this->getModule()->__putError(
-                    new \Exception("Method not public: {$method} in {$this->className}")
+                $this->getModule()->throwError(
+                    new Exception("Method not public: {$method} in {$this->className}"),
+                    $this->path,
+                    $this->__method_line($method)
                 );
                 return false;
             }
@@ -145,6 +134,12 @@ namespace MerapiPanel\Box\Module\Entity {
         }
 
 
+
+        private function getClassStartLine()
+        {
+            $reflector = new ReflectionClass($this->instance);
+            return $reflector->getStartLine();
+        }
 
 
 
@@ -179,6 +174,12 @@ namespace MerapiPanel\Box\Module\Entity {
         {
             $reflectorMethod = new \ReflectionMethod($this->instance, $method);
             return $reflectorMethod->isStatic();
+        }
+
+        public function __method_line($methodName)
+        {
+            $reflector = new \ReflectionMethod($this->instance, $methodName);
+            return $reflector->getStartLine();
         }
 
 
