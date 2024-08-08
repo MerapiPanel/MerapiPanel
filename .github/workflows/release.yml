@@ -13,17 +13,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Set up PHP and Composer
+    # Set up PHP
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1' # Specify your PHP version
+        php-version: '8.3'
         extensions: mbstring, json, bcmath
-        coverage: none
 
     # Install Composer dependencies
     - name: Install Composer dependencies
-      run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+      run: |
+        composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
     # Create the release package
     - name: Create release package
@@ -32,18 +32,18 @@ jobs:
         cp -R . release/
         rm -rf release/.git release/.github release/tests
         cd release
-        zip -r ../release-package.zip .
+        zip -r ../release-package-php8.3.zip .
 
     # Upload the release package as an artifact
     - name: Upload release artifact
       uses: actions/upload-artifact@v3
       with:
-        name: release-package
-        path: release-package.zip
+        name: release-package-php8.3
+        path: release-package-php8.3.zip
 
     # Publish the release package to GitHub Releases
     - name: Publish release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: release-package.zip
+        artifacts: release-package-php8.3.zip
         token: ${{ secrets.GITHUB_TOKEN }}
