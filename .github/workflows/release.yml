@@ -1,0 +1,49 @@
+name: Create Release Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up PHP
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, json, bcmath
+
+    # Install Composer dependencies
+    - name: Install Composer dependencies
+      run: |
+        composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+    # Create the release package
+    - name: Create release package
+      run: |
+        mkdir release
+        cp -R . release/
+        rm -rf release/.git release/.github release/tests
+        cd release
+        zip -r ../release-package-php8.3.zip .
+
+    # Upload the release package as an artifact
+    - name: Upload release artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-package-php8.3
+        path: release-package-php8.3.zip
+
+    # Publish the release package to GitHub Releases
+    - name: Publish release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: release-package-php8.3.zip
+        token: ${{ secrets.GITHUB_TOKEN }}
