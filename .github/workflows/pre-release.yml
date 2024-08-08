@@ -13,15 +13,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
+    - name: Add third-party repository for PHP
+      run: sudo add-apt-repository ppa:ondrej/php
+
+    - name: Install PHP 8.2 and Composer
+      run: |
+        sudo apt-get install -y php8.3-cli
+        sudo update-alternatives --set php /usr/bin/php8.3
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+        php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+        php -r "unlink('composer-setup.php');"
+        sudo apt-get update
+        sudo apt-get install -y php8.3-xml
+        
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
       with:
-        php-version: '8.3'
-        extensions: mbstring, json, bcmath
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
 
-    - name: Install Composer dependencies
-      run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
-
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+      
     - name: Commit vendor directory
       run: |
         git config --local user.email "actions@github.com"
