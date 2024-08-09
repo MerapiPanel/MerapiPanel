@@ -101,12 +101,8 @@ jobs:
           git checkout main
           git pull origin main
 
-      - name: Remove vendor directory from release branch
+      - name: Remove vendor directory
         run: |
           git rm -r --cached vendor
-          git commit -m "Remove vendor directory from release branch" || echo "No changes to commit"
+          git commit -m "Remove vendor directory" || echo "No changes to commit"
           git push origin main
-
-      - name: Remove release branch
-        run: |
-          git push origin --delete release
