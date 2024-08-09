@@ -67,6 +67,17 @@ jobs:
           git config --local user.email "durianbohong@gmail.com"
           git config --local user.name "il4mb"
 
+          
+      - name: Push vendor
+        run: |
+          git fetch origin
+          git checkout ${{ env.BRANCH_NAME }}
+          git pull origin ${{ env.BRANCH_NAME }}
+          git add vendor
+          git commit -m "Add vendor directory for release" || echo "No changes to commit"
+          git push origin ${{ env.BRANCH_NAME }}
+
+
       - name: Initialize submodules
         run: |
           git submodule update --init --recursive
