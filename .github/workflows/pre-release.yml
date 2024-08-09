@@ -80,5 +80,7 @@ jobs:
     - name: Remove vendor directory
       run: |
         git rm -r --cached vendor
+        git config --local user.email "durianbohong@gmail.com"
+        git config --local user.name "il4mb"
         git commit -m "Remove vendor directory"
         git push origin ${{ github.ref }}
