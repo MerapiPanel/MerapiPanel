@@ -54,12 +54,6 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
 
-      - name: Pull latest changes from release branch
-        run: |
-          git checkout ${{ env.BRANCH_NAME }}
-          git pull origin ${{ env.BRANCH_NAME }}
-
-
       - name: Commit vendor directory
         run: |
           git config --local user.email "durianbohong@gmail.com"
@@ -67,11 +61,15 @@ jobs:
           git add -f vendor
           git config advice.addIgnoredFile false
           git commit -m "Add vendor directory for release"
+          git push origin ${{ env.BRANCH_NAME }}
 
 
-      - name: Push changes
-        run: git push origin ${{ env.BRANCH_NAME }}
-
+      - name: Initialize submodules
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
+          git submodule foreach git checkout ${{ env.BRANCH_NAME }}
+          git submodule foreach git pull origin ${{ env.BRANCH_NAME }}
 
       - name: Create Release
         uses: aaiezza/create-release@v1.0.0
