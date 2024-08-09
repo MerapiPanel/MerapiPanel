@@ -8,7 +8,8 @@ on:
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
-
+    environment: release
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
