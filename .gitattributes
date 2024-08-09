@@ -1,6 +1,12 @@
 .babelrc export-ignore
+.gitattributes export-ignore
 .gitignore export-ignore
+.gitmodules export-ignore
+babel.config.json export-ignore
+composer.json
+package.json
 webpack.config.json export-ignore
+
 
 content/ export-ignore
 .github/ export-ignore
