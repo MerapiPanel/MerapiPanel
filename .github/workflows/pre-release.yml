@@ -73,8 +73,8 @@ jobs:
         run: |
           git submodule sync --recursive
           git submodule update --init --recursive
-          git submodule foreach git checkout ${{ env.BRANCH_NAME }}
-          git submodule foreach git pull origin ${{ env.BRANCH_NAME }}
+          git submodule foreach git checkout main
+          git submodule foreach git pull origin main
 
 
       - name: Create Release
