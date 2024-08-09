@@ -73,6 +73,7 @@ jobs:
           else
             echo "Release branch does not exist. Creating it."
             git checkout -b ${{ env.BRANCH_NAME }}
+            git config pull.rebase false
             git pull origin ${{ env.BRANCH_NAME }}
             git push origin ${{ env.BRANCH_NAME }}
           fi
