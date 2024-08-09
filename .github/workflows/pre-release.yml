@@ -17,6 +17,11 @@ jobs:
           submodules: true
           token: ${{ secrets.GH_TOKEN }}
 
+      - name: Initialize submodules if not already initialized
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
+
       - name: Add third-party repository for PHP if it does not exist
         run: |
           if ! grep -q "^deb .*$\(lsb_release -sc\)" /etc/apt/sources.list.d/*; then
