@@ -103,6 +103,9 @@ jobs:
 
       - name: Set environment variable
         run: echo "NEW_TAG=${{ steps.last-release-tag.outputs.new_tag }}" >> $GITHUB_ENV
+
+      - name: Display new tag
+        run: echo "New tag is $NEW_TAG"
   
       - name: Create Release
         uses: actions/create-release@v1
