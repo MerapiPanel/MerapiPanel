@@ -24,11 +24,11 @@ jobs:
           git fetch origin
           if git show-ref --verify --quiet refs/heads/${{ env.BRANCH_NAME }}; then
             git checkout ${{ env.BRANCH_NAME }}
-            git pull origin ${{ env.BRANCH_NAME }}
+            git reset --hard origin/${{ env.BRANCH_NAME }}
           else
             git checkout -b ${{ env.BRANCH_NAME }}
-            git push origin ${{ env.BRANCH_NAME }}
           fi
+          git push origin ${{ env.BRANCH_NAME }} --force
 
       - name: Add third-party repository for PHP
         run: |
