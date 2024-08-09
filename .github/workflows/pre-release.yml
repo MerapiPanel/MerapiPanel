@@ -88,11 +88,12 @@ jobs:
         run: git push origin ${{ env.BRANCH_NAME }}
 
       - name: Create Release
-        uses: actions/create-release@v1
+        uses: aaiezza/create-release@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          tag_name: ${{ vars.RELEASE_TAG }}
+          release_branch: ${{ env.BRANCH_NAME }}
+          tag: ${{ vars.RELEASE_TAG }}
           release_name: "Release ${{ github.ref }}"
           draft: false
           prerelease: false
