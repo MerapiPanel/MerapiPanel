@@ -66,13 +66,17 @@ jobs:
           git submodule foreach --recursive git checkout main
           git submodule foreach --recursive git pull origin main
 
+      - name: Get Release Tag
+        id: get_tag
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          tag_name: ${{ vars.RELEASE_TAG }}
-          release_name: "Release from Release Branch"
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: "Release ${{ env.RELEASE_TAG }}"
           draft: false
           prerelease: false
           body: "Release with vendor files included."
@@ -97,13 +101,12 @@ jobs:
           git checkout main
           git pull origin main
 
-
       - name: Remove vendor directory from release branch
         run: |
           git rm -r --cached vendor
           git commit -m "Remove vendor directory from release branch" || echo "No changes to commit"
           git push origin main
 
-      - name: Remove branch release
+      - name: Remove release branch
         run: |
-          git push origin --delete main
+          git push origin --delete release
