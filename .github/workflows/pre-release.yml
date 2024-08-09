@@ -9,6 +9,8 @@ jobs:
   prepare-release:
     runs-on: ubuntu-latest
     environment: release
+    env:
+      BRANCH_NAME: release
 
     steps:
       - name: Checkout code
@@ -17,10 +19,12 @@ jobs:
           submodules: true
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Initialize submodules if not already initialized
+      - name: Initialize submodules
         run: |
           git submodule sync --recursive
           git submodule update --init --recursive
+          git submodule foreach git checkout main
+          git submodule foreach git pull origin main
 
       - name: Add third-party repository for PHP if it does not exist
         run: |
@@ -60,6 +64,18 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
+      - name: Check if release branch exists
+        id: check-branch
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/heads/${{ env.BRANCH_NAME }}; then
+            echo "Release branch exists."
+          else
+            echo "Release branch does not exist. Creating it."
+            git checkout -b ${{ env.BRANCH_NAME }}
+            git push origin ${{ env.BRANCH_NAME }}
+          fi
+
       - name: Commit vendor directory
         run: |
           git config --local user.email "durianbohong@gmail.com"
@@ -69,7 +85,7 @@ jobs:
           git commit -m "Add vendor directory for release"
 
       - name: Push changes
-        run: git push origin ${{ github.ref }}
+        run: git push origin ${{ env.BRANCH_NAME }}
 
       - name: Create Release
         uses: actions/create-release@v1
@@ -80,6 +96,7 @@ jobs:
           release_name: "Release ${{ github.ref }}"
           draft: false
           prerelease: false
+          body: "Release with vendor and submodule files included."
           token: ${{ secrets.GH_TOKEN }}
 
   cleanup:
@@ -92,7 +109,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GH_TOKEN }}
-      
+
       - name: Add default github user
         run: |
           git config --local user.email "durianbohong@gmail.com"
@@ -104,7 +121,6 @@ jobs:
           git pull origin main
           git rm -r --cached vendor
           git commit -m "Remove vendor directory"
-          git push origin ${{ github.ref }}
 
       - name: Remove submodules directory
         if: always()
@@ -113,4 +129,7 @@ jobs:
           git submodule deinit -f .
           git rm --cached path_to_submodule
           git commit -m "Remove submodule after release"
-          git push origin main
+
+      - name: Push changes
+        if: always()
+        run: git push origin ${{ env.BRANCH_NAME }}
