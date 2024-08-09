@@ -1,5 +1,5 @@
 name: Prepare Release
-  
+
 on:
   workflow_dispatch:
   release:
@@ -9,62 +9,73 @@ jobs:
   prepare-release:
     runs-on: ubuntu-latest
     environment: release
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          token: ${{ secrets.GH_TOKEN }}
 
-    - name: Add third-party repository for PHP
-      run: sudo add-apt-repository ppa:ondrej/php
+      - name: Add third-party repository for PHP if it does not exist
+        run: |
+          if ! grep -q "^deb .*$\(lsb_release -sc\)" /etc/apt/sources.list.d/*; then
+            sudo add-apt-repository ppa:ondrej/php
+          else
+            echo "Repository already exists, skipping add-apt-repository"
+          fi
 
-    - name: Install PHP 8.2 and Composer
-      run: |
-        sudo apt-get install -y php8.3-cli
-        sudo update-alternatives --set php /usr/bin/php8.3
-        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-        php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-        php -r "unlink('composer-setup.php');"
-        sudo apt-get update
-        sudo apt-get install -y php8.3-xml
-        
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      - name: Install PHP 8.3 and Composer if not already installed
+        run: |
+          if ! php -v | grep -q "8.3."; then
+            echo "PHP 8.3 is not installed. Installing PHP 8.3..."
+            sudo apt-get install -y php8.3-cli
+            sudo update-alternatives --set php /usr/bin/php8.3
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+            php -r "unlink('composer-setup.php');"
+            sudo apt-get update
+            sudo apt-get install -y php8.3-xml
+          else
+            echo "PHP 8.3 is already installed. Skipping installation."
+          fi
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-      
-    - name: Commit vendor directory
-      run: |
-        git config --local user.email "durianbohong@gmail.com"
-        git config --local user.name "il4mb"
-        git add -f vendor
-        git config advice.addIgnoredFile false
-        git commit -m "Add vendor directory for release"
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Push changes
-      run: git push origin ${{ github.ref }}
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
+      - name: Commit vendor directory
+        run: |
+          git config --local user.email "durianbohong@gmail.com"
+          git config --local user.name "il4mb"
+          git add -f vendor
+          git config advice.addIgnoredFile false
+          git commit -m "Add vendor directory for release"
+
+      - name: Push changes
+        run: git push origin ${{ github.ref }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      with:
-        tag_name: ${{ vars.RELEASE_TAG }}
-        release_name: "Release ${{ github.ref }}"
-        draft: false
-        prerelease: false
-        token: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: ${{ vars.RELEASE_TAG }}
+          release_name: "Release ${{ github.ref }}"
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GH_TOKEN }}
 
   cleanup:
     runs-on: ubuntu-latest
@@ -72,16 +83,29 @@ jobs:
     if: always() # Ensures this job runs regardless of the success or failure of the previous job
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      
+      - name: Add default github user
+        run: |
+          git config --local user.email "durianbohong@gmail.com"
+          git config --local user.name "il4mb"
 
-    - name: Remove vendor directory
-      run: |
-        git rm -r --cached vendor
-        git config --local user.email "durianbohong@gmail.com"
-        git config --local user.name "il4mb"
-        git pull origin main
-        git commit -m "Remove vendor directory"
-        git push origin ${{ github.ref }}
+      - name: Remove vendor directory
+        if: always()
+        run: |
+          git pull origin main
+          git rm -r --cached vendor
+          git commit -m "Remove vendor directory"
+          git push origin ${{ github.ref }}
+
+      - name: Remove submodules directory
+        if: always()
+        run: |
+          git pull origin main
+          git submodule deinit -f .
+          git rm --cached path_to_submodule
+          git commit -m "Remove submodule after release"
+          git push origin main
